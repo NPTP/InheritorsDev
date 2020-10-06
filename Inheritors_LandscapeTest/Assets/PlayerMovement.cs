@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     float moveSpeed = 4f;
     [SerializeField]
-    float jumpSpeed = 4f;
 
     private Vector3 forward, right;
     private CharacterController characterController;
