@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Environment01.unity
+    guid: efb4beeb079d28e4baab8f8060e2355a
+  - enabled: 1
+    path: Assets/Scenes/Environment02.unity
+    guid: 5642c3ef5babc414ca1eefc91b3066ba
+  - enabled: 1
+    path: Assets/Scenes/TilerTest.unity
+    guid: d56aee5a923ebc040b0e79bd06ac3cd5
+  - enabled: 1
+    path: Assets/Scenes/CollisionTesting.unity
+    guid: af9ee1b5907845e4597e26d0f2e45301
   m_configObjects: {}
