@@ -81,10 +81,10 @@ public class CameraLookAroundScript : MonoBehaviour
 
     void Start()
     {
-        GameObject cmMainCam = GameObject.Find("CM MainCam");
-        mainCMVirtualCamera = cmMainCam.GetComponent<CinemachineVirtualCamera>();
-        GameObject cmLookCam = GameObject.Find("CM LookCam");
-        lookCMVirtualCamera = cmLookCam.GetComponent<CinemachineVirtualCamera>();
+        // GameObject cmMainCam = GameObject.Find("CM MainCam");
+        // mainCMVirtualCamera = cmMainCam.GetComponent<CinemachineVirtualCamera>();
+        // GameObject cmLookCam = GameObject.Find("CM LookCam");
+        // lookCMVirtualCamera = cmLookCam.GetComponent<CinemachineVirtualCamera>();
 
         cinemachineBrain = GetComponent<CinemachineBrain>();
     }
