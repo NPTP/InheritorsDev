@@ -4,6 +4,7 @@ public class CheckTerrainTexture : MonoBehaviour
 {
     public Transform playerTransform;
     public Terrain t;
+    public CharacterController characterController;
 
     public int posX;
     public int posZ;
@@ -17,17 +18,19 @@ public class CheckTerrainTexture : MonoBehaviour
 
     void Update()
     {
-        ConvertPosition(playerTransform.position);
-        CheckTexture();
-        ChangeTexture();
-
-        // TODO: figure out now how to SET alphamaps.
+        if (characterController.isGrounded)
+        {
+            ConvertPosition(playerTransform.position);
+            CheckTexture();
+            ChangeTexture();
+        }
     }
 
+    // TODO: set alphamaps more smoothly.
     void ChangeTexture()
     {
-        int xSize = 5;
-        int zSize = 5;
+        int xSize = 6;
+        int zSize = 6;
         float[,,] map = new float[xSize, zSize, 3];
         for (int i = 0; i < xSize; i++)
         {
@@ -39,6 +42,18 @@ public class CheckTerrainTexture : MonoBehaviour
             }
         }
         t.terrainData.SetAlphamaps(posX, posZ, map);
+
+        int w, h;
+        w = h = 12;
+        int[,] details = new int[w, h];
+        for (int i = 0; i < w; i++)
+        {
+            for (int j = 0; j < h; j++)
+            {
+                details[i, j] = 0;
+            }
+        }
+        t.terrainData.SetDetailLayer(posX, posZ, 0, details);
     }
 
     void ConvertPosition(Vector3 playerPosition)
