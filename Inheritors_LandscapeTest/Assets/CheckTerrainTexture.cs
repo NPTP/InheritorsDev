@@ -1,5 +1,12 @@
 ﻿using UnityEngine;
 
+/*---- LAYER REFERENCE ----
+0 - Grass
+1 - Unchangeable light dirt
+2 - Ash
+3 - Dark dirt
+-------------------------*/
+
 public class CheckTerrainTexture : MonoBehaviour
 {
     public Transform playerTransform;
@@ -9,11 +16,14 @@ public class CheckTerrainTexture : MonoBehaviour
     public int posX;
     public int posZ;
     public float[] textureValues;
-    public int numTextures = 3;
+    int numLayers;
+    int trailSize = 3;
+    int foremostLayer = 0;
 
     void Start()
     {
-        textureValues = new float[numTextures];
+        numLayers = t.terrainData.alphamapLayers;
+        textureValues = new float[numLayers];
     }
 
     void Update()
@@ -26,19 +36,31 @@ public class CheckTerrainTexture : MonoBehaviour
         }
     }
 
-    // TODO: set alphamaps more smoothly.
     void ChangeTexture()
     {
-        int xSize = 6;
-        int zSize = 6;
-        float[,,] map = new float[xSize, zSize, 3];
+        int xSize, zSize;
+        xSize = zSize = trailSize;
+
+        // TODO: make CheckTexture() collect a trailSize x trailSize 3d array to match this function,
+        // so we can compare appropriately.
+        float unchangeableFactor = textureValues[1];
+
+        float[,,] map = new float[xSize, zSize, numLayers];
         for (int i = 0; i < xSize; i++)
         {
             for (int j = 0; j < zSize; j++)
             {
-                map[i, j, 0] = 0f;
-                map[i, j, 1] = 1f;
-                map[i, j, 2] = 0f;
+                for (int k = 0; k < numLayers; k++)
+                {
+                    // TODO: find way to mark dirty so this can only happen once to each section.
+                    // May require creating a duplicate array of 1/0 bools same size as terrain splatmap.
+                    // Messing with the API's mark-dirty stuff may fuck up GPU stuff
+
+                    if (k == 3)
+                        map[i, j, k] = 1f - unchangeableFactor;
+                    else
+                        map[i, j, k] = textureValues[k];
+                }
             }
         }
         t.terrainData.SetAlphamaps(posX, posZ, map);
@@ -73,13 +95,21 @@ public class CheckTerrainTexture : MonoBehaviour
         posZ = (int)zCoord;
     }
 
+    // Stores the underfoot texture mix in textureValues, and
+    // saves the index of the most prominent texture of the bunch
+    // (so we know what we're mainly walking on).
     void CheckTexture()
     {
         float[,,] alphaMap = t.terrainData.GetAlphamaps(posX, posZ, 1, 1);
-
-        // TODO: make this auto generate based on the number of terrain textures
-        textureValues[0] = alphaMap[0, 0, 0];
-        textureValues[1] = alphaMap[0, 0, 1];
-        textureValues[2] = alphaMap[0, 0, 2];
+        float max = -1f;
+        for (int i = 0; i < numLayers; i++)
+        {
+            textureValues[i] = alphaMap[0, 0, i];
+            if (textureValues[i] > max)
+            {
+                max = textureValues[i];
+                foremostLayer = i;
+            }
+        }
     }
 }
