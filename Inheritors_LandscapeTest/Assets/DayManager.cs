@@ -38,5 +38,16 @@ public class DayManager : MonoBehaviour
             player.transform.position = GameObject.Find("Day2PlayerStart").transform.position;
             player.transform.rotation = GameObject.Find("Day2PlayerStart").transform.rotation;
         }
+
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            GameObject fow = GameObject.Find("FogOfWar");
+            GameObject fowCam = fow.transform.GetChild(1).gameObject;
+            GameObject fowProj = fow.transform.GetChild(2).gameObject;
+            fowCam.SetActive(!fowCam.activeInHierarchy);
+            fowProj.SetActive(!fowProj.activeInHierarchy);
+        }
+
     }
 }

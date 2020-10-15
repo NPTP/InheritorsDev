@@ -31,8 +31,6 @@ public class CheckTerrainTexture : MonoBehaviour
         numLayers = t.terrainData.alphamapLayers;
         textureValues = new float[numLayers];
         InitializeWalkedMap();
-        Debug.Log(t.terrainData.alphamapWidth);
-        Debug.Log(t.terrainData.alphamapHeight);
     }
 
     void Update()
@@ -51,7 +49,6 @@ public class CheckTerrainTexture : MonoBehaviour
         // TODO: might need to make this as big as the footprint we set and use 2d x,z arrays again.
         if (posX == storedPosX && posZ == storedPosZ)
         {
-            Debug.Log("You've already been here");
             return;
         }
 
