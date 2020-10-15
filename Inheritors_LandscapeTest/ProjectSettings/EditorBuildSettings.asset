@@ -6,15 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/PreProto/Environment01.unity
-    guid: efb4beeb079d28e4baab8f8060e2355a
-  - enabled: 1
-    path: Assets/Scenes/PreProto/Environment02.unity
-    guid: 5642c3ef5babc414ca1eefc91b3066ba
-  - enabled: 1
-    path: Assets/Scenes/PreProto/TilerTest.unity
-    guid: d56aee5a923ebc040b0e79bd06ac3cd5
-  - enabled: 1
-    path: Assets/Scenes/PreProto/CollisionTesting.unity
-    guid: af9ee1b5907845e4597e26d0f2e45301
+    path: Assets/Scenes/ProtoGameWorld.unity
+    guid: 400e68e34c879bf4395e4d20c02a4fff
   m_configObjects: {}

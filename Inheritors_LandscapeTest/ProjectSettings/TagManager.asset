@@ -7,6 +7,8 @@ TagManager:
   - FogOfWar
   - Tile
   - Ghost
+  - Fire
+  - Pickup
   layers:
   - Default
   - TransparentFX
@@ -20,7 +22,7 @@ TagManager:
   - FOV
   - Player
   - Ghost
-  - 
+  - Trigger
   - 
   - 
   - 

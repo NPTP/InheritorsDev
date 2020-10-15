@@ -23,7 +23,7 @@ public class CheckTerrainTexture : MonoBehaviour
     // Keeps track of which coordinates have been walked on.
     bool[,] walkedMap;
     int numLayers;
-    int trailSize = 1;//3;
+    public int trailSize = 3;
     int foremostLayer = 0;
 
     void Start()
@@ -31,6 +31,8 @@ public class CheckTerrainTexture : MonoBehaviour
         numLayers = t.terrainData.alphamapLayers;
         textureValues = new float[numLayers];
         InitializeWalkedMap();
+        Debug.Log(t.terrainData.alphamapWidth);
+        Debug.Log(t.terrainData.alphamapHeight);
     }
 
     void Update()
@@ -61,32 +63,32 @@ public class CheckTerrainTexture : MonoBehaviour
         {
             for (int j = 0; j < trailSize; j++)
             {
-                if (!walkedMap[posX + i, posZ + j])
+                // if (!walkedMap[posX + i, posZ + j])
+                // {
+                for (int k = 0; k < numLayers; k++)
                 {
-                    for (int k = 0; k < numLayers; k++)
-                    {
-                        // TODO: find way to mark dirty so this can only happen once to each section.
-                        // May require creating a duplicate array of 1/0 bools same size as terrain splatmap.
-                        // Messing with the API's mark-dirty stuff may fuck up GPU stuff\
+                    // TODO: find way to mark dirty so this can only happen once to each section.
+                    // May require creating a duplicate array of 1/0 bools same size as terrain splatmap.
+                    // Messing with the API's mark-dirty stuff may fuck up GPU stuff\
 
-                        if (k == 3)
-                            remap[i, j, k] = 1f - alphaMap[i, j, 1];
-                        else if (k == 1)
-                        {
-                            remap[i, j, k] = alphaMap[i, j, k];
-                        }
-                        else
-                            remap[i, j, k] = 0f;
+                    if (k == 3)
+                        remap[i, j, k] = 1f - alphaMap[i, j, 1];
+                    else if (k == 1)
+                    {
+                        remap[i, j, k] = alphaMap[i, j, k];
                     }
+                    else
+                        remap[i, j, k] = 0f;
                 }
-                else
-                {
-                    Debug.Log("You've walked here before");
-                    remap[i, j, 0] = 0f;
-                    remap[i, j, 1] = 0f;
-                    remap[i, j, 2] = 1f;
-                    remap[i, j, 3] = 0f;
-                }
+                // }
+                // else
+                // {
+                //     Debug.Log("You've walked here before");
+                //     remap[i, j, 0] = 0f;
+                //     remap[i, j, 1] = 0f;
+                //     remap[i, j, 2] = 1f;
+                //     remap[i, j, 3] = 0f;
+                // }
                 walkedMap[posX + i, posZ + j] = true;
             }
         }
