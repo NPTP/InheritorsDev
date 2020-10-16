@@ -10427,7 +10427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 969d776d368872c4c9aed052e5737125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leavePaths: 1
+  leavePaths: 0
   playerTransform: {fileID: 1674311232}
   t: {fileID: 295051993}
   characterController: {fileID: 1674311228}

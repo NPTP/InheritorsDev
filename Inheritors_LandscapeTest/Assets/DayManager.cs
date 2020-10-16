@@ -6,6 +6,7 @@ public class DayManager : MonoBehaviour
 {
     GameObject day1, day2, player;
     public GameObject currentDay;
+    
     void Start()
     {
         player = GameObject.Find("Player");
@@ -24,6 +25,7 @@ public class DayManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            // ChangeDay(currentDay, day1);
             day2.SetActive(false);
             day1.SetActive(true);
             currentDay = day1;
@@ -32,6 +34,7 @@ public class DayManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            // ChangeDay(currentDay, day2);
             day1.SetActive(false);
             day2.SetActive(true);
             currentDay = day2;
@@ -40,14 +43,28 @@ public class DayManager : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            GameObject fow = GameObject.Find("FogOfWar");
-            GameObject fowCam = fow.transform.GetChild(1).gameObject;
-            GameObject fowProj = fow.transform.GetChild(2).gameObject;
-            fowCam.SetActive(!fowCam.activeInHierarchy);
-            fowProj.SetActive(!fowProj.activeInHierarchy);
-        }
+        // Toggle Fog of War
+        if (Input.GetKeyDown(KeyCode.F))
+            ToggleFogOfWar();
 
+    }
+
+    void ChangeDay(GameObject currentDay, GameObject nextDay)
+    {
+        // Things we need to do to change the day:
+        // - Reset the terrain's walkedOn markers.
+        // - Move the player to the next day's starting position.
+        // - Disable currentDay, activate nextDay
+        // More to come as we develop.
+    }
+
+    // TODO: Move this to a dedicated debug class
+    void ToggleFogOfWar()
+    {
+        GameObject fow = GameObject.Find("FogOfWar");
+        GameObject fowCam = fow.transform.GetChild(1).gameObject;
+        GameObject fowProj = fow.transform.GetChild(2).gameObject;
+        fowCam.SetActive(!fowCam.activeInHierarchy);
+        fowProj.SetActive(!fowProj.activeInHierarchy);
     }
 }
