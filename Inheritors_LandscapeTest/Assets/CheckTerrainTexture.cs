@@ -24,10 +24,12 @@ public class CheckTerrainTexture : MonoBehaviour
     bool[,] walkedMap;
     int numLayers;
     public int trailSize = 3;
+    private int playerSplatmapRadius;
     int foremostLayer = 0;
 
     void Start()
     {
+        playerSplatmapRadius = (int)trailSize / 2;
         numLayers = t.terrainData.alphamapLayers;
         textureValues = new float[numLayers];
         InitializeWalkedMap();
@@ -47,13 +49,13 @@ public class CheckTerrainTexture : MonoBehaviour
     {
         // Check that this isn't the position we were just standing in.
         // TODO: might need to make this as big as the footprint we set and use 2d x,z arrays again.
-        if (posX == storedPosX && posZ == storedPosZ)
-        {
-            return;
-        }
+        // if (posX == storedPosX && posZ == storedPosZ)
+        // {
+        //     return;
+        // }
 
-        storedPosX = posX;
-        storedPosZ = posZ;
+        // storedPosX = posX;
+        // storedPosZ = posZ;
 
         float[,,] remap = new float[trailSize, trailSize, numLayers];
         for (int i = 0; i < trailSize; i++)
@@ -89,19 +91,20 @@ public class CheckTerrainTexture : MonoBehaviour
                 walkedMap[posX + i, posZ + j] = true;
             }
         }
-        t.terrainData.SetAlphamaps(posX, posZ, remap);
+        t.terrainData.SetAlphamaps(posX - playerSplatmapRadius, posZ - playerSplatmapRadius, remap);
 
-        int w, h;
-        w = h = 12;
-        int[,] details = new int[w, h];
-        for (int i = 0; i < w; i++)
-        {
-            for (int j = 0; j < h; j++)
-            {
-                details[i, j] = 0;
-            }
-        }
-        t.terrainData.SetDetailLayer(posX, posZ, 0, details);
+        // // Walking over detail layer
+        // int w, h;
+        // w = h = 12;
+        // int[,] details = new int[w, h];
+        // for (int i = 0; i < w; i++)
+        // {
+        //     for (int j = 0; j < h; j++)
+        //     {
+        //         details[i, j] = 0;
+        //     }
+        // }
+        // t.terrainData.SetDetailLayer(posX, posZ, 0, details);
     }
 
     void ConvertPosition(Vector3 playerPosition)
