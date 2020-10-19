@@ -10,6 +10,7 @@ TagManager:
   - Fire
   - Pickup
   - Terrain
+  - Grass
   layers:
   - Default
   - TransparentFX

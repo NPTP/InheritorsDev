@@ -53,6 +53,12 @@ public class PlayerPickup : MonoBehaviour
             inPickupRange = true;
             itemInRange = other.gameObject.transform.parent.gameObject;
         }
+        else if (other.gameObject.tag == "Grass")
+        {
+            GameObject grass = other.gameObject;
+            grass.transform.localScale = Vector3.LerpUnclamped(new Vector3(1f, .25f, 1f), new Vector3(1f, 1f, 1f), .2f);
+
+        }
     }
 
     // Called when *I* leave a trigger collider.
@@ -62,6 +68,12 @@ public class PlayerPickup : MonoBehaviour
         {
             inPickupRange = false;
             itemInRange = null;
+        }
+        else if (other.tag == "Grass")
+        {
+            GameObject grass = other.gameObject;
+            grass.transform.localScale = Vector3.LerpUnclamped(new Vector3(1f, 1f, 1f), new Vector3(1f, .25f, 1f), .2f);
+
         }
     }
 
