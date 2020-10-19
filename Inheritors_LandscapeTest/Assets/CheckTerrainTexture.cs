@@ -47,64 +47,44 @@ public class CheckTerrainTexture : MonoBehaviour
 
     void ChangeTexture()
     {
-        // Check that this isn't the position we were just standing in.
-        // TODO: might need to make this as big as the footprint we set and use 2d x,z arrays again.
-        // if (posX == storedPosX && posZ == storedPosZ)
-        // {
-        //     return;
-        // }
-
-        // storedPosX = posX;
-        // storedPosZ = posZ;
-
         float[,,] remap = new float[trailSize, trailSize, numLayers];
         for (int i = 0; i < trailSize; i++)
         {
             for (int j = 0; j < trailSize; j++)
             {
-                // if (!walkedMap[posX + i, posZ + j])
-                // {
-                for (int k = 0; k < numLayers; k++)
+                if (!walkedMap[i, j])
                 {
-                    // TODO: find way to mark dirty so this can only happen once to each section.
-                    // May require creating a duplicate array of 1/0 bools same size as terrain splatmap.
-                    // Messing with the API's mark-dirty stuff may fuck up GPU stuff\
-
-                    if (k == 3)
-                        remap[i, j, k] = 1f - alphaMap[i, j, 1];
-                    else if (k == 1)
+                    for (int k = 0; k < numLayers; k++)
                     {
-                        remap[i, j, k] = alphaMap[i, j, k];
+                        // TODO: find way to mark dirty so this can only happen once to each section.
+                        // May require creating a duplicate array of 1/0 bools same size as terrain splatmap.
+                        // Messing with the API's mark-dirty stuff may fuck up GPU stuff\
+
+                        if (k == 3)
+                            remap[i, j, k] = 1f - alphaMap[i, j, 1];
+                        else if (k == 1)
+                        {
+                            remap[i, j, k] = alphaMap[i, j, k];
+                        }
+                        else
+                            remap[i, j, k] = 0f;
                     }
-                    else
-                        remap[i, j, k] = 0f;
+                    walkedMap[posX - playerSplatmapRadius + i, posZ - playerSplatmapRadius + j] = true;
                 }
-                // }
-                // else
-                // {
-                //     Debug.Log("You've walked here before");
-                //     remap[i, j, 0] = 0f;
-                //     remap[i, j, 1] = 0f;
-                //     remap[i, j, 2] = 1f;
-                //     remap[i, j, 3] = 0f;
-                // }
-                walkedMap[posX + i, posZ + j] = true;
+                else
+                {
+                    Debug.Log("You already walked here, bud");
+                }
             }
         }
         t.terrainData.SetAlphamaps(posX - playerSplatmapRadius, posZ - playerSplatmapRadius, remap);
 
-        // // Walking over detail layer
-        // int w, h;
-        // w = h = 12;
-        // int[,] details = new int[w, h];
-        // for (int i = 0; i < w; i++)
-        // {
-        //     for (int j = 0; j < h; j++)
-        //     {
-        //         details[i, j] = 0;
-        //     }
-        // }
-        // t.terrainData.SetDetailLayer(posX, posZ, 0, details);
+        // Walking over detail layer
+        int[,] details = new int[trailSize, trailSize];
+        for (int i = 0; i < trailSize; i++)
+            for (int j = 0; j < trailSize; j++)
+                details[i, j] = 0;
+        t.terrainData.SetDetailLayer(posX, posZ, 0, details);
     }
 
     void ConvertPosition(Vector3 playerPosition)

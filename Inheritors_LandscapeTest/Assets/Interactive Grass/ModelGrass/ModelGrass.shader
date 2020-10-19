@@ -16,7 +16,7 @@
 		_BurnTex       ("Burn", 2D) = "white" {}
 	}
 	SubShader {
-		Tags { "Queue" = "AlphaTest" "IgnoreProjector" = "True" "RenderType" = "TransparentCutout" }
+		Tags { "Queue" = "AlphaTest" "IgnoreProjector" = "False" "RenderType" = "TransparentCutout" }
 		Cull Off
 		
 		CGPROGRAM
