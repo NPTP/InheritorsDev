@@ -1,1 +1,1 @@
-#define PHYSICS_SIMPLE 1
+#define PHYSICS_FULL 1
