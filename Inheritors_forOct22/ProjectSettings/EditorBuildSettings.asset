@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: d686b78d84d0393468fda9f4cbd07fa4
   - enabled: 1
-    path: Assets/Scenes/Tests/TerrainAndUITest.unity
+    path: Assets/Scenes/Tests/ResetTerrainTest/ResetTerrainTest.unity
     guid: a67ab423b6cb74042854d3869304e94b
   m_configObjects: {}
