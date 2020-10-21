@@ -6,53 +6,88 @@ using System.IO;
 
 public class TerrainDuplicator : MonoBehaviour
 {
-    public Terrain t; // The original we're copying
-    public bool tryToMakeAsset = false;
+    public Terrain originalTerrain; // The original we're copying
+    TerrainData origData;
+    public Terrain copyTerrain; // The template we want to copy onto
+    public bool tryToMakeAsset = false; // Write a new terrain data to file on CreateTerrain?
 
     void Start()
     {
-        CreateTerrain();
+        origData = originalTerrain.terrainData;
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+            CreateTerrain();
+        else if (Input.GetKeyDown(KeyCode.C))
+            CopyTerrain();
+    }
+
+    void CopyTerrain()
+    {
+        /* Terrain we're copying onto should have the same size, heightmap/detail/alphamap/etc resolutions,
+        ** and same detail and tree layers. We're just copying the "layout" so to speak, not the parameters. */
+
+        // Just a shorter reference for the readability's sake
+        TerrainData td = copyTerrain.terrainData;
+
+        // Copy height data
+        td.SetHeights(0, 0, origData.GetHeights(0, 0, origData.heightmapResolution, origData.heightmapResolution));
+
+        // Copy texture map
+        td.SetAlphamaps(0, 0, origData.GetAlphamaps(0, 0, origData.alphamapWidth, origData.alphamapHeight));
+
+        // Copy detail layer
+        for (int layer = 0; layer < origData.detailPrototypes.Length; layer++)
+        {
+            td.SetDetailLayer(0, 0, layer, origData.GetDetailLayer(
+                0, 0, origData.detailWidth, origData.detailHeight, layer));
+        }
+
+        // Copy trees
+        TreeInstance[] copyTrees = new TreeInstance[origData.treeInstances.Length];
+        for (int tree = 0; tree < copyTrees.Length; tree++)
+        {
+            TreeInstance copiedTree = new TreeInstance();
+            copiedTree.position = origData.treeInstances[tree].position;
+            copiedTree.widthScale = origData.treeInstances[tree].widthScale;
+            copiedTree.heightScale = origData.treeInstances[tree].heightScale;
+            copiedTree.color = origData.treeInstances[tree].color;
+            copiedTree.lightmapColor = origData.treeInstances[tree].lightmapColor;
+            copiedTree.prototypeIndex = origData.treeInstances[tree].prototypeIndex;
+            copyTrees[tree] = copiedTree;
+        }
+        td.treeInstances = copyTrees;
+    }
 
     void CreateTerrain()
     {
-        GameObject parent = (GameObject)Instantiate(new GameObject("Terrain"));
-        parent.transform.position = new Vector3(0f, 0f, 14f);
+        Vector3 desiredPosition = new Vector3(0f, 0f, 30f);
 
-        // for (int x = 1; x <= tileAmount.x; x++)
-        //     for (int y = 1; y <= tileAmount.y; y++)
-        string name = "Duplicated Terrain";
+        // GameObject parent = (GameObject)Instantiate(new GameObject("DuplicateTerrainParent"));`
+        // GameObject parent = new GameObject("DuplicateTerrainParent");
+        // parent.transform.position = desiredPosition;
+        // terrain.transform.parent = parent.transform;
+
+        string name = "DuplicateTerrain";
 
         TerrainData terrainData = new TerrainData();
 
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(terrainData);
 
         terrain.name = name;
-        terrain.transform.parent = parent.transform;
-        // terrain.transform.position = new Vector3(length * (x - 1), 0, width * (y - 1));
-        terrain.transform.position = new Vector3(0f, 0f, 14f);
+        terrainData.name = name + "Data";
 
-        int baseTextureResolution = t.terrainData.baseMapResolution;
-        terrainData.baseMapResolution = baseTextureResolution;
+        terrain.transform.position = desiredPosition;
 
-        int heightmapResolution = t.terrainData.heightmapResolution;
-        terrainData.heightmapResolution = heightmapResolution;
+        terrainData.baseMapResolution = origData.baseMapResolution;
+        terrainData.heightmapResolution = origData.heightmapResolution;
+        terrainData.alphamapResolution = origData.alphamapResolution;
+        terrainData.SetDetailResolution(origData.detailResolution, origData.detailResolutionPerPatch);
+        terrainData.size = new Vector3(origData.size.x, origData.size.y, origData.size.z);
 
-        int controlTextureResolution = t.terrainData.alphamapResolution;
-        terrainData.alphamapResolution = controlTextureResolution;
-
-        int detailResolution = t.terrainData.detailResolution;
-        int detailResolutionPerPatch = t.terrainData.detailResolutionPerPatch;
-        terrainData.SetDetailResolution(detailResolution, detailResolutionPerPatch);
-
-        terrainData.size = new Vector3(
-            t.terrainData.size.x,
-            t.terrainData.size.y,
-            t.terrainData.size.z
-        );
-
-        terrainData.name = name;
+        terrainData.SetHeights(0, 0, origData.GetHeights(0, 0, origData.heightmapResolution, origData.heightmapResolution));
 
         if (tryToMakeAsset)
         {
