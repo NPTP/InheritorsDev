@@ -578,7 +578,7 @@ GameObject:
   - component: {fileID: 48041637}
   - component: {fileID: 48041636}
   m_Layer: 0
-  m_Name: PickupParticles
+  m_Name: PutdownParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9305,7 +9305,7 @@ GameObject:
   - component: {fileID: 695106374}
   - component: {fileID: 695106375}
   m_Layer: 0
-  m_Name: PickupLight
+  m_Name: PutdownLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14596,7 +14596,7 @@ Terrain:
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
   m_DetailObjectDistance: 250
-  m_DetailObjectDensity: 0.5
+  m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
   m_HeightmapMaximumLOD: 0

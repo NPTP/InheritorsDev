@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+// using UnityEditor;
 using System.IO;
 
 public class TerrainDuplicator : MonoBehaviour
@@ -92,7 +92,7 @@ public class TerrainDuplicator : MonoBehaviour
         if (tryToMakeAsset)
         {
             string path = "Scenes/Tests/ResetTerrainTest/";
-            AssetDatabase.CreateAsset(terrainData, "Assets/" + path + name + ".asset");
+            // AssetDatabase.CreateAsset(terrainData, "Assets/" + path + name + ".asset");
         }
     }
 
