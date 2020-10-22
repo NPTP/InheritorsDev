@@ -7,12 +7,14 @@
 public class PlayerTerrainInteract : MonoBehaviour
 {
     public bool leavePaths = true;
+    public bool cutGrass = true;
     Transform playerTransform;
-    CharacterController characterController;
     Terrain t;
 
-    public int posX;
-    public int posZ;
+    public int texturePosX;
+    public int texturePosZ;
+    public int detailPosX;
+    public int detailPosZ;
     float[] textureValues;
     float[,,] alphaMap;
     bool[,] walkedMap; /* Keeps track of which terrain splat map coordinates have been walked on. */
@@ -24,7 +26,6 @@ public class PlayerTerrainInteract : MonoBehaviour
     void Start()
     {
         playerTransform = GetComponent<Transform>();
-        characterController = GetComponent<CharacterController>();
         t = GameObject.FindGameObjectWithTag("Terrain").GetComponent<Terrain>();
         numLayers = t.terrainData.alphamapLayers;
         playerSplatmapRadius = (int)trailSize / 2;
@@ -34,12 +35,13 @@ public class PlayerTerrainInteract : MonoBehaviour
 
     void Update()
     {
-        if (leavePaths) // && characterController.isGrounded
-        {
-            ConvertPosition(playerTransform.position);
-            CheckTexture();
+        CheckTexture();
+        ConvertPosition(playerTransform.position);
+
+        if (leavePaths) // && isGrounded - check this in the new player type
             ChangeTexture();
-        }
+        if (cutGrass) // && isGrounded - check this in the new player type
+            RemoveDetails();
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -75,66 +77,52 @@ public class PlayerTerrainInteract : MonoBehaviour
                         // Messing with the API's mark-dirty stuff may fuck up GPU stuff
                         if (k == 1)
                             remap[i, j, k] = 1f;
+                        else
+                            remap[i, j, k] = 0f;
                     }
                     // This line is causing crashes for some reason:
-                    // walkedMap[posX - playerSplatmapRadius + i, posZ - playerSplatmapRadius + j] = true;
+                    // walkedMap[texturePosX - playerSplatmapRadius + i, texturePosZ - playerSplatmapRadius + j] = true;
                 }
             }
         }
-        t.terrainData.SetAlphamaps(posX - playerSplatmapRadius, posZ - playerSplatmapRadius, remap);
+        t.terrainData.SetAlphamaps(texturePosX - playerSplatmapRadius, texturePosZ - playerSplatmapRadius, remap);
+    }
 
-        // Walking over detail layer and removing grass underfoot
-        // NOTE: Strange Unity shit afoot. This only seems to work if
-        // - Detail resolution per patch: 8
-        // - Detail resolution: 512
-        // And we happen to be on terrain size 100, if that matters.
-        int[,] details = new int[trailSize, trailSize];
-        for (int i = 0; i < trailSize; i++)
-            for (int j = 0; j < trailSize; j++)
+    void RemoveDetails()
+    {
+        int areaSize = trailSize;
+        int[,] details = new int[areaSize, areaSize];
+        for (int i = 0; i < areaSize; i++)
+            for (int j = 0; j < areaSize; j++)
                 details[i, j] = 0;
-        t.terrainData.SetDetailLayer(posX, posZ, 0, details);
+        t.terrainData.SetDetailLayer(detailPosX, detailPosZ, 0, details);
     }
 
     void ConvertPosition(Vector3 playerPosition)
     {
         Vector3 terrainPosition = playerPosition - t.transform.position;
-
         Vector3 mapPosition = new Vector3(
             terrainPosition.x / t.terrainData.size.x,
             0f,
             terrainPosition.z / t.terrainData.size.z
         );
 
-        float xCoord = mapPosition.x * t.terrainData.alphamapWidth;
-        float zCoord = mapPosition.z * t.terrainData.alphamapHeight;
+        texturePosX = (int)(mapPosition.x * t.terrainData.alphamapWidth);
+        texturePosZ = (int)(mapPosition.z * t.terrainData.alphamapHeight);
 
-        posX = (int)xCoord;
-        posZ = (int)zCoord;
+        detailPosX = (int)(mapPosition.x * t.terrainData.detailWidth);
+        detailPosZ = (int)(mapPosition.z * t.terrainData.detailHeight);
     }
 
-    // Stores the underfoot texture mix in textureValues, and
-    // saves the index of the most prominent texture of the bunch
-    // (so we know what we're mainly walking on).
+    // Stores the underfoot texture mix per layer in textureValues.
     void CheckTexture()
     {
-        alphaMap = t.terrainData.GetAlphamaps(posX, posZ, trailSize, trailSize);
-        float max = -1f;
+        alphaMap = t.terrainData.GetAlphamaps(texturePosX, texturePosZ, trailSize, trailSize);
 
         for (int i = 0; i < trailSize; i++)
-        {
             for (int j = 0; j < trailSize; j++)
-            {
                 for (int k = 0; k < numLayers; k++)
-                {
                     textureValues[k] = alphaMap[0, 0, k];
-                    if (textureValues[k] > max)
-                    {
-                        max = textureValues[k];
-                        foremostLayer = k;
-                    }
-                }
-            }
-        }
     }
 
     void InitializeWalkedMap()

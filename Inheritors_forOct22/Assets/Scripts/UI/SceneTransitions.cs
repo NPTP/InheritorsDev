@@ -12,16 +12,19 @@ public class SceneTransitions : MonoBehaviour
     // Loads the next scene in the build order.
     public void LoadNextScene()
     {
-        int activeSceneBuildIndex = SceneManager.GetActiveScene().buildIndex;
-        if (activeSceneBuildIndex + 1 < SceneManager.sceneCountInBuildSettings)
-            StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex + 1));
-        else
-            Debug.Log("SceneLoader: Reached end of build order, no scene with greater build index.");
+        StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex + 1));
     }
 
+    // Loads scene by string name
     public void LoadSceneByName(string name)
     {
         SceneManager.LoadScene(name);
+    }
+
+    // Loads scene by int build index
+    public void LoadSceneByIndex(int index)
+    {
+        StartCoroutine(LoadScene(index));
     }
 
     IEnumerator LoadScene(int levelIndex)

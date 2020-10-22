@@ -7,6 +7,8 @@ TagManager:
   - FogOfWar
   - Terrain
   - TaskText
+  - Pickup
+  - Putdown
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - 
   - PostProcessing
   - FogVisibility
-  - 
+  - Debug
   - 
   - 
   - 

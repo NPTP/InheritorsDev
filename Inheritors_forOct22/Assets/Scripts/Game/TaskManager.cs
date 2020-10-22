@@ -32,18 +32,21 @@ public class TaskManager : MonoBehaviour
         {
             this.currentText = inactiveColorTag + this.number.ToString() + ". " + this.originalText + endColorTag + lineBreak;
             this.active = false;
+            this.completed = false;
         }
 
         public void Active()
         {
             this.currentText = activeColorTag + this.number.ToString() + ". " + "<b>" + this.originalText + "</b>" + endColorTag + lineBreak;
             this.active = true;
+            this.completed = false;
         }
 
-        public void Completed()
+        public void Complete()
         {
             string strikethroughText = StrikeThrough(this.number.ToString() + ". " + this.originalText);
             this.currentText = completedColorTag + strikethroughText + endColorTag + lineBreak;
+            this.active = false;
             this.completed = true;
         }
 
@@ -59,7 +62,6 @@ public class TaskManager : MonoBehaviour
 
         public void Reset()
         {
-            this.completed = false;
             Inactive();
         }
     }
@@ -68,81 +70,62 @@ public class TaskManager : MonoBehaviour
     List<Task> taskList;
     Task activeTask;
     Text text;
+    public bool allTasksCompleted = false;
 
-    void Start()
+    void Awake()
     {
         text = GameObject.FindGameObjectWithTag("TaskText").GetComponent<Text>();
-        // TaskManager should get tasks from the DayManager which pulls
-        // from some ScriptableObject full of them or something.
-        // Then TaskManager updates the tasks for all interested parties:
-        // UI text, in-game shiet, etc.
-
-        // For now, we'll just manually put some tasks in.
-
-        Task tutorialTask1 = new Task(1, "Get wood for the fire");
-        Task tutorialTask2 = new Task(2, "Put wood on the fire");
-        Task tutorialTask3 = new Task(3, "Listen to mama's story");
-
         taskList = new List<Task>();
-        taskList.Add(tutorialTask1);
-        taskList.Add(tutorialTask2);
-        taskList.Add(tutorialTask3);
-
-        activeTask = taskList[0];
-
         ResetAllTasks();
     }
 
-    void Update()
+    public void AddTask(string taskText)
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ResetAllTasks();
-            SetActiveTask(taskList[0]);
-            UpdateTasks();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ResetAllTasks();
-            SetActiveTask(taskList[1]);
-            UpdateTasks();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ResetAllTasks();
-            SetActiveTask(taskList[2]);
-            UpdateTasks();
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            CompleteTask(activeTask);
-        }
-    }
-
-    void SetActiveTask(Task task)
-    {
-        task.Active();
-        activeTask = task;
-    }
-
-    void CompleteTask(Task task)
-    {
-        task.Completed();
-        if (task.number < taskList.Count)
-            SetActiveTask(taskList[task.number]);
-        else
-            AllTasksCompleted();
+        Task newTask = new Task(taskList.Count + 1, taskText);
+        taskList.Add(newTask);
         UpdateTasks();
     }
 
-    void AllTasksCompleted()
+    public void SetActiveTask(int taskNum)
     {
+        foreach (Task t in taskList)
+        {
+            if (t.active)
+                t.Inactive();
+        }
+        Task task = taskList[taskNum - 1];
+        task.Active();
+        activeTask = task;
+        UpdateTasks();
+    }
+
+    public void CompleteTask(int taskNum)
+    {
+        Task task = taskList[taskNum - 1];
+        task.Complete();
+
+        if (!CheckAllTasksCompleted())
+        {
+            if (task.number < taskList.Count)
+                SetActiveTask(taskList[task.number].number);
+        }
+
+        UpdateTasks();
+    }
+
+    private bool CheckAllTasksCompleted()
+    {
+        foreach (Task t in taskList)
+            if (!t.completed)
+                return false;
+
         Debug.Log("All the day's tasks have been completed!");
+        allTasksCompleted = true;
+        return true;
         // More to come here later
     }
 
-    void ResetAllTasks()
+    public void ResetAllTasks()
     {
         foreach (Task task in taskList)
             task.Reset();
