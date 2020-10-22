@@ -3,16 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class MenuButtonScripts : MonoBehaviour
 {
-    SceneTransitions sceneTransitions;
+    SceneLoader sceneLoader;
 
     void Start()
     {
-        sceneTransitions = GameObject.Find("SceneTransitions").GetComponent<SceneTransitions>();
+        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
     }
 
     public void BeginGame()
     {
-        sceneTransitions.LoadNextScene();
+        sceneLoader.LoadNextScene();
     }
 
     public void ExitGame()

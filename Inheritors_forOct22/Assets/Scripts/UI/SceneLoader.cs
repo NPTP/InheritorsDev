@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneTransitions : MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
     public Animator dipToBlackTransition;
     public float dipToBlackTransitionTime = 1.5f;

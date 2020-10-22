@@ -1826,7 +1826,7 @@ PrefabInstance:
     - target: {fileID: 2330606513318535176, guid: 2e7417d46eccbee49be8f6e0f0df6a93,
         type: 3}
       propertyPath: m_Name
-      value: SceneTransitions
+      value: SceneLoader
       objectReference: {fileID: 0}
     - target: {fileID: 2330606513318535178, guid: 2e7417d46eccbee49be8f6e0f0df6a93,
         type: 3}

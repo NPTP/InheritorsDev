@@ -2,14 +2,14 @@
 
 public class TutorialManager : MonoBehaviour
 {
-    SceneTransitions sceneTransitions;
+    SceneLoader sceneLoader;
     TaskManager taskManager;
 
     int debugTasks = 1; // Have to start at one because we subtract 1 in the task manager
 
     void Start()
     {
-        sceneTransitions = GameObject.Find("SceneTransitions").GetComponent<SceneTransitions>();
+        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         taskManager = GameObject.Find("TaskManager").GetComponent<TaskManager>();
 
         string[] tutorialTasks = {
@@ -26,7 +26,7 @@ public class TutorialManager : MonoBehaviour
     void Update()
     {
         if (taskManager.allTasksCompleted)
-            sceneTransitions.LoadSceneByIndex(0); // Go back to menu
+            sceneLoader.LoadSceneByIndex(0); // Go back to menu
 
         if (Input.GetKeyDown(KeyCode.C))
         {

@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// using UnityEditor;
 using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-public class TerrainDuplicator : MonoBehaviour
+public class TerrainCopyTest : MonoBehaviour
 {
     public Terrain originalTerrain; // The original we're copying
     TerrainData origData;
     public Terrain copyTerrain; // The template we want to copy onto
-    public bool tryToMakeAsset = false; // Write a new terrain data to file on CreateTerrain?
+    public bool tryToMakeAssetInEditor = false; // Write a new terrain data to file on CreateTerrain?
 
     void Start()
     {
@@ -89,11 +91,13 @@ public class TerrainDuplicator : MonoBehaviour
 
         terrainData.SetHeights(0, 0, origData.GetHeights(0, 0, origData.heightmapResolution, origData.heightmapResolution));
 
-        if (tryToMakeAsset)
+#if UNITY_EDITOR
+        if (tryToMakeAssetInEditor)
         {
             string path = "Scenes/Tests/ResetTerrainTest/";
-            // AssetDatabase.CreateAsset(terrainData, "Assets/" + path + name + ".asset");
+            AssetDatabase.CreateAsset(terrainData, "Assets/" + path + name + ".asset");
         }
+#endif
     }
 
 }

@@ -311,7 +311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalTerrain: {fileID: 1530361615}
   copyTerrain: {fileID: 1524084796}
-  tryToMakeAsset: 0
+  tryToMakeAssetInEditor: 0
 --- !u!4 &267301658
 Transform:
   m_ObjectHideFlags: 0
