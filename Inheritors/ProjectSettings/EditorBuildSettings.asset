@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: d686b78d84d0393468fda9f4cbd07fa4
+  - enabled: 1
+    path: Assets/Scenes/TutorialLevel.unity
+    guid: a9ab2bd88ccf86344935a16cc5099f0c
+  - enabled: 1
+    path: Assets/Scenes/Tests/ResetTerrainTest/ResetTerrainTest.unity
+    guid: a67ab423b6cb74042854d3869304e94b
+  - enabled: 1
+    path: Assets/Scenes/Tests/TerrainAndUITest/TerrainAndUITest.unity
+    guid: def42f9d3e223d743b4beccc65f8ef32
+  - enabled: 1
+    path: Assets/Scenes/Tests/FogOfWarTest/FogOfWarTest.unity
+    guid: 7e3863350fc2cd14cb9d0e437e91eb9a
+  m_configObjects: {}
