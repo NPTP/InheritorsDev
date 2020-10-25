@@ -11,37 +11,52 @@ public class PlayerTerrainInteract : MonoBehaviour
     Transform playerTransform;
     Terrain t;
 
-    public int texturePosX;
     public int texturePosZ;
-    public int detailPosX;
+    public int texturePosX;
     public int detailPosZ;
-    float[] textureValues;
+    public int detailPosX;
+
+    float[] texturesUnderfoot;
     float[,,] alphaMap;
-    bool[,] walkedMap; /* Keeps track of which terrain splat map coordinates have been walked on. */
     int numLayers;
     public int trailSize = 3;
-    private int playerSplatmapRadius;
-    int foremostLayer = 0;
+    private int playerSplatmapSize;
+
+    bool[,] walkedMap;
+    float[,,] debugWalked;
 
     void Start()
     {
         playerTransform = GetComponent<Transform>();
-        t = GameObject.FindGameObjectWithTag("Terrain").GetComponent<Terrain>();
+        t = GameObject.Find("Terrain").GetComponent<Terrain>();
         numLayers = t.terrainData.alphamapLayers;
-        playerSplatmapRadius = (int)trailSize / 2;
-        textureValues = new float[numLayers];
+        playerSplatmapSize = (int)trailSize / 2;
+        texturesUnderfoot = new float[numLayers];
+
+        // Splat map width = splat map height. Irrelevant distinction
+        int width = t.terrainData.alphamapWidth;
+        int height = t.terrainData.alphamapHeight;
+        debugWalked = new float[width, height, numLayers];
         InitializeWalkedMap();
+        InitializeDebugWalked();
+
+        Debug.Log(t.terrainData.alphamapWidth);
+        Debug.Log(t.terrainData.alphamapHeight);
     }
 
     void Update()
     {
-        CheckTexture();
         ConvertPosition(playerTransform.position);
+        CheckTextureUnderfoot();
 
-        if (leavePaths) // && isGrounded - check this in the new player type
-            ChangeTexture();
-        if (cutGrass) // && isGrounded - check this in the new player type
-            RemoveDetails();
+        if (true) // TODO: check a new function IsTouchingTerrain() here (simple raycast check?)
+        {
+            if (leavePaths)
+                ChangeTexture();
+
+            if (cutGrass)
+                RemoveDetails();
+        }
 
         // TakeDebugInputs();
     }
@@ -49,6 +64,16 @@ public class PlayerTerrainInteract : MonoBehaviour
     // Use for testing terrain modifications in debug.
     void TakeDebugInputs()
     {
+        // Test walked map
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            for (int i = 0; i < t.terrainData.detailWidth; i++)
+                for (int j = 0; j < t.terrainData.detailHeight; j++)
+                    if (walkedMap[i, j])
+                        debugWalked[i, j, 0] = 1f;
+            t.terrainData.SetAlphamaps(0, 0, debugWalked);
+        }
+        // Remove all details layer 0
         if (Input.GetKeyDown(KeyCode.R))
         {
             int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];
@@ -57,6 +82,7 @@ public class PlayerTerrainInteract : MonoBehaviour
                     details[i, j] = 0;
             t.terrainData.SetDetailLayer(0, 0, 0, details);
         }
+        // Fill terrain with details layer 0
         else if (Input.GetKeyDown(KeyCode.T))
         {
             int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];
@@ -74,24 +100,18 @@ public class PlayerTerrainInteract : MonoBehaviour
         {
             for (int j = 0; j < trailSize; j++)
             {
-                if (!walkedMap[i, j])
+                for (int k = 0; k < numLayers; k++)
                 {
-                    for (int k = 0; k < numLayers; k++)
-                    {
-                        // TODO: find way to mark dirty so this can only happen once to each section.
-                        // May require creating a duplicate array of 1/0 bools same size as terrain splatmap.
-                        // Messing with the API's mark-dirty stuff may fuck up GPU stuff
-                        if (k == 1)
-                            remap[i, j, k] = 1f;
-                        else
-                            remap[i, j, k] = 0f;
-                    }
-                    // This line is causing crashes for some reason:
-                    // walkedMap[texturePosX - playerSplatmapRadius + i, texturePosZ - playerSplatmapRadius + j] = true;
+                    if (k == 1)
+                        remap[i, j, k] = 1f;
+                    else
+                        remap[i, j, k] = 0f;
                 }
+                // Record that we have walked here
+                walkedMap[texturePosZ - playerSplatmapSize + i, texturePosX - playerSplatmapSize + j] = true;
             }
         }
-        t.terrainData.SetAlphamaps(texturePosX - playerSplatmapRadius, texturePosZ - playerSplatmapRadius, remap);
+        t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
     }
 
     void RemoveDetails()
@@ -113,22 +133,19 @@ public class PlayerTerrainInteract : MonoBehaviour
             terrainPosition.z / t.terrainData.size.z
         );
 
-        texturePosX = (int)(mapPosition.x * t.terrainData.alphamapWidth);
         texturePosZ = (int)(mapPosition.z * t.terrainData.alphamapHeight);
+        texturePosX = (int)(mapPosition.x * t.terrainData.alphamapWidth);
 
         detailPosX = (int)(mapPosition.x * t.terrainData.detailWidth);
         detailPosZ = (int)(mapPosition.z * t.terrainData.detailHeight);
     }
 
-    // Stores the underfoot texture mix per layer in textureValues.
-    void CheckTexture()
+    // Stores the underfoot texture mix per layer in texturesUnderfoot.
+    void CheckTextureUnderfoot()
     {
-        alphaMap = t.terrainData.GetAlphamaps(texturePosX, texturePosZ, trailSize, trailSize);
-
-        for (int i = 0; i < trailSize; i++)
-            for (int j = 0; j < trailSize; j++)
-                for (int k = 0; k < numLayers; k++)
-                    textureValues[k] = alphaMap[0, 0, k];
+        alphaMap = t.terrainData.GetAlphamaps(texturePosX, texturePosZ, 1, 1);
+        for (int k = 0; k < numLayers; k++)
+            texturesUnderfoot[k] = alphaMap[0, 0, k];
     }
 
     void InitializeWalkedMap()
@@ -139,5 +156,18 @@ public class PlayerTerrainInteract : MonoBehaviour
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
                 walkedMap[i, j] = false;
+    }
+
+    void InitializeDebugWalked()
+    {
+        int width = t.terrainData.alphamapWidth;
+        int height = t.terrainData.alphamapHeight;
+        float[,,] origMaps = t.terrainData.GetAlphamaps(0, 0, width, height);
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                for (int k = 0; k < numLayers; k++)
+                    debugWalked[i, j, k] = 0f;
+
+        t.terrainData.SetAlphamaps(0, 0, debugWalked);
     }
 }
