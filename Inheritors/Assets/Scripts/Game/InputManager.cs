@@ -1,45 +1,118 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-// Abstract all inputs with this input manager class.
-// This should be the only guy listening for input!
+// Abstracts inputs and sends events on input. Runs before Default Time in the script execution order.
+// Currently supporting PC keyboard & X360 controller only.
+// TODO: PC bindings must be fixed up via project settings input manager.
 public class InputManager : MonoBehaviour
 {
+    public event EventHandler<ButtonArgs> OnButtonDown;
+    public class ButtonArgs : EventArgs
+    {
+        public int buttonCode;
+    }
+
+    // Button codes used for button down/up events.
+    // Note that not all buttons are mapped to codes as we may not need them.
+    public static int DPAD_LEFT = 0;
+    public static int DPAD_RIGHT = 1;
+    public static int DPAD_DOWN = 2;
+    public static int DPAD_UP = 3;
+    public static int BACK = 4;
+    public static int START = 5;
+    public static int A = 6;
+    public static int B = 7;
+    public static int X = 8;
+    public static int Y = 9;
+
+    public float leftStickHorizontal = 0;
+    public float leftStickVertical = 0;
+    public float rightStickHorizontal = 0;
+    public float rightStickVertical = 0;
+
     void Update()
     {
-        // Middle buttons
-        if (Input.GetButtonDown("Start"))   Debug.Log("Start");
-        if (Input.GetButtonDown("Back"))    Debug.Log("Back");
+        /* Axes-based inputs */
+        GetJoystickAxes();
+        GetDPad();
+        // GetTriggers();
 
-        // Right side buttons
-        if (Input.GetButtonDown("A"))       Debug.Log("A");
-        if (Input.GetButtonDown("B"))       Debug.Log("B");
-        if (Input.GetButtonDown("X"))       Debug.Log("X");
-        if (Input.GetButtonDown("Y"))       Debug.Log("Y");
+        /* Button-based inputs */
+        GetMiddleButtons();
+        GetRightSidebuttons();
+        // GetJoystickButtons();
+        // GetBumpers();
+    }
 
-        // Left stick
-        if (Input.GetAxis("LeftStickHorizontal") != 0)  Debug.Log("Left Stick Horizontal axis");
-        if (Input.GetAxis("LeftStickVertical") != 0)    Debug.Log("Left Stick Vertical axis");
+    void GetJoystickAxes()
+    {
+        leftStickHorizontal = Input.GetAxis("LeftStickHorizontal");
+        leftStickVertical = Input.GetAxis("LeftStickVertical");
 
-        // Right stick
-        if (Input.GetAxis("RightStickHorizontal") != 0) Debug.Log("Right Stick Horizontal axis");
-        if (Input.GetAxis("RightStickVertical") != 0)   Debug.Log("Right Stick Vertical axis");
+        rightStickHorizontal = Input.GetAxis("RightStickHorizontal");
+        rightStickVertical = Input.GetAxis("RightStickVertical");
+    }
 
-        // Stick clicks
-        if (Input.GetButtonDown("LeftStickClick"))  Debug.Log("LeftStickClick");
-        if (Input.GetButtonDown("RightStickClick")) Debug.Log("RightStickClick");
+    void GetDPad()
+    {
+        // Horizontal is -left, +right.
+        float h = Input.GetAxis("DPadHorizontal");
+        // Vertical is -down, +up.
+        float v = Input.GetAxis("DPadVertical");
 
-        // Triggers. Each goes from 0 -> 1.
-        if (Input.GetAxis("LeftTrigger") > 0)   Debug.Log("Left Trigger: " + Input.GetAxis("LeftTrigger"));
-        if (Input.GetAxis("RightTrigger") > 0)  Debug.Log("Right Trigger: " + Input.GetAxis("RightTrigger"));
+        if (h < 0)
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = DPAD_LEFT });
+        if (h > 0)
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = DPAD_RIGHT });
+        if (v < 0)
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = DPAD_DOWN });
+        if (v > 0)
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = DPAD_UP });
+    }
 
-        // DPad. +up/+right, -down/-left.
-        if (Input.GetAxis("DPadHorizontal") != 0)    Debug.Log("DPadHorizontal: " + Input.GetAxis("DPadHorizontal"));
-        if (Input.GetAxis("DPadVertical") != 0)      Debug.Log("DPadVertical: " + Input.GetAxis("DPadVertical"));
+    void GetMiddleButtons()
+    {
+        if (Input.GetButtonDown("Start"))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = START });
+        if (Input.GetButtonDown("Back"))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = BACK });
+    }
 
-        // Bumpers
-        if (Input.GetButtonDown("LeftBumper"))  Debug.Log("LeftBumper");
-        if (Input.GetButtonDown("RightBumper")) Debug.Log("RightBumper");
+    void GetRightSidebuttons()
+    {
+        if (Input.GetButtonDown("A"))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = A });
+        if (Input.GetButtonDown("B"))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = B });
+        if (Input.GetButtonDown("X"))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = X });
+        if (Input.GetButtonDown("Y"))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = Y });
+    }
+
+
+    void GetJoystickButtons()
+    {
+        if (Input.GetButtonDown("LeftStickClick"))
+            return;
+        if (Input.GetButtonDown("RightStickClick"))
+            return;
+    }
+
+    void GetBumpers()
+    {
+        if (Input.GetButtonDown("LeftBumper"))
+            return;
+        if (Input.GetButtonDown("RightBumper"))
+            return;
+    }
+
+    void GetTriggers()
+    {
+        // Each goes from 0 -> 1.
+        if (Input.GetAxis("LeftTrigger") > 0)
+            return;
+        if (Input.GetAxis("RightTrigger") > 0)
+            return;
     }
 }

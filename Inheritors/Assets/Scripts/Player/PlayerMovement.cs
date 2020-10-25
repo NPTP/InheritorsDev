@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
         Direct
     }
 
+    private InputManager inputManager;
+
     [SerializeField] private float m_moveSpeed = 2;
     [SerializeField] private float m_turnSpeed = 200;
     [SerializeField] private float m_jumpForce = 4;
@@ -49,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!m_animator) { gameObject.GetComponent<Animator>(); }
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
+        inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -109,9 +112,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         // if (!m_jumpInput && Input.GetKey(KeyCode.Space))
-        // {
         //     m_jumpInput = true;
-        // }
     }
 
     private void FixedUpdate()
@@ -141,8 +142,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isInteracting) return;
 
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
+        float v = inputManager.leftStickVertical; // Input.GetAxis("Vertical");
+        float h = inputManager.leftStickHorizontal; // Input.GetAxis("Horizontal");
 
         bool walk = Input.GetKey(KeyCode.LeftShift);
 
@@ -171,8 +172,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isInteracting) return;
 
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
+        float v = inputManager.leftStickVertical; // Input.GetAxis("Vertical");
+        float h = inputManager.leftStickHorizontal; // Input.GetAxis("Horizontal");
 
         Transform camera = Camera.main.transform;
 

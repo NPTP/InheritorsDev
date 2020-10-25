@@ -43,6 +43,12 @@ public class PlayerTerrainInteract : MonoBehaviour
         if (cutGrass) // && isGrounded - check this in the new player type
             RemoveDetails();
 
+        // TakeDebugInputs();
+    }
+
+    // Use for testing terrain modifications in debug.
+    void TakeDebugInputs()
+    {
         if (Input.GetKeyDown(KeyCode.R))
         {
             int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];

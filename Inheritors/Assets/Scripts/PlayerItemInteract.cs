@@ -31,7 +31,7 @@ public class PlayerItemInteract : MonoBehaviour
             {
                 child.gameObject.SetActive(true);
             }
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButtonDown("A"))
             {
                 carryingItem = true;
                 inPickupRange = false;
@@ -45,7 +45,7 @@ public class PlayerItemInteract : MonoBehaviour
             {
                 child.gameObject.SetActive(true);
             }
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButtonDown("A"))
             {
                 putdownTrigger.GetPutdown();
                 carryingItem = false;

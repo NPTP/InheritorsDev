@@ -5,7 +5,7 @@ public class ReturnToMenuEsc : MonoBehaviour
 {
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Back"))
         {
             SceneManager.LoadScene(0);
         }
