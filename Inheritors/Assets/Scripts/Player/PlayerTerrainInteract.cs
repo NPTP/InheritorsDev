@@ -39,9 +39,6 @@ public class PlayerTerrainInteract : MonoBehaviour
         debugWalked = new float[width, height, numLayers];
         InitializeWalkedMap();
         InitializeDebugWalked();
-
-        Debug.Log(t.terrainData.alphamapWidth);
-        Debug.Log(t.terrainData.alphamapHeight);
     }
 
     void Update()

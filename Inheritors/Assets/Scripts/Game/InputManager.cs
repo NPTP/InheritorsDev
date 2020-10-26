@@ -25,23 +25,42 @@ public class InputManager : MonoBehaviour
     public static int X = 8;
     public static int Y = 9;
 
+    // Joystick axes storage.
     public float leftStickHorizontal = 0;
     public float leftStickVertical = 0;
     public float rightStickHorizontal = 0;
     public float rightStickVertical = 0;
 
+    // Condition for blocking input.
+    bool allowInput = true;
+
     void Update()
     {
-        /* Axes-based inputs */
-        GetJoystickAxes();
-        GetDPad();
-        // GetTriggers();
+        if (allowInput)
+        {
+            /* Axis-based inputs */
+            GetJoystickAxes();
+            GetDPad();
 
-        /* Button-based inputs */
-        GetMiddleButtons();
-        GetRightSidebuttons();
-        // GetJoystickButtons();
-        // GetBumpers();
+            /* Button-based inputs */
+            GetMiddleButtons();
+            GetRightSidebuttons();
+
+            /* Currently unused inputs. */
+            // GetTriggers();
+            // GetJoystickButtons();
+            // GetBumpers();
+        }
+    }
+
+    public void BlockInput()
+    {
+        allowInput = false;
+    }
+
+    public void AllowInput()
+    {
+        allowInput = true;
     }
 
     void GetJoystickAxes()
@@ -60,6 +79,7 @@ public class InputManager : MonoBehaviour
         // Vertical is -down, +up.
         float v = Input.GetAxis("DPadVertical");
 
+        // We don't send the axis values, just digital outputs.
         if (h < 0)
             OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = DPAD_LEFT });
         if (h > 0)
