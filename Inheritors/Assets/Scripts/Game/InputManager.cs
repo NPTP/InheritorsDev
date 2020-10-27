@@ -6,6 +6,8 @@ using UnityEngine;
 // TODO: PC bindings must be fixed up via project settings input manager.
 public class InputManager : MonoBehaviour
 {
+    DayManager dayManager;
+
     public event EventHandler<ButtonArgs> OnButtonDown;
     public class ButtonArgs : EventArgs
     {
@@ -36,6 +38,12 @@ public class InputManager : MonoBehaviour
     // TODO: decide if these are temporary or not (state manager would replace them)
     bool dialogInputsOnly = false;
 
+    void Start()
+    {
+        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
+        dayManager.OnState += HandleState;
+    }
+
     void Update()
     {
         if (allowInput)
@@ -63,6 +71,19 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private void HandleState(object sender, DayManager.StateArgs args)
+    {
+        if (args.state == (int)DayManager.State.Normal)
+        {
+            AllowAllInputs();
+        }
+        else if (args.state == (int)DayManager.State.Dialog)
+        {
+            ZeroAxes();
+            DialogInputsOnly();
+        }
+    }
+
     public void BlockInput()
     {
         allowInput = false;
@@ -79,6 +100,7 @@ public class InputManager : MonoBehaviour
         dialogInputsOnly = true;
     }
 
+    // Resets booleans to allow all inputs of any kind.
     public void AllowAllInputs()
     {
         allowInput = true;
@@ -92,6 +114,14 @@ public class InputManager : MonoBehaviour
 
         rightStickHorizontal = Input.GetAxis("RightStickHorizontal");
         rightStickVertical = Input.GetAxis("RightStickVertical");
+    }
+
+    public void ZeroAxes()
+    {
+        leftStickHorizontal = 0f;
+        leftStickVertical = 0f;
+        rightStickHorizontal = 0f;
+        rightStickVertical = 0f;
     }
 
     void GetDPad()

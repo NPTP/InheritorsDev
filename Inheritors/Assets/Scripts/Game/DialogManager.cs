@@ -5,20 +5,14 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 
-// The dialog manager will handle all dialog moments/gameplay and send dialog events to the UI
-// to be performed. It assumes the existence of the other management systems (Day, Input)
-// and of course the dialog box UI itself, and is coupled only with them.
-
-// Gts told by Day when to perform a certain dialog, and what the dialog is.
+// The dialog manager handles all dialog moments and performs dialog "playback" on the UI.
+// It assumes the existence of DayManager and InputManager and of course the dialog box
+// UI element itself, and is coupled only with these three things.
+// Gets told by events from DayManager when, how & what to playback in a dialog.
 public class DialogManager : MonoBehaviour
 {
     DayManager dayManager;
     InputManager inputManager;
-    // TODO: Make the StateManager a reality. This would tell us: are we picking something up?
-    // are we in a dialog? Are we in a cutscene? Are we in normal movement? etc etc
-    // Then we actually don't need inputManager to tell us about blocked inputs or whatever,
-    // Just to get input events.
-    // StateManager stateManager;
 
     GameObject dialogBox;
     RectTransform boxRectTransform;
@@ -27,6 +21,11 @@ public class DialogManager : MonoBehaviour
     float dialogBoxYPosition = 192f;
 
     string[] lines;
+    // TODO: use these presets for the dialog arg of speed
+    float textSpeedFast = 0.01f;
+    float textSpeedMed = 0.05f;
+    float textSpeedSlow = 0.1f;
+    bool dialogNext = false;
 
     void Start()
     {
@@ -34,69 +33,64 @@ public class DialogManager : MonoBehaviour
         boxRectTransform = dialogBox.GetComponent<RectTransform>();
         dialogText = GameObject.Find("DialogText").GetComponent<TMP_Text>();
         dialogPrompt = GameObject.Find("DialogPrompt").GetComponent<Image>();
-        string[] l = {
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-            "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        };
-        lines = l;
 
+        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
+        dayManager.OnDialog += HandleDialogEvent;
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        if (args.buttonCode == 9)
+        int state = dayManager.state;
+        if (args.buttonCode == InputManager.A)
         {
-            StartCoroutine(NewDialog());
+            if (state == (int)DayManager.State.Normal)
+                Debug.Log("Pressed A in Normal state");
+            else if (state == (int)DayManager.State.Dialog)
+                dialogNext = true;
         }
     }
 
-    // TODO: implement state management once you have it
-    IEnumerator NewDialog()
+    private void HandleDialogEvent(object sender, DayManager.DialogArgs args)
+    {
+        // TODO: either here in the args or in daymanager, have an option to make player automatically turn to face the subject of dialog
+        lines = args.lines;
+        StartCoroutine(DialogPlay());
+    }
+
+    IEnumerator DialogPlay()
     {
         // 1. Set up, bring dialog box up to screen
-        inputManager.BlockInput();
+        // TODO: make char face the thing
         dialogText.maxVisibleCharacters = 0;
-        // TODO: Set prompt alpha to 0
+        dialogPrompt.color = ChangedAlpha(dialogPrompt.color, 0);
         Tween t1 = TweenBoxUp();
-        yield return new WaitUntil(() => t1 == null || !t1.IsPlaying());
+        yield return new WaitUntil(() => t1 == null || t1.IsPlaying());
 
         // 2. Dialog display and input to go through it.
+        // TODO: support the speed from the dialog args (changes the waitforseconds);
         inputManager.DialogInputsOnly();
         for (int line = 0; line < lines.Length; line++)
         {
-            // TODO: Set prompt alpha to 0
             dialogText.text = lines[line];
             for (int i = 0; i <= dialogText.text.Length; i++)
             {
-                if (Input.GetButtonDown("A")) // TODO: hard to catch the actual frame here because of the WaitForSeconds between input chances
-                {
-                    dialogText.maxVisibleCharacters = dialogText.text.Length;
-                    yield return null; // Must put a frame between inputs
-                    break;
-                }
                 dialogText.maxVisibleCharacters = i;
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(textSpeedFast);
             }
             dialogPrompt.enabled = true;
-            // TODO: Tween prompt alpha to 1
-            yield return new WaitUntil(() => Input.GetButtonDown("A"));
+            Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, ChangedAlpha(dialogPrompt.color, 1f), .25f);
+            dialogNext = false;
+            yield return new WaitUntil(() => dialogNext);
             yield return null; // Must put a frame between inputs
+            if (t2 != null) t2.Kill();
+            dialogPrompt.color = ChangedAlpha(dialogPrompt.color, 0f);
         }
 
         // 3. Finish, deconstruct, send dialog box back down
-        inputManager.AllowAllInputs();
-        Tween t2 = TweenBoxDown();
-    }
-
-    Color ReturnColorWithNewAlpha(Color color, float alpha)
-    {
-        Color c = color;
-        c.a = alpha;
-        return c;
+        dayManager.SetState(DayManager.State.Normal);
+        TweenBoxDown();
     }
 
     Tween TweenBoxUp()
@@ -117,5 +111,14 @@ public class DialogManager : MonoBehaviour
             new Vector3(0f, -dialogBoxYPosition, 0f),
             1f
         );
+    }
+
+    // Handy helper which returns the same color, but with alpha set to input parameter.
+    // TODO: consider moving this and other helper functions like it to a static generalized helper class.
+    Color ChangedAlpha(Color color, float alpha)
+    {
+        Color c = color;
+        c.a = alpha;
+        return c;
     }
 }
