@@ -71,13 +71,14 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    // TODO: consider setting state in here and that defines your input categories above, like a state machine
     private void HandleState(object sender, DayManager.StateArgs args)
     {
-        if (args.state == (int)DayManager.State.Normal)
+        if (args.state == DayManager.State.Normal)
         {
             AllowAllInputs();
         }
-        else if (args.state == (int)DayManager.State.Dialog)
+        else if (args.state == DayManager.State.Dialog)
         {
             ZeroAxes();
             DialogInputsOnly();

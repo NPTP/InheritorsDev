@@ -6,7 +6,7 @@ using UnityEngine;
 // It also handles the current "state".
 public class DayManager : MonoBehaviour
 {
-    public int state;
+    public DayManager.State state;
     public enum State
     {
         Normal,
@@ -17,13 +17,14 @@ public class DayManager : MonoBehaviour
     public event EventHandler<StateArgs> OnState;
     public class StateArgs : EventArgs
     {
-        public int state;
+        public DayManager.State state;
     }
 
     public event EventHandler<DialogArgs> OnDialog;
     public class DialogArgs : EventArgs
     {
         public string[] lines;
+        public int speed;
     }
 
     public int dayNumber = 0; // We'll get this from the data for the day?
@@ -36,7 +37,7 @@ public class DayManager : MonoBehaviour
 
     void Start()
     {
-        state = (int)State.Normal;
+        state = State.Normal;
         sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         dialogManager = GameObject.Find("DialogManager").GetComponent<DialogManager>();
@@ -78,22 +79,24 @@ public class DayManager : MonoBehaviour
 
     void EnterDialog()
     {
-        SetState(State.Dialog);
-        // TODO: have a way for the day or other object to pass this dialog in naturally, for now hardcoded to test
-        string[] l = {
+        if (state != State.Dialog)
+        {
+            SetState(State.Dialog);
+            // TODO: have a way for the day or other object to pass this dialog in naturally, for now hardcoded to test
+            string[] l = {
             "Lorem <b>ipsum</b> dolor sit amet, consectetur .  .  .  .  .  .  elit, sed do eiusmod tempor incididunt ut labore  .  .  .  .",
             "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
             "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         };
-        // TODO: send a dialog speed as well.
-        OnDialog?.Invoke(this, new DialogArgs { lines = l });
+            OnDialog?.Invoke(this, new DialogArgs { lines = l, speed = 2 });
+        }
     }
 
     public void SetState(DayManager.State newState)
     {
-        this.state = (int)newState;
-        OnState?.Invoke(this, new StateArgs { state = (int)newState });
+        this.state = newState;
+        OnState?.Invoke(this, new StateArgs { state = newState });
     }
 
     void CompleteTask(int taskNum)

@@ -15,22 +15,25 @@ public class DialogManager : MonoBehaviour
     InputManager inputManager;
 
     GameObject dialogBox;
-    RectTransform boxRectTransform;
+    CanvasGroup canvasGroup;
+    RectTransform rectTransform;
     TMP_Text dialogText;
     Image dialogPrompt;
     float dialogBoxYPosition = 192f;
 
-    string[] lines;
-    // TODO: use these presets for the dialog arg of speed
-    float textSpeedFast = 0.01f;
-    float textSpeedMed = 0.05f;
-    float textSpeedSlow = 0.1f;
     bool dialogNext = false;
+    string[] lines;
+    float textSpeed = 0;
+    float[] speeds;
+    float slow = 0.1f;
+    float med = 0.05f;
+    float fast = 0.01f;
 
     void Start()
     {
         dialogBox = GameObject.FindGameObjectWithTag("DialogBox");
-        boxRectTransform = dialogBox.GetComponent<RectTransform>();
+        canvasGroup = dialogBox.GetComponent<CanvasGroup>();
+        rectTransform = dialogBox.GetComponent<RectTransform>();
         dialogText = GameObject.Find("DialogText").GetComponent<TMP_Text>();
         dialogPrompt = GameObject.Find("DialogPrompt").GetComponent<Image>();
 
@@ -38,16 +41,18 @@ public class DialogManager : MonoBehaviour
         dayManager.OnDialog += HandleDialogEvent;
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
+
+        speeds = new float[] { slow, med, fast };
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        int state = dayManager.state;
+        DayManager.State state = dayManager.state;
         if (args.buttonCode == InputManager.A)
         {
-            if (state == (int)DayManager.State.Normal)
+            if (state == DayManager.State.Normal)
                 Debug.Log("Pressed A in Normal state");
-            else if (state == (int)DayManager.State.Dialog)
+            else if (state == DayManager.State.Dialog)
                 dialogNext = true;
         }
     }
@@ -55,21 +60,24 @@ public class DialogManager : MonoBehaviour
     private void HandleDialogEvent(object sender, DayManager.DialogArgs args)
     {
         // TODO: either here in the args or in daymanager, have an option to make player automatically turn to face the subject of dialog
+        // TODO: either here in the args or in daymanager, have an option to make the camera focus on a different object temporarily
         lines = args.lines;
+        textSpeed = speeds[args.speed];
         StartCoroutine(DialogPlay());
     }
 
     IEnumerator DialogPlay()
     {
         // 1. Set up, bring dialog box up to screen
-        // TODO: make char face the thing
+        // TODO: make char face the thing if option says so
+        // TODO: make camera focus on the thing if option says so
         dialogText.maxVisibleCharacters = 0;
-        dialogPrompt.color = ChangedAlpha(dialogPrompt.color, 0);
-        Tween t1 = TweenBoxUp();
-        yield return new WaitUntil(() => t1 == null || t1.IsPlaying());
+        dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
+        Tween t1 = TweenBox("Up", 1f);
+        canvasGroup.DOFade(1f, 1f).From(0f);
+        yield return new WaitUntil(() => t1 == null || !t1.IsPlaying());
 
         // 2. Dialog display and input to go through it.
-        // TODO: support the speed from the dialog args (changes the waitforseconds);
         inputManager.DialogInputsOnly();
         for (int line = 0; line < lines.Length; line++)
         {
@@ -77,48 +85,33 @@ public class DialogManager : MonoBehaviour
             for (int i = 0; i <= dialogText.text.Length; i++)
             {
                 dialogText.maxVisibleCharacters = i;
-                yield return new WaitForSeconds(textSpeedFast);
+                yield return new WaitForSeconds(textSpeed);
             }
             dialogPrompt.enabled = true;
-            Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, ChangedAlpha(dialogPrompt.color, 1f), .25f);
+            Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, Helper.ChangedAlpha(dialogPrompt.color, 1f), .25f);
             dialogNext = false;
             yield return new WaitUntil(() => dialogNext);
             yield return null; // Must put a frame between inputs
             if (t2 != null) t2.Kill();
-            dialogPrompt.color = ChangedAlpha(dialogPrompt.color, 0f);
+            dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0f);
         }
 
         // 3. Finish, deconstruct, send dialog box back down
+        TweenBox("Down", 1f);
+        canvasGroup.DOFade(0f, 0.8f);
         dayManager.SetState(DayManager.State.Normal);
-        TweenBoxDown();
     }
 
-    Tween TweenBoxUp()
+    Tween TweenBox(string dir, float duration)
     {
+        float yPos = dir == "Up" ? dialogBoxYPosition : -dialogBoxYPosition;
         return DOTween.To(
-            () => boxRectTransform.anchoredPosition3D,
-            x => boxRectTransform.anchoredPosition3D = x,
-            new Vector3(0f, dialogBoxYPosition, 0f),
-            1f
+            () => rectTransform.anchoredPosition3D,
+            x => rectTransform.anchoredPosition3D = x,
+            new Vector3(0f, yPos, 0f),
+            duration
         );
     }
 
-    Tween TweenBoxDown()
-    {
-        return DOTween.To(
-            () => boxRectTransform.anchoredPosition3D,
-            x => boxRectTransform.anchoredPosition3D = x,
-            new Vector3(0f, -dialogBoxYPosition, 0f),
-            1f
-        );
-    }
 
-    // Handy helper which returns the same color, but with alpha set to input parameter.
-    // TODO: consider moving this and other helper functions like it to a static generalized helper class.
-    Color ChangedAlpha(Color color, float alpha)
-    {
-        Color c = color;
-        c.a = alpha;
-        return c;
-    }
 }
