@@ -31,25 +31,35 @@ public class InputManager : MonoBehaviour
     public float rightStickHorizontal = 0;
     public float rightStickVertical = 0;
 
-    // Condition for blocking input.
+    // Conditions for blocking types of input.
     bool allowInput = true;
+    // TODO: decide if these are temporary or not (state manager would replace them)
+    bool dialogInputsOnly = false;
 
     void Update()
     {
         if (allowInput)
         {
-            /* Axis-based inputs */
-            GetJoystickAxes();
-            GetDPad();
+            if (dialogInputsOnly)
+            {
+                if (Input.GetButtonDown("A"))
+                    OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = A });
+            }
+            else
+            {
+                /* Axis-based inputs */
+                GetJoystickAxes();
+                GetDPad();
 
-            /* Button-based inputs */
-            GetMiddleButtons();
-            GetRightSidebuttons();
+                /* Button-based inputs */
+                GetMiddleButtons();
+                GetRightSidebuttons();
 
-            /* Currently unused inputs. */
-            // GetTriggers();
-            // GetJoystickButtons();
-            // GetBumpers();
+                /* Currently unused inputs. */
+                // GetTriggers();
+                // GetJoystickButtons();
+                // GetBumpers();
+            }
         }
     }
 
@@ -61,6 +71,18 @@ public class InputManager : MonoBehaviour
     public void AllowInput()
     {
         allowInput = true;
+    }
+
+    public void DialogInputsOnly()
+    {
+        allowInput = true;
+        dialogInputsOnly = true;
+    }
+
+    public void AllowAllInputs()
+    {
+        allowInput = true;
+        dialogInputsOnly = false;
     }
 
     void GetJoystickAxes()

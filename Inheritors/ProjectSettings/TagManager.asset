@@ -9,6 +9,7 @@ TagManager:
   - TaskText
   - Pickup
   - Putdown
+  - DialogBox
   layers:
   - Default
   - TransparentFX

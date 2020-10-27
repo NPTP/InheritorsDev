@@ -38,7 +38,7 @@ public class PlayerTerrainInteract : MonoBehaviour
         int height = t.terrainData.alphamapHeight;
         debugWalked = new float[width, height, numLayers];
         InitializeWalkedMap();
-        InitializeDebugWalked();
+        // InitializeDebugWalked();
     }
 
     void Update()
