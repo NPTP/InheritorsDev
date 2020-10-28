@@ -1,25 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-// Okay, this is gonna be hacky.
-// We'll redo pickup systems later.
+// Trigger to be placed around any pickup, sends events to InteractManager.
 public class PickupTrigger : MonoBehaviour
 {
+    public event EventHandler OnPickupEnterRange;
+    public event EventHandler OnPickupLeaveRange;
+
+    SphereCollider sphereCollider;
+    Light l;
     ParticleSystem ps;
 
     void Start()
     {
-        ps = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
+        sphereCollider = GetComponent<SphereCollider>();
+        l = transform.GetChild(1).gameObject.GetComponent<Light>();
+        ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
     }
 
     public void GetPickedUp()
     {
-        Debug.Log("Player picked me up.");
+        sphereCollider.enabled = false;
+        l.enabled = false;
         ps.Stop();
-        foreach (Transform child in transform)
-            Destroy(child.gameObject);
-        GameObject.Find("TaskManager").GetComponent<TaskManager>().CompleteTask(1);
-        Destroy(gameObject);
+    }
+
+    public void GetPutDown()
+    {
+        sphereCollider.enabled = true;
+        l.enabled = true;
+        ps.Play();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

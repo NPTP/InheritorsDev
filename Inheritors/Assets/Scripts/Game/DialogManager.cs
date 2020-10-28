@@ -48,11 +48,9 @@ public class DialogManager : MonoBehaviour
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
         DayManager.State state = dayManager.state;
-        if (args.buttonCode == InputManager.A)
+        if (dayManager.state == DayManager.State.Dialog)
         {
-            if (state == DayManager.State.Normal)
-                Debug.Log("Pressed A in Normal state");
-            else if (state == DayManager.State.Dialog)
+            if (args.buttonCode == InputManager.A)
                 dialogNext = true;
         }
     }
@@ -113,5 +111,10 @@ public class DialogManager : MonoBehaviour
         );
     }
 
-
+    // Unsubscribe from all events
+    void OnDestroy()
+    {
+        dayManager.OnDialog -= HandleDialogEvent;
+        inputManager.OnButtonDown -= HandleInputEvent;
+    }
 }
