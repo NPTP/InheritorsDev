@@ -37,6 +37,7 @@ public class InputManager : MonoBehaviour
     bool allowInput = true;
     // TODO: decide if these are temporary or not (state manager would replace them)
     bool dialogInputsOnly = false;
+    public bool allow_AButton = true;
 
     void Start()
     {
@@ -44,6 +45,7 @@ public class InputManager : MonoBehaviour
         dayManager.OnState += HandleState;
     }
 
+    // TODO: make this state-based
     void Update()
     {
         if (allowInput)
@@ -153,7 +155,7 @@ public class InputManager : MonoBehaviour
 
     void GetRightSidebuttons()
     {
-        if (Input.GetButtonDown("A"))
+        if (allow_AButton && Input.GetButtonDown("A"))
             OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = A });
         if (Input.GetButtonDown("B"))
             OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = B });

@@ -8,16 +8,24 @@ using UnityEngine.UI;
 
 public class InteractManager : MonoBehaviour
 {
+    GameObject player;
     DayManager dayManager;
     InputManager inputManager;
     // Will need taskmanager and all that
 
     PickupTrigger[] pickupTriggers;
-    GameObject item;
+    GameObject item = null;
     bool pickupInRange = false;
+    bool holdingItem = false;
+
+    GameObject interactPrompt;
+    RectTransform interactPromptRectTransform;
+    Image interactPromptImage;
+    public UIPromptImages uiPromptImages;
 
     void Start()
     {
+        player = GameObject.Find("Player");
         dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
@@ -29,24 +37,11 @@ public class InteractManager : MonoBehaviour
             pt.OnPickupEnterRange += HandlePickupEnterRange;
             pt.OnPickupLeaveRange += HandlePickupLeaveRange;
         }
-    }
 
-    private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
-    {
-        if (dayManager.state == DayManager.State.Normal)
-        {
-            if (args.buttonCode == InputManager.A)
-            {
-                if (pickupInRange)
-                {
-                    Debug.Log("Hit pickup button in pickup range");
-                }
-                else
-                {
-                    Debug.Log("Tried to pickup outside of range");
-                }
-            }
-        }
+        interactPrompt = GameObject.Find("InteractPrompt");
+        interactPromptRectTransform = interactPrompt.GetComponent<RectTransform>();
+        interactPromptImage = interactPrompt.GetComponent<Image>();
+        interactPromptImage.enabled = false;
     }
 
     // Subscribe a newly added pickup.
@@ -56,24 +51,84 @@ public class InteractManager : MonoBehaviour
         pt.OnPickupLeaveRange += HandlePickupLeaveRange;
     }
 
+    private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
+    {
+        if (dayManager.state == DayManager.State.Normal)
+        {
+            if (args.buttonCode == InputManager.A)
+            {
+                if (pickupInRange && !holdingItem)
+                    StartCoroutine(PickUpItem());
+                else if (holdingItem)
+                    StartCoroutine(PutDownItem());
+            }
+        }
+    }
+
+    IEnumerator PickUpItem()
+    {
+        inputManager.allow_AButton = false;
+        interactPromptImage.enabled = false;
+        item.GetComponent<PickupTrigger>().GetPickedUp();
+        float t = 0f;
+        while (t < 1f)
+        {
+            item.transform.position = Vector3.Lerp(item.transform.position, GetItemHoldPosition(), t);
+            t += Time.deltaTime;
+            if (t > .8f) break;
+            yield return null;
+        }
+        item.transform.position = GetItemHoldPosition();
+        pickupInRange = false;
+        holdingItem = true;
+        item.transform.SetParent(player.transform);
+        inputManager.allow_AButton = true;
+        // TODO: set UI showing you have an item/button to put item back down
+    }
+
+    IEnumerator PutDownItem()
+    {
+        holdingItem = false;
+        item.GetComponent<PickupTrigger>().GetPutDown();
+        item.transform.SetParent(null);
+        yield return null;
+    }
+
+    Vector3 GetItemHoldPosition()
+    {
+        return player.transform.position + player.transform.up + (.5f * player.transform.forward);
+    }
+
     void HandlePickupEnterRange(object sender, EventArgs args)
     {
         pickupInRange = true;
         item = ((PickupTrigger)sender).gameObject;
-        // TODO: set UI appropriately
+        interactPromptImage.enabled = true;
+        interactPromptImage.sprite = uiPromptImages.A_Button;
+        StartCoroutine(AlignPrompt());
+    }
+
+    IEnumerator AlignPrompt()
+    {
+        interactPromptImage.color = Helper.ChangedAlpha(interactPromptImage.color, 0f);
+        DOTween.To(() => interactPromptImage.color, x => interactPromptImage.color = x, Helper.ChangedAlpha(interactPromptImage.color, 1f), .25f);
+        interactPromptImage.CrossFadeAlpha(1f, .25f, false);
+        while (pickupInRange)
+        {
+            Vector3 pos = Camera.main.WorldToScreenPoint(item.transform.position);
+            pos.y += 100f;
+            interactPromptRectTransform.position = pos;
+            yield return null;
+        }
     }
 
     void HandlePickupLeaveRange(object sender, EventArgs args)
     {
         pickupInRange = false;
         item = null;
-        // TODO: set UI appropriately
-    }
-
-    void PickUpItem()
-    {
-        pickupInRange = false;
-        item.GetComponent<PickupTrigger>().GetPickedUp();
+        DOTween.To(() => interactPromptImage.color, x => interactPromptImage.color = x, Helper.ChangedAlpha(interactPromptImage.color, 0f), .25f);
+        // interactPromptImage.enabled = false;
+        // TODO: a coroutine here that handles keeping the prompt aligned while also fading it out, then disables it
     }
 
     // Unsubscribe from all events

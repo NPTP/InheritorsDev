@@ -73,7 +73,7 @@ public class DialogManager : MonoBehaviour
         dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
         Tween t1 = TweenBox("Up", 1f);
         canvasGroup.DOFade(1f, 1f).From(0f);
-        yield return new WaitUntil(() => t1 == null || !t1.IsPlaying());
+        yield return new WaitWhile(() => t1.IsPlaying());
 
         // 2. Dialog display and input to go through it.
         inputManager.DialogInputsOnly();
