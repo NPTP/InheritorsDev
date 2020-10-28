@@ -33,11 +33,8 @@ public class InputManager : MonoBehaviour
     public float rightStickHorizontal = 0;
     public float rightStickVertical = 0;
 
-    // Conditions for blocking types of input.
+    // Condition for blocking all input regardless of State.
     bool allowInput = true;
-    // TODO: decide if these are temporary or not (state manager would replace them)
-    bool dialogInputsOnly = false;
-    public bool allow_AButton = true;
 
     void Start()
     {
@@ -45,51 +42,69 @@ public class InputManager : MonoBehaviour
         dayManager.OnState += HandleState;
     }
 
-    // TODO: make this state-based
+    // Poll for input dependent on input allowed & current State.
     void Update()
     {
         if (allowInput)
         {
-            if (dialogInputsOnly)
+            switch (dayManager.state)
             {
-                if (Input.GetButtonDown("A"))
-                    OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = A });
+                case DayManager.State.Normal:
+                    GetJoystickAxes();
+                    GetMiddleButtons();
+                    GetRightSidebuttons();
+                    break;
+                case DayManager.State.PickingUp:
+                    GetJoystickAxes();
+                    GetMiddleButtons();
+                    break;
+                case DayManager.State.Holding:
+                    GetJoystickAxes();
+                    GetMiddleButtons();
+                    GetButtonDown("X", X);
+                    break;
+                case DayManager.State.Dialog:
+                    GetButtonDown("A", A);
+                    break;
+                case DayManager.State.Inert:
+                    break;
+                default:
+                    Debug.Log("Input manager trying to get input in unknown State.");
+                    break;
             }
-            else
-            {
-                /* Axis-based inputs */
-                GetJoystickAxes();
-                GetDPad();
-
-                /* Button-based inputs */
-                GetMiddleButtons();
-                GetRightSidebuttons();
-
-                /* Currently unused inputs. */
-                // GetTriggers();
-                // GetJoystickButtons();
-                // GetBumpers();
-            }
+            /* Currently unused inputs. */
+            // GetDPad();
+            // GetTriggers();
+            // GetJoystickButtons();
+            // GetBumpers();
         }
     }
 
-    // TODO: consider setting state in here and that defines your input categories above, like a state machine
+    // State handler ensures controls start & stop as necessary.
     private void HandleState(object sender, DayManager.StateArgs args)
     {
-        if (args.state == DayManager.State.Normal)
+        switch (args.state)
         {
-            AllowAllInputs();
+            case DayManager.State.Normal:
+                AllowInput();
+                break;
+            case DayManager.State.Dialog:
+                AllowInput();
+                ZeroAxes();
+                break;
+            case DayManager.State.PickingUp:
+                AllowInput();
+                break;
+            case DayManager.State.Holding:
+                AllowInput();
+                break;
+            case DayManager.State.Inert:
+                BlockInput();
+                break;
+            default:
+                Debug.Log("Input manager tried to handle unknown State event.");
+                break;
         }
-        else if (args.state == DayManager.State.Dialog)
-        {
-            ZeroAxes();
-            DialogInputsOnly();
-        }
-    }
-
-    public void BlockInput()
-    {
-        allowInput = false;
     }
 
     public void AllowInput()
@@ -97,17 +112,9 @@ public class InputManager : MonoBehaviour
         allowInput = true;
     }
 
-    public void DialogInputsOnly()
+    public void BlockInput()
     {
-        allowInput = true;
-        dialogInputsOnly = true;
-    }
-
-    // Resets booleans to allow all inputs of any kind.
-    public void AllowAllInputs()
-    {
-        allowInput = true;
-        dialogInputsOnly = false;
+        allowInput = false;
     }
 
     void GetJoystickAxes()
@@ -125,6 +132,26 @@ public class InputManager : MonoBehaviour
         leftStickVertical = 0f;
         rightStickHorizontal = 0f;
         rightStickVertical = 0f;
+    }
+
+    void GetMiddleButtons()
+    {
+        GetButtonDown("Start", START);
+        GetButtonDown("Back", BACK);
+    }
+
+    void GetRightSidebuttons()
+    {
+        GetButtonDown("A", A);
+        GetButtonDown("B", B);
+        GetButtonDown("X", X);
+        GetButtonDown("Y", Y);
+    }
+
+    void GetButtonDown(string button, int code)
+    {
+        if (Input.GetButtonDown(button))
+            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = code });
     }
 
     void GetDPad()
@@ -145,27 +172,7 @@ public class InputManager : MonoBehaviour
             OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = DPAD_UP });
     }
 
-    void GetMiddleButtons()
-    {
-        if (Input.GetButtonDown("Start"))
-            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = START });
-        if (Input.GetButtonDown("Back"))
-            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = BACK });
-    }
-
-    void GetRightSidebuttons()
-    {
-        if (allow_AButton && Input.GetButtonDown("A"))
-            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = A });
-        if (Input.GetButtonDown("B"))
-            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = B });
-        if (Input.GetButtonDown("X"))
-            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = X });
-        if (Input.GetButtonDown("Y"))
-            OnButtonDown?.Invoke(this, new ButtonArgs { buttonCode = Y });
-    }
-
-
+    // Not implemented.
     void GetJoystickButtons()
     {
         if (Input.GetButtonDown("LeftStickClick"))
@@ -174,6 +181,7 @@ public class InputManager : MonoBehaviour
             return;
     }
 
+    // Not implemented.
     void GetBumpers()
     {
         if (Input.GetButtonDown("LeftBumper"))
@@ -182,6 +190,7 @@ public class InputManager : MonoBehaviour
             return;
     }
 
+    // Not implemented.
     void GetTriggers()
     {
         // Each goes from 0 -> 1.

@@ -5,4 +5,5 @@ using UnityEngine.UI;
 public class UIPromptImages : ScriptableObject
 {
     public Sprite A_Button;
+    public Sprite X_Button;
 }

@@ -14,19 +14,21 @@ public class InteractManager : MonoBehaviour
     // Will need taskmanager and all that
 
     PickupTrigger[] pickupTriggers;
-    GameObject item = null;
+    public GameObject item = null; // Public so other scripts can see what the player is carrying
     bool pickupInRange = false;
     bool holdingItem = false;
 
     GameObject interactPrompt;
     RectTransform interactPromptRectTransform;
     Image interactPromptImage;
+    TMP_Text interactPromptText;
     public UIPromptImages uiPromptImages;
 
     void Start()
     {
         player = GameObject.Find("Player");
         dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
+        dayManager.OnState += HandleState;
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
 
@@ -42,6 +44,8 @@ public class InteractManager : MonoBehaviour
         interactPromptRectTransform = interactPrompt.GetComponent<RectTransform>();
         interactPromptImage = interactPrompt.GetComponent<Image>();
         interactPromptImage.enabled = false;
+        interactPromptText = GameObject.Find("InteractPromptText").GetComponent<TMP_Text>();
+        interactPromptText.enabled = false;
     }
 
     // Subscribe a newly added pickup.
@@ -53,21 +57,36 @@ public class InteractManager : MonoBehaviour
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        if (dayManager.state == DayManager.State.Normal)
+        switch (dayManager.state)
         {
-            if (args.buttonCode == InputManager.A)
-            {
-                if (pickupInRange && !holdingItem)
+            case DayManager.State.Normal:
+                if (args.buttonCode == InputManager.A && pickupInRange && !holdingItem)
                     StartCoroutine(PickUpItem());
-                else if (holdingItem)
+                break;
+            case DayManager.State.Holding:
+                if (args.buttonCode == InputManager.X && holdingItem)
                     StartCoroutine(PutDownItem());
-            }
+                break;
+            default:
+                break; // Don't take inputs while picking up, inert, etc.
+        }
+    }
+
+    private void HandleState(object sender, DayManager.StateArgs args)
+    {
+        switch (args.state)
+        {
+            case DayManager.State.Dialog:
+                pickupInRange = false;
+                break;
+            default:
+                break;
         }
     }
 
     IEnumerator PickUpItem()
     {
-        inputManager.allow_AButton = false;
+        dayManager.SetState(DayManager.State.PickingUp);
         interactPromptImage.enabled = false;
         item.GetComponent<PickupTrigger>().GetPickedUp();
         float t = 0f;
@@ -75,19 +94,37 @@ public class InteractManager : MonoBehaviour
         {
             item.transform.position = Vector3.Lerp(item.transform.position, GetItemHoldPosition(), t);
             t += Time.deltaTime;
-            if (t > .8f) break;
+            if (t > .25f) break;
             yield return null;
         }
         item.transform.position = GetItemHoldPosition();
         pickupInRange = false;
         holdingItem = true;
         item.transform.SetParent(player.transform);
-        inputManager.allow_AButton = true;
-        // TODO: set UI showing you have an item/button to put item back down
+        dayManager.SetState(DayManager.State.Holding);
+        StartCoroutine(HoldingItemUI());
+    }
+
+    IEnumerator HoldingItemUI()
+    {
+        interactPromptRectTransform.localScale = new Vector3(.6f, .6f, 1f);
+        interactPromptImage.enabled = true;
+        interactPromptText.enabled = true;
+        interactPromptImage.sprite = uiPromptImages.X_Button;
+        while (holdingItem)
+        {
+            Vector3 pos = Camera.main.WorldToScreenPoint(player.transform.position);
+            pos.y -= 25f;
+            interactPromptRectTransform.position = pos;
+            yield return null;
+        }
     }
 
     IEnumerator PutDownItem()
     {
+        dayManager.SetState(DayManager.State.Normal);
+        interactPromptText.enabled = false;
+        interactPromptRectTransform.localScale = new Vector3(1f, 1f, 1f);
         holdingItem = false;
         item.GetComponent<PickupTrigger>().GetPutDown();
         item.transform.SetParent(null);
@@ -105,14 +142,13 @@ public class InteractManager : MonoBehaviour
         item = ((PickupTrigger)sender).gameObject;
         interactPromptImage.enabled = true;
         interactPromptImage.sprite = uiPromptImages.A_Button;
-        StartCoroutine(AlignPrompt());
-    }
-
-    IEnumerator AlignPrompt()
-    {
         interactPromptImage.color = Helper.ChangedAlpha(interactPromptImage.color, 0f);
         DOTween.To(() => interactPromptImage.color, x => interactPromptImage.color = x, Helper.ChangedAlpha(interactPromptImage.color, 1f), .25f);
-        interactPromptImage.CrossFadeAlpha(1f, .25f, false);
+        StartCoroutine(AlignPromptInRange());
+    }
+
+    IEnumerator AlignPromptInRange()
+    {
         while (pickupInRange)
         {
             Vector3 pos = Camera.main.WorldToScreenPoint(item.transform.position);
@@ -125,11 +161,23 @@ public class InteractManager : MonoBehaviour
     void HandlePickupLeaveRange(object sender, EventArgs args)
     {
         pickupInRange = false;
+        StartCoroutine(AlignPromptOutOfRange(item.transform.position));
         item = null;
-        DOTween.To(() => interactPromptImage.color, x => interactPromptImage.color = x, Helper.ChangedAlpha(interactPromptImage.color, 0f), .25f);
-        // interactPromptImage.enabled = false;
-        // TODO: a coroutine here that handles keeping the prompt aligned while also fading it out, then disables it
     }
+
+    IEnumerator AlignPromptOutOfRange(Vector3 itemPos)
+    {
+        Tween t = DOTween.To(() => interactPromptImage.color, x => interactPromptImage.color = x, Helper.ChangedAlpha(interactPromptImage.color, 0f), .25f);
+        while (t.IsPlaying())
+        {
+            Vector3 pos = Camera.main.WorldToScreenPoint(itemPos);
+            pos.y += 100f;
+            interactPromptRectTransform.position = pos;
+            yield return null;
+        }
+        interactPromptImage.enabled = false;
+    }
+
 
     // Unsubscribe from all events
     void OnDestroy()

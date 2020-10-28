@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Again, hacky for now. Fix later.
+// DEPRECATED
 public class PlayerItemInteract : MonoBehaviour
 {
     public bool carryingItem = false;

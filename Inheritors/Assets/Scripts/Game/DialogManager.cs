@@ -47,26 +47,23 @@ public class DialogManager : MonoBehaviour
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        DayManager.State state = dayManager.state;
-        if (dayManager.state == DayManager.State.Dialog)
-        {
-            if (args.buttonCode == InputManager.A)
-                dialogNext = true;
-        }
+        if (dayManager.state == DayManager.State.Dialog && args.buttonCode == InputManager.A)
+            dialogNext = true;
     }
 
     private void HandleDialogEvent(object sender, DayManager.DialogArgs args)
     {
-        // TODO: either here in the args or in daymanager, have an option to make player automatically turn to face the subject of dialog
-        // TODO: either here in the args or in daymanager, have an option to make the camera focus on a different object temporarily
+        dayManager.SetState(DayManager.State.Dialog);
         lines = args.lines;
         textSpeed = speeds[args.speed];
+        // TODO: either here in the args or in daymanager, have an option to make player automatically turn to face the subject of dialog
+        // TODO: either here in the args or in daymanager, have an option to make the camera focus on a different object temporarily
         StartCoroutine(DialogPlay());
     }
 
     IEnumerator DialogPlay()
     {
-        // 1. Set up, bring dialog box up to screen
+        // STEP 1 : Set up, bring dialog box up to screen
         // TODO: make char face the thing if option says so
         // TODO: make camera focus on the thing if option says so
         dialogText.maxVisibleCharacters = 0;
@@ -75,8 +72,7 @@ public class DialogManager : MonoBehaviour
         canvasGroup.DOFade(1f, 1f).From(0f);
         yield return new WaitWhile(() => t1.IsPlaying());
 
-        // 2. Dialog display and input to go through it.
-        inputManager.DialogInputsOnly();
+        // STEP 2 : Dialog display and input to go through it.
         for (int line = 0; line < lines.Length; line++)
         {
             dialogText.text = lines[line];
@@ -94,7 +90,7 @@ public class DialogManager : MonoBehaviour
             dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0f);
         }
 
-        // 3. Finish, deconstruct, send dialog box back down
+        // STEP 3 : Finish, deconstruct, and send dialog box back down
         TweenBox("Down", 1f);
         canvasGroup.DOFade(0f, 0.8f);
         dayManager.SetState(DayManager.State.Normal);
