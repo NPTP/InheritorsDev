@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Cinemachine;
 
 public class Day0 : MonoBehaviour
 {
@@ -70,15 +71,19 @@ public class Day0 : MonoBehaviour
         // 03. Fade away the blackness.
         yield return new WaitForSecondsRealtime(2f);
         transitionManager.FadeTo(0f, 8f);
-        yield return new WaitForSecondsRealtime(4f);
+        yield return new WaitForSecondsRealtime(5f);
 
-        // 04. Display tutorial controls.
-        controls.DOFade(1f, 1f); // TODO: break off into UI manager
+        // 04. Change view from fire to player.
+        GameObject.Find("CM vcam fire").GetComponent<CinemachineVirtualCamera>().Priority = 0; // TODO: how bout a camera manager while we're at it.
         yield return new WaitForSecondsRealtime(2f);
 
-        // 05. Let player control, fade out tutorial controls.
+        // 05. Display tutorial controls.
+        controls.DOFade(1f, 1f); // TODO: break off into UI manager
+        yield return new WaitForSecondsRealtime(.5f);
+
+        // 06. Let player control. When they move the joystick, fade out prompts.
         dayManager.SetState(DayManager.State.Normal);
-        yield return new WaitUntil(() => inputManager.leftStickHorizontal != 0 || inputManager.rightStickHorizontal != 0);
+        yield return new WaitUntil(() => inputManager.leftStickHorizontal != 0 || inputManager.leftStickVertical != 0);
         controls.DOFade(0f, 1f); // TODO: break off into UI manager
     }
 
