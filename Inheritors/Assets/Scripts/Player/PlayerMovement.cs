@@ -15,7 +15,8 @@ public class PlayerMovement : MonoBehaviour
         Direct
     }
 
-    private InputManager inputManager;
+    DayManager dayManager;
+    InputManager inputManager;
 
     [SerializeField] private float m_moveSpeed = 2;
     [SerializeField] private float m_turnSpeed = 200;
@@ -45,13 +46,19 @@ public class PlayerMovement : MonoBehaviour
 
     private List<Collider> m_collisions = new List<Collider>();
 
-    public bool isInteracting;
-
     private void Awake()
     {
         if (!m_animator) { gameObject.GetComponent<Animator>(); }
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
+        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
+
+        dayManager.OnState += HandleState;
+    }
+
+    private void HandleState(object sender, DayManager.StateArgs args)
+    {
+        // Not implemented
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -109,11 +116,11 @@ public class PlayerMovement : MonoBehaviour
         if (m_collisions.Count == 0) { m_isGrounded = false; }
     }
 
-    private void Update()
-    {
-        // if (!m_jumpInput && Input.GetKey(KeyCode.Space))
-        //     m_jumpInput = true;
-    }
+    // private void Update()
+    // {
+    //     if (!m_jumpInput && Input.GetKey(KeyCode.Space))
+    //         m_jumpInput = true;
+    // }
 
     private void FixedUpdate()
     {
@@ -140,10 +147,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void TankUpdate()
     {
-        if (isInteracting) return;
-
-        float v = inputManager.leftStickVertical; // Input.GetAxis("Vertical");
-        float h = inputManager.leftStickHorizontal; // Input.GetAxis("Horizontal");
+        float v = inputManager.leftStickVertical;
+        float h = inputManager.leftStickHorizontal;
 
         bool walk = Input.GetKey(KeyCode.LeftShift);
 
@@ -165,15 +170,13 @@ public class PlayerMovement : MonoBehaviour
 
         m_animator.SetFloat("MoveSpeed", m_currentV);
 
-        JumpingAndLanding();
+        // JumpingAndLanding();
     }
 
     private void DirectUpdate()
     {
-        if (isInteracting) return;
-
-        float v = inputManager.leftStickVertical; // Input.GetAxis("Vertical");
-        float h = inputManager.leftStickHorizontal; // Input.GetAxis("Horizontal");
+        float v = inputManager.leftStickVertical;
+        float h = inputManager.leftStickHorizontal;
 
         Transform camera = Camera.main.transform;
 
@@ -194,15 +197,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (direction != Vector3.zero)
         {
-            m_currentDirection = Vector3.Slerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
-
-            transform.rotation = Quaternion.LookRotation(m_currentDirection);
-            transform.position += m_currentDirection * m_moveSpeed * Time.deltaTime;
+            // Ensure we're in a good state to change rotation & position.
+            if (dayManager.state != DayManager.State.Dialog || dayManager.state != DayManager.State.Inert)
+            {
+                m_currentDirection = Vector3.Slerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
+                transform.rotation = Quaternion.LookRotation(m_currentDirection);
+                transform.position += m_currentDirection * m_moveSpeed * Time.deltaTime;
+            }
 
             m_animator.SetFloat("MoveSpeed", direction.magnitude);
         }
 
-        JumpingAndLanding();
+        // JumpingAndLanding();
     }
 
     private void JumpingAndLanding()

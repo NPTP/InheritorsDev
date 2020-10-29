@@ -9,7 +9,7 @@ public class PickupTrigger : MonoBehaviour
     public event EventHandler OnPickupLeaveRange;
 
     Transform playerTransform;
-    SphereCollider sphereCollider;
+    Collider sphereCollider;
     Transform itemTransform;
     Vector3 itemLocalScale;
     BoxCollider itemCollider;
@@ -19,7 +19,7 @@ public class PickupTrigger : MonoBehaviour
     void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
-        sphereCollider = GetComponent<SphereCollider>();
+        sphereCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
         itemCollider = itemTransform.gameObject.GetComponent<BoxCollider>();
@@ -49,6 +49,7 @@ public class PickupTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            Debug.Log("enter");
             OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
             itemTransform.DOScale(itemLocalScale * 1.15f, .25f);
         }
@@ -58,6 +59,7 @@ public class PickupTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            Debug.Log("exit");
             OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
             itemTransform.DOScale(itemLocalScale, .25f);
         }

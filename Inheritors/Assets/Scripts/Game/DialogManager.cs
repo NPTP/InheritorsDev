@@ -13,21 +13,29 @@ public class DialogManager : MonoBehaviour
 {
     DayManager dayManager;
     InputManager inputManager;
+    InteractManager interactManager;
+
+    public event EventHandler OnDialogFinish;
 
     GameObject dialogBox;
     CanvasGroup canvasGroup;
     RectTransform rectTransform;
     TMP_Text dialogText;
     Image dialogPrompt;
+    Animator dialogPromptAnim;
     float dialogBoxYPosition = 192f;
-
     bool dialogNext = false;
-    string[] lines;
-    float textSpeed = 0;
-    float[] speeds;
-    float slow = 0.1f;
-    float med = 0.05f;
-    float fast = 0.01f;
+
+    public class Tools
+    {
+        public static string DELAY = "                    ";
+    }
+    public class Speed
+    {
+        public static float SLOW = 0.05f;
+        public static float MED = 0.03f;
+        public static float FAST = 0.01f;
+    }
 
     void Start()
     {
@@ -36,13 +44,14 @@ public class DialogManager : MonoBehaviour
         rectTransform = dialogBox.GetComponent<RectTransform>();
         dialogText = GameObject.Find("DialogText").GetComponent<TMP_Text>();
         dialogPrompt = GameObject.Find("DialogPrompt").GetComponent<Image>();
+        dialogPromptAnim = GameObject.Find("DialogPrompt").GetComponent<Animator>();
 
         dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
-        dayManager.OnDialog += HandleDialogEvent;
+        dayManager.OnDialog += HandleGlobalDialogEvent;
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
-
-        speeds = new float[] { slow, med, fast };
+        interactManager = GameObject.Find("InteractManager").GetComponent<InteractManager>();
+        interactManager.OnLocalDialog += HandleLocalDialogEvent;
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
@@ -51,21 +60,23 @@ public class DialogManager : MonoBehaviour
             dialogNext = true;
     }
 
-    private void HandleDialogEvent(object sender, DayManager.DialogArgs args)
+    private void HandleGlobalDialogEvent(object sender, DayManager.DialogArgs args)
     {
         dayManager.SetState(DayManager.State.Dialog);
-        lines = args.lines;
-        textSpeed = speeds[args.speed];
         // TODO: either here in the args or in daymanager, have an option to make player automatically turn to face the subject of dialog
         // TODO: either here in the args or in daymanager, have an option to make the camera focus on a different object temporarily
-        StartCoroutine(DialogPlay());
+        StartCoroutine(DialogPlay(args.lines, args.speed));
     }
 
-    IEnumerator DialogPlay()
+    private void HandleLocalDialogEvent(object sender, InteractManager.LocalDialogArgs args)
+    {
+        dayManager.SetState(DayManager.State.Dialog);
+        StartCoroutine(DialogPlay(args.lines, args.speed));
+    }
+
+    IEnumerator DialogPlay(string[] lines, float speed)
     {
         // STEP 1 : Set up, bring dialog box up to screen
-        // TODO: make char face the thing if option says so
-        // TODO: make camera focus on the thing if option says so
         dialogText.maxVisibleCharacters = 0;
         dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
         Tween t1 = TweenBox("Up", 1f);
@@ -79,7 +90,7 @@ public class DialogManager : MonoBehaviour
             for (int i = 0; i <= dialogText.text.Length; i++)
             {
                 dialogText.maxVisibleCharacters = i;
-                yield return new WaitForSeconds(textSpeed);
+                yield return new WaitForSecondsRealtime(speed);
             }
             dialogPrompt.enabled = true;
             Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, Helper.ChangedAlpha(dialogPrompt.color, 1f), .25f);
@@ -94,6 +105,7 @@ public class DialogManager : MonoBehaviour
         TweenBox("Down", 1f);
         canvasGroup.DOFade(0f, 0.8f);
         dayManager.SetState(DayManager.State.Normal);
+        OnDialogFinish?.Invoke(this, EventArgs.Empty);
     }
 
     Tween TweenBox(string dir, float duration)
@@ -110,7 +122,8 @@ public class DialogManager : MonoBehaviour
     // Unsubscribe from all events
     void OnDestroy()
     {
-        dayManager.OnDialog -= HandleDialogEvent;
+        dayManager.OnDialog -= HandleGlobalDialogEvent;
+        interactManager.OnLocalDialog -= HandleLocalDialogEvent;
         inputManager.OnButtonDown -= HandleInputEvent;
     }
 }

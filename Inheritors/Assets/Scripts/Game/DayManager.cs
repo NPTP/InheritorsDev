@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-// The central hub of our in-game logic. Apart from the main menu, the Day Manager is
-// the ONLY class that should have a reference to all the other managers.
-// It also handles the current "state".
+// right now just acting as a state machine. Should be split off so that we have a
+// separate state manager, and the day manager controls specific bespoke game events,
+// task management, etc.
 public class DayManager : MonoBehaviour
 {
     public DayManager.State state;
@@ -25,11 +25,11 @@ public class DayManager : MonoBehaviour
     public class DialogArgs : EventArgs
     {
         public string[] lines;
-        public int speed;
+        public float speed;
     }
 
     public int dayNumber = 0; // We'll get this from the data for the day?
-    SceneLoader sceneLoader;
+    // SceneLoader sceneLoader;
     InputManager inputManager;
     InteractManager interactManager;
     DialogManager dialogManager;
@@ -40,7 +40,7 @@ public class DayManager : MonoBehaviour
     void Start()
     {
         state = State.Normal;
-        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        // sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         interactManager = GameObject.Find("InteractManager").GetComponent<InteractManager>();
         dialogManager = GameObject.Find("DialogManager").GetComponent<DialogManager>();
@@ -59,42 +59,23 @@ public class DayManager : MonoBehaviour
         foreach (string task in tutorialTasks)
             taskManager.AddTask(task);
         taskManager.SetActiveTask(1);
-
-        Debug.Log("Press Y (kbd/controller) to test dialog system. Note that this breaks all input on Y right now.");
     }
 
     void Update()
     {
         if (taskManager.allTasksCompleted)
-            sceneLoader.LoadSceneByIndex(0); // Go back to menu
+            // sceneLoader.LoadSceneByIndex(0); // Go back to menu
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            CompleteTask(debugTasks);
-            debugTasks++;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("Y"))
-        {
-            EnterDialog();
-        }
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                CompleteTask(debugTasks);
+                debugTasks++;
+            }
     }
 
-    void EnterDialog()
+    public void NewDialog(string[] lines, float speed)
     {
-        string spacer = "                    ";
-        if (state != State.Dialog)
-        {
-            // TODO: have a way for the day or other object to pass this dialog in naturally, for now hardcoded to test
-            string[] l = {
-                "The Omerê is our home." +spacer,
-                "Our people have lived here for hundreds of years." +spacer,
-                "Your mother is <b>Kanoê</b>." + spacer + "\nYour father is <b>Akuntsu</b>."  +spacer,
-                "You are young, <b>Operaeika</b>." + spacer + "\nYou are the inheritor of this land." + spacer + "\nYou are the inheritor of our tradition."+spacer,
-                "Bring us hope."  +spacer + spacer,
-            };
-            OnDialog?.Invoke(this, new DialogArgs { lines = l, speed = 1 });
-        }
+        OnDialog?.Invoke(this, new DialogArgs { lines = lines, speed = speed });
     }
 
     // This method is for the other managers to tell us what state we're in.
