@@ -49,10 +49,10 @@ public class PlayerTerrainInteract : MonoBehaviour
         if (true) // TODO: check a new function IsTouchingTerrain() here (simple raycast check?)
         {
             if (leavePaths)
-                ChangeTexture();
+                ChangeTexture(trailSize);
 
             if (cutGrass)
-                RemoveDetails();
+                RemoveDetails((int)(trailSize / 2));
         }
 
         // TakeDebugInputs();
@@ -90,19 +90,20 @@ public class PlayerTerrainInteract : MonoBehaviour
         }
     }
 
-    void ChangeTexture()
+    void ChangeTexture(int areaSize)
     {
-        float[,,] remap = new float[trailSize, trailSize, numLayers];
-        for (int i = 0; i < trailSize; i++)
+        alphaMap = t.terrainData.GetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, areaSize, areaSize);
+        float[,,] remap = new float[areaSize, areaSize, numLayers];
+        for (int i = 0; i < areaSize; i++)
         {
-            for (int j = 0; j < trailSize; j++)
+            for (int j = 0; j < areaSize; j++)
             {
                 for (int k = 0; k < numLayers; k++)
                 {
                     if (k == 1)
-                        remap[i, j, k] = 1f;
+                        remap[i, j, k] = .03f; // TODO: temporary values only, homie
                     else
-                        remap[i, j, k] = 0f;
+                        remap[i, j, k] = alphaMap[i, j, k];
                 }
                 // Record that we have walked here
                 walkedMap[texturePosZ - playerSplatmapSize + i, texturePosX - playerSplatmapSize + j] = true;
@@ -111,9 +112,8 @@ public class PlayerTerrainInteract : MonoBehaviour
         t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
     }
 
-    void RemoveDetails()
+    void RemoveDetails(int areaSize)
     {
-        int areaSize = trailSize;
         int[,] details = new int[areaSize, areaSize];
         for (int i = 0; i < areaSize; i++)
             for (int j = 0; j < areaSize; j++)

@@ -71,7 +71,7 @@ public class TaskTest : MonoBehaviour
     void Start()
     {
         text = GameObject.FindGameObjectWithTag("TaskText").GetComponent<Text>();
-        // TaskManager should get tasks from the DayManager which pulls
+        // TaskManager should get tasks from the specific Day object which pulls
         // from some ScriptableObject full of them or something.
         // Then TaskManager updates the tasks for all interested parties:
         // UI text, in-game shiet, etc.

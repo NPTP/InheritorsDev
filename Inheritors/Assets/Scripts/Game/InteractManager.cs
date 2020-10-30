@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class InteractManager : MonoBehaviour
 {
     GameObject player;
-    DayManager dayManager;
+    StateManager stateManager;
     InputManager inputManager;
     // Will need taskmanager and all that
 
@@ -38,8 +38,8 @@ public class InteractManager : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player");
-        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
-        dayManager.OnState += HandleState;
+        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
+        stateManager.OnState += HandleState;
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
 
@@ -83,9 +83,9 @@ public class InteractManager : MonoBehaviour
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        switch (dayManager.state)
+        switch (stateManager.state)
         {
-            case DayManager.State.Normal:
+            case StateManager.State.Normal:
                 if (args.buttonCode == InputManager.A)
                 {
                     if (pickupInRange && !holdingItem)
@@ -97,7 +97,7 @@ public class InteractManager : MonoBehaviour
                     }
                 }
                 break;
-            case DayManager.State.Holding:
+            case StateManager.State.Holding:
                 if (args.buttonCode == InputManager.X && holdingItem)
                     StartCoroutine(PutDownItem());
                 break;
@@ -106,11 +106,11 @@ public class InteractManager : MonoBehaviour
         }
     }
 
-    private void HandleState(object sender, DayManager.StateArgs args)
+    private void HandleState(object sender, StateManager.StateArgs args)
     {
         switch (args.state)
         {
-            case DayManager.State.Dialog:
+            case StateManager.State.Dialog:
                 pickupInRange = false;
                 break;
             default:
@@ -120,7 +120,7 @@ public class InteractManager : MonoBehaviour
 
     IEnumerator PickUpItem()
     {
-        dayManager.SetState(DayManager.State.PickingUp);
+        stateManager.SetState(StateManager.State.PickingUp);
         interactPromptImage.enabled = false;
         item.GetComponent<PickupTrigger>().GetPickedUp();
         float t = 0f;
@@ -135,7 +135,7 @@ public class InteractManager : MonoBehaviour
         pickupInRange = false;
         holdingItem = true;
         item.transform.SetParent(player.transform);
-        dayManager.SetState(DayManager.State.Holding);
+        stateManager.SetState(StateManager.State.Holding);
         StartCoroutine(HoldingItemUI());
     }
 
@@ -174,7 +174,7 @@ public class InteractManager : MonoBehaviour
 
     IEnumerator PutDownItem()
     {
-        dayManager.SetState(DayManager.State.Normal);
+        stateManager.SetState(StateManager.State.Normal);
         interactPromptText.enabled = false;
         interactPromptRectTransform.localScale = new Vector3(1f, 1f, 1f);
         holdingItem = false;

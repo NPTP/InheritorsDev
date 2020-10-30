@@ -6,7 +6,7 @@ using UnityEngine;
 // TODO: PC bindings must be fixed up via project settings input manager.
 public class InputManager : MonoBehaviour
 {
-    DayManager dayManager;
+    StateManager stateManager;
 
     public event EventHandler<ButtonArgs> OnButtonDown;
     public class ButtonArgs : EventArgs
@@ -38,8 +38,8 @@ public class InputManager : MonoBehaviour
 
     void Start()
     {
-        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
-        dayManager.OnState += HandleState;
+        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
+        stateManager.OnState += HandleState;
     }
 
     // Poll for input dependent on input allowed & current State.
@@ -47,26 +47,26 @@ public class InputManager : MonoBehaviour
     {
         if (allowInput)
         {
-            switch (dayManager.state)
+            switch (stateManager.state)
             {
-                case DayManager.State.Normal:
+                case StateManager.State.Normal:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     GetRightSidebuttons();
                     break;
-                case DayManager.State.PickingUp:
+                case StateManager.State.PickingUp:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     break;
-                case DayManager.State.Holding:
+                case StateManager.State.Holding:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     GetButtonDown("X", X);
                     break;
-                case DayManager.State.Dialog:
+                case StateManager.State.Dialog:
                     GetButtonDown("A", A);
                     break;
-                case DayManager.State.Inert:
+                case StateManager.State.Inert:
                     break;
                 default:
                     Debug.Log("Input manager trying to get input in unknown State.");
@@ -81,24 +81,24 @@ public class InputManager : MonoBehaviour
     }
 
     // State handler ensures controls start & stop as necessary.
-    private void HandleState(object sender, DayManager.StateArgs args)
+    private void HandleState(object sender, StateManager.StateArgs args)
     {
         switch (args.state)
         {
-            case DayManager.State.Normal:
+            case StateManager.State.Normal:
                 AllowInput();
                 break;
-            case DayManager.State.Dialog:
+            case StateManager.State.Dialog:
                 AllowInput();
                 ZeroAxes();
                 break;
-            case DayManager.State.PickingUp:
+            case StateManager.State.PickingUp:
                 AllowInput();
                 break;
-            case DayManager.State.Holding:
+            case StateManager.State.Holding:
                 AllowInput();
                 break;
-            case DayManager.State.Inert:
+            case StateManager.State.Inert:
                 BlockInput();
                 break;
             default:

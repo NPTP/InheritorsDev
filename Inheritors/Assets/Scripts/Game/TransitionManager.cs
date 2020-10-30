@@ -13,7 +13,11 @@ public class TransitionManager : MonoBehaviour
         GameObject go = GameObject.Find("Transition");
         transition = go.GetComponent<Image>();
         canvasGroup = go.GetComponent<CanvasGroup>();
-        Debug.Log(canvasGroup);
+    }
+
+    public void SetColor(Color color)
+    {
+        transition.color = color;
     }
 
     public void SetAlpha(float alpha)
@@ -26,4 +30,25 @@ public class TransitionManager : MonoBehaviour
     {
         canvasGroup.DOFade(alpha, duration).SetEase(ease);
     }
+
+    public void Show(float showTime = 0f)
+    {
+        transition.enabled = true;
+        canvasGroup.enabled = true;
+        canvasGroup.DOFade(1f, showTime);
+    }
+
+    public void Hide(float hideTime = 0f)
+    {
+        StartCoroutine(Out(hideTime));
+    }
+
+    IEnumerator Out(float hideTime)
+    {
+        Tween t = canvasGroup.DOFade(0f, hideTime);
+        yield return new WaitWhile(() => t != null && t.IsPlaying());
+        transition.enabled = false;
+        canvasGroup.enabled = false;
+    }
+
 }

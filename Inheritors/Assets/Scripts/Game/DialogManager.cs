@@ -5,13 +5,23 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 
-// The dialog manager handles all dialog moments and performs dialog "playback" on the UI.
-// It assumes the existence of DayManager and InputManager and of course the dialog box
-// UI element itself, and is coupled only with these three things.
-// Gets told by events from DayManager when, how & what to playback in a dialog.
+class Dialog
+{
+    public string[] lines;
+    public float speed;
+
+    public Dialog(string[] lines, float speed)
+    {
+        this.lines = lines;
+        this.speed = speed;
+    }
+}
+
+// The dialog manager handles all dialog events.
+// Right now it's doing UI stuff too, which is a big fat TODO to break off.
 public class DialogManager : MonoBehaviour
 {
-    DayManager dayManager;
+    StateManager stateManager;
     InputManager inputManager;
     InteractManager interactManager;
 
@@ -46,8 +56,6 @@ public class DialogManager : MonoBehaviour
         dialogPrompt = GameObject.Find("DialogPrompt").GetComponent<Image>();
         dialogPromptAnim = GameObject.Find("DialogPrompt").GetComponent<Animator>();
 
-        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
-        dayManager.OnDialog += HandleGlobalDialogEvent;
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
         interactManager = GameObject.Find("InteractManager").GetComponent<InteractManager>();
@@ -56,21 +64,21 @@ public class DialogManager : MonoBehaviour
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        if (dayManager.state == DayManager.State.Dialog && args.buttonCode == InputManager.A)
+        if (stateManager.state == StateManager.State.Dialog && args.buttonCode == InputManager.A)
             dialogNext = true;
     }
 
-    private void HandleGlobalDialogEvent(object sender, DayManager.DialogArgs args)
-    {
-        dayManager.SetState(DayManager.State.Dialog);
-        // TODO: either here in the args or in daymanager, have an option to make player automatically turn to face the subject of dialog
-        // TODO: either here in the args or in daymanager, have an option to make the camera focus on a different object temporarily
-        StartCoroutine(DialogPlay(args.lines, args.speed));
-    }
+    // private void HandleGlobalDialogEvent(object sender, StateManager.DialogArgs args)
+    // {
+    //     stateManager.SetState(StateManager.State.Dialog);
+    //     // TODO: either here in the args or in interactmanager, have an option to make player automatically turn to face the subject of dialog
+    //     // TODO: either here in the args or in interactmanager, have an option to make the camera focus on a different object temporarily
+    //     StartCoroutine(DialogPlay(args.lines, args.speed));
+    // }
 
     private void HandleLocalDialogEvent(object sender, InteractManager.LocalDialogArgs args)
     {
-        dayManager.SetState(DayManager.State.Dialog);
+        stateManager.SetState(StateManager.State.Dialog);
         StartCoroutine(DialogPlay(args.lines, args.speed));
     }
 
@@ -81,7 +89,7 @@ public class DialogManager : MonoBehaviour
         dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
         Tween t1 = TweenBox("Up", 1f);
         canvasGroup.DOFade(1f, 1f).From(0f);
-        yield return new WaitWhile(() => t1.IsPlaying());
+        yield return new WaitWhile(() => t1 != null && t1.IsPlaying());
 
         // STEP 2 : Dialog display and input to go through it.
         for (int line = 0; line < lines.Length; line++)
@@ -104,7 +112,7 @@ public class DialogManager : MonoBehaviour
         // STEP 3 : Finish, deconstruct, and send dialog box back down
         TweenBox("Down", 1f);
         canvasGroup.DOFade(0f, 0.8f);
-        dayManager.SetState(DayManager.State.Normal);
+        stateManager.SetState(StateManager.State.Normal);
         OnDialogFinish?.Invoke(this, EventArgs.Empty);
     }
 
@@ -122,7 +130,6 @@ public class DialogManager : MonoBehaviour
     // Unsubscribe from all events
     void OnDestroy()
     {
-        dayManager.OnDialog -= HandleGlobalDialogEvent;
         interactManager.OnLocalDialog -= HandleLocalDialogEvent;
         inputManager.OnButtonDown -= HandleInputEvent;
     }

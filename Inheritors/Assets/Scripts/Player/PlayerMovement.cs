@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
         Direct
     }
 
-    DayManager dayManager;
+    StateManager stateManager;
     InputManager inputManager;
 
     [SerializeField] private float m_moveSpeed = 2;
@@ -51,12 +51,12 @@ public class PlayerMovement : MonoBehaviour
         if (!m_animator) { gameObject.GetComponent<Animator>(); }
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
-        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
+        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
 
-        dayManager.OnState += HandleState;
+        stateManager.OnState += HandleState;
     }
 
-    private void HandleState(object sender, DayManager.StateArgs args)
+    private void HandleState(object sender, StateManager.StateArgs args)
     {
         // Not implemented
     }
@@ -198,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
         if (direction != Vector3.zero)
         {
             // Ensure we're in a good state to change rotation & position.
-            if (dayManager.state != DayManager.State.Dialog || dayManager.state != DayManager.State.Inert)
+            if (stateManager.state != StateManager.State.Dialog || stateManager.state != StateManager.State.Inert)
             {
                 m_currentDirection = Vector3.Slerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
                 transform.rotation = Quaternion.LookRotation(m_currentDirection);

@@ -3,30 +3,19 @@ using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class Day0 : MonoBehaviour
 {
-    DayManager dayManager;
+    StateManager stateManager;
     TaskManager taskManager;
     DialogManager dialogManager;
     InputManager inputManager;
     AudioManager audioManager;
     TransitionManager transitionManager;
+    CameraManager cameraManager;
+    UIManager uiManager;
     bool dialogFinished = false;
-
-    CanvasGroup controls;
-
-    class Dialog
-    {
-        public string[] lines;
-        public float speed;
-
-        public Dialog(string[] lines, float speed)
-        {
-            this.lines = lines;
-            this.speed = speed;
-        }
-    }
 
     Dialog opening;
 
@@ -36,26 +25,43 @@ public class Day0 : MonoBehaviour
         SubscribeToEvents();
         InitializeDialogs();
         StartCoroutine("Intro");
-        Debug.Log("Press Enter to STOP the intro.");
+        Debug.Log("Press Backspace to kill the intro.");
+
+        // Unused
+        // string[] tutorialTasks = {
+        //     "Get wood for the fire",
+        //     "Put wood on the fire",
+        //     "Listen to mama's story"
+        // };
+
+        // foreach (string task in tutorialTasks)
+        //     taskManager.AddTask(task);
+        // taskManager.SetActiveTask(1);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             StopCoroutine("Intro");
-            dayManager.SetState(DayManager.State.Normal);
+            stateManager.SetState(StateManager.State.Normal);
+            cameraManager.SwitchToPlayerCam();
+            // TODO: kill the rest for debugging, once systems are in place and it's easy
+            //
         }
     }
 
+    // TODO: make prefabs of pickup zone fx that we can spawn in
     IEnumerator Intro()
     {
         yield return null;
-        controls.alpha = 0f; // TODO: break off into UI manager
+        uiManager.ControlsSetAlpha(0f);
+        cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
 
         // 01. Darken screen, fade in sound.
-        dayManager.SetState(DayManager.State.Inert);
-        transitionManager.SetAlpha(1f);
+        stateManager.SetState(StateManager.State.Inert);
+        transitionManager.SetColor(Color.black);
+        transitionManager.Show();
         audioManager.SetVolume(0f);
         yield return new WaitForSecondsRealtime(2f);
         audioManager.Play(true);
@@ -63,28 +69,28 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSecondsRealtime(4f);
 
         // 02. Kick off the intro narration dialog.
-        dayManager.NewDialog(opening.lines, opening.speed);
-        yield return new WaitUntil(() => dialogFinished);
-        dialogFinished = false;
-        dayManager.SetState(DayManager.State.Inert);
+        // stateManager.NewDialog(opening.lines, opening.speed); // TODO: send this to dialog manager, not state
+        // yield return new WaitUntil(() => dialogFinished); // TODO: dialog manager should have a method that tells us if a dialog is finished. We shouldn't handle bools for it in here.
+        // dialogFinished = false;
+        // stateManager.SetState(StateManager.State.Inert);
 
         // 03. Fade away the blackness.
         yield return new WaitForSecondsRealtime(2f);
-        transitionManager.FadeTo(0f, 8f);
+        transitionManager.Hide(8f);
         yield return new WaitForSecondsRealtime(5f);
 
         // 04. Change view from fire to player.
-        GameObject.Find("CM vcam fire").GetComponent<CinemachineVirtualCamera>().Priority = 0; // TODO: how bout a camera manager while we're at it.
+        cameraManager.SwitchToPlayerCam();
         yield return new WaitForSecondsRealtime(2f);
 
         // 05. Display tutorial controls.
-        controls.DOFade(1f, 1f); // TODO: break off into UI manager
+        uiManager.ShowControls();
         yield return new WaitForSecondsRealtime(.5f);
 
         // 06. Let player control. When they move the joystick, fade out prompts.
-        dayManager.SetState(DayManager.State.Normal);
+        stateManager.SetState(StateManager.State.Normal);
         yield return new WaitUntil(() => inputManager.leftStickHorizontal != 0 || inputManager.leftStickVertical != 0);
-        controls.DOFade(0f, 1f); // TODO: break off into UI manager
+        uiManager.HideControls();
     }
 
     void InitializeReferences()
@@ -92,11 +98,11 @@ public class Day0 : MonoBehaviour
         audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         taskManager = GameObject.Find("TaskManager").GetComponent<TaskManager>();
         dialogManager = GameObject.Find("DialogManager").GetComponent<DialogManager>();
-        dayManager = GameObject.Find("DayManager").GetComponent<DayManager>();
+        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
         transitionManager = GameObject.Find("TransitionManager").GetComponent<TransitionManager>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
-
-        controls = GameObject.Find("Controls").GetComponent<CanvasGroup>(); // TODO: break off into UI manager
+        cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
+        uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
     }
 
     void SubscribeToEvents()
