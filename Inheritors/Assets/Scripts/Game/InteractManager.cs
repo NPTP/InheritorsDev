@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 // TODO: still more work differentiating pickups and dialog. Put them on different buttons.
 // Make the UI a separate module maybe. etc.
+
+// TODO: make prefabs of pickup zone fx that we can spawn in
+
 public class InteractManager : MonoBehaviour
 {
     GameObject player;

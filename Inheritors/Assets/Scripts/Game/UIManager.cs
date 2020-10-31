@@ -10,13 +10,16 @@ public class UIManager : MonoBehaviour
 {
     DialogManager dialogManager;
 
-    public event EventHandler OnDialogFinish;
-
     // TODO: a bunch of subclasses of UIManager, one for each UI element, with its own attributes
     // and methods to call to operate it. They don't need to talk to each other, the UIManager is
     // just for displaying stuff, not tracking information (that happens in task, state, pickup, etc).
 
-    DialogBox dialogBox = new DialogBox();
+    public class TaskList
+    {
+
+    }
+
+    public DialogBox dialogBox = new DialogBox();
     public class DialogBox
     {
         public CanvasGroup canvasGroup;
@@ -24,7 +27,56 @@ public class UIManager : MonoBehaviour
         public TMP_Text text;
         public Image prompt;
         public Animator animator;
+        Tween promptTween = null;
+        float moveTime = 1f;
+        float fadeTime = 0.8f;
         float yPos = 192f;
+
+        public Tween SetUp()
+        {
+            text.maxVisibleCharacters = 0;
+            prompt.color = Helper.ChangedAlpha(prompt.color, 0);
+            Tween t = BringUpDown("Up", moveTime);
+            canvasGroup.DOFade(1f, fadeTime).From(0f);
+            return t;
+        }
+
+        public Tween TearDown()
+        {
+            prompt.enabled = false;
+            Tween t = BringUpDown("Down", moveTime);
+            canvasGroup.DOFade(0f, fadeTime);
+            return t;
+        }
+
+        Tween BringUpDown(string dir, float duration)
+        {
+            float y = dir == "Up" ? yPos : -yPos;
+            return DOTween.To(
+                () => rectTransform.anchoredPosition3D,
+                x => rectTransform.anchoredPosition3D = x,
+                new Vector3(0f, y, 0f),
+                duration
+            );
+        }
+
+        public void SetLine(string line)
+        {
+            text.text = line;
+        }
+
+        public void ShowPrompt()
+        {
+            prompt.enabled = true;
+            promptTween = prompt.DOFade(1f, 0.25f);
+        }
+
+        public void HidePrompt()
+        {
+            if (promptTween != null) promptTween.Kill();
+            prompt.color = Helper.ChangedAlpha(prompt.color, 0f);
+            prompt.enabled = false;
+        }
     }
 
     CanvasGroup controls; // TODO: fix up with its own class
@@ -33,10 +85,10 @@ public class UIManager : MonoBehaviour
     {
         InitializeDialogBox();
         controls = GameObject.Find("Controls").GetComponent<CanvasGroup>(); // TODO: fix up with its own class
-        // - Set up task list object
-        // - Set up item carry slot object
+        // - Set up task header, list, and item carry slot object (all top left UI as one thing)
         // - Set up pickup/drop prompt object
         // - Set up dialog prompt object
+        // - Set up controls prompt object
         // That's it I think?
     }
 
@@ -50,56 +102,10 @@ public class UIManager : MonoBehaviour
         controls.DOFade(0f, duration);
     }
 
-
     public void ControlsSetAlpha(float alpha)
     {
         controls.alpha = alpha;
     }
-
-    // IEnumerator DialogPlay(string[] lines, float speed)
-    // {
-    //     // STEP 1 : Set up, bring dialog box up to screen
-    //     dialogText.maxVisibleCharacters = 0;
-    //     dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
-    //     Tween t1 = TweenBox("Up", 1f);
-    //     canvasGroup.DOFade(1f, 1f).From(0f);
-    //     yield return new WaitWhile(() => t1.IsPlaying());
-
-    //     // STEP 2 : Dialog display and input to go through it.
-    //     for (int line = 0; line < lines.Length; line++)
-    //     {
-    //         dialogText.text = lines[line];
-    //         for (int i = 0; i <= dialogText.text.Length; i++)
-    //         {
-    //             dialogText.maxVisibleCharacters = i;
-    //             yield return new WaitForSecondsRealtime(speed);
-    //         }
-    //         dialogPrompt.enabled = true;
-    //         Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, Helper.ChangedAlpha(dialogPrompt.color, 1f), .25f);
-    //         dialogNext = false;
-    //         yield return new WaitUntil(() => dialogNext);
-    //         yield return null; // Must put a frame between inputs
-    //         if (t2 != null) t2.Kill();
-    //         dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0f);
-    //     }
-
-    //     // STEP 3 : Finish, deconstruct, and send dialog box back down
-    //     TweenBox("Down", 1f);
-    //     canvasGroup.DOFade(0f, 0.8f);
-    //     stateManager.SetState(StateManager.State.Normal);
-    //     OnDialogFinish?.Invoke(this, EventArgs.Empty);
-    // }
-
-    // Tween TweenBox(string dir, float duration)
-    // {
-    //     float yPos = dir == "Up" ? dialogBoxYPosition : -dialogBoxYPosition;
-    //     return DOTween.To(
-    //         () => rectTransform.anchoredPosition3D,
-    //         x => rectTransform.anchoredPosition3D = x,
-    //         new Vector3(0f, yPos, 0f),
-    //         duration
-    //     );
-    // }
 
     // Unsubscribe from all events
     void OnDestroy()

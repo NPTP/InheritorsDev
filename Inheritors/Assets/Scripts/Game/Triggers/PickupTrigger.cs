@@ -38,7 +38,7 @@ public class PickupTrigger : MonoBehaviour
 
     public void GetPutDown()
     {
-        transform.DOMoveY(playerTransform.position.y, .25f); // TODO: this will cause problems on height changes. We'll need collision later.
+        transform.DOMoveY(playerTransform.position.y, .25f); // TODO: this will cause problems on height changes. We'll need collision later, or a raycast.
         sphereCollider.enabled = true;
         itemCollider.enabled = true;
         l.enabled = true;
@@ -49,7 +49,6 @@ public class PickupTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.Log("enter");
             OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
             itemTransform.DOScale(itemLocalScale * 1.15f, .25f);
         }
@@ -59,7 +58,6 @@ public class PickupTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.Log("exit");
             OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
             itemTransform.DOScale(itemLocalScale, .25f);
         }

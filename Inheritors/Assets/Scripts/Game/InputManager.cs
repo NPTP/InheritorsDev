@@ -117,6 +117,11 @@ public class InputManager : MonoBehaviour
         allowInput = false;
     }
 
+    public bool IsLeftJoystickMoving()
+    {
+        return leftStickHorizontal != 0 || leftStickVertical != 0;
+    }
+
     void GetJoystickAxes()
     {
         leftStickHorizontal = Input.GetAxis("LeftStickHorizontal");

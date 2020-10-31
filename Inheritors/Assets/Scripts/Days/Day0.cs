@@ -15,7 +15,6 @@ public class Day0 : MonoBehaviour
     TransitionManager transitionManager;
     CameraManager cameraManager;
     UIManager uiManager;
-    bool dialogFinished = false;
 
     Dialog opening;
 
@@ -44,52 +43,51 @@ public class Day0 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             StopCoroutine("Intro");
-            stateManager.SetState(StateManager.State.Normal);
             cameraManager.SwitchToPlayerCam();
-            // TODO: kill the rest for debugging, once systems are in place and it's easy
-            //
+            transitionManager.Hide();
+            dialogManager.EndDialog();
+            // uiManager?
+            // audioManager ?
+            stateManager.SetState(StateManager.State.Normal);
         }
     }
 
-    // TODO: make prefabs of pickup zone fx that we can spawn in
     IEnumerator Intro()
     {
-        yield return null;
+        // yield return null;
         uiManager.ControlsSetAlpha(0f);
         cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
 
-        // 01. Darken screen, fade in sound.
+        /* 01. Darken screen, fade in sound. */
         stateManager.SetState(StateManager.State.Inert);
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
         audioManager.SetVolume(0f);
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSeconds(2f);
         audioManager.Play(true);
         audioManager.FadeTo(0.5f, 5f, Ease.InOutCubic);
-        yield return new WaitForSecondsRealtime(4f);
+        yield return new WaitForSeconds(4f);
 
-        // 02. Kick off the intro narration dialog.
-        // stateManager.NewDialog(opening.lines, opening.speed); // TODO: send this to dialog manager, not state
-        // yield return new WaitUntil(() => dialogFinished); // TODO: dialog manager should have a method that tells us if a dialog is finished. We shouldn't handle bools for it in here.
-        // dialogFinished = false;
-        // stateManager.SetState(StateManager.State.Inert);
+        /* 02. Kick off the intro narration dialog. */
+        dialogManager.NewDialog(opening, StateManager.State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        // 03. Fade away the blackness.
-        yield return new WaitForSecondsRealtime(2f);
+        /* 03. Fade away the blackness. */
+        yield return new WaitForSeconds(2f);
         transitionManager.Hide(8f);
-        yield return new WaitForSecondsRealtime(5f);
+        yield return new WaitForSeconds(5f);
 
-        // 04. Change view from fire to player.
+        /* 04. Change view from fire to player. */
         cameraManager.SwitchToPlayerCam();
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSeconds(2f);
 
-        // 05. Display tutorial controls.
+        /* 05. Display tutorial controls. */
         uiManager.ShowControls();
-        yield return new WaitForSecondsRealtime(.5f);
+        yield return new WaitForSeconds(.5f);
 
-        // 06. Let player control. When they move the joystick, fade out prompts.
+        /* 06. Let player control. When they move the joystick, fade out prompts. */
         stateManager.SetState(StateManager.State.Normal);
-        yield return new WaitUntil(() => inputManager.leftStickHorizontal != 0 || inputManager.leftStickVertical != 0);
+        yield return new WaitUntil(inputManager.IsLeftJoystickMoving);
         uiManager.HideControls();
     }
 
@@ -107,12 +105,7 @@ public class Day0 : MonoBehaviour
 
     void SubscribeToEvents()
     {
-        dialogManager.OnDialogFinish += HandleDialogFinish;
-    }
-
-    void HandleDialogFinish(object sender, EventArgs args)
-    {
-        dialogFinished = true;
+        // Nothing at present.
     }
 
     void InitializeDialogs()

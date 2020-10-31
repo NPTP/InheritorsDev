@@ -5,7 +5,8 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 
-class Dialog
+// Class for encapsulating dialogs sent from other classes to be played back.
+public class Dialog
 {
     public string[] lines;
     public float speed;
@@ -17,24 +18,18 @@ class Dialog
     }
 }
 
-// The dialog manager handles all dialog events.
-// Right now it's doing UI stuff too, which is a big fat TODO to break off.
+// The dialog manager handles all dialog events and sends info the UI to control it.
 public class DialogManager : MonoBehaviour
 {
     StateManager stateManager;
     InputManager inputManager;
     InteractManager interactManager;
+    UIManager uiManager;
 
-    public event EventHandler OnDialogFinish;
-
-    GameObject dialogBox;
-    CanvasGroup canvasGroup;
-    RectTransform rectTransform;
-    TMP_Text dialogText;
-    Image dialogPrompt;
     Animator dialogPromptAnim;
     float dialogBoxYPosition = 192f;
     bool dialogNext = false;
+    bool dialogFinished = true;
 
     public class Tools
     {
@@ -49,13 +44,9 @@ public class DialogManager : MonoBehaviour
 
     void Start()
     {
-        dialogBox = GameObject.FindGameObjectWithTag("DialogBox");
-        canvasGroup = dialogBox.GetComponent<CanvasGroup>();
-        rectTransform = dialogBox.GetComponent<RectTransform>();
-        dialogText = GameObject.Find("DialogText").GetComponent<TMP_Text>();
-        dialogPrompt = GameObject.Find("DialogPrompt").GetComponent<Image>();
         dialogPromptAnim = GameObject.Find("DialogPrompt").GetComponent<Animator>();
-
+        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
+        uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
         interactManager = GameObject.Find("InteractManager").GetComponent<InteractManager>();
@@ -64,67 +55,65 @@ public class DialogManager : MonoBehaviour
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        if (stateManager.state == StateManager.State.Dialog && args.buttonCode == InputManager.A)
+        if (stateManager.GetState() == StateManager.State.Dialog && args.buttonCode == InputManager.A)
             dialogNext = true;
     }
 
-    // private void HandleGlobalDialogEvent(object sender, StateManager.DialogArgs args)
-    // {
-    //     stateManager.SetState(StateManager.State.Dialog);
-    //     // TODO: either here in the args or in interactmanager, have an option to make player automatically turn to face the subject of dialog
-    //     // TODO: either here in the args or in interactmanager, have an option to make the camera focus on a different object temporarily
-    //     StartCoroutine(DialogPlay(args.lines, args.speed));
-    // }
+    public void EndDialog()
+    {
+        if (stateManager.GetState() == StateManager.State.Dialog && !dialogFinished)
+        {
+            uiManager.dialogBox.TearDown();
+            dialogFinished = true;
+        }
+    }
+
+    // Start a new dialog and switch into specified state after dialog finishes
+    public void NewDialog(Dialog dialog, StateManager.State finishState = StateManager.State.Normal)
+    {
+        dialogFinished = false;
+        stateManager.SetState(StateManager.State.Dialog);
+        StartCoroutine(DialogPlay(dialog.lines, dialog.speed, finishState));
+    }
 
     private void HandleLocalDialogEvent(object sender, InteractManager.LocalDialogArgs args)
     {
         stateManager.SetState(StateManager.State.Dialog);
-        StartCoroutine(DialogPlay(args.lines, args.speed));
+        StartCoroutine(DialogPlay(args.lines, args.speed, StateManager.State.Normal));
     }
 
-    IEnumerator DialogPlay(string[] lines, float speed)
+    IEnumerator DialogPlay(string[] lines, float speed, StateManager.State finishState)
     {
         // STEP 1 : Set up, bring dialog box up to screen
-        dialogText.maxVisibleCharacters = 0;
-        dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
-        Tween t1 = TweenBox("Up", 1f);
-        canvasGroup.DOFade(1f, 1f).From(0f);
-        yield return new WaitWhile(() => t1 != null && t1.IsPlaying());
+        dialogFinished = false;
+        Tween setup = uiManager.dialogBox.SetUp();
+        yield return new WaitWhile(() => setup != null && setup.IsPlaying());
 
         // STEP 2 : Dialog display and input to go through it.
         for (int line = 0; line < lines.Length; line++)
         {
-            dialogText.text = lines[line];
-            for (int i = 0; i <= dialogText.text.Length; i++)
+            uiManager.dialogBox.SetLine(lines[line]);
+            for (int i = 0; i <= lines[line].Length; i++)
             {
-                dialogText.maxVisibleCharacters = i;
-                yield return new WaitForSecondsRealtime(speed);
+                uiManager.dialogBox.text.maxVisibleCharacters = i;
+                yield return new WaitForSeconds(speed);
             }
-            dialogPrompt.enabled = true;
-            Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, Helper.ChangedAlpha(dialogPrompt.color, 1f), .25f);
+            uiManager.dialogBox.ShowPrompt();
             dialogNext = false;
             yield return new WaitUntil(() => dialogNext);
-            yield return null; // Must put a frame between inputs
-            if (t2 != null) t2.Kill();
-            dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0f);
+            // yield return null; // Must put a frame between inputs
+            uiManager.dialogBox.HidePrompt();
         }
 
-        // STEP 3 : Finish, deconstruct, and send dialog box back down
-        TweenBox("Down", 1f);
-        canvasGroup.DOFade(0f, 0.8f);
-        stateManager.SetState(StateManager.State.Normal);
-        OnDialogFinish?.Invoke(this, EventArgs.Empty);
+        // STEP 3 : Finish, tear down dialog box, set state to specified.
+        uiManager.dialogBox.TearDown();
+        dialogFinished = true;
+        stateManager.SetState(finishState);
     }
 
-    Tween TweenBox(string dir, float duration)
+    public bool IsDialogFinished()
     {
-        float yPos = dir == "Up" ? dialogBoxYPosition : -dialogBoxYPosition;
-        return DOTween.To(
-            () => rectTransform.anchoredPosition3D,
-            x => rectTransform.anchoredPosition3D = x,
-            new Vector3(0f, yPos, 0f),
-            duration
-        );
+        return dialogFinished;
     }
 
     // Unsubscribe from all events
@@ -134,3 +123,38 @@ public class DialogManager : MonoBehaviour
         inputManager.OnButtonDown -= HandleInputEvent;
     }
 }
+
+
+// IEnumerator DialogPlay(string[] lines, float speed)
+// {
+//     // STEP 1 : Set up, bring dialog box up to screen
+//     dialogText.maxVisibleCharacters = 0;
+//     dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
+//     Tween t1 = TweenBox("Up", 1f);
+//     canvasGroup.DOFade(1f, 1f).From(0f);
+//     yield return new WaitWhile(() => t1.IsPlaying());
+
+//     // STEP 2 : Dialog display and input to go through it.
+//     for (int line = 0; line < lines.Length; line++)
+//     {
+//         dialogText.text = lines[line];
+//         for (int i = 0; i <= dialogText.text.Length; i++)
+//         {
+//             dialogText.maxVisibleCharacters = i;
+//             yield return new WaitForSecondsRealtime(speed);
+//         }
+//         dialogPrompt.enabled = true;
+//         Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, Helper.ChangedAlpha(dialogPrompt.color, 1f), .25f);
+//         dialogNext = false;
+//         yield return new WaitUntil(() => dialogNext);
+//         yield return null; // Must put a frame between inputs
+//         if (t2 != null) t2.Kill();
+//         dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0f);
+//     }
+
+//     // STEP 3 : Finish, deconstruct, and send dialog box back down
+//     TweenBox("Down", 1f);
+//     canvasGroup.DOFade(0f, 0.8f);
+//     stateManager.SetState(StateManager.State.Normal);
+//     OnDialogFinish?.Invoke(this, EventArgs.Empty);
+// }
