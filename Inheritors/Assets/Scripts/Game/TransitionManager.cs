@@ -8,7 +8,7 @@ public class TransitionManager : MonoBehaviour
     Image transition;
     CanvasGroup canvasGroup;
 
-    void Start()
+    void Awake()
     {
         GameObject go = GameObject.Find("Transition");
         transition = go.GetComponent<Image>();

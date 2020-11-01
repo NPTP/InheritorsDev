@@ -54,8 +54,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator Intro()
     {
-        // yield return null;
-        uiManager.ControlsSetAlpha(0f);
+        uiManager.controls.SetAlpha(0f);
         cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
 
         /* 01. Darken screen, fade in sound. */
@@ -82,13 +81,13 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         /* 05. Display tutorial controls. */
-        uiManager.ShowControls();
+        uiManager.controls.Show();
         yield return new WaitForSeconds(.5f);
 
         /* 06. Let player control. When they move the joystick, fade out prompts. */
         stateManager.SetState(StateManager.State.Normal);
         yield return new WaitUntil(inputManager.IsLeftJoystickMoving);
-        uiManager.HideControls();
+        uiManager.controls.Hide();
     }
 
     void InitializeReferences()

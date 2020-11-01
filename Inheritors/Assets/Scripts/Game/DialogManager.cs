@@ -26,7 +26,6 @@ public class DialogManager : MonoBehaviour
     InteractManager interactManager;
     UIManager uiManager;
 
-    Animator dialogPromptAnim;
     float dialogBoxYPosition = 192f;
     bool dialogNext = false;
     bool dialogFinished = true;
@@ -42,9 +41,8 @@ public class DialogManager : MonoBehaviour
         public static float FAST = 0.01f;
     }
 
-    void Start()
+    void Awake()
     {
-        dialogPromptAnim = GameObject.Find("DialogPrompt").GetComponent<Animator>();
         stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
         uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
@@ -95,7 +93,7 @@ public class DialogManager : MonoBehaviour
             uiManager.dialogBox.SetLine(lines[line]);
             for (int i = 0; i <= lines[line].Length; i++)
             {
-                uiManager.dialogBox.text.maxVisibleCharacters = i;
+                uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
                 yield return new WaitForSeconds(speed);
             }
             uiManager.dialogBox.ShowPrompt();
@@ -128,8 +126,8 @@ public class DialogManager : MonoBehaviour
 // IEnumerator DialogPlay(string[] lines, float speed)
 // {
 //     // STEP 1 : Set up, bring dialog box up to screen
-//     dialogText.maxVisibleCharacters = 0;
-//     dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0);
+//     dialogBoxText.maxVisibleCharacters = 0;
+//     dialogBoxPrompt.color = Helper.ChangedAlpha(dialogBoxPrompt.color, 0);
 //     Tween t1 = TweenBox("Up", 1f);
 //     canvasGroup.DOFade(1f, 1f).From(0f);
 //     yield return new WaitWhile(() => t1.IsPlaying());
@@ -137,19 +135,19 @@ public class DialogManager : MonoBehaviour
 //     // STEP 2 : Dialog display and input to go through it.
 //     for (int line = 0; line < lines.Length; line++)
 //     {
-//         dialogText.text = lines[line];
-//         for (int i = 0; i <= dialogText.text.Length; i++)
+//         dialogBoxText.text = lines[line];
+//         for (int i = 0; i <= dialogBoxText.text.Length; i++)
 //         {
-//             dialogText.maxVisibleCharacters = i;
+//             dialogBoxText.maxVisibleCharacters = i;
 //             yield return new WaitForSecondsRealtime(speed);
 //         }
-//         dialogPrompt.enabled = true;
-//         Tween t2 = DOTween.To(() => dialogPrompt.color, x => dialogPrompt.color = x, Helper.ChangedAlpha(dialogPrompt.color, 1f), .25f);
+//         dialogBoxPrompt.enabled = true;
+//         Tween t2 = DOTween.To(() => dialogBoxPrompt.color, x => dialogBoxPrompt.color = x, Helper.ChangedAlpha(dialogBoxPrompt.color, 1f), .25f);
 //         dialogNext = false;
 //         yield return new WaitUntil(() => dialogNext);
 //         yield return null; // Must put a frame between inputs
 //         if (t2 != null) t2.Kill();
-//         dialogPrompt.color = Helper.ChangedAlpha(dialogPrompt.color, 0f);
+//         dialogBoxPrompt.color = Helper.ChangedAlpha(dialogBoxPrompt.color, 0f);
 //     }
 
 //     // STEP 3 : Finish, deconstruct, and send dialog box back down

@@ -10,6 +10,7 @@ TagManager:
   - Pickup
   - Putdown
   - DialogBox
+  - UI_Prompt
   layers:
   - Default
   - TransparentFX
