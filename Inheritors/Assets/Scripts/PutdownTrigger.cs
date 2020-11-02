@@ -21,14 +21,5 @@ public class PutdownTrigger : MonoBehaviour
         ps.Play();
     }
 
-    public void GetPutdown()
-    {
-        Debug.Log("Player put item down into me.");
-        ps.Stop();
-        foreach (Transform child in transform)
-            Destroy(child.gameObject);
-        GameObject.Find("TaskManager").GetComponent<TaskManager>().CompleteTask(2);
-        GameObject.Find("TaskManager").GetComponent<TaskManager>().CompleteTask(3);
-        Destroy(gameObject);
-    }
+
 }

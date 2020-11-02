@@ -11,10 +11,9 @@ public class Dialog
     public string[] lines;
     public float speed;
 
-    public Dialog(string[] lines, float speed)
+    public Dialog()
     {
-        this.lines = lines;
-        this.speed = speed;
+        this.speed = DialogManager.Speed.FAST;
     }
 }
 
@@ -43,12 +42,11 @@ public class DialogManager : MonoBehaviour
 
     void Awake()
     {
-        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
-        uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
-        inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
+        stateManager = FindObjectOfType<StateManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        inputManager = FindObjectOfType<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
-        interactManager = GameObject.Find("InteractManager").GetComponent<InteractManager>();
-        interactManager.OnLocalDialog += HandleLocalDialogEvent;
+        interactManager = FindObjectOfType<InteractManager>();
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
@@ -72,12 +70,6 @@ public class DialogManager : MonoBehaviour
         dialogFinished = false;
         stateManager.SetState(StateManager.State.Dialog);
         StartCoroutine(DialogPlay(dialog.lines, dialog.speed, finishState));
-    }
-
-    private void HandleLocalDialogEvent(object sender, InteractManager.LocalDialogArgs args)
-    {
-        stateManager.SetState(StateManager.State.Dialog);
-        StartCoroutine(DialogPlay(args.lines, args.speed, StateManager.State.Normal));
     }
 
     IEnumerator DialogPlay(string[] lines, float speed, StateManager.State finishState)
@@ -117,7 +109,6 @@ public class DialogManager : MonoBehaviour
     // Unsubscribe from all events
     void OnDestroy()
     {
-        interactManager.OnLocalDialog -= HandleLocalDialogEvent;
         inputManager.OnButtonDown -= HandleInputEvent;
     }
 }

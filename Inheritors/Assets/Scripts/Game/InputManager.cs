@@ -100,6 +100,7 @@ public class InputManager : MonoBehaviour
                 break;
             case StateManager.State.Inert:
                 BlockInput();
+                ZeroAxes();
                 break;
             default:
                 Debug.Log("Input manager tried to handle unknown State event.");

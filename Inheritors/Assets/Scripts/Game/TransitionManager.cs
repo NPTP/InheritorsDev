@@ -31,11 +31,11 @@ public class TransitionManager : MonoBehaviour
         canvasGroup.DOFade(alpha, duration).SetEase(ease);
     }
 
-    public void Show(float showTime = 0f)
+    public Tween Show(float showTime = 0f)
     {
         transition.enabled = true;
         canvasGroup.enabled = true;
-        canvasGroup.DOFade(1f, showTime);
+        return canvasGroup.DOFade(1f, showTime);
     }
 
     public void Hide(float hideTime = 0f)

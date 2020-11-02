@@ -1,11 +1,14 @@
 ﻿using System;
 using UnityEngine;
 
-// Trigger to be placed around any pickup, sends events to InteractManager.
-public class DialogTrigger : MonoBehaviour
+public class DialogTrigger : MonoBehaviour, Trigger
 {
     public event EventHandler OnDialogEnterRange;
     public event EventHandler OnDialogLeaveRange;
+    public event EventHandler OnTriggerActivate;
+
+    public bool triggerEnabled = true;
+    public string triggerTag;
 
     Transform playerTransform;
     SphereCollider sphereCollider;
@@ -16,14 +19,24 @@ public class DialogTrigger : MonoBehaviour
         sphereCollider = GetComponent<SphereCollider>();
     }
 
-    public void StartDialog()
+    public string GetTag()
+    {
+        return triggerTag;
+    }
+
+    public void Enable()
+    {
+        sphereCollider.enabled = true;
+    }
+
+    public void Disable()
     {
         sphereCollider.enabled = false;
     }
 
-    public void EndDialog()
+    public void Remove()
     {
-        sphereCollider.enabled = true;
+        Destroy(this.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)

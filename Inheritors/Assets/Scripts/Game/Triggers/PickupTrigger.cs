@@ -3,10 +3,17 @@ using UnityEngine;
 using DG.Tweening;
 
 // Trigger to be placed around any pickup, sends events to InteractManager.
-public class PickupTrigger : MonoBehaviour
+public class PickupTrigger : MonoBehaviour, Trigger
 {
+    PickupManager pickupManager;
+
     public event EventHandler OnPickupEnterRange;
     public event EventHandler OnPickupLeaveRange;
+    public event EventHandler OnTriggerActivate;
+
+    public bool triggerEnabled = true;
+    public string triggerTag;
+    public string pickupType;
 
     Transform playerTransform;
     Collider sphereCollider;
@@ -15,6 +22,13 @@ public class PickupTrigger : MonoBehaviour
     BoxCollider itemCollider;
     Light l;
     ParticleSystem ps;
+
+    bool pickedUp = false; // Used for drop triggers to know if the item has been dropped inside yet.
+
+    void Awake()
+    {
+        pickupManager = FindObjectOfType<PickupManager>();
+    }
 
     void Start()
     {
@@ -25,29 +39,61 @@ public class PickupTrigger : MonoBehaviour
         itemCollider = itemTransform.gameObject.GetComponent<BoxCollider>();
         l = transform.GetChild(1).gameObject.GetComponent<Light>();
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
+
+        if (triggerEnabled) Enable();
+        else Disable();
     }
 
-    public void GetPickedUp()
+    public string GetTag()
     {
-        itemTransform.DOScale(itemLocalScale, .25f);
-        sphereCollider.enabled = false;
-        itemCollider.enabled = false;
-        l.enabled = false;
-        ps.Stop();
+        return triggerTag;
     }
 
-    public void GetPutDown()
+    public void Enable()
     {
-        transform.DOMoveY(playerTransform.position.y, .25f); // TODO: this will cause problems on height changes. We'll need collision later, or a raycast.
+        triggerEnabled = true;
         sphereCollider.enabled = true;
         itemCollider.enabled = true;
         l.enabled = true;
         ps.Play();
     }
 
+    public void Disable()
+    {
+        triggerEnabled = false;
+        sphereCollider.enabled = false;
+        itemCollider.enabled = false;
+        l.enabled = false;
+        ps.Stop();
+    }
+
+    public void Remove()
+    {
+        Destroy(this.gameObject);
+    }
+
+    public void GetPickedUp()
+    {
+        pickedUp = true;
+        OnTriggerActivate?.Invoke(this, EventArgs.Empty);
+        itemTransform.DOScale(itemLocalScale, .25f);
+        Disable();
+    }
+
+    // public void GetPutDown()
+    // {
+    //     transform.DOMoveY(playerTransform.position.y, .25f);
+    //     Enable();
+    // }
+
+    public void GetPlacedInDropTrigger()
+    {
+        Debug.Log("Item placed in drop trigger!");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (triggerEnabled && !pickupManager.IsHoldingItem() && other.tag == "Player")
         {
             OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
             itemTransform.DOScale(itemLocalScale * 1.15f, .25f);
@@ -56,7 +102,7 @@ public class PickupTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Player")
+        if (triggerEnabled && !pickupManager.IsHoldingItem() && other.tag == "Player")
         {
             OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
             itemTransform.DOScale(itemLocalScale, .25f);

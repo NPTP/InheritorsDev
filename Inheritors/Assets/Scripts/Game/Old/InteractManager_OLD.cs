@@ -4,18 +4,18 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 
-public class InteractManager : MonoBehaviour
+public class InteractManager_OLD : MonoBehaviour
 {
     GameObject player;
     StateManager stateManager;
     InputManager inputManager;
     UIManager uiManager;
 
-    Trigger[] triggers;
-
+    DialogTrigger[] dialogTriggers;
     bool dialogInRange = false;
     GameObject speaker; // Subject of the dialog
 
+    PickupTrigger[] pickupTriggers;
     public GameObject item = null; // Public so other scripts can see what the player is carrying
     bool pickupInRange = false;
     bool holdingItem = false;
@@ -47,7 +47,7 @@ public class InteractManager : MonoBehaviour
                 if (args.buttonCode == InputManager.A && pickupInRange && !holdingItem)
                     StartCoroutine(PickUpItem());
                 else if (args.buttonCode == InputManager.Y && dialogInRange)
-                    Debug.Log("Dialog should start here."); // TODO: start the dialog
+                    Debug.Log("Dialog should start here.");
                 break;
 
             case StateManager.State.Holding:
@@ -59,7 +59,6 @@ public class InteractManager : MonoBehaviour
         }
     }
 
-    // TODO: This is where we can break off the pickupmanager/simple inventory system.
     IEnumerator PickUpItem()
     {
         stateManager.SetState(StateManager.State.PickingUp);
@@ -83,12 +82,12 @@ public class InteractManager : MonoBehaviour
         stateManager.SetState(StateManager.State.Holding);
         if (itemType == heldItemType)
             itemQuantity++;
-        // uiManager.UpdateHolding(); TODO
     }
 
     void StartDialog(string[] lines, float speed)
     {
-        speaker.GetComponent<DialogTrigger>().Disable();
+        // OnLocalDialog?.Invoke(this, new LocalDialogArgs { lines = lines, speed = speed });
+        speaker.GetComponent<DialogTrigger>().StartDialog();
         uiManager.pickupPrompt.Hide();
         Vector3 lookRotation = Quaternion.LookRotation(speaker.transform.position - player.transform.position, Vector3.up).eulerAngles;
         lookRotation.x = 0f;
@@ -96,10 +95,9 @@ public class InteractManager : MonoBehaviour
         player.GetComponent<Rigidbody>().DORotate(lookRotation, .25f);
     }
 
-    // TODO
     public void EndDialog()
     {
-        speaker.GetComponent<DialogTrigger>().Enable();
+        speaker.GetComponent<DialogTrigger>().EndDialog();
     }
 
     IEnumerator PutDownItem()
@@ -149,7 +147,16 @@ public class InteractManager : MonoBehaviour
     // Unsubscribe from all events
     void OnDestroy()
     {
-
+        foreach (PickupTrigger pt in pickupTriggers)
+        {
+            pt.OnPickupEnterRange -= HandlePickupEnterRange;
+            pt.OnPickupLeaveRange -= HandlePickupLeaveRange;
+        }
+        foreach (DialogTrigger dt in dialogTriggers)
+        {
+            dt.OnDialogEnterRange -= HandleDialogEnterRange;
+            dt.OnDialogLeaveRange -= HandleDialogLeaveRange;
+        }
     }
 
     void InitializeReferences()
@@ -164,5 +171,21 @@ public class InteractManager : MonoBehaviour
     void SubscribeToEvents()
     {
 
+
+        // Subscribe to all existing dialog triggers.
+        dialogTriggers = GameObject.FindObjectsOfType<DialogTrigger>();
+        foreach (DialogTrigger dt in dialogTriggers)
+        {
+            dt.OnDialogEnterRange += HandleDialogEnterRange;
+            dt.OnDialogLeaveRange += HandleDialogLeaveRange;
+        }
+
+        // Subscribe to all existing pickup triggers.
+        pickupTriggers = GameObject.FindObjectsOfType<PickupTrigger>();
+        foreach (PickupTrigger pt in pickupTriggers)
+        {
+            pt.OnPickupEnterRange += HandlePickupEnterRange;
+            pt.OnPickupLeaveRange += HandlePickupLeaveRange;
+        }
     }
 }

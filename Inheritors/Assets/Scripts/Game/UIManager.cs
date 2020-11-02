@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
         public RectTransform rectTransform;
         public Image image;
         public TMP_Text tmpText;
+        public Tween currentTween;
 
         public void Show()
         {
@@ -150,7 +151,7 @@ public class UIManager : MonoBehaviour
         pickupPrompt.image.enabled = true;
         pickupPrompt.tmpText.enabled = true;
         pickupPrompt.image.sprite = uiResources.X_Button;
-        while (stateManager.state == StateManager.State.Holding) // TODO: eventually we'll check pickupManager for this.
+        while (stateManager.state == StateManager.State.Holding)
         {
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
             pos.y -= 25f;
@@ -162,10 +163,11 @@ public class UIManager : MonoBehaviour
     public void EnterRange(Transform target, string type)
     {
         Prompt p = type == "Pickup" ? pickupPrompt : dialogPrompt;
+        if (p.currentTween != null) p.currentTween.Kill();
         p.image.enabled = true;
         p.image.sprite = type == "Pickup" ? uiResources.A_Button : uiResources.Y_Button;
         // image.color = Helper.ChangedAlpha(image.color, 0f);
-        p.image.DOFade(1f, .25f).From(0f);
+        p.currentTween = p.image.DOFade(1f, .25f).From(0f);
         // DOTween.To(() => image.color, x => image.color = x, Helper.ChangedAlpha(interactPromptImage.color, 1f), .25f);
         StartCoroutine(AlignPromptInRange(target, p, type));
     }
@@ -194,8 +196,8 @@ public class UIManager : MonoBehaviour
 
     IEnumerator AlignPromptOutOfRange(Vector3 targetPos, Prompt prompt)
     {
-        // Tween t = DOTween.To(() => image.color, x => interactPromptImage.color = x, Helper.ChangedAlpha(interactPromptImage.color, 0f), .25f);
         Tween t = prompt.image.DOFade(0f, .25f);
+        prompt.currentTween = t;
         while (t.IsPlaying())
         {
             Vector3 pos = Camera.main.WorldToScreenPoint(targetPos);

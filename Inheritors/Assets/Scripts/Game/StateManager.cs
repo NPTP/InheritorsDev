@@ -39,7 +39,7 @@ public class StateManager : MonoBehaviour
     public void SetState(StateManager.State newState)
     {
         this.state = newState;
-        Debug.Log("State was just set to: " + this.state);
+        // Debug.Log("State was just set to: " + this.state);
         OnState?.Invoke(this, new StateArgs { state = newState });
     }
 

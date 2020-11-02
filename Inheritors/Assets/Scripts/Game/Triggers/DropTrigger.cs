@@ -3,10 +3,14 @@ using UnityEngine;
 using DG.Tweening;
 
 // Trigger to be placed around any pickup, sends events to InteractManager.
-public class DropTrigger : MonoBehaviour
+public class DropTrigger : MonoBehaviour, Trigger
 {
+    public event EventHandler OnTriggerActivate;
     // public event EventHandler OnPickupEnterRange;
     // public event EventHandler OnPickupLeaveRange;
+
+    public bool triggerEnabled = true;
+    public string triggerTag;
 
     // Transform playerTransform;
     // SphereCollider sphereCollider;
@@ -26,6 +30,26 @@ public class DropTrigger : MonoBehaviour
     //     l = transform.GetChild(1).gameObject.GetComponent<Light>();
     //     ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
     // }
+
+    public string GetTag()
+    {
+        return triggerTag;
+    }
+
+    public void Enable()
+    {
+
+    }
+
+    public void Disable()
+    {
+
+    }
+
+    public void Remove()
+    {
+        Destroy(this.gameObject);
+    }
 
     // public void GetPickedUp()
     // {
