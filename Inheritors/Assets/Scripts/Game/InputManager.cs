@@ -63,6 +63,10 @@ public class InputManager : MonoBehaviour
                     GetMiddleButtons();
                     GetRightSidebuttons(); // We'll see if we need to block B later.
                     break;
+                case StateManager.State.DroppingOff:
+                    GetJoystickAxes();
+                    GetMiddleButtons();
+                    break;
                 case StateManager.State.Dialog:
                     GetButtonDown("A", A);
                     break;

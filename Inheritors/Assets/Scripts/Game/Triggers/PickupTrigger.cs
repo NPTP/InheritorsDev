@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 
@@ -7,13 +8,10 @@ public class PickupTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public event EventHandler OnPickupEnterRange;
-    public event EventHandler OnPickupLeaveRange;
     public event EventHandler OnTriggerActivate;
 
     public bool triggerEnabled = true;
     public string triggerTag;
-    // public string itemType;
     public PickupManager.ItemTypes itemType;
 
     Transform playerTransform;
@@ -25,6 +23,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     ParticleSystem ps;
 
     bool pickedUp = false;
+    bool droppedOff = false;
 
     void Awake()
     {
@@ -71,6 +70,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
         ps.Stop();
     }
 
+    // ONLY call this from another script once that script has finished with the trigger!
     public void Remove()
     {
         Destroy(this.gameObject);
@@ -84,15 +84,17 @@ public class PickupTrigger : MonoBehaviour, Trigger
         Disable();
     }
 
-    // public void GetPutDown()
-    // {
-    //     transform.DOMoveY(playerTransform.position.y, .25f);
-    //     Enable();
-    // }
-
-    public void GetPlacedInDropTrigger()
+    public void GetDroppedOff()
     {
         Debug.Log("Item placed in drop trigger!");
+        droppedOff = true;
+        StartCoroutine(GetDroppedOffAnimation());
+    }
+
+    IEnumerator GetDroppedOffAnimation()
+    {
+        Tween t = itemTransform.DOScale(0f, .5f).SetEase(Ease.InQuart);
+        yield return new WaitWhile(() => t != null && t.IsPlaying());
     }
 
     private void OnTriggerEnter(Collider other)

@@ -156,57 +156,95 @@ public class UIManager : MonoBehaviour
         pickupStatusImage.enabled = true;
         pickupStatusImage.sprite = uiResources.GetItemIcon(type);
         pickupStatusText.enabled = true;
-        pickupStatusText.text = "×" + quantity.ToString();
+        if (quantity > 0)
+            pickupStatusText.text = "×" + quantity.ToString();
+        else
+            pickupStatusText.text = "";
     }
 
     // ████████████████████████████████████████████████████████████████████████
 
-    public void EnterRange(Transform target, string type)
+    public void EnterRange(Transform target, string triggerType)
     {
-        Prompt p = type == "Pickup" ? pickupPrompt : dialogPrompt;
-        if (p.currentTween != null) p.currentTween.Kill();
-        p.image.enabled = true;
-        p.image.sprite = type == "Pickup" ? uiResources.A_Button : uiResources.Y_Button;
-        p.currentTween = p.image.DOFade(1f, .25f).From(0f);
-        StartCoroutine(AlignPromptInRange(target, p, type));
+        Prompt p;
+        if (triggerType == "Pickup")
+        {
+            p = pickupPrompt;
+            p.image.enabled = true;
+            p.image.sprite = uiResources.A_Button;
+        }
+        else if (triggerType == "Dropoff")
+        {
+            p = pickupPrompt;
+            p.image.enabled = true;
+            p.image.sprite = uiResources.X_Button;
+        }
+        else // (triggerType == "Dialog")
+        {
+            p = dialogPrompt;
+            p.image.enabled = true;
+            p.image.sprite = uiResources.Y_Button;
+        }
+
+        StartCoroutine(AlignPromptInRange(target, p, triggerType));
     }
 
-    IEnumerator AlignPromptInRange(Transform target, Prompt p, string type)
+    IEnumerator AlignPromptInRange(Transform target, Prompt p, string triggerType)
     {
-        Func<bool> TargetInRange;
-        if (type == "Pickup")
-            TargetInRange = interactManager.IsPickupInRange;
-        else
-            TargetInRange = interactManager.IsDialogInRange;
+        if (p.currentTween != null) p.currentTween.Kill();
+        p.currentTween = p.image.DOFade(1f, .25f).From(0f);
+
+        Func<bool> TargetInRange = GetInRangeFunction(triggerType);
         while (TargetInRange())
         {
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
-            // pos.y += 100f;
+            pos.y += 50;
             p.rectTransform.position = pos;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
-        p.currentTween.Kill();
-        p.image.enabled = false;
     }
 
-    public void ExitRange(Transform target, string type)
+    public void ExitRange(Transform target, string triggerType)
     {
-        Prompt p = type == "Pickup" ? pickupPrompt : dialogPrompt;
-        StartCoroutine(AlignPromptOutOfRange(target.position, p));
+        Prompt p;
+        if (triggerType == "Pickup")
+            p = pickupPrompt;
+        else if (triggerType == "Dropoff")
+            p = pickupPrompt;
+        else // (triggerType == "Dialog")
+            p = dialogPrompt;
+
+        StartCoroutine(AlignPromptOutOfRange(target, p, triggerType));
     }
 
-    IEnumerator AlignPromptOutOfRange(Vector3 targetPos, Prompt p)
+    IEnumerator AlignPromptOutOfRange(Transform target, Prompt p, string triggerType)
     {
-        Tween t = p.image.DOFade(0f, .25f);
-        p.currentTween = t;
-        while (t != null & t.IsPlaying())
+        if (p.currentTween != null) p.currentTween.Kill();
+        p.currentTween = p.image.DOFade(0f, .25f).From(p.image.color.a);
+        while (p.currentTween != null & p.currentTween.IsPlaying())
         {
-            Vector3 pos = Camera.main.WorldToScreenPoint(targetPos);
-            // pos.y += 100f;
+            Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
+            pos.y += 50f;
             p.rectTransform.position = pos;
             yield return null;
         }
-        p.image.enabled = false;
+
+        Func<bool> TargetInRange = GetInRangeFunction(triggerType);
+        if (!TargetInRange())
+            p.image.enabled = false;
+    }
+
+    Func<bool> GetInRangeFunction(string triggerType)
+    {
+        Func<bool> InRangeFunc;
+        if (triggerType == "Pickup")
+            InRangeFunc = interactManager.IsPickupInRange;
+        else if (triggerType == "Dropoff")
+            InRangeFunc = interactManager.IsDropoffInRange;
+        else // (triggerType == "Dialog")
+            InRangeFunc = interactManager.IsDialogInRange;
+
+        return InRangeFunc;
     }
 
     void InitializeReferences()

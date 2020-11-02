@@ -50,6 +50,7 @@ public class PickupManager : MonoBehaviour
         itemType = type;
         itemQuantity = 0;
         uiManager.UpdateHolding(type, itemQuantity);
+        pickupTrigger.Remove();
     }
 
     // ████████████████████████████████████████████████████████████████████████

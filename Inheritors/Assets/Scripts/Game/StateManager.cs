@@ -10,6 +10,7 @@ public class StateManager : MonoBehaviour
         Normal,         /* Allow all controls, movement, interaction, etc. */
         Dialog,         /* Stop current movement, disallow further, allow dialog inputs only. */
         PickingUp,      /* In the process of interacting, disallow certain inputs and events. */
+        DroppingOff,    /* In the process of interacting, disallow certain inputs and events. */
         Holding,        /* Has an item in hand. */
         Inert           /* Nothing allowed, cutscenes. */
     }

@@ -31,7 +31,7 @@ public class Day0 : MonoBehaviour
             transitionManager.Hide();
             dialogManager.EndDialog();
             uiManager.controls.Hide();
-            triggers["Firepit"].Enable();
+            triggers["Walk_Firepit"].Enable();
             stateManager.SetState(StateManager.State.Normal);
         }
     }
@@ -73,7 +73,7 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(StateManager.State.Normal);
         yield return new WaitUntil(inputManager.IsLeftJoystickMoving);
         uiManager.controls.Hide();
-        triggers["Firepit"].Enable();
+        triggers["Walk_Firepit"].Enable();
     }
 
     StateManager stateManager;
@@ -153,7 +153,7 @@ public class Day0 : MonoBehaviour
         taskManager.SetActiveTask(2);
 
         yield return new WaitForSeconds(0.5f);
-        // TODO: activate the dropoff point here <<
+        triggers["Dropoff_Wood"].Enable();
 
         stateManager.SetState(StateManager.State.Normal);
     }
@@ -165,14 +165,19 @@ public class Day0 : MonoBehaviour
 
         switch (tag)
         {
-            case "Firepit":
+            case "Walk_Firepit":
                 trigger.Remove();
                 StartCoroutine(Firepit());
                 break;
 
-            case "End":
+            case "Walk_End":
                 trigger.Remove();
                 StartCoroutine(End());
+                break;
+
+            case "Dropoff_Wood":
+                print(trigger.GetTag());
+                trigger.Remove();
                 break;
 
             default:
@@ -192,11 +197,11 @@ public class Day0 : MonoBehaviour
         cameraManager.SendCamTo(GameObject.Find("woodchoprock").transform);
         yield return new WaitForSeconds(1f);
 
-        triggers["Wood1"].Enable();
+        triggers["Pickup_Wood1"].Enable();
         yield return new WaitForSeconds(1f);
-        triggers["Wood2"].Enable();
+        triggers["Pickup_Wood2"].Enable();
         yield return new WaitForSeconds(1f);
-        triggers["Wood3"].Enable();
+        triggers["Pickup_Wood3"].Enable();
         yield return new WaitForSeconds(2f);
 
         cameraManager.SwitchToPlayerCam();

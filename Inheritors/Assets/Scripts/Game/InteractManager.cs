@@ -15,23 +15,25 @@ public class InteractManager : MonoBehaviour
 
     Trigger[] triggers;
 
-    DialogTrigger dialogTrigger = null;
-    string dialogTag = null;
-    bool dialogInRange = false;
-    GameObject speaker; // Subject of the dialog
 
     PickupTrigger pickupTrigger = null;
     string pickupTag = null;
     bool pickupInRange = false;
     // string itemType = null;
     PickupManager.ItemTypes itemType;
-    public int itemQuantity = 0;
 
-    // TODO: implement putdown triggers and these, its attributes.
-    // PutdownTrigger putdownTrigger = null;
-    // string putdownTag = null;
-    bool putdownInRange = false;
-    // PickupManager.ItemTypes putdownItemType;
+    // TODO: you might need a HELD pickup trigger to differentiate
+    // when you run over another pickuptrigger zone and the one you're holding gets forgotten!
+
+    DropoffTrigger dropoffTrigger = null;
+    string dropoffTag = null;
+    bool dropoffInRange = false;
+    PickupManager.ItemTypes dropoffItemType;
+
+    DialogTrigger dialogTrigger = null;
+    string dialogTag = null;
+    bool dialogInRange = false;
+    GameObject speaker; // Subject of the dialog
 
     void Awake()
     {
@@ -54,7 +56,8 @@ public class InteractManager : MonoBehaviour
                 break;
 
             case InputManager.X:
-                // TODO: check dropoffInRange, call a dropoff function.
+                if (dropoffInRange)
+                    TryDropoff();
                 break;
 
             default:
@@ -96,7 +99,8 @@ public class InteractManager : MonoBehaviour
         // Make a safety check before allowing pickup.
         if (!pickupInRange || pickupTag is null || pickupTrigger is null)
         {
-            print("pickupInRange: " + pickupInRange + "\n" +
+            print("Failed this pickup:\n" +
+            "pickupInRange: " + pickupInRange + "\n" +
             "pickupTag: " + pickupTag + "\n" +
             "pickupTrigger: " + pickupTrigger);
             return;
@@ -131,6 +135,63 @@ public class InteractManager : MonoBehaviour
     Vector3 GetItemHoldPosition()
     {
         return player.transform.position + player.transform.up + (.5f * player.transform.forward);
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ DROPOFF
+    // ████████████████████████████████████████████████████████████████████████
+
+    public bool IsDropoffInRange()
+    {
+        return dropoffInRange;
+    }
+
+    public void DropoffEnterRange(DropoffTrigger sender)
+    {
+        dropoffTrigger = sender;
+        dropoffTag = dropoffTrigger.GetTag();
+        dropoffInRange = true;
+        uiManager.EnterRange(dropoffTrigger.transform, "Dropoff");
+    }
+
+    public void DropoffExitRange(DropoffTrigger sender)
+    {
+        dropoffTrigger = sender;
+        dropoffTag = null;
+        dropoffInRange = false;
+        uiManager.ExitRange(dropoffTrigger.transform, "Dropoff");
+        dropoffTrigger = null;
+    }
+
+    void TryDropoff()
+    {
+        stateManager.SetState(StateManager.State.DroppingOff);
+        uiManager.pickupPrompt.Hide();
+        dropoffTrigger.CompleteDropoff();
+        dropoffInRange = false;
+        StartCoroutine(DropOffItem());
+    }
+
+    IEnumerator DropOffItem()
+    {
+        pickupTrigger.transform.SetParent(null); // Do we need to remember the prev. parent?
+        pickupTrigger.GetDroppedOff();
+        Vector3 startPosition = pickupTrigger.transform.position;
+        Vector3 endPosition = dropoffTrigger.targetTransform.position;
+        float elapsed = 0f;
+        float time = 0.5f;
+        while (elapsed < time)
+        {
+            pickupTrigger.transform.position = Vector3.Lerp(
+                startPosition, endPosition, Helper.SmoothStep(elapsed / time));
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        pickupTrigger.transform.position = endPosition;
+        stateManager.SetState(StateManager.State.Normal);
+
+        // Hand it off here to the PickupManager.
+        pickupManager.DropOff(pickupTrigger, itemType);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -171,22 +232,6 @@ public class InteractManager : MonoBehaviour
     public void EndDialog()
     {
         speaker.GetComponent<DialogTrigger>().Enable();
-    }
-
-    // ████████████████████████████████████████████████████████████████████████
-    // ███ DROPOFF
-    // ████████████████████████████████████████████████████████████████████████
-
-
-    IEnumerator PutDownItem()
-    {
-        stateManager.SetState(StateManager.State.Normal);
-        uiManager.pickupPrompt.Hide();
-        uiManager.pickupPrompt.SetSize(1f, 1f, 1f);
-        // holdingItem = false; // --> replace with pickup manager functionality
-        // Put item down here --> used to be GetPutDown call in the trigger object
-        pickupTrigger.transform.SetParent(null);
-        yield return null;
     }
 
     // ████████████████████████████████████████████████████████████████████████
