@@ -5,7 +5,7 @@ using DG.Tweening;
 // Trigger to be placed around any pickup, sends events to InteractManager.
 public class PickupTrigger : MonoBehaviour, Trigger
 {
-    PickupManager pickupManager;
+    InteractManager interactManager;
 
     public event EventHandler OnPickupEnterRange;
     public event EventHandler OnPickupLeaveRange;
@@ -13,7 +13,8 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public bool triggerEnabled = true;
     public string triggerTag;
-    public string pickupType;
+    // public string itemType;
+    public PickupManager.ItemTypes itemType;
 
     Transform playerTransform;
     Collider sphereCollider;
@@ -23,11 +24,11 @@ public class PickupTrigger : MonoBehaviour, Trigger
     Light l;
     ParticleSystem ps;
 
-    bool pickedUp = false; // Used for drop triggers to know if the item has been dropped inside yet.
+    bool pickedUp = false;
 
     void Awake()
     {
-        pickupManager = FindObjectOfType<PickupManager>();
+        interactManager = FindObjectOfType<InteractManager>();
     }
 
     void Start()
@@ -51,11 +52,14 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public void Enable()
     {
-        triggerEnabled = true;
-        sphereCollider.enabled = true;
-        itemCollider.enabled = true;
-        l.enabled = true;
-        ps.Play();
+        if (!pickedUp)
+        {
+            triggerEnabled = true;
+            sphereCollider.enabled = true;
+            itemCollider.enabled = true;
+            l.enabled = true;
+            ps.Play();
+        }
     }
 
     public void Disable()
@@ -93,18 +97,20 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggerEnabled && !pickupManager.IsHoldingItem() && other.tag == "Player")
+        if (triggerEnabled && other.tag == "Player")
         {
-            OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
+            // OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
+            interactManager.PickupEnterRange(this);
             itemTransform.DOScale(itemLocalScale * 1.15f, .25f);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (triggerEnabled && !pickupManager.IsHoldingItem() && other.tag == "Player")
+        if (triggerEnabled && other.tag == "Player")
         {
-            OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
+            // OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
+            interactManager.PickupExitRange(this);
             itemTransform.DOScale(itemLocalScale, .25f);
         }
     }

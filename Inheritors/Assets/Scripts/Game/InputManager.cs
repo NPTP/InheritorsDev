@@ -16,29 +16,29 @@ public class InputManager : MonoBehaviour
 
     // Button codes used for button down/up events.
     // Note that not all buttons are mapped to codes as we may not need them.
-    public static int DPAD_LEFT = 0;
-    public static int DPAD_RIGHT = 1;
-    public static int DPAD_DOWN = 2;
-    public static int DPAD_UP = 3;
-    public static int BACK = 4;
-    public static int START = 5;
-    public static int A = 6;
-    public static int B = 7;
-    public static int X = 8;
-    public static int Y = 9;
+    public const int DPAD_LEFT = 0;
+    public const int DPAD_RIGHT = 1;
+    public const int DPAD_DOWN = 2;
+    public const int DPAD_UP = 3;
+    public const int BACK = 4;
+    public const int START = 5;
+    public const int A = 6;
+    public const int B = 7;
+    public const int X = 8;
+    public const int Y = 9;
 
     // Joystick axes storage.
-    public float leftStickHorizontal = 0;
-    public float leftStickVertical = 0;
-    public float rightStickHorizontal = 0;
-    public float rightStickVertical = 0;
+    [HideInInspector] public float leftStickHorizontal = 0;
+    [HideInInspector] public float leftStickVertical = 0;
+    [HideInInspector] public float rightStickHorizontal = 0;
+    [HideInInspector] public float rightStickVertical = 0;
 
     // Condition for blocking all input regardless of State.
     bool allowInput = true;
 
-    void Start()
+    void Awake()
     {
-        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
+        stateManager = FindObjectOfType<StateManager>();
         stateManager.OnState += HandleState;
     }
 
@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour
                 case StateManager.State.Holding:
                     GetJoystickAxes();
                     GetMiddleButtons();
-                    GetButtonDown("X", X);
+                    GetRightSidebuttons(); // We'll see if we need to block B later.
                     break;
                 case StateManager.State.Dialog:
                     GetButtonDown("A", A);

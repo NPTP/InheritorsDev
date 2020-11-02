@@ -9,19 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class Day0 : MonoBehaviour
 {
-    StateManager stateManager;
-    TaskManager taskManager;
-    DialogManager dialogManager;
-    InputManager inputManager;
-    AudioManager audioManager;
-    TransitionManager transitionManager;
-    CameraManager cameraManager;
-    UIManager uiManager;
-    InteractManager interactManager;
-
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
-    // TODO: make it a dict of just plain 'Trigger' an interface class we will define for all of them
-    // Then it's just on us to not duplicate trigger tags 
 
     void Start()
     {
@@ -88,17 +76,29 @@ public class Day0 : MonoBehaviour
         triggers["Firepit"].Enable();
     }
 
+    StateManager stateManager;
+    TaskManager taskManager;
+    DialogManager dialogManager;
+    InputManager inputManager;
+    AudioManager audioManager;
+    TransitionManager transitionManager;
+    CameraManager cameraManager;
+    UIManager uiManager;
+    InteractManager interactManager;
+    PickupManager pickupManager;
     void InitializeReferences()
     {
-        audioManager = GameObject.FindObjectOfType<AudioManager>();
-        taskManager = GameObject.FindObjectOfType<TaskManager>();
-        dialogManager = GameObject.FindObjectOfType<DialogManager>();
-        stateManager = GameObject.FindObjectOfType<StateManager>();
-        transitionManager = GameObject.FindObjectOfType<TransitionManager>();
-        inputManager = GameObject.FindObjectOfType<InputManager>();
-        cameraManager = GameObject.FindObjectOfType<CameraManager>();
-        uiManager = GameObject.FindObjectOfType<UIManager>();
-        interactManager = GameObject.FindObjectOfType<InteractManager>();
+        audioManager = FindObjectOfType<AudioManager>();
+        taskManager = FindObjectOfType<TaskManager>();
+        dialogManager = FindObjectOfType<DialogManager>();
+        stateManager = FindObjectOfType<StateManager>();
+        transitionManager = FindObjectOfType<TransitionManager>();
+        inputManager = FindObjectOfType<InputManager>();
+        cameraManager = FindObjectOfType<CameraManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        interactManager = FindObjectOfType<InteractManager>();
+        interactManager = FindObjectOfType<InteractManager>();
+        pickupManager = FindObjectOfType<PickupManager>();
     }
 
     void InitializeTriggers()
@@ -113,7 +113,49 @@ public class Day0 : MonoBehaviour
 
     void SubscribeToEvents()
     {
+        pickupManager.OnPickup += HandlePickupEvent;
+    }
 
+    void HandlePickupEvent(object sender, PickupManager.PickupArgs args)
+    {
+        switch (args.itemType)
+        {
+            case PickupManager.ItemTypes.WOOD:
+                if (args.itemQuantity == 1)
+                {
+                    dialogManager.NewDialog(wood1);
+                }
+                else if (args.itemQuantity == 2)
+                {
+                    dialogManager.NewDialog(wood2);
+                }
+                else if (args.itemQuantity == 3)
+                {
+                    StartCoroutine(AllWoodCollected());
+                }
+                break;
+
+            default:
+                print("Unknown pickup event send to Day0");
+                break;
+        }
+    }
+
+    IEnumerator AllWoodCollected()
+    {
+        dialogManager.NewDialog(wood3, StateManager.State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        yield return new WaitForSeconds(0.5f);
+        taskManager.CompleteTask(1);
+        yield return new WaitForSeconds(0.5f);
+        taskManager.AddTask("Bring wood to fire.");
+        taskManager.SetActiveTask(2);
+
+        yield return new WaitForSeconds(0.5f);
+        // TODO: activate the dropoff point here <<
+
+        stateManager.SetState(StateManager.State.Normal);
     }
 
     void HandleTriggerEvent(object sender, EventArgs args)
@@ -134,7 +176,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Trigger gave unknown tag.");
+                Debug.Log("Trigger gave unknown tag to Day0.");
                 break;
         }
     }
@@ -181,21 +223,12 @@ public class Day0 : MonoBehaviour
 
     Dialog opening = new Dialog();
     Dialog firepit = new Dialog();
-
+    Dialog wood1 = new Dialog();
+    Dialog wood2 = new Dialog();
+    Dialog wood3 = new Dialog();
     void InitializeDialogs()
     {
         string delay = DialogManager.Tools.DELAY;
-
-        // opening = new Dialog(
-        //     new string[] {
-        //         "The Omerê is our home." + delay,
-        //         "Our people have lived here for hundreds of years." + delay,
-        //         "Your mother is of <b>Kanoê</b>." + delay + "\nYour father, of <b>Akuntsu</b>." + delay,
-        //         "You are young, <b>Operaeika</b>." + delay + "\nYou are the inheritor of this land." + delay + "\nThe inheritor of our tradition." + delay, // TODO: change Operaeika to "son"
-        //         "You will bring us hope." + delay + delay,
-        //     },
-        //     DialogManager.Speed.MED
-        // );
 
         opening.lines = new string[] {
             "The Omerê is our home." + delay,
@@ -210,6 +243,22 @@ public class Day0 : MonoBehaviour
             "This fire is dying.",
             "Fetch dry branches from our collection, so that it might find new life."
         };
+
+        wood1.lines = new string[] {
+            "The Cumaru wood. Tough, ancient, everlasting."
+        };
+        wood2.lines = new string[] {
+            "Massaranduba. Hard-won, deep, rich, and beautiful."
+        };
+        wood3.lines = new string[] {
+            "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
+            "That is enough wood for now. Return to the fire."
+        };
+    }
+
+    void OnDestroy()
+    {
+        pickupManager.OnPickup -= HandlePickupEvent;
     }
 
 }

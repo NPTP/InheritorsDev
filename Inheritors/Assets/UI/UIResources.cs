@@ -13,4 +13,19 @@ public class UIResources : ScriptableObject
     public Sprite X_Button;
     public Sprite Y_Button;
     public Sprite B_Button;
+
+    [Header("Items")]
+    public Sprite WOOD;
+
+    public Sprite GetItemIcon(PickupManager.ItemTypes type)
+    {
+        switch (type)
+        {
+            case PickupManager.ItemTypes.WOOD:
+                return WOOD;
+
+            default:
+                return null;
+        }
+    }
 }

@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 {
     StateManager stateManager;
     InteractManager interactManager;
+    PickupManager pickupManager;
 
     public UIResources uiResources;
 
@@ -53,7 +54,7 @@ public class UIManager : MonoBehaviour
         public RectTransform rectTransform;
         public TMP_Text tmpText;
         public Image prompt;
-        public Animator animator; // TODO: polish stage: animate dialog prompt
+        public Animator animator; // TODO: polish stage: animate the waiting dialog prompt
         Tween promptTween = null;
         float moveTime = 1f;
         float fadeTime = 0.8f;
@@ -135,30 +136,30 @@ public class UIManager : MonoBehaviour
         InitializePrompt(pickupPrompt, "PickupPrompt");
         InitializePrompt(dialogPrompt, "DialogPrompt");
         InitializeControls();
-        // TODO: fix up with its own class
-        // - Set up task header, list, and item carry slot object (all top left UI as one thing)
-        // That's it I think?
+        // TODO: Post-alpha, set up the nice proper task header, list, and item
+        // carry slot object (all top left UI as one thing with multiple pieces?)
     }
 
-    public void HoldingItem(Transform target)
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ TEMPORARY INVENTORY (until we have that stuff in fully)
+    // ████████████████████████████████████████████████████████████████████████
+
+    // TODO: everything inside this boundary is hacky as fuck right now. Fix'er!
+    // Maybe some kind of InitializeUI() function to kick off every scene, called
+    // in the Start() method.
+
+    Image pickupStatusImage;
+    Text pickupStatusText;
+
+    public void UpdateHolding(PickupManager.ItemTypes type, int quantity)
     {
-        StartCoroutine(HoldingItemProcess(target));
+        pickupStatusImage.enabled = true;
+        pickupStatusImage.sprite = uiResources.GetItemIcon(type);
+        pickupStatusText.enabled = true;
+        pickupStatusText.text = "×" + quantity.ToString();
     }
 
-    IEnumerator HoldingItemProcess(Transform target)
-    {
-        pickupPrompt.rectTransform.localScale = new Vector3(.6f, .6f, 1f);
-        pickupPrompt.image.enabled = true;
-        pickupPrompt.tmpText.enabled = true;
-        pickupPrompt.image.sprite = uiResources.X_Button;
-        while (stateManager.state == StateManager.State.Holding)
-        {
-            Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
-            pos.y -= 25f;
-            pickupPrompt.rectTransform.position = pos;
-            yield return null;
-        }
-    }
+    // ████████████████████████████████████████████████████████████████████████
 
     public void EnterRange(Transform target, string type)
     {
@@ -166,9 +167,7 @@ public class UIManager : MonoBehaviour
         if (p.currentTween != null) p.currentTween.Kill();
         p.image.enabled = true;
         p.image.sprite = type == "Pickup" ? uiResources.A_Button : uiResources.Y_Button;
-        // image.color = Helper.ChangedAlpha(image.color, 0f);
         p.currentTween = p.image.DOFade(1f, .25f).From(0f);
-        // DOTween.To(() => image.color, x => image.color = x, Helper.ChangedAlpha(interactPromptImage.color, 1f), .25f);
         StartCoroutine(AlignPromptInRange(target, p, type));
     }
 
@@ -182,10 +181,12 @@ public class UIManager : MonoBehaviour
         while (TargetInRange())
         {
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
-            pos.y += 100f;
+            // pos.y += 100f;
             p.rectTransform.position = pos;
             yield return null;
         }
+        p.currentTween.Kill();
+        p.image.enabled = false;
     }
 
     public void ExitRange(Transform target, string type)
@@ -194,24 +195,32 @@ public class UIManager : MonoBehaviour
         StartCoroutine(AlignPromptOutOfRange(target.position, p));
     }
 
-    IEnumerator AlignPromptOutOfRange(Vector3 targetPos, Prompt prompt)
+    IEnumerator AlignPromptOutOfRange(Vector3 targetPos, Prompt p)
     {
-        Tween t = prompt.image.DOFade(0f, .25f);
-        prompt.currentTween = t;
-        while (t.IsPlaying())
+        Tween t = p.image.DOFade(0f, .25f);
+        p.currentTween = t;
+        while (t != null & t.IsPlaying())
         {
             Vector3 pos = Camera.main.WorldToScreenPoint(targetPos);
-            pos.y += 100f;
-            prompt.rectTransform.position = pos;
+            // pos.y += 100f;
+            p.rectTransform.position = pos;
             yield return null;
         }
-        prompt.image.enabled = false;
+        p.image.enabled = false;
     }
 
     void InitializeReferences()
     {
-        stateManager = GameObject.FindObjectOfType<StateManager>();
-        interactManager = GameObject.FindObjectOfType<InteractManager>();
+        stateManager = FindObjectOfType<StateManager>();
+        interactManager = FindObjectOfType<InteractManager>();
+        pickupManager = FindObjectOfType<PickupManager>();
+
+        // TODO: this is part of the hacky stuff we are removing above in temp inventory
+        pickupStatusImage = GameObject.Find("PickupStatusImage").GetComponent<Image>();
+        pickupStatusText = GameObject.Find("PickupStatusText").GetComponent<Text>();
+        pickupStatusImage.sprite = null;
+        pickupStatusImage.enabled = false;
+        pickupStatusText.enabled = false;
     }
 
     void InitializeDialogBox()
@@ -241,3 +250,26 @@ public class UIManager : MonoBehaviour
         controls.tmpText = GameObject.Find("ControlsText").GetComponent<TMP_Text>();
     }
 }
+
+
+// Functions formerly in use for when you could drop anywhere, and a prompt followed you.
+
+//   public void HoldingItem(Transform target)
+//     {
+//         StartCoroutine(HoldingItemProcess(target));
+//     }
+
+//     IEnumerator HoldingItemProcess(Transform target)
+//     {
+//         pickupPrompt.rectTransform.localScale = new Vector3(.6f, .6f, 1f);
+//         pickupPrompt.image.enabled = true;
+//         pickupPrompt.tmpText.enabled = true;
+//         pickupPrompt.image.sprite = uiResources.X_Button;
+//         while (stateManager.state == StateManager.State.Holding)
+//         {
+//             Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
+//             pos.y -= 25f;
+//             pickupPrompt.rectTransform.position = pos;
+//             yield return null;
+//         }
+//     }

@@ -10,83 +10,154 @@ public class InteractManager : MonoBehaviour
     StateManager stateManager;
     InputManager inputManager;
     UIManager uiManager;
+    DialogManager dialogManager;
+    PickupManager pickupManager;
 
     Trigger[] triggers;
 
+    DialogTrigger dialogTrigger = null;
+    string dialogTag = null;
     bool dialogInRange = false;
     GameObject speaker; // Subject of the dialog
 
-    public GameObject item = null; // Public so other scripts can see what the player is carrying
+    PickupTrigger pickupTrigger = null;
+    string pickupTag = null;
     bool pickupInRange = false;
-    bool holdingItem = false;
-    string heldItemType = null;
+    // string itemType = null;
+    PickupManager.ItemTypes itemType;
     public int itemQuantity = 0;
-    bool putdownInRange = false;
 
-    void Start()
+    // TODO: implement putdown triggers and these, its attributes.
+    // PutdownTrigger putdownTrigger = null;
+    // string putdownTag = null;
+    bool putdownInRange = false;
+    // PickupManager.ItemTypes putdownItemType;
+
+    void Awake()
     {
         InitializeReferences();
         SubscribeToEvents();
     }
+
+    private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
+    {
+        switch (args.buttonCode)
+        {
+            case InputManager.A:
+                if (pickupInRange)
+                    TryPickUp();
+                break;
+
+            case InputManager.Y:
+                if (dialogInRange)
+                    StartDialog();
+                break;
+
+            case InputManager.X:
+                // TODO: check dropoffInRange, call a dropoff function.
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ PICKUP
+    // ████████████████████████████████████████████████████████████████████████
 
     public bool IsPickupInRange()
     {
         return pickupInRange;
     }
 
+    public void PickupEnterRange(PickupTrigger sender)
+    {
+        pickupTrigger = sender;
+        pickupTag = pickupTrigger.GetTag();
+        pickupInRange = true;
+        itemType = pickupTrigger.itemType;
+        uiManager.EnterRange(pickupTrigger.transform, "Pickup");
+    }
+
+    public void PickupExitRange(PickupTrigger sender)
+    {
+        pickupTrigger = sender;
+        pickupTag = null;
+        pickupInRange = false;
+        uiManager.ExitRange(pickupTrigger.transform, "Pickup");
+        pickupTrigger = null;
+    }
+
+    void TryPickUp()
+    {
+        print("Tried pickup of " + pickupTag);
+        // Currently not checking against item type & quantity, just allow all.
+        // Make a safety check before allowing pickup.
+        if (!pickupInRange || pickupTag is null || pickupTrigger is null)
+        {
+            print("pickupInRange: " + pickupInRange + "\n" +
+            "pickupTag: " + pickupTag + "\n" +
+            "pickupTrigger: " + pickupTrigger);
+            return;
+        }
+        stateManager.SetState(StateManager.State.PickingUp);
+        uiManager.pickupPrompt.Hide();
+        pickupTrigger.GetPickedUp();
+        pickupInRange = false;
+        StartCoroutine(PickUpItem());
+    }
+
+    IEnumerator PickUpItem()
+    {
+        Vector3 startPosition = pickupTrigger.transform.position;
+        float elapsed = 0f;
+        float time = 0.25f;
+        while (elapsed < time)
+        {
+            pickupTrigger.transform.position = Vector3.Lerp(
+                startPosition, GetItemHoldPosition(), Helper.SmoothStep(elapsed / time));
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        pickupTrigger.transform.position = GetItemHoldPosition();
+        pickupTrigger.transform.SetParent(player.transform);
+        stateManager.SetState(StateManager.State.Holding);
+
+        // Hand it off here to the PickupManager.
+        pickupManager.PickUp(pickupTrigger, itemType);
+    }
+
+    Vector3 GetItemHoldPosition()
+    {
+        return player.transform.position + player.transform.up + (.5f * player.transform.forward);
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ DIALOG
+    // ████████████████████████████████████████████████████████████████████████
+
     public bool IsDialogInRange()
     {
         return dialogInRange;
     }
 
-    private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
+    public void HandleDialogEnterRange(object sender, EventArgs args)
     {
-        switch (stateManager.state)
-        {
-            case StateManager.State.Normal:
-                if (args.buttonCode == InputManager.A && pickupInRange && !holdingItem)
-                    StartCoroutine(PickUpItem());
-                else if (args.buttonCode == InputManager.Y && dialogInRange)
-                    Debug.Log("Dialog should start here."); // TODO: start the dialog
-                break;
-
-            case StateManager.State.Holding:
-                if (args.buttonCode == InputManager.X && holdingItem && putdownInRange)
-                    StartCoroutine(PutDownItem());
-                break;
-            default:
-                break; // Don't take inputs while picking up, inert, etc.
-        }
+        dialogTrigger = (DialogTrigger)sender;
+        dialogInRange = true;
+        uiManager.EnterRange(dialogTrigger.transform, "Dialog");
     }
 
-    // TODO: This is where we can break off the pickupmanager/simple inventory system.
-    IEnumerator PickUpItem()
+    public void HandleDialogLeaveRange(object sender, EventArgs args)
     {
-        stateManager.SetState(StateManager.State.PickingUp);
-        uiManager.pickupPrompt.Hide();
-        item.GetComponent<PickupTrigger>().GetPickedUp();
-        Vector3 startPosition = new Vector3(item.transform.position.x, item.transform.position.y, item.transform.position.z);
-        float elapsed = 0f;
-        float time = 0.25f;
-        while (elapsed < time)
-        {
-            item.transform.position = Vector3.Lerp(startPosition, GetItemHoldPosition(), Helper.SmoothStep(elapsed / time));
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        item.transform.position = GetItemHoldPosition();
-        pickupInRange = false;
-        holdingItem = true;
-        string itemType = item.GetComponent<PickupTrigger>().pickupType;
-        heldItemType = itemType;
-        item.transform.SetParent(player.transform);
-        stateManager.SetState(StateManager.State.Holding);
-        if (itemType == heldItemType)
-            itemQuantity++;
-        // uiManager.UpdateHolding(); TODO
+        dialogTrigger = (DialogTrigger)sender;
+        dialogInRange = false;
+        uiManager.ExitRange(dialogTrigger.transform, "Dialog");
+        dialogTrigger = null;
     }
 
-    void StartDialog(string[] lines, float speed)
+    void StartDialog()
     {
         speaker.GetComponent<DialogTrigger>().Disable();
         uiManager.pickupPrompt.Hide();
@@ -102,55 +173,25 @@ public class InteractManager : MonoBehaviour
         speaker.GetComponent<DialogTrigger>().Enable();
     }
 
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ DROPOFF
+    // ████████████████████████████████████████████████████████████████████████
+
+
     IEnumerator PutDownItem()
     {
         stateManager.SetState(StateManager.State.Normal);
         uiManager.pickupPrompt.Hide();
         uiManager.pickupPrompt.SetSize(1f, 1f, 1f);
-        holdingItem = false;
+        // holdingItem = false; // --> replace with pickup manager functionality
         // Put item down here --> used to be GetPutDown call in the trigger object
-        item.transform.SetParent(null);
+        pickupTrigger.transform.SetParent(null);
         yield return null;
     }
 
-    Vector3 GetItemHoldPosition()
-    {
-        return player.transform.position + player.transform.up + (.5f * player.transform.forward);
-    }
-
-    void HandlePickupEnterRange(object sender, EventArgs args)
-    {
-        pickupInRange = true;
-        item = ((PickupTrigger)sender).gameObject;
-        uiManager.EnterRange(item.transform, "Pickup");
-    }
-
-    void HandleDialogEnterRange(object sender, EventArgs args)
-    {
-        dialogInRange = true;
-        speaker = ((DialogTrigger)sender).gameObject;
-        uiManager.EnterRange(speaker.transform, "Dialog");
-    }
-
-    void HandlePickupLeaveRange(object sender, EventArgs args)
-    {
-        pickupInRange = false;
-        uiManager.ExitRange(item.transform, "Pickup");
-        item = null;
-    }
-
-    void HandleDialogLeaveRange(object sender, EventArgs args)
-    {
-        dialogInRange = false;
-        uiManager.ExitRange(speaker.transform, "Dialog");
-        speaker = null;
-    }
-
-    // Unsubscribe from all events
-    void OnDestroy()
-    {
-
-    }
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ INITIALIZERS & DESTROYERS
+    // ████████████████████████████████████████████████████████████████████████
 
     void InitializeReferences()
     {
@@ -159,10 +200,18 @@ public class InteractManager : MonoBehaviour
         inputManager = FindObjectOfType<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
         uiManager = FindObjectOfType<UIManager>();
+        dialogManager = FindObjectOfType<DialogManager>();
+        pickupManager = FindObjectOfType<PickupManager>();
     }
 
     void SubscribeToEvents()
     {
 
     }
+
+    void OnDestroy()
+    {
+        // Unsubscribe from all events
+    }
+
 }
