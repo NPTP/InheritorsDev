@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class Dialog
 {
     public string[] lines;
-    public float speed;
+    public DialogManager.Speed speed;
 
     public Dialog()
     {
@@ -17,7 +17,8 @@ public class Dialog
     }
 }
 
-// The dialog manager handles all dialog events and sends info the UI to control it.
+// The dialog manager handles all dialogs and sends info to the UI to control it.
+// It is called from the Day by any type of trigger, or manual call (e.g. for narration).
 public class DialogManager : MonoBehaviour
 {
     StateManager stateManager;
@@ -33,12 +34,17 @@ public class DialogManager : MonoBehaviour
     {
         public static string DELAY = "                    ";
     }
-    public class Speed
+    public enum Speed
     {
-        public static float SLOW = 0.05f;
-        public static float MED = 0.03f;
-        public static float FAST = 0.01f;
+        SLOW,
+        MED,
+        FAST
     }
+
+    float SLOW = 0.05f;
+    float MED = 0.03f;
+    float FAST = 0.01f;
+    float[] speeds;
 
     void Awake()
     {
@@ -49,12 +55,17 @@ public class DialogManager : MonoBehaviour
         interactManager = FindObjectOfType<InteractManager>();
     }
 
+    void Start()
+    {
+        speeds = new float[] { SLOW, MED, FAST };
+    }
+
     // Start a new dialog and switch into specified state after dialog finishes
     public void NewDialog(Dialog dialog, StateManager.State finishState = StateManager.State.Normal)
     {
         dialogFinished = false;
         stateManager.SetState(StateManager.State.Dialog);
-        StartCoroutine(DialogPlay(dialog.lines, dialog.speed, finishState));
+        StartCoroutine(DialogPlay(dialog.lines, speeds[(int)dialog.speed], finishState));
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)

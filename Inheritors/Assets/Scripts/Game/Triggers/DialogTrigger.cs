@@ -12,7 +12,19 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public bool triggerEnabled = true;
     public string triggerTag;
 
+    [Header("Dialog-Specific Properties")]
+    public bool dialogPersists = false;
+    [Space(10)]
+    public bool lookAtMyTarget = false;
+    public Transform myTarget = null;
+    [Space(10)]
+    public string[] dialogLines = new string[] { };
+    public DialogManager.Speed dialogSpeed;
+
+    public Dialog dialog;
+
     Collider triggerCollider;
+    Light l;
 
     void Awake()
     {
@@ -22,6 +34,14 @@ public class DialogTrigger : MonoBehaviour, Trigger
     void Start()
     {
         triggerCollider = GetComponent<Collider>();
+        l = transform.GetChild(0).gameObject.GetComponent<Light>();
+
+        dialog = new Dialog();
+        dialog.lines = dialogLines;
+        dialog.speed = dialogSpeed;
+
+        if (triggerEnabled) Enable();
+        else Disable();
     }
 
     public string GetTag()
@@ -32,11 +52,13 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public void Enable()
     {
         triggerCollider.enabled = true;
+        l.enabled = true;
     }
 
     public void Disable()
     {
         triggerCollider.enabled = false;
+        l.enabled = false;
     }
 
     public void Remove()
@@ -48,7 +70,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
     {
         if (other.tag == "Player")
         {
-            OnDialogEnterRange?.Invoke(this, EventArgs.Empty);
+            interactManager.DialogEnterRange(this);
         }
     }
 
@@ -56,7 +78,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
     {
         if (other.tag == "Player")
         {
-            OnDialogLeaveRange?.Invoke(this, EventArgs.Empty);
+            interactManager.DialogExitRange(this);
         }
     }
 }

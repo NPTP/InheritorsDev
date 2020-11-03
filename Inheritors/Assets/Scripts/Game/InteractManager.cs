@@ -16,24 +16,41 @@ public class InteractManager : MonoBehaviour
     PickupTrigger pickupTrigger = null;
     string pickupTag = null;
     bool pickupInRange = false;
-    // string itemType = null;
     PickupManager.ItemTypes itemType;
-
-    // TODO: you might need a HELD pickup trigger storage attribute here, to differentiate
-    // when you run over another pickuptrigger zone and the one you're holding gets forgotten!
+    public event EventHandler<PickupArgs> OnPickup;
+    public class PickupArgs : EventArgs
+    {
+        public string tag;
+        public PickupManager.Inventory inventory;
+    }
 
     DropoffTrigger dropoffTrigger = null;
     string dropoffTag = null;
     bool dropoffInRange = false;
     PickupManager.ItemTypes dropoffItemType;
+    public event EventHandler<DropoffArgs> OnDropoff;
+    public class DropoffArgs : EventArgs
+    {
+        public string tag;
+    }
 
     DialogTrigger dialogTrigger = null;
     string dialogTag = null;
     bool dialogInRange = false;
-    GameObject speaker; // Subject of the dialog
+    public event EventHandler<DialogArgs> OnDialog;
+    public class DialogArgs : EventArgs
+    {
+        public string tag;
+        public Dialog dialog;
+    }
 
     WalkTrigger walkTrigger = null;
     string walkTag = null;
+    public event EventHandler<WalkArgs> OnWalk;
+    public class WalkArgs : EventArgs
+    {
+        public string tag;
+    }
 
     void Awake()
     {
@@ -50,14 +67,14 @@ public class InteractManager : MonoBehaviour
                     TryPickUp();
                 break;
 
-            case InputManager.Y:
-                if (dialogInRange)
-                    StartDialog();
-                break;
-
             case InputManager.X:
                 if (dropoffInRange)
                     TryDropoff();
+                break;
+
+            case InputManager.Y:
+                if (dialogInRange)
+                    StartDialog();
                 break;
 
             default:
@@ -94,42 +111,49 @@ public class InteractManager : MonoBehaviour
 
     void TryPickUp()
     {
-        print("Tried pickup of " + pickupTag);
         // Currently not checking against item type & quantity, just allow all.
         // Make a safety check before allowing pickup.
         if (!pickupInRange || pickupTag is null || pickupTrigger is null)
         {
-            print("Failed this pickup:\n" +
+            print("**** Failed this pickup ****\n" +
             "pickupInRange: " + pickupInRange + "\n" +
             "pickupTag: " + pickupTag + "\n" +
             "pickupTrigger: " + pickupTrigger);
             return;
         }
         stateManager.SetState(StateManager.State.PickingUp);
+        PickupTrigger currentPickup = pickupTrigger;
+        currentPickup.GetPickedUp();
         uiManager.pickupPrompt.Hide();
-        pickupTrigger.GetPickedUp();
         pickupInRange = false;
-        StartCoroutine(PickUpItem());
+        StartCoroutine(PickUpItem(currentPickup));
     }
 
-    IEnumerator PickUpItem()
+    IEnumerator PickUpItem(PickupTrigger currentPickup)
     {
-        Vector3 startPosition = pickupTrigger.transform.position;
+        Vector3 startPosition = currentPickup.transform.position;
         float elapsed = 0f;
         float time = 0.25f;
         while (elapsed < time)
         {
-            pickupTrigger.transform.position = Vector3.Lerp(
+            currentPickup.transform.position = Vector3.Lerp(
                 startPosition, GetItemHoldPosition(), Helper.SmoothStep(elapsed / time));
             elapsed += Time.deltaTime;
             yield return null;
         }
-        pickupTrigger.transform.position = GetItemHoldPosition();
-        pickupTrigger.transform.SetParent(player.transform);
+        currentPickup.transform.position = GetItemHoldPosition();
+        currentPickup.transform.SetParent(player.transform);
         stateManager.SetState(StateManager.State.Holding);
 
-        // Hand it off here to the PickupManager.
-        pickupManager.PickUp(pickupTrigger, itemType);
+        // Hand it off here to the PickupManager, updates the inventory.
+        pickupManager.PickUp(currentPickup);
+
+        // Send a pickup event.
+        OnPickup?.Invoke(this, new PickupArgs
+        {
+            tag = currentPickup.GetTag(),
+            inventory = pickupManager.GetInventory()
+        });
     }
 
     Vector3 GetItemHoldPosition()
@@ -165,17 +189,21 @@ public class InteractManager : MonoBehaviour
 
     void TryDropoff()
     {
-        stateManager.SetState(StateManager.State.DroppingOff);
-        uiManager.pickupPrompt.Hide();
-        dropoffTrigger.CompleteDropoff();
-        dropoffInRange = false;
-        StartCoroutine(DropOffItem());
+        if (pickupManager.IsHoldingItem())
+        {
+            stateManager.SetState(StateManager.State.DroppingOff);
+            uiManager.pickupPrompt.Hide();
+            dropoffTrigger.CompleteDropoff();
+            dropoffInRange = false;
+            StartCoroutine(DropOffItem());
+        }
     }
 
     IEnumerator DropOffItem()
     {
-        pickupTrigger.transform.SetParent(null); // Do we need to remember the prev. parent?
-        pickupTrigger.GetDroppedOff();
+        PickupTrigger heldItem = pickupManager.GetHeldItem();
+        pickupManager.DropOff();
+
         Vector3 startPosition = pickupTrigger.transform.position;
         Vector3 endPosition = dropoffTrigger.targetTransform.position;
         float elapsed = 0f;
@@ -190,11 +218,12 @@ public class InteractManager : MonoBehaviour
         pickupTrigger.transform.position = endPosition;
         var dropoffTarget = dropoffTrigger.targetTransform.gameObject.GetComponent<DropoffTarget>();
         if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
-        dropoffTrigger.Remove();
+        heldItem.Remove();
         stateManager.SetState(StateManager.State.Normal);
 
-        // Hand it off here to the PickupManager.
-        pickupManager.DropOff(pickupTrigger, itemType);
+        // TODO: call event for dropoff here, then remove the trigger.
+
+        dropoffTrigger.Remove();
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -206,35 +235,56 @@ public class InteractManager : MonoBehaviour
         return dialogInRange;
     }
 
-    public void HandleDialogEnterRange(object sender, EventArgs args)
+    public void DialogEnterRange(DialogTrigger sender)
     {
-        dialogTrigger = (DialogTrigger)sender;
+        dialogTrigger = sender;
+        dialogTag = dialogTrigger.GetTag();
         dialogInRange = true;
         uiManager.EnterRange(dialogTrigger.transform, "Dialog");
     }
 
-    public void HandleDialogLeaveRange(object sender, EventArgs args)
+    public void DialogExitRange(DialogTrigger sender)
     {
-        dialogTrigger = (DialogTrigger)sender;
-        dialogInRange = false;
-        uiManager.ExitRange(dialogTrigger.transform, "Dialog");
         dialogTrigger = null;
+        dialogTag = null;
+        dialogInRange = false;
+        uiManager.ExitRange(sender.transform, "Dialog");
     }
 
     void StartDialog()
     {
-        speaker.GetComponent<DialogTrigger>().Disable();
-        uiManager.pickupPrompt.Hide();
-        Vector3 lookRotation = Quaternion.LookRotation(speaker.transform.position - player.transform.position, Vector3.up).eulerAngles;
-        lookRotation.x = 0f;
-        lookRotation.z = 0f;
-        player.GetComponent<Rigidbody>().DORotate(lookRotation, .25f);
+        stateManager.SetState(StateManager.State.Dialog);
+        dialogTrigger.Disable();
+        dialogInRange = false;
+        uiManager.dialogPrompt.Hide();
+        if (dialogTrigger.lookAtMyTarget && dialogTrigger.myTarget != null)
+        {
+            Vector3 lookRotation = Quaternion.LookRotation(
+                dialogTrigger.myTarget.position - player.transform.position,
+                Vector3.up).eulerAngles;
+            lookRotation.x = 0f;
+            lookRotation.z = 0f;
+
+            // TODO: get this facing-dialog-target-rotation working later (for polish).
+            player.transform.DORotate(lookRotation, .25f);
+            player.GetComponent<Rigidbody>().rotation = Quaternion.Euler(lookRotation);
+        }
+
+        // Send dialog event to Day, which will display it and run any connected events.
+        OnDialog.Invoke(this, new DialogArgs
+        {
+            tag = dialogTrigger.tag,
+            dialog = dialogTrigger.dialog
+        });
+
+        if (dialogTrigger.dialogPersists)
+            StartCoroutine(WaitToResetTrigger());
     }
 
-    // TODO
-    public void EndDialog()
+    IEnumerator WaitToResetTrigger()
     {
-        speaker.GetComponent<DialogTrigger>().Enable();
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogTrigger.Enable();
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -243,9 +293,18 @@ public class InteractManager : MonoBehaviour
 
     public void WalkEnter(WalkTrigger sender)
     {
-        walkTrigger = sender;
-        walkTag = walkTrigger.GetTag();
-        // TODO: invoke an event from here.
+        // Consider a small wait for nicer feel.
+        WalkTrigger thisTrigger = sender;
+        StartCoroutine(WalkTriggerActivate(thisTrigger));
+    }
+
+    IEnumerator WalkTriggerActivate(WalkTrigger thisTrigger)
+    {
+        yield return new WaitForSeconds(0.3f);
+        walkTag = thisTrigger.GetTag();
+        thisTrigger.Disable();
+        OnWalk?.Invoke(this, new WalkArgs { tag = thisTrigger.GetTag() });
+        thisTrigger.Remove();
     }
 
     // ████████████████████████████████████████████████████████████████████████

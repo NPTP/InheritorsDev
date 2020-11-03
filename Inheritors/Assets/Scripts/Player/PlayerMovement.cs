@@ -58,7 +58,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleState(object sender, StateManager.StateArgs args)
     {
-        // Not implemented
+        switch (args.state)
+        {
+            case StateManager.State.Normal:
+                break;
+
+            case StateManager.State.Dialog:
+                break;
+
+            case StateManager.State.PickingUp:
+
+                break;
+            case StateManager.State.Holding:
+
+                break;
+            case StateManager.State.DroppingOff:
+
+                break;
+            case StateManager.State.Inert:
+
+                break;
+            default:
+                Debug.Log("Player movement tried to handle unknown State event.");
+                break;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

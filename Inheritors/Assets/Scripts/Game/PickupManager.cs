@@ -5,52 +5,70 @@ public class PickupManager : MonoBehaviour
 {
     InteractManager interactManager;
     UIManager uiManager;
-    public event EventHandler<PickupArgs> OnPickup;
-    public class PickupArgs : EventArgs
+
+    public enum ItemTypes
     {
+        NULL,
+        WOOD,
+        JUG
+    }
+
+    Inventory inventory = new Inventory();
+    public class Inventory
+    {
+        public PickupTrigger heldItem;
         public bool holdingItem;
         public PickupManager.ItemTypes itemType;
         public int itemQuantity;
     }
 
-    public PickupManager.ItemTypes types;
-    public enum ItemTypes
-    {
-        WOOD,
-        JUG
-    }
-
-    bool holdingItem = false;
-    PickupManager.ItemTypes itemType;
-    int itemQuantity = 0;
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ ACTIONS
     // ████████████████████████████████████████████████████████████████████████
 
-    public void PickUp(PickupTrigger pickupTrigger, PickupManager.ItemTypes type)
+    public void PickUp(PickupTrigger currentPickup)
     {
-        holdingItem = true;
-        itemType = type;
-        itemQuantity++;
-        uiManager.UpdateHolding(type, itemQuantity);
-        OnPickup?.Invoke(
-            this, new PickupArgs
-            {
-                holdingItem = this.holdingItem,
-                itemType = this.itemType,
-                itemQuantity = this.itemQuantity
-            }
-        );
+        inventory.heldItem = currentPickup;
+        inventory.holdingItem = true;
+        inventory.itemType = currentPickup.itemType;
+        inventory.itemQuantity++;
+        uiManager.UpdateInventory(inventory);
     }
 
-    public void DropOff(PickupTrigger pickupTrigger, PickupManager.ItemTypes type)
+    // A dropoff ALWAYS empties the inventory completely.
+    public void DropOff()
     {
-        holdingItem = false;
-        itemType = type;
-        itemQuantity = 0;
-        uiManager.UpdateHolding(type, itemQuantity);
-        pickupTrigger.Remove();
+        inventory.heldItem.ResetParent();
+        inventory.heldItem.GetDroppedOff();
+        inventory.heldItem = null;
+        inventory.holdingItem = false;
+        inventory.itemType = ItemTypes.NULL;
+        inventory.itemQuantity = 0;
+        uiManager.UpdateInventory(inventory);
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ GETTERS & SETTERS
+    // ████████████████████████████████████████████████████████████████████████
+
+    public bool IsHoldingItem()
+    {
+        return inventory.holdingItem;
+    }
+
+    public int GetItemQuantity()
+    {
+        return inventory.itemQuantity;
+    }
+
+    public PickupTrigger GetHeldItem()
+    {
+        return inventory.heldItem;
+    }
+
+    public PickupManager.Inventory GetInventory()
+    {
+        return inventory;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -62,19 +80,18 @@ public class PickupManager : MonoBehaviour
         InitializeReferences();
     }
 
+    void Start()
+    {
+        inventory.heldItem = null;
+        inventory.holdingItem = false;
+        inventory.itemQuantity = 0;
+    }
+
     void InitializeReferences()
     {
         interactManager = FindObjectOfType<InteractManager>();
         uiManager = FindObjectOfType<UIManager>();
     }
 
-    // ████████████████████████████████████████████████████████████████████████
-    // ███ GETTERS & SETTERS
-    // ████████████████████████████████████████████████████████████████████████
-
-    public int GetItemQuantity()
-    {
-        return itemQuantity;
-    }
 
 }

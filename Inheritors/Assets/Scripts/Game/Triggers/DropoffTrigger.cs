@@ -2,15 +2,15 @@
 using UnityEngine;
 using DG.Tweening;
 
-// Trigger to be placed around any pickup, sends events to InteractManager.
+// Trigger to be placed around any dropoff point, coupled with InteractManager.
 public class DropoffTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public event EventHandler OnTriggerActivate;
-
     public bool triggerEnabled = true;
     public string triggerTag;
+
+    [Header("Dropoff-Specific Properties")]
     public Transform targetTransform;
 
     Transform playerTransform;
@@ -69,10 +69,6 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     public void CompleteDropoff()
     {
         dropoffDone = true;
-        OnTriggerActivate?.Invoke(this, EventArgs.Empty); // TODO: maybe move this trigger
-        // to the end of the dropoff process, so we can control task completion, animation,
-        // Day sequences after things have been fully dropped off, not just when you PRESS
-        // drop off.
     }
 
     private void OnTriggerEnter(Collider other)

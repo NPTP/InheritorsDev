@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class Day0 : MonoBehaviour
 {
+    int today = 0;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
 
     void Start()
@@ -108,37 +109,44 @@ public class Day0 : MonoBehaviour
         IEnumerable<Trigger> worldTriggers = FindObjectsOfType<MonoBehaviour>().OfType<Trigger>();
         foreach (Trigger trigger in worldTriggers)
         {
-            trigger.OnTriggerActivate += HandleTriggerEvent;
             triggers[trigger.GetTag()] = trigger;
         }
     }
 
     void SubscribeToEvents()
     {
-        pickupManager.OnPickup += HandlePickupEvent;
+        interactManager.OnPickup += HandlePickupEvent;
+        interactManager.OnDropoff += HandleDropoffEvent;
+        interactManager.OnDialog += HandleDialogEvent;
+        interactManager.OnWalk += HandleWalkEvent;
     }
 
-    void HandlePickupEvent(object sender, PickupManager.PickupArgs args)
+    void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
     {
-        switch (args.itemType)
+        PickupManager.Inventory inventory = args.inventory;
+        switch (inventory.itemType)
         {
             case PickupManager.ItemTypes.WOOD:
-                if (args.itemQuantity == 1)
+                if (inventory.itemQuantity == 1)
                 {
                     dialogManager.NewDialog(wood1);
                 }
-                else if (args.itemQuantity == 2)
+                else if (inventory.itemQuantity == 2)
                 {
                     dialogManager.NewDialog(wood2);
                 }
-                else if (args.itemQuantity == 3)
+                else if (inventory.itemQuantity == 3)
                 {
                     StartCoroutine(AllWoodCollected());
                 }
                 break;
 
+            case PickupManager.ItemTypes.NULL:
+                Debug.Log("NULL pickup event");
+                break;
+
             default:
-                print("Unknown pickup event send to Day0");
+                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + today);
                 break;
         }
     }
@@ -160,29 +168,63 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(StateManager.State.Normal);
     }
 
-    void HandleTriggerEvent(object sender, EventArgs args)
+    void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
     {
-        Trigger trigger = (Trigger)sender;
-        string tag = trigger.GetTag();
+        string tag = args.tag;
+        Dialog dialog = args.dialog;
+
+        switch (tag)
+        {
+            case "DUMMY":
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + today);
+                dialogManager.NewDialog(dialog);
+                StartCoroutine(WaitDialogEnd());
+                break;
+        }
+    }
+    IEnumerator WaitDialogEnd()
+    {
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        print("Dialog done, m'boy!");
+    }
+
+
+    void HandleDropoffEvent(object sender, InteractManager.DropoffArgs args)
+    {
+        string tag = args.tag;
+
+        switch (tag)
+        {
+            case "Dropoff_Wood":
+                print(tag);
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + today);
+                break;
+        }
+    }
+
+
+    void HandleWalkEvent(object sender, InteractManager.WalkArgs args)
+    {
+        string tag = args.tag;
 
         switch (tag)
         {
             case "Walk_Firepit":
-                trigger.Remove();
                 StartCoroutine(Firepit());
                 break;
 
             case "Walk_End":
-                trigger.Remove();
                 StartCoroutine(End());
                 break;
 
-            case "Dropoff_Wood":
-                print(trigger.GetTag());
-                break;
-
             default:
-                Debug.Log("Trigger gave unknown tag to Day0.");
+                Debug.Log("Interact Manager gave unknown WALK tag to Day " + today);
                 break;
         }
     }
@@ -264,7 +306,10 @@ public class Day0 : MonoBehaviour
 
     void OnDestroy()
     {
-        pickupManager.OnPickup -= HandlePickupEvent;
+        interactManager.OnPickup -= HandlePickupEvent;
+        interactManager.OnDropoff -= HandleDropoffEvent;
+        interactManager.OnDialog -= HandleDialogEvent;
+        interactManager.OnWalk -= HandleWalkEvent;
     }
 
 }

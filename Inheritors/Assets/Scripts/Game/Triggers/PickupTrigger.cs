@@ -3,18 +3,16 @@ using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 
-// Trigger to be placed around any pickup, sends events to InteractManager.
+// Trigger to be placed around any pickup, coupled with InteractManager.
 public class PickupTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
-
-    public event EventHandler OnTriggerActivate;
 
     public bool triggerEnabled = true;
     public string triggerTag;
     public PickupManager.ItemTypes itemType;
 
-    Transform playerTransform;
+    Transform originalParent;
     Collider triggerCollider;
     Transform itemTransform;
     Vector3 itemLocalScale;
@@ -32,7 +30,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     void Start()
     {
-        playerTransform = GameObject.Find("Player").transform;
+        originalParent = transform.parent;
         triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
@@ -47,6 +45,11 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public string GetTag()
     {
         return triggerTag;
+    }
+
+    public void ResetParent()
+    {
+        transform.parent = originalParent;
     }
 
     public void Enable()
@@ -79,7 +82,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public void GetPickedUp()
     {
         pickedUp = true;
-        OnTriggerActivate?.Invoke(this, EventArgs.Empty);
         itemTransform.DOScale(itemLocalScale, .25f);
         Disable();
     }
@@ -95,7 +97,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
     {
         if (triggerEnabled && other.tag == "Player")
         {
-            // OnPickupEnterRange?.Invoke(this, EventArgs.Empty);
             interactManager.PickupEnterRange(this);
             itemTransform.DOScale(itemLocalScale * 1.15f, .25f);
         }
@@ -105,7 +106,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
     {
         if (triggerEnabled && other.tag == "Player")
         {
-            // OnPickupLeaveRange?.Invoke(this, EventArgs.Empty);
             interactManager.PickupExitRange(this);
             itemTransform.DOScale(itemLocalScale, .25f);
         }

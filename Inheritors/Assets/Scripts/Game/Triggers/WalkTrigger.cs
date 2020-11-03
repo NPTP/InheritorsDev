@@ -1,14 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-// Trigger to be placed around any pickup, sends events to InteractManager.
-// TODO: make the trigger class support any kind of trigger. Walk triggers
-// should support boxes AND spheres and whatever else.
+// Trigger for walking into, works with InteractManager.
 public class WalkTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
-
-    public event EventHandler OnTriggerActivate;
 
     public bool triggerEnabled = true;
     public bool invisibleTrigger = false;
@@ -75,11 +71,10 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (enabled && !triggered && other.tag == "Player")
+        if (triggerEnabled && !triggered && other.tag == "Player")
         {
             triggered = true;
-            OnTriggerActivate?.Invoke(this, EventArgs.Empty);
-            Disable();
+            interactManager.WalkEnter(this);
         }
     }
 }

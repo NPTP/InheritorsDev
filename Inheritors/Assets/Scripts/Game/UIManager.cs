@@ -151,15 +151,14 @@ public class UIManager : MonoBehaviour
     Image pickupStatusImage;
     Text pickupStatusText;
 
-    public void UpdateHolding(PickupManager.ItemTypes type, int quantity)
+    public void UpdateInventory(PickupManager.Inventory inventory)
     {
-
-        if (quantity > 0)
+        if (inventory.itemQuantity > 0)
         {
             pickupStatusText.enabled = true;
             pickupStatusImage.enabled = true;
-            pickupStatusImage.sprite = uiResources.GetItemIcon(type);
-            pickupStatusText.text = "×" + quantity.ToString();
+            pickupStatusImage.sprite = uiResources.GetItemIcon(inventory.itemType);
+            pickupStatusText.text = "×" + inventory.itemQuantity.ToString();
         }
         else
         {
