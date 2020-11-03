@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class DialogTrigger : MonoBehaviour, Trigger
 {
+    InteractManager interactManager;
+
     public event EventHandler OnDialogEnterRange;
     public event EventHandler OnDialogLeaveRange;
     public event EventHandler OnTriggerActivate;
@@ -10,13 +12,16 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public bool triggerEnabled = true;
     public string triggerTag;
 
-    Transform playerTransform;
-    SphereCollider sphereCollider;
+    Collider triggerCollider;
+
+    void Awake()
+    {
+        interactManager = FindObjectOfType<InteractManager>();
+    }
 
     void Start()
     {
-        playerTransform = GameObject.Find("Player").transform;
-        sphereCollider = GetComponent<SphereCollider>();
+        triggerCollider = GetComponent<Collider>();
     }
 
     public string GetTag()
@@ -26,12 +31,12 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public void Enable()
     {
-        sphereCollider.enabled = true;
+        triggerCollider.enabled = true;
     }
 
     public void Disable()
     {
-        sphereCollider.enabled = false;
+        triggerCollider.enabled = false;
     }
 
     public void Remove()

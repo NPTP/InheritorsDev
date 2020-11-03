@@ -13,16 +13,13 @@ public class InteractManager : MonoBehaviour
     DialogManager dialogManager;
     PickupManager pickupManager;
 
-    Trigger[] triggers;
-
-
     PickupTrigger pickupTrigger = null;
     string pickupTag = null;
     bool pickupInRange = false;
     // string itemType = null;
     PickupManager.ItemTypes itemType;
 
-    // TODO: you might need a HELD pickup trigger to differentiate
+    // TODO: you might need a HELD pickup trigger storage attribute here, to differentiate
     // when you run over another pickuptrigger zone and the one you're holding gets forgotten!
 
     DropoffTrigger dropoffTrigger = null;
@@ -34,6 +31,9 @@ public class InteractManager : MonoBehaviour
     string dialogTag = null;
     bool dialogInRange = false;
     GameObject speaker; // Subject of the dialog
+
+    WalkTrigger walkTrigger = null;
+    string walkTag = null;
 
     void Awake()
     {
@@ -188,6 +188,9 @@ public class InteractManager : MonoBehaviour
             yield return null;
         }
         pickupTrigger.transform.position = endPosition;
+        var dropoffTarget = dropoffTrigger.targetTransform.gameObject.GetComponent<DropoffTarget>();
+        if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
+        dropoffTrigger.Remove();
         stateManager.SetState(StateManager.State.Normal);
 
         // Hand it off here to the PickupManager.
@@ -232,6 +235,17 @@ public class InteractManager : MonoBehaviour
     public void EndDialog()
     {
         speaker.GetComponent<DialogTrigger>().Enable();
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ WALK
+    // ████████████████████████████████████████████████████████████████████████
+
+    public void WalkEnter(WalkTrigger sender)
+    {
+        walkTrigger = sender;
+        walkTag = walkTrigger.GetTag();
+        // TODO: invoke an event from here.
     }
 
     // ████████████████████████████████████████████████████████████████████████

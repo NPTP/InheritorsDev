@@ -49,6 +49,14 @@ public class DialogManager : MonoBehaviour
         interactManager = FindObjectOfType<InteractManager>();
     }
 
+    // Start a new dialog and switch into specified state after dialog finishes
+    public void NewDialog(Dialog dialog, StateManager.State finishState = StateManager.State.Normal)
+    {
+        dialogFinished = false;
+        stateManager.SetState(StateManager.State.Dialog);
+        StartCoroutine(DialogPlay(dialog.lines, dialog.speed, finishState));
+    }
+
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
         if (stateManager.GetState() == StateManager.State.Dialog && args.buttonCode == InputManager.A)
@@ -62,14 +70,6 @@ public class DialogManager : MonoBehaviour
             uiManager.dialogBox.TearDown();
             dialogFinished = true;
         }
-    }
-
-    // Start a new dialog and switch into specified state after dialog finishes
-    public void NewDialog(Dialog dialog, StateManager.State finishState = StateManager.State.Normal)
-    {
-        dialogFinished = false;
-        stateManager.SetState(StateManager.State.Dialog);
-        StartCoroutine(DialogPlay(dialog.lines, dialog.speed, finishState));
     }
 
     IEnumerator DialogPlay(string[] lines, float speed, StateManager.State finishState)

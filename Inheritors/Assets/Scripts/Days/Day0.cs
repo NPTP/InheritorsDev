@@ -58,10 +58,12 @@ public class Day0 : MonoBehaviour
         /* 03. Fade away the blackness. */
         yield return new WaitForSeconds(2f);
         transitionManager.Hide(8f);
+        cameraManager.ZoomToSize(5f, 2f);
         yield return new WaitForSeconds(5f);
 
         /* 04. Change view from fire to player. */
         cameraManager.SwitchToPlayerCam();
+        cameraManager.ResetSize(2f);
         yield return new WaitForSeconds(2f);
 
         /* 05. Display tutorial controls. */
@@ -177,7 +179,6 @@ public class Day0 : MonoBehaviour
 
             case "Dropoff_Wood":
                 print(trigger.GetTag());
-                trigger.Remove();
                 break;
 
             default:

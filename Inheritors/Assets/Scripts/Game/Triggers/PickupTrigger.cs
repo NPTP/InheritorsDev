@@ -15,7 +15,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public PickupManager.ItemTypes itemType;
 
     Transform playerTransform;
-    Collider sphereCollider;
+    Collider triggerCollider;
     Transform itemTransform;
     Vector3 itemLocalScale;
     BoxCollider itemCollider;
@@ -33,7 +33,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
-        sphereCollider = GetComponent<Collider>();
+        triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
         itemCollider = itemTransform.gameObject.GetComponent<BoxCollider>();
@@ -54,7 +54,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
         if (!pickedUp)
         {
             triggerEnabled = true;
-            sphereCollider.enabled = true;
+            triggerCollider.enabled = true;
             itemCollider.enabled = true;
             l.enabled = true;
             ps.Play();
@@ -64,7 +64,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public void Disable()
     {
         triggerEnabled = false;
-        sphereCollider.enabled = false;
+        triggerCollider.enabled = false;
         itemCollider.enabled = false;
         l.enabled = false;
         ps.Stop();
@@ -88,13 +88,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     {
         Debug.Log("Item placed in drop trigger!");
         droppedOff = true;
-        StartCoroutine(GetDroppedOffAnimation());
-    }
-
-    IEnumerator GetDroppedOffAnimation()
-    {
         Tween t = itemTransform.DOScale(0f, .5f).SetEase(Ease.InQuart);
-        yield return new WaitWhile(() => t != null && t.IsPlaying());
     }
 
     private void OnTriggerEnter(Collider other)

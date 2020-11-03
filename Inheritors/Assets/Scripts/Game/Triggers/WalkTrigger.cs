@@ -9,18 +9,20 @@ public class WalkTrigger : MonoBehaviour, Trigger
     InteractManager interactManager;
 
     public event EventHandler OnTriggerActivate;
+
     public bool triggerEnabled = true;
     public bool invisibleTrigger = false;
     public string triggerTag;
-    bool triggered = false;
 
     Transform playerTransform;
-    Collider sphereCollider;
+    Collider triggerCollider;
     Transform itemTransform;
     Vector3 itemLocalScale;
     BoxCollider itemCollider;
     Light l;
     ParticleSystem ps;
+
+    bool triggered = false;
 
     void Awake()
     {
@@ -30,7 +32,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     public void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
-        sphereCollider = GetComponent<Collider>();
+        triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
@@ -47,21 +49,25 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     public void Enable()
     {
-        triggerEnabled = true;
-        sphereCollider.enabled = true;
-        l.enabled = true;
-        ps.Play();
+        if (!triggered)
+        {
+            triggerEnabled = true;
+            triggerCollider.enabled = true;
+            l.enabled = true;
+            ps.Play();
+        }
     }
 
     // Disables collider and visual fx but keeps script alive so we can refer to it elsewhere.
     public void Disable()
     {
         triggerEnabled = false;
-        sphereCollider.enabled = false;
+        triggerCollider.enabled = false;
         l.enabled = false;
         ps.Stop();
     }
 
+    // ONLY call this from another script once that script has finished with the trigger!
     public void Remove()
     {
         Destroy(this.gameObject);

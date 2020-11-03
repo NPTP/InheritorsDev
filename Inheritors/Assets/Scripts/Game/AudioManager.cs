@@ -22,6 +22,11 @@ public class AudioManager : MonoBehaviour
         audioSource.loop = looping;
     }
 
+    public void PlayOneShot(string clipName)
+    {
+        // audioSource.PlayOneShot(something something clip);
+    }
+
     public void FadeTo(float volume, float duration, Ease ease = Ease.Linear)
     {
         audioSource.DOFade(volume, duration).SetEase(ease);

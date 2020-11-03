@@ -153,13 +153,19 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHolding(PickupManager.ItemTypes type, int quantity)
     {
-        pickupStatusImage.enabled = true;
-        pickupStatusImage.sprite = uiResources.GetItemIcon(type);
-        pickupStatusText.enabled = true;
+
         if (quantity > 0)
+        {
+            pickupStatusText.enabled = true;
+            pickupStatusImage.enabled = true;
+            pickupStatusImage.sprite = uiResources.GetItemIcon(type);
             pickupStatusText.text = "×" + quantity.ToString();
+        }
         else
-            pickupStatusText.text = "";
+        {
+            pickupStatusText.enabled = false;
+            pickupStatusImage.enabled = false;
+        }
     }
 
     // ████████████████████████████████████████████████████████████████████████

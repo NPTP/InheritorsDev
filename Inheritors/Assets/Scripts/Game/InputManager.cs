@@ -102,6 +102,10 @@ public class InputManager : MonoBehaviour
             case StateManager.State.Holding:
                 AllowInput();
                 break;
+            case StateManager.State.DroppingOff:
+                BlockInput();
+                ZeroAxes();
+                break;
             case StateManager.State.Inert:
                 BlockInput();
                 ZeroAxes();

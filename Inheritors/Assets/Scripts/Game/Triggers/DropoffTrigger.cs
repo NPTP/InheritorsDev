@@ -14,7 +14,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     public Transform targetTransform;
 
     Transform playerTransform;
-    Collider sphereCollider;
+    Collider triggerCollider;
     Light l;
     ParticleSystem ps;
     bool dropoffDone = false;
@@ -27,7 +27,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
-        sphereCollider = GetComponent<Collider>();
+        triggerCollider = GetComponent<Collider>();
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
         ps = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
 
@@ -45,7 +45,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
         if (!dropoffDone)
         {
             triggerEnabled = true;
-            sphereCollider.enabled = true;
+            triggerCollider.enabled = true;
             l.enabled = true;
             ps.Play();
         }
@@ -54,7 +54,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     public void Disable()
     {
         triggerEnabled = false;
-        sphereCollider.enabled = false;
+        triggerCollider.enabled = false;
         l.enabled = false;
         ps.Stop();
     }

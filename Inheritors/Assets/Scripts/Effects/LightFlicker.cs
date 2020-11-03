@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class LightFlicker : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class LightFlicker : MonoBehaviour
     // Saves us iterating every time we update, we just change by the delta
     Queue<float> smoothQueue;
     float lastSum = 0;
-
 
     /// <summary>
     /// Reset the randomness and start again. You usually don't need to call
