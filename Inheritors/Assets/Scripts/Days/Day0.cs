@@ -34,6 +34,7 @@ public class Day0 : MonoBehaviour
             uiManager.controls.Hide();
             triggers["Walk_Firepit"].Enable();
             stateManager.SetState(StateManager.State.Normal);
+            cameraManager.ResetSize();
         }
     }
 
@@ -41,6 +42,7 @@ public class Day0 : MonoBehaviour
     {
         uiManager.controls.SetAlpha(0f);
         cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
+        cameraManager.ZoomToSize(5f, 2f);
 
         /* 01. Darken screen, fade in sound. */
         stateManager.SetState(StateManager.State.Inert);
@@ -59,8 +61,7 @@ public class Day0 : MonoBehaviour
         /* 03. Fade away the blackness. */
         yield return new WaitForSeconds(2f);
         transitionManager.Hide(8f);
-        cameraManager.ZoomToSize(5f, 2f);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(4f);
 
         /* 04. Change view from fire to player. */
         cameraManager.SwitchToPlayerCam();
@@ -156,13 +157,10 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(wood3, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        yield return new WaitForSeconds(0.5f);
         taskManager.CompleteTask(1);
-        yield return new WaitForSeconds(0.5f);
         taskManager.AddTask("Bring wood to fire.");
         taskManager.SetActiveTask(2);
 
-        yield return new WaitForSeconds(0.5f);
         triggers["Dropoff_Wood"].Enable();
 
         stateManager.SetState(StateManager.State.Normal);
@@ -185,12 +183,12 @@ public class Day0 : MonoBehaviour
                 break;
         }
     }
+
     IEnumerator WaitDialogEnd()
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         print("Dialog done, m'boy!");
     }
-
 
     void HandleDropoffEvent(object sender, InteractManager.DropoffArgs args)
     {
@@ -199,7 +197,7 @@ public class Day0 : MonoBehaviour
         switch (tag)
         {
             case "Dropoff_Wood":
-                print(tag);
+                StartCoroutine(DropoffWood());
                 break;
 
             default:
@@ -208,6 +206,21 @@ public class Day0 : MonoBehaviour
         }
     }
 
+    IEnumerator DropoffWood()
+    {
+        stateManager.SetState(StateManager.State.Inert);
+        yield return new WaitForSeconds(1f);
+
+        cameraManager.SendCamTo(GameObject.Find("maloca").transform);
+        dialogManager.NewDialog(maloca, StateManager.State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        triggers["Walk_End"].Enable();
+        yield return new WaitForSeconds(.25f);
+
+        cameraManager.SwitchToPlayerCam();
+        stateManager.SetState(StateManager.State.Normal);
+    }
 
     void HandleWalkEvent(object sender, InteractManager.WalkArgs args)
     {
@@ -245,10 +258,10 @@ public class Day0 : MonoBehaviour
         triggers["Pickup_Wood2"].Enable();
         yield return new WaitForSeconds(1f);
         triggers["Pickup_Wood3"].Enable();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         cameraManager.SwitchToPlayerCam();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         stateManager.SetState(StateManager.State.Normal);
     }
@@ -266,7 +279,7 @@ public class Day0 : MonoBehaviour
 
     void InitializeTasks()
     {
-        // None
+        // None given all at once today
     }
 
     Dialog opening = new Dialog();
@@ -274,6 +287,7 @@ public class Day0 : MonoBehaviour
     Dialog wood1 = new Dialog();
     Dialog wood2 = new Dialog();
     Dialog wood3 = new Dialog();
+    Dialog maloca = new Dialog();
     void InitializeDialogs()
     {
         string delay = DialogManager.Tools.DELAY;
@@ -301,6 +315,11 @@ public class Day0 : MonoBehaviour
         wood3.lines = new string[] {
             "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
             "That is enough wood for now. Return to the fire."
+        };
+
+        maloca.lines = new string[] {
+             "Well done, my son! The fire must be beautiful. It is too bad I cannot see it from here.",
+             "But it is late now. Come to the maloca to sleep. Tomorrow is an important day."
         };
     }
 

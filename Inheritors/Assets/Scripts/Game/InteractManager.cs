@@ -204,8 +204,9 @@ public class InteractManager : MonoBehaviour
         PickupTrigger heldItem = pickupManager.GetHeldItem();
         pickupManager.DropOff();
 
+        DropoffTrigger thisDropoff = dropoffTrigger;
         Vector3 startPosition = pickupTrigger.transform.position;
-        Vector3 endPosition = dropoffTrigger.targetTransform.position;
+        Vector3 endPosition = thisDropoff.targetTransform.position;
         float elapsed = 0f;
         float time = 0.5f;
         while (elapsed < time)
@@ -216,14 +217,14 @@ public class InteractManager : MonoBehaviour
             yield return null;
         }
         pickupTrigger.transform.position = endPosition;
-        var dropoffTarget = dropoffTrigger.targetTransform.gameObject.GetComponent<DropoffTarget>();
+        var dropoffTarget = thisDropoff.targetTransform.gameObject.GetComponent<DropoffTarget>();
         if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
         heldItem.Remove();
         stateManager.SetState(StateManager.State.Normal);
 
-        // TODO: call event for dropoff here, then remove the trigger.
+        OnDropoff?.Invoke(this, new DropoffArgs { tag = thisDropoff.GetTag() });
 
-        dropoffTrigger.Remove();
+        thisDropoff.Remove();
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -316,7 +317,6 @@ public class InteractManager : MonoBehaviour
         player = GameObject.Find("Player");
         stateManager = FindObjectOfType<StateManager>();
         inputManager = FindObjectOfType<InputManager>();
-        inputManager.OnButtonDown += HandleInputEvent;
         uiManager = FindObjectOfType<UIManager>();
         dialogManager = FindObjectOfType<DialogManager>();
         pickupManager = FindObjectOfType<PickupManager>();
@@ -324,12 +324,12 @@ public class InteractManager : MonoBehaviour
 
     void SubscribeToEvents()
     {
-
+        inputManager.OnButtonDown += HandleInputEvent;
     }
 
     void OnDestroy()
     {
-        // Unsubscribe from all events
+        inputManager.OnButtonDown -= HandleInputEvent;
     }
 
 }

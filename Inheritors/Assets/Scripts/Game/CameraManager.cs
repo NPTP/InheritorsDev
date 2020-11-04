@@ -14,7 +14,7 @@ public class CameraManager : MonoBehaviour
     StateManager stateManager;
     InputManager inputManager;
 
-    float defaultOrthoSize;
+    float defaultOrthoSize = 10f;
 
     void Awake()
     {
@@ -27,7 +27,6 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         presentCam = cmPlayerCam;
-        defaultOrthoSize = cmPlayerCam.m_Lens.OrthographicSize;
     }
 
     public void UseLookCam()
@@ -72,8 +71,14 @@ public class CameraManager : MonoBehaviour
     public void ZoomToSize(float orthographicSize, float duration = 0f)
     {
         DOTween.To(
-            () => presentCam.m_Lens.OrthographicSize,
-            x => presentCam.m_Lens.OrthographicSize = x,
+            () => cmOtherCam.m_Lens.OrthographicSize,
+            x => cmOtherCam.m_Lens.OrthographicSize = x,
+            orthographicSize,
+            duration
+        );
+        DOTween.To(
+            () => cmPlayerCam.m_Lens.OrthographicSize,
+            x => cmPlayerCam.m_Lens.OrthographicSize = x,
             orthographicSize,
             duration
         );
@@ -82,8 +87,14 @@ public class CameraManager : MonoBehaviour
     public void ResetSize(float duration = 0f)
     {
         DOTween.To(
-            () => presentCam.m_Lens.OrthographicSize,
-            x => presentCam.m_Lens.OrthographicSize = x,
+            () => cmOtherCam.m_Lens.OrthographicSize,
+            x => cmOtherCam.m_Lens.OrthographicSize = x,
+            defaultOrthoSize,
+            duration
+        );
+        DOTween.To(
+            () => cmPlayerCam.m_Lens.OrthographicSize,
+            x => cmPlayerCam.m_Lens.OrthographicSize = x,
             defaultOrthoSize,
             duration
         );
