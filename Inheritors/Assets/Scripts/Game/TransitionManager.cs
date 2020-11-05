@@ -20,6 +20,11 @@ public class TransitionManager : MonoBehaviour
         transition.color = color;
     }
 
+    public void ChangeColor(Color color, float duration)
+    {
+        transition.DOColor(color, duration);
+    }
+
     public void SetAlpha(float alpha)
     {
         Debug.Log(canvasGroup);

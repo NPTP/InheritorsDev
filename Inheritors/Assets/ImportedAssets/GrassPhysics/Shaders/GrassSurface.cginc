@@ -1,1 +1,1 @@
-#include "GrassSurfaces/GrassSpecularSurface.cginc"
+#include "GrassSurfaces/GrassLambertianSurface.cginc"

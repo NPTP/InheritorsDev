@@ -273,7 +273,7 @@ public class Day0 : MonoBehaviour
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
         yield return new WaitForSeconds(.5f);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Day1");
     }
 
 
