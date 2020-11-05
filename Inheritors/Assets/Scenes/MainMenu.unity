@@ -360,7 +360,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: exit
+  m_Text: end
 --- !u!222 &286269291
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class GameTerrainCopy : MonoBehaviour
+public class EditorTerrainReset : MonoBehaviour
 {
 
     [Tooltip("The original terrain we're copying")]

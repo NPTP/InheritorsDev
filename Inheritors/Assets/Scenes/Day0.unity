@@ -34210,6 +34210,49 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1350175379}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1459824338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1459824339}
+  - component: {fileID: 1459824340}
+  m_Layer: 0
+  m_Name: TerrainManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1459824339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459824338}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1700459667}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1459824340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459824338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8c0c800fb5cd2a4ea71c65c8c875442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1459950344
 GameObject:
   m_ObjectHideFlags: 0
@@ -35932,7 +35975,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560631258}
   m_LocalRotation: {x: 0.3828439, y: 0.120402165, z: -0.05040234, w: 0.91454554}
-  m_LocalPosition: {x: 20.649935, y: 72.46043, z: -1.1793613}
+  m_LocalPosition: {x: 20.649933, y: 72.460434, z: -1.179369}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 355201447}
@@ -37388,6 +37431,7 @@ Transform:
   - {fileID: 812603498}
   - {fileID: 2012954926}
   - {fileID: 1980420322}
+  - {fileID: 1459824339}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -39326,8 +39370,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ba386844cac67f409231ac33093d4c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leavePaths: 0
-  cutGrass: 0
+  leavePaths: 1
+  cutGrass: 1
   texturePosZ: 0
   texturePosX: 0
   detailPosZ: 0
