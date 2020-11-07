@@ -294,7 +294,6 @@ public class InteractManager : MonoBehaviour
 
     public void WalkEnter(WalkTrigger sender)
     {
-        // Consider a small wait for nicer feel.
         WalkTrigger thisTrigger = sender;
         StartCoroutine(WalkTriggerActivate(thisTrigger));
     }
