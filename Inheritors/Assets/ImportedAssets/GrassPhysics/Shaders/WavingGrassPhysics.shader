@@ -20,7 +20,7 @@ SubShader{
 	ColorMask RGB
 
 	CGPROGRAM
-	#pragma surface surf Lambert vertex:PhysicsWavingGrassVert addshadow exclude_path:deferred
+	#pragma surface surf StandardSpecular vertex:PhysicsWavingGrassVert addshadow exclude_path:deferred
 
 	sampler2D _MainTex;
 	fixed _Cutoff;

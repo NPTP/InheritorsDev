@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     StateManager stateManager;
     InputManager inputManager;
 
-    [SerializeField] private float m_moveSpeed = 2;
+    [SerializeField] private float m_moveSpeed = 5;
     [SerializeField] private float m_turnSpeed = 200;
     [SerializeField] private float m_jumpForce = 4;
 

@@ -288,6 +288,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1681586530460165990, guid: 6416a359963301f46b4b6e38049ce03d,
+        type: 3}
+      propertyPath: m_moveSpeed
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1824340380413090, guid: 6416a359963301f46b4b6e38049ce03d, type: 3}
       propertyPath: m_Name
       value: Player
@@ -9070,7 +9075,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 628161278}
   m_LocalRotation: {x: 0.3828439, y: 0.120402165, z: -0.05040234, w: 0.91454554}
-  m_LocalPosition: {x: 34.296165, y: 69.54706, z: -42.965073}
+  m_LocalPosition: {x: 34.295662, y: 69.54706, z: -42.964935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1267272660}
@@ -32211,8 +32216,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Text goes here. Text goes here. Text goes here. Text goes here. Text goes
-    here. Text goes here. Text goes here. Text goes here.
+  m_text: <color=blue>Text</color> goes here. Text goes here. Text goes here. Text
+    goes here. Text goes here. Text goes here. Text goes here. Text goes here.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9e64837bbdc0b234f8041552f42d33e4, type: 2}
   m_sharedMaterial: {fileID: 1844295688492963483, guid: 9e64837bbdc0b234f8041552f42d33e4,
@@ -35960,7 +35965,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560631258}
   m_LocalRotation: {x: 0.3828439, y: 0.120402165, z: -0.05040234, w: 0.91454554}
-  m_LocalPosition: {x: 20.650013, y: 72.460724, z: -1.1790695}
+  m_LocalPosition: {x: 20.649881, y: 72.46043, z: -1.1793547}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 355201447}
@@ -38148,7 +38153,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745259721}
   m_LocalRotation: {x: 0.3828439, y: 0.120402165, z: -0.05040234, w: 0.91454554}
-  m_LocalPosition: {x: 34.296165, y: 69.54706, z: -42.965073}
+  m_LocalPosition: {x: 34.295662, y: 69.54706, z: -42.964935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1034975760}

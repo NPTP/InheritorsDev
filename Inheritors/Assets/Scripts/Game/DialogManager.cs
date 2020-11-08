@@ -41,9 +41,9 @@ public class DialogManager : MonoBehaviour
         FAST
     }
 
-    float SLOW = 0.05f;
-    float MED = 0.03f;
-    float FAST = 0.01f;
+    float SLOW = 0.03f;
+    float MED = 0.01f;
+    float FAST = 0.005f;
     float[] speeds;
 
     void Awake()

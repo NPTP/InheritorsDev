@@ -56,24 +56,26 @@ public class UIManager : MonoBehaviour
         public Image prompt;
         public Animator animator; // TODO: polish stage: animate the waiting dialog prompt
         Tween promptTween = null;
-        float moveTime = 1f;
-        float fadeTime = 0.8f;
+        float moveUpTime = 0.5f;
+        float fadeUpTime = 0.4f;
+        float moveDownTime = 1f;
+        float fadeDownTime = 0.8f;
         float yPos = 192f;
 
         public Tween SetUp()
         {
             tmpText.maxVisibleCharacters = 0;
             prompt.color = Helper.ChangedAlpha(prompt.color, 0);
-            Tween t = BringUpDown("Up", moveTime);
-            canvasGroup.DOFade(1f, fadeTime).From(0f);
+            Tween t = BringUpDown("Up", moveUpTime);
+            canvasGroup.DOFade(1f, fadeUpTime).From(0f);
             return t;
         }
 
         public Tween TearDown()
         {
             prompt.enabled = false;
-            Tween t = BringUpDown("Down", moveTime);
-            canvasGroup.DOFade(0f, fadeTime);
+            Tween t = BringUpDown("Down", moveDownTime);
+            canvasGroup.DOFade(0f, fadeDownTime);
             return t;
         }
 

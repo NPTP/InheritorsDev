@@ -296,21 +296,21 @@ public class Day0 : MonoBehaviour
             "The Omerê is our home." + delay,
             "Our people have lived here for hundreds of years." + delay,
             "Your mother is of <b>Kanoê</b>." + delay + "\nYour father, of <b>Akuntsu</b>." + delay,
-            "You are young, <b>Operaeika</b>." + delay + "\nYou are the inheritor of this land." + delay + "\nThe inheritor of our tradition." + delay, // TODO: change Operaeika to "son"
+            "You are young, <b>son</b>." + delay + "\nYou are the inheritor of this land." + delay + "\nThe inheritor of our tradition." + delay,
             "You will bring us hope." + delay + delay
         };
         opening.speed = DialogManager.Speed.MED;
 
         firepit.lines = new string[] {
             "This fire is dying.",
-            "Fetch dry branches from our collection, so that it might find new life."
+            "Fetch dry <color=blue>wood</color> from our collection, so that it might find new life."
         };
 
         wood1.lines = new string[] {
             "The Cumaru wood. Tough, ancient, everlasting."
         };
         wood2.lines = new string[] {
-            "Massaranduba. Hard-won, deep, rich, and beautiful."
+            "Massaranduba tree. Hard-won, deep, rich, and beautiful."
         };
         wood3.lines = new string[] {
             "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
