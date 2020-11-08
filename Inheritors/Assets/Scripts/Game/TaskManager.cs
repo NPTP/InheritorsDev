@@ -30,21 +30,21 @@ public class TaskManager : MonoBehaviour
 
         public void Inactive()
         {
-            this.currentText = inactiveColorTag + this.number.ToString() + ". " + this.originalText + endColorTag + lineBreak;
+            this.currentText = inactiveColorTag + this.originalText + endColorTag + lineBreak;
             this.active = false;
             this.completed = false;
         }
 
         public void Active()
         {
-            this.currentText = activeColorTag + this.number.ToString() + ". " + "<b>" + this.originalText + "</b>" + endColorTag + lineBreak;
+            this.currentText = activeColorTag + "<b>" + this.originalText + "</b>" + endColorTag + lineBreak;
             this.active = true;
             this.completed = false;
         }
 
         public void Complete()
         {
-            string strikethroughText = StrikeThrough(this.number.ToString() + ". " + this.originalText);
+            string strikethroughText = StrikeThrough(this.originalText);
             this.currentText = completedColorTag + strikethroughText + endColorTag + lineBreak;
             this.active = false;
             this.completed = true;
@@ -69,12 +69,13 @@ public class TaskManager : MonoBehaviour
     /* TaskManager properties */
     List<Task> taskList;
     Task activeTask;
-    Text text;
+    Text activeText;
+    Text inactiveText;
     public bool allTasksCompleted = false;
 
     void Awake()
     {
-        text = GameObject.FindGameObjectWithTag("TaskText").GetComponent<Text>();
+        inactiveText = GameObject.FindGameObjectWithTag("TaskText").GetComponent<Text>();
         taskList = new List<Task>();
         ResetAllTasks();
     }
@@ -140,9 +141,12 @@ public class TaskManager : MonoBehaviour
 
     void UpdateTaskUI()
     {
+        // TODO: We'll call the UI manager from here
+
+
         string tasks = "";
         for (int i = 0; i < taskList.Count; i++)
             tasks += taskList[i].currentText;
-        text.text = tasks;
+        inactiveText.text = tasks;
     }
 }
