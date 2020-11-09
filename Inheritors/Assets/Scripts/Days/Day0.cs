@@ -7,6 +7,8 @@ using DG.Tweening;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
+
+// TODO: make every day's tasks & dialogs their own classes so we never mis-label something.
 public class Day0 : MonoBehaviour
 {
     int today = 0;
@@ -35,12 +37,13 @@ public class Day0 : MonoBehaviour
             triggers["Walk_Firepit"].Enable();
             stateManager.SetState(StateManager.State.Normal);
             cameraManager.ResetSize();
+            InitializeTasks();
         }
     }
 
     IEnumerator Intro()
     {
-        uiManager.controls.SetAlpha(0f);
+        // uiManager.controls.SetAlpha(0f);
         cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
         cameraManager.ZoomToSize(5f, 2f);
 
@@ -122,6 +125,14 @@ public class Day0 : MonoBehaviour
         interactManager.OnWalk += HandleWalkEvent;
     }
 
+    void OnDestroy()
+    {
+        interactManager.OnPickup -= HandlePickupEvent;
+        interactManager.OnDropoff -= HandleDropoffEvent;
+        interactManager.OnDialog -= HandleDialogEvent;
+        interactManager.OnWalk -= HandleWalkEvent;
+    }
+
     void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
     {
         PickupManager.Inventory inventory = args.inventory;
@@ -157,9 +168,8 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(wood3, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        taskManager.CompleteTask(1);
-        taskManager.AddTask("Bring wood to fire.");
-        taskManager.SetActiveTask(2);
+        taskManager.CompleteActiveTask(); // CompleteTask("Branches");
+        taskManager.SetActiveTask("WoodFire");
 
         triggers["Dropoff_Wood"].Enable();
 
@@ -206,22 +216,6 @@ public class Day0 : MonoBehaviour
         }
     }
 
-    IEnumerator DropoffWood()
-    {
-        stateManager.SetState(StateManager.State.Inert);
-        yield return new WaitForSeconds(1f);
-
-        cameraManager.SendCamTo(GameObject.Find("maloca").transform);
-        dialogManager.NewDialog(maloca, StateManager.State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        triggers["Walk_End"].Enable();
-        yield return new WaitForSeconds(.25f);
-
-        cameraManager.SwitchToPlayerCam();
-        stateManager.SetState(StateManager.State.Normal);
-    }
-
     void HandleWalkEvent(object sender, InteractManager.WalkArgs args)
     {
         string tag = args.tag;
@@ -247,9 +241,6 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(firepit, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        taskManager.AddTask("Fetch 3 branches for the fire.");
-        taskManager.SetActiveTask(1);
-
         cameraManager.SendCamTo(GameObject.Find("woodchoprock").transform);
         yield return new WaitForSeconds(1f);
 
@@ -263,12 +254,32 @@ public class Day0 : MonoBehaviour
         cameraManager.SwitchToPlayerCam();
         yield return new WaitForSeconds(0.5f);
 
+        taskManager.SetActiveTask("Branches");
+        uiManager.SetUpTasksInventory();
+        stateManager.SetState(StateManager.State.Normal);
+    }
+
+    IEnumerator DropoffWood()
+    {
+        stateManager.SetState(StateManager.State.Inert);
+        yield return new WaitForSeconds(1f);
+
+        cameraManager.SendCamTo(GameObject.Find("maloca").transform);
+        dialogManager.NewDialog(maloca, StateManager.State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        taskManager.SetActiveTask("Maloca");
+        triggers["Walk_End"].Enable();
+        yield return new WaitForSeconds(.25f);
+
+        cameraManager.SwitchToPlayerCam();
         stateManager.SetState(StateManager.State.Normal);
     }
 
     IEnumerator End()
     {
         stateManager.SetState(StateManager.State.Inert);
+        uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
@@ -279,7 +290,9 @@ public class Day0 : MonoBehaviour
 
     void InitializeTasks()
     {
-        // None given all at once today
+        taskManager.AddTask("Branches", "Fetch 3 branches.");
+        taskManager.AddTask("WoodFire", "Bring wood to fire.");
+        taskManager.AddTask("Maloca", "Return to Maloca to sleep.");
     }
 
     Dialog opening = new Dialog();
@@ -299,11 +312,11 @@ public class Day0 : MonoBehaviour
             "You are young, <b>son</b>." + delay + "\nYou are the inheritor of this land." + delay + "\nThe inheritor of our tradition." + delay,
             "You will bring us hope." + delay + delay
         };
-        opening.speed = DialogManager.Speed.MED;
+        opening.speed = DialogManager.Speed.SLOW;
 
         firepit.lines = new string[] {
             "This fire is dying.",
-            "Fetch dry <color=blue>wood</color> from our collection, so that it might find new life."
+            "Fetch <color=blue>3 branches</color> from our pile of dried wood, so that it might find new life."
         };
 
         wood1.lines = new string[] {
@@ -323,12 +336,6 @@ public class Day0 : MonoBehaviour
         };
     }
 
-    void OnDestroy()
-    {
-        interactManager.OnPickup -= HandlePickupEvent;
-        interactManager.OnDropoff -= HandleDropoffEvent;
-        interactManager.OnDialog -= HandleDialogEvent;
-        interactManager.OnWalk -= HandleWalkEvent;
-    }
+
 
 }

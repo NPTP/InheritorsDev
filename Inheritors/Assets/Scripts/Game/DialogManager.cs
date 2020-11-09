@@ -55,6 +55,12 @@ public class DialogManager : MonoBehaviour
         interactManager = FindObjectOfType<InteractManager>();
     }
 
+    // Unsubscribe from all events
+    void OnDestroy()
+    {
+        inputManager.OnButtonDown -= HandleInputEvent;
+    }
+
     void Start()
     {
         speeds = new float[] { SLOW, MED, FAST };
@@ -99,7 +105,9 @@ public class DialogManager : MonoBehaviour
                 uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
                 yield return new WaitForSeconds(speed);
             }
-            uiManager.dialogBox.ShowPrompt();
+            Tween promptShow = uiManager.dialogBox.ShowPrompt();
+            yield return new WaitWhile(() => promptShow != null && promptShow.IsPlaying());
+            uiManager.dialogBox.StartPromptWaitAnim();
             dialogNext = false;
             yield return new WaitUntil(() => dialogNext);
             // yield return null; // Must put a frame between inputs
@@ -115,12 +123,6 @@ public class DialogManager : MonoBehaviour
     public bool IsDialogFinished()
     {
         return dialogFinished;
-    }
-
-    // Unsubscribe from all events
-    void OnDestroy()
-    {
-        inputManager.OnButtonDown -= HandleInputEvent;
     }
 }
 

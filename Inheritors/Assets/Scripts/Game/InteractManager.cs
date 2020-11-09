@@ -170,12 +170,12 @@ public class InteractManager : MonoBehaviour
         return dropoffInRange;
     }
 
-    public void DropoffEnterRange(DropoffTrigger sender)
+    public void DropoffEnterRange(DropoffTrigger sender, string promptText)
     {
         dropoffTrigger = sender;
         dropoffTag = dropoffTrigger.GetTag();
         dropoffInRange = true;
-        uiManager.EnterRange(dropoffTrigger.transform, "Dropoff");
+        uiManager.EnterRange(dropoffTrigger.transform, "Dropoff", promptText);
     }
 
     public void DropoffExitRange(DropoffTrigger sender)

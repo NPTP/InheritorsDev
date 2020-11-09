@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
@@ -11,169 +12,136 @@ public class UIManager : MonoBehaviour
     InteractManager interactManager;
     PickupManager pickupManager;
 
+    public UI_TasksInventory tasksInventory = new UI_TasksInventory();
+    public UI_Prompt pickupPrompt = new UI_Prompt();
+    public UI_Prompt dialogPrompt = new UI_Prompt();
+    public UI_DialogBox dialogBox = new UI_DialogBox();
+    public UI_Controls controls = new UI_Controls();
+
     public UIResources uiResources;
-
-    public TaskList taskList = new TaskList();
-    public class TaskList
-    {
-        // TODO
-    }
-
-    public Prompt pickupPrompt = new Prompt();
-    public Prompt dialogPrompt = new Prompt();
-    public class Prompt
-    {
-        public RectTransform rectTransform;
-        public Image image;
-        public TMP_Text tmpText;
-        public Tween currentTween;
-
-        public void Show()
-        {
-            image.enabled = true;
-            tmpText.enabled = true;
-        }
-
-        public void Hide()
-        {
-            image.enabled = false;
-            tmpText.enabled = false;
-        }
-
-        public void SetSize(float x, float y, float z)
-        {
-            rectTransform.localScale = new Vector3(x, y, z);
-        }
-    }
-
-
-    public DialogBox dialogBox = new DialogBox();
-    public class DialogBox
-    {
-        public CanvasGroup canvasGroup;
-        public RectTransform rectTransform;
-        public TMP_Text tmpText;
-        public Image prompt;
-        public Animator animator; // TODO: polish stage: animate the waiting dialog prompt
-        Tween promptTween = null;
-        float moveUpTime = 0.5f;
-        float fadeUpTime = 0.4f;
-        float moveDownTime = 1f;
-        float fadeDownTime = 0.8f;
-        float yPos = 192f;
-
-        public Tween SetUp()
-        {
-            tmpText.maxVisibleCharacters = 0;
-            prompt.color = Helper.ChangedAlpha(prompt.color, 0);
-            Tween t = BringUpDown("Up", moveUpTime);
-            canvasGroup.DOFade(1f, fadeUpTime).From(0f);
-            return t;
-        }
-
-        public Tween TearDown()
-        {
-            prompt.enabled = false;
-            Tween t = BringUpDown("Down", moveDownTime);
-            canvasGroup.DOFade(0f, fadeDownTime);
-            return t;
-        }
-
-        Tween BringUpDown(string dir, float duration)
-        {
-            float y = dir == "Up" ? yPos : -yPos;
-            return DOTween.To(
-                () => rectTransform.anchoredPosition3D,
-                x => rectTransform.anchoredPosition3D = x,
-                new Vector3(0f, y, 0f),
-                duration
-            );
-        }
-
-        public void SetLine(string line)
-        {
-            tmpText.text = line;
-        }
-
-        public void ShowPrompt()
-        {
-            prompt.enabled = true;
-            promptTween = prompt.DOFade(1f, 0.25f);
-        }
-
-        public void HidePrompt()
-        {
-            if (promptTween != null) promptTween.Kill();
-            prompt.color = Helper.ChangedAlpha(prompt.color, 0f);
-            prompt.enabled = false;
-        }
-    }
-
-    public Controls controls = new Controls();
-    public class Controls // Probably just going to be used for joystick, and once only...
-    {
-        public CanvasGroup canvasGroup;
-        public TMP_Text tmpText;
-
-        public void Show(float duration = 1f)
-        {
-            canvasGroup.DOFade(1f, duration);
-        }
-
-        public void Hide(float duration = 1f)
-        {
-            canvasGroup.DOFade(0f, duration);
-        }
-
-        public void SetAlpha(float alpha)
-        {
-            canvasGroup.alpha = alpha;
-        }
-    }
 
     void Awake()
     {
         InitializeReferences();
         InitializeDialogBox();
+        InitializeTasksInventory();
         InitializePrompt(pickupPrompt, "PickupPrompt");
         InitializePrompt(dialogPrompt, "DialogPrompt");
         InitializeControls();
-        // TODO: Post-alpha, set up the nice proper task header, list, and item
-        // carry slot object (all top left UI as one thing with multiple pieces?)
     }
 
     // ████████████████████████████████████████████████████████████████████████
-    // ███ TEMPORARY INVENTORY (until we have that stuff in fully)
+    // ███ TASKS / INVENTORY SETUP/TEARDOWN
     // ████████████████████████████████████████████████████████████████████████
 
-    // TODO: everything inside this boundary is hacky as fuck right now. Fix'er!
-    // Maybe some kind of InitializeUI() function to kick off every scene, called
-    // in the Start() method.
+    public void SetUpTasksInventory()
+    {
+        StartCoroutine(SetUpAnimation());
+    }
 
-    Image pickupStatusImage;
-    Text pickupStatusText;
+    IEnumerator SetUpAnimation()
+    {
+        tasksInventory.TweenInventory("In", .6f, Ease.OutBack);
+        yield return new WaitForSeconds(.3f);
+        tasksInventory.TweenActiveBar("In", .6f, Ease.OutBack);
+        yield return new WaitForSeconds(.2f);
+        tasksInventory.TweenTaskList("In", .6f, Ease.OutQuad);
+        yield return new WaitForSeconds(.5f);
+        tasksInventory.finishedAnimating = true;
+    }
 
+    public void TearDownTasksInventory()
+    {
+        tasksInventory.finishedAnimating = false;
+        StartCoroutine(TearDownAnimation());
+    }
+
+    IEnumerator TearDownAnimation()
+    {
+        tasksInventory.TweenActiveBar("Out", .6f, Ease.InBack);
+        yield return new WaitForSeconds(.3f);
+        tasksInventory.TweenInventory("Out", .6f, Ease.InBack);
+        yield return new WaitForSeconds(.2f);
+        tasksInventory.TweenTaskList("Out", .6f, Ease.InQuad);
+        yield return new WaitForSeconds(.5f);
+        tasksInventory.finishedAnimating = true;
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ TASKS
+    // ████████████████████████████████████████████████████████████████████████
+
+    public void UpdateTasks(TaskManager.Task activeTask, List<TaskManager.Task> taskList)
+    {
+        tasksInventory.activeBarTxt.text = activeTask.currentText;
+        // TODO: get the strikethru working later (polish stage)
+        // if (activeTask.completed)
+        //     StrikethruActiveTask(0.5f);
+
+        string listBuilder = "";
+        foreach (TaskManager.Task t in taskList)
+        {
+            listBuilder += t.currentText; // Linebreaks are already in the task text
+        }
+        tasksInventory.taskListTxt.text = listBuilder;
+    }
+
+    void StrikethruReset()
+    {
+        tasksInventory.strikethruRT.localScale =
+        new Vector3(
+            0f,
+            tasksInventory.strikethruRT.localScale.y,
+            tasksInventory.strikethruRT.localScale.z
+        );
+    }
+
+    void StrikethruActiveTask(float duration)
+    {
+        DOTween.To(
+            () => tasksInventory.strikethruRT.localScale,
+            x => tasksInventory.strikethruRT.localScale = x,
+            new Vector3(1f,
+                tasksInventory.strikethruRT.localScale.y,
+                tasksInventory.strikethruRT.localScale.z),
+            duration
+        );
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ INVENTORY
+    // ████████████████████████████████████████████████████████████████████████
+
+    // TODO: Animations
     public void UpdateInventory(PickupManager.Inventory inventory)
     {
-        if (inventory.itemQuantity > 0)
+        if (inventory.itemQuantity > 1)
         {
-            pickupStatusText.enabled = true;
-            pickupStatusImage.enabled = true;
-            pickupStatusImage.sprite = uiResources.GetItemIcon(inventory.itemType);
-            pickupStatusText.text = "×" + inventory.itemQuantity.ToString();
+            tasksInventory.inventoryTxt.enabled = true;
+            tasksInventory.inventoryItemImg.enabled = true;
+            tasksInventory.inventoryItemImg.sprite = uiResources.GetItemIcon(inventory.itemType);
+            tasksInventory.inventoryTxt.text = "×" + inventory.itemQuantity.ToString();
+        }
+        else if (inventory.itemQuantity == 1)
+        {
+            tasksInventory.inventoryTxt.enabled = false;
+            tasksInventory.inventoryItemImg.enabled = true;
+            tasksInventory.inventoryItemImg.sprite = uiResources.GetItemIcon(inventory.itemType);
         }
         else
         {
-            pickupStatusText.enabled = false;
-            pickupStatusImage.enabled = false;
+            tasksInventory.inventoryTxt.enabled = false;
+            tasksInventory.inventoryItemImg.enabled = false;
         }
     }
 
     // ████████████████████████████████████████████████████████████████████████
+    // ███ ENTER/EXIT RANGE
+    // ████████████████████████████████████████████████████████████████████████
 
-    public void EnterRange(Transform target, string triggerType)
+    public void EnterRange(Transform target, string triggerType, string prompText = "TEXT NOT PASSED")
     {
-        Prompt p;
+        UI_Prompt p;
         if (triggerType == "Pickup")
         {
             p = pickupPrompt;
@@ -185,6 +153,8 @@ public class UIManager : MonoBehaviour
             p = pickupPrompt;
             p.image.enabled = true;
             p.image.sprite = uiResources.X_Button;
+            p.text.enabled = true;
+            p.text.text = prompText;
         }
         else // (triggerType == "Dialog")
         {
@@ -196,7 +166,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(AlignPromptInRange(target, p, triggerType));
     }
 
-    IEnumerator AlignPromptInRange(Transform target, Prompt p, string triggerType)
+    IEnumerator AlignPromptInRange(Transform target, UI_Prompt p, string triggerType)
     {
         if (p.currentTween != null) p.currentTween.Kill();
         p.currentTween = p.image.DOFade(1f, .25f).From(0f);
@@ -213,7 +183,7 @@ public class UIManager : MonoBehaviour
 
     public void ExitRange(Transform target, string triggerType)
     {
-        Prompt p;
+        UI_Prompt p;
         if (triggerType == "Pickup")
             p = pickupPrompt;
         else if (triggerType == "Dropoff")
@@ -224,7 +194,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(AlignPromptOutOfRange(target, p, triggerType));
     }
 
-    IEnumerator AlignPromptOutOfRange(Transform target, Prompt p, string triggerType)
+    IEnumerator AlignPromptOutOfRange(Transform target, UI_Prompt p, string triggerType)
     {
         if (p.currentTween != null) p.currentTween.Kill();
         p.currentTween = p.image.DOFade(0f, .25f).From(p.image.color.a);
@@ -238,7 +208,10 @@ public class UIManager : MonoBehaviour
 
         Func<bool> TargetInRange = GetInRangeFunction(triggerType);
         if (!TargetInRange())
+        {
             p.image.enabled = false;
+            p.text.enabled = false;
+        }
     }
 
     Func<bool> GetInRangeFunction(string triggerType)
@@ -254,18 +227,15 @@ public class UIManager : MonoBehaviour
         return InRangeFunc;
     }
 
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ INITIALIZERS
+    // ████████████████████████████████████████████████████████████████████████
+
     void InitializeReferences()
     {
         stateManager = FindObjectOfType<StateManager>();
         interactManager = FindObjectOfType<InteractManager>();
         pickupManager = FindObjectOfType<PickupManager>();
-
-        // TODO: this is part of the hacky stuff we are removing above in temp inventory
-        pickupStatusImage = GameObject.Find("PickupStatusImage").GetComponent<Image>();
-        pickupStatusText = GameObject.Find("PickupStatusText").GetComponent<Text>();
-        pickupStatusImage.sprite = null;
-        pickupStatusImage.enabled = false;
-        pickupStatusText.enabled = false;
     }
 
     void InitializeDialogBox()
@@ -279,20 +249,44 @@ public class UIManager : MonoBehaviour
         dialogBox.animator = dbp.GetComponent<Animator>();
     }
 
-    void InitializePrompt(Prompt prompt, string gameobjectName)
+    void InitializeTasksInventory()
+    {
+        GameObject activeBar = GameObject.Find("ActiveBar");
+        tasksInventory.activeBarRT = activeBar.GetComponent<RectTransform>();
+        tasksInventory.activeBarImg = activeBar.GetComponent<Image>();
+        tasksInventory.activeBarTxt = activeBar.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
+        tasksInventory.strikethruRT = activeBar.transform.GetChild(0).GetChild(0).gameObject.GetComponent<RectTransform>();
+        tasksInventory.strikethruImg = activeBar.transform.GetChild(0).GetChild(0).gameObject.GetComponent<Image>();
+
+        GameObject taskList = GameObject.Find("TaskList");
+        tasksInventory.taskListRT = taskList.GetComponent<RectTransform>();
+        tasksInventory.taskListImg = taskList.GetComponent<Image>();
+        tasksInventory.taskListTxt = taskList.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
+
+        GameObject inventory = GameObject.Find("Inventory");
+        tasksInventory.inventoryRT = inventory.GetComponent<RectTransform>();
+        tasksInventory.inventoryImg = inventory.GetComponent<Image>();
+        tasksInventory.inventoryItemImg = inventory.transform.GetChild(0).gameObject.GetComponent<Image>();
+        tasksInventory.inventoryTxt = inventory.transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
+
+        tasksInventory.Initialize();
+    }
+
+    void InitializePrompt(UI_Prompt prompt, string gameobjectName)
     {
         GameObject pgo = GameObject.Find(gameobjectName);
         prompt.rectTransform = pgo.GetComponent<RectTransform>();
         prompt.image = pgo.GetComponent<Image>();
         prompt.image.enabled = false;
-        prompt.tmpText = GameObject.Find(gameobjectName + "Text").GetComponent<TMP_Text>();
-        prompt.tmpText.enabled = false;
+        prompt.text = GameObject.Find(gameobjectName + "Text").GetComponent<TMP_Text>();
+        prompt.text.enabled = false;
     }
 
     void InitializeControls()
     {
         controls.canvasGroup = GameObject.Find("Controls").GetComponent<CanvasGroup>();
         controls.tmpText = GameObject.Find("ControlsText").GetComponent<TMP_Text>();
+        controls.Hide(0f);
     }
 }
 

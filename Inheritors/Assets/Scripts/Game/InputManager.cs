@@ -42,6 +42,11 @@ public class InputManager : MonoBehaviour
         stateManager.OnState += HandleState;
     }
 
+    void OnDestroy()
+    {
+        stateManager.OnState -= HandleState;
+    }
+
     // Poll for input dependent on input allowed & current State.
     void Update()
     {

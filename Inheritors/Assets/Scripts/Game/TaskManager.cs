@@ -7,22 +7,24 @@ using UnityEngine.UI;
 
 public class TaskManager : MonoBehaviour
 {
-    private class Task
+    public class Task
     {
-        public int number;
-        public string originalText;
+        public string label;        // Identifier for the task, e.g. "GetWood"
+        public string originalText; // The actual text to display for the task, e.g. "Get wood for the fire."
         public string currentText;
         public bool active;
         public bool completed;
-        string completedColorTag = "<color=#006400>";
+        public bool failed;
+        string completedColorTag = "<color=green>"; // "<color=#006400>";
         string activeColorTag = "<color=#0000ff>";
         string inactiveColorTag = "<color=#808080>";
+        string failedColorTag = "<color=#808080>";
         string endColorTag = "</color>";
         string lineBreak = "\n";
 
-        public Task(int number, string originalText)
+        public Task(string label = "", string originalText = "")
         {
-            this.number = number;
+            this.label = label;
             this.originalText = originalText;
             this.completed = false;
             Inactive();
@@ -44,10 +46,19 @@ public class TaskManager : MonoBehaviour
 
         public void Complete()
         {
-            string strikethroughText = StrikeThrough(this.originalText);
-            this.currentText = completedColorTag + strikethroughText + endColorTag + lineBreak;
+            // string strikethroughText = StrikeThrough(this.originalText);
+            // this.currentText = completedColorTag + strikethroughText + endColorTag + lineBreak;
+            this.currentText = completedColorTag + originalText + endColorTag + lineBreak;
             this.active = false;
             this.completed = true;
+        }
+
+        public void Fail()
+        {
+            string strikethroughText = StrikeThrough(this.originalText);
+            this.currentText = failedColorTag + strikethroughText + endColorTag + lineBreak;
+            this.active = false;
+            this.failed = true;
         }
 
         private string StrikeThrough(string s)
@@ -67,63 +78,67 @@ public class TaskManager : MonoBehaviour
     }
 
     /* TaskManager properties */
+    UIManager uiManager;
     List<Task> taskList;
     Task activeTask;
-    Text activeText;
-    Text inactiveText;
     public bool allTasksCompleted = false;
 
     void Awake()
     {
-        inactiveText = GameObject.FindGameObjectWithTag("TaskText").GetComponent<Text>();
+        uiManager = FindObjectOfType<UIManager>();
         taskList = new List<Task>();
+        activeTask = new Task();
         ResetAllTasks();
     }
 
-    public void AddTask(string taskText)
+    public void AddTask(string label, string taskText)
     {
-        Task newTask = new Task(taskList.Count + 1, taskText);
+        Task newTask = new Task(label, taskText);
         taskList.Add(newTask);
         UpdateTasks();
     }
 
-    public void SetActiveTask(int taskNum)
+    public void SetActiveTask(string label)
     {
-        foreach (Task t in taskList)
+        Task newActiveTask = new Task();
+        int index = 0;
+        for (int i = 0; i < taskList.Count; i++)
         {
-            if (t.active)
-                t.Inactive();
+            if (taskList[i].label == label)
+            {
+                index = i;
+                newActiveTask = taskList[i];
+                break;
+            }
         }
-        Task task = taskList[taskNum - 1];
-        task.Active();
-        activeTask = task;
-        UpdateTasks();
-    }
-
-    public void CompleteTask(int taskNum)
-    {
-        Task task = taskList[taskNum - 1];
-        task.Complete();
-
-        if (!CheckAllTasksCompleted())
-        {
-            if (task.number < taskList.Count)
-                SetActiveTask(taskList[task.number].number);
-        }
+        newActiveTask.Active();
+        activeTask = newActiveTask;
+        taskList.RemoveAt(index);
 
         UpdateTasks();
     }
 
-    private bool CheckAllTasksCompleted()
+    public void AddAndSetActive(string label, string taskText)
     {
-        foreach (Task t in taskList)
-            if (!t.completed)
-                return false;
+        AddTask(label, taskText);
+        SetActiveTask(label);
+    }
 
-        Debug.Log("All the day's tasks have been completed!");
-        allTasksCompleted = true;
-        return true;
-        // More to come here later
+    public void CompleteActiveTask()
+    {
+        activeTask.Complete();
+
+        CheckAllTasksCompleted();
+        UpdateTasks();
+    }
+
+    private void CheckAllTasksCompleted()
+    {
+        if (activeTask.completed && taskList.Count == 0)
+        {
+            Debug.Log("All tasks completed!"); // TODO: remove debug logs
+            allTasksCompleted = true;
+        }
     }
 
     public void ResetAllTasks()
@@ -133,20 +148,15 @@ public class TaskManager : MonoBehaviour
         UpdateTasks();
     }
 
-    void UpdateTasks()
+    public void ClearTasks()
     {
-        UpdateTaskUI();
-        // Other updates will go in here
+        activeTask = new Task();
+        taskList.Clear();
+        UpdateTasks();
     }
 
-    void UpdateTaskUI()
+    void UpdateTasks()
     {
-        // TODO: We'll call the UI manager from here
-
-
-        string tasks = "";
-        for (int i = 0; i < taskList.Count; i++)
-            tasks += taskList[i].currentText;
-        inactiveText.text = tasks;
+        uiManager.UpdateTasks(activeTask, taskList);
     }
 }

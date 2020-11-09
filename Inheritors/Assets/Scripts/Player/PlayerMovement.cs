@@ -50,10 +50,15 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!m_animator) { gameObject.GetComponent<Animator>(); }
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
-        inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
-        stateManager = GameObject.Find("StateManager").GetComponent<StateManager>();
+        inputManager = GameObject.FindObjectOfType<InputManager>();
+        stateManager = GameObject.FindObjectOfType<StateManager>();
 
         stateManager.OnState += HandleState;
+    }
+
+    void OnDestroy()
+    {
+        stateManager.OnState -= HandleState;
     }
 
     private void HandleState(object sender, StateManager.StateArgs args)

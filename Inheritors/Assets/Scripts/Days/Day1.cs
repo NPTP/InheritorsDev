@@ -24,19 +24,22 @@ public class Day1 : MonoBehaviour
 
     IEnumerator Intro()
     {
-        uiManager.controls.Hide();
-        stateManager.SetState(StateManager.State.Inert);
-        transitionManager.SetAlpha(1f);
-        transitionManager.SetColor(Color.black);
-        transitionManager.Show();
-        transitionManager.ChangeColor(Color.white, 1f);
-        audioManager.SetVolume(0f);
-        audioManager.Play(true);
-        audioManager.FadeTo(0.5f, 5f, Ease.InOutCubic);
-        transitionManager.Hide(5f);
-        yield return new WaitForSeconds(5f);
+        transitionManager.Hide(0f);
+        yield return new WaitForSeconds(.25f);
 
-        dialogManager.NewDialog(opening);
+        taskManager.ClearTasks();
+        taskManager.AddTask("Test", "This is a test task.");
+        taskManager.AddTask("Inactive", "This should be inactive.");
+        taskManager.SetActiveTask("Test");
+        uiManager.SetUpTasksInventory();
+
+        yield return new WaitForSeconds(3f);
+
+        taskManager.CompleteActiveTask();
+        yield return new WaitForSeconds(3f);
+        uiManager.TearDownTasksInventory();
+
+        // dialogManager.NewDialog(opening);
 
     }
 
@@ -82,6 +85,15 @@ public class Day1 : MonoBehaviour
         interactManager.OnWalk += HandleWalkEvent;
     }
 
+
+    void OnDestroy()
+    {
+        interactManager.OnPickup -= HandlePickupEvent;
+        interactManager.OnDropoff -= HandleDropoffEvent;
+        interactManager.OnDialog -= HandleDialogEvent;
+        interactManager.OnWalk -= HandleWalkEvent;
+    }
+
     void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
     {
         PickupManager.Inventory inventory = args.inventory;
@@ -117,9 +129,9 @@ public class Day1 : MonoBehaviour
         dialogManager.NewDialog(wood3, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        taskManager.CompleteTask(1);
-        taskManager.AddTask("Bring wood to fire.");
-        taskManager.SetActiveTask(2);
+        taskManager.CompleteActiveTask();
+        taskManager.AddTask("WoodFire", "Bring wood to fire.");
+        taskManager.SetActiveTask("");
 
         triggers["Dropoff_Wood"].Enable();
 
@@ -204,23 +216,7 @@ public class Day1 : MonoBehaviour
 
     IEnumerator Firepit()
     {
-        dialogManager.NewDialog(firepit, StateManager.State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        taskManager.AddTask("Fetch 3 branches for the fire.");
-        taskManager.SetActiveTask(1);
-
-        cameraManager.SendCamTo(GameObject.Find("woodchoprock").transform);
-        yield return new WaitForSeconds(1f);
-
-        triggers["Pickup_Wood1"].Enable();
-        yield return new WaitForSeconds(1f);
-        triggers["Pickup_Wood2"].Enable();
-        yield return new WaitForSeconds(1f);
-        triggers["Pickup_Wood3"].Enable();
-        yield return new WaitForSeconds(1f);
-
-        cameraManager.SwitchToPlayerCam();
         yield return new WaitForSeconds(0.5f);
 
         stateManager.SetState(StateManager.State.Normal);
@@ -282,14 +278,6 @@ public class Day1 : MonoBehaviour
              "Well done, my son! The fire must be beautiful. It is too bad I cannot see it from here.",
              "But it is late now. Come to the maloca to sleep. Tomorrow is an important day."
         };
-    }
-
-    void OnDestroy()
-    {
-        interactManager.OnPickup -= HandlePickupEvent;
-        interactManager.OnDropoff -= HandleDropoffEvent;
-        interactManager.OnDialog -= HandleDialogEvent;
-        interactManager.OnWalk -= HandleWalkEvent;
     }
 
 }

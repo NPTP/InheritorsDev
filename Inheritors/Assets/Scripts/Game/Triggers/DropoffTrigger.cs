@@ -12,7 +12,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     [Header("Dropoff-Specific Properties")]
     public Transform targetTransform;
-
+    public string promptText;
     Transform playerTransform;
     Collider triggerCollider;
     Light l;
@@ -75,7 +75,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     {
         if (triggerEnabled && !dropoffDone && other.tag == "Player")
         {
-            interactManager.DropoffEnterRange(this);
+            interactManager.DropoffEnterRange(this, promptText);
         }
     }
 
