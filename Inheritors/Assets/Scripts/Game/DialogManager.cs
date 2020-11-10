@@ -106,9 +106,7 @@ public class DialogManager : MonoBehaviour
                 uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
                 yield return new WaitForSeconds(speed);
             }
-            Tween promptShow = uiManager.dialogBox.ShowPrompt();
-            yield return new WaitWhile(() => promptShow != null && promptShow.IsPlaying());
-            uiManager.dialogBox.StartPromptWaitAnim();
+            uiManager.dialogBox.ShowPrompt();
             dialogNext = false;
             yield return new WaitUntil(() => dialogNext);
             // yield return null; // Must put a frame between inputs

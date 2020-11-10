@@ -31,6 +31,11 @@ public class UIManager : MonoBehaviour
         InitializeControls();
     }
 
+    void Start()
+    {
+        Cursor.visible = false;
+    }
+
     // ████████████████████████████████████████████████████████████████████████
     // ███ TASKS / INVENTORY SETUP/TEARDOWN
     // ████████████████████████████████████████████████████████████████████████

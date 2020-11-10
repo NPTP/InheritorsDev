@@ -95,7 +95,6 @@ public class UI_DialogBox
     public TMP_Text tmpText;
     public Image prompt;
     public Animator animator; // TODO: polish stage: animate the waiting dialog prompt
-    Tween promptTween = null;
     float moveUpTime = 0.5f;
     float fadeUpTime = 0.4f;
     float moveDownTime = 1f;
@@ -105,7 +104,8 @@ public class UI_DialogBox
     public Tween SetUp()
     {
         tmpText.maxVisibleCharacters = 0;
-        prompt.enabled = false;
+        prompt.enabled = true;
+        // prompt.gameObject.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 1);
         prompt.color = Helper.ChangedAlpha(prompt.color, 0);
         Tween t = BringUpDown("Up", moveUpTime);
         canvasGroup.DOFade(1f, fadeUpTime).From(0f);
@@ -136,29 +136,16 @@ public class UI_DialogBox
         tmpText.text = line;
     }
 
-    public Tween ShowPrompt()
+    public void ShowPrompt()
     {
-        prompt.enabled = true;
-        promptTween = prompt.DOFade(1f, 0.25f);
-        return promptTween;
+        // prompt.enabled = true;
+        animator.SetBool("animate", true);
     }
 
     public void HidePrompt()
     {
-        if (promptTween != null) promptTween.Kill();
-        prompt.color = Helper.ChangedAlpha(prompt.color, 0f);
-        StopPromptWaitAnim();
-        prompt.enabled = false;
-    }
-
-    public void StartPromptWaitAnim()
-    {
-        animator.SetBool("animate", true);
-    }
-
-    public void StopPromptWaitAnim()
-    {
         animator.SetBool("animate", false);
+        // prompt.enabled = false;
     }
 }
 
