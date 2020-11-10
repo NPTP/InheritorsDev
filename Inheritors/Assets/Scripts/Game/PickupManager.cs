@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+using System;
 using UnityEngine;
 
 public class PickupManager : MonoBehaviour

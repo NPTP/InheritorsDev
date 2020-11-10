@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+using System;
 using UnityEngine;
 
 // State machine for the whole game, based primarily on player state.

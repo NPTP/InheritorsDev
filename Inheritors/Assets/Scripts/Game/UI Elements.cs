@@ -1,4 +1,5 @@
-﻿// UI elements for use inside UIManager only.
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+// UI elements for use inside UIManager only.
 
 using UnityEngine;
 using UnityEngine.UI;

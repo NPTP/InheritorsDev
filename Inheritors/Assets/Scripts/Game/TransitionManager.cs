@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;

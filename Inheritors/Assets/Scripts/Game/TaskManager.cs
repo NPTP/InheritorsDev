@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;

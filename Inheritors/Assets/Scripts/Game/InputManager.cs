@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+using System;
 using UnityEngine;
 
 // Abstracts inputs and sends events on input. Runs before Default Time in the script execution order.
