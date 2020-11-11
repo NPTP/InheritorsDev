@@ -23,8 +23,8 @@ TagManager:
   - PostProcessing
   - FogVisibility
   - Debug
-  - 
-  - 
+  - CameraQuadrant
+  - Player
   - 
   - 
   - 
