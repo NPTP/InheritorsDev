@@ -1037,11 +1037,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leavePaths: 1
   cutGrass: 1
-  texturePosZ: 0
-  texturePosX: 0
-  detailPosZ: 0
-  detailPosX: 0
-  trailSize: 3
+  trailLayer: 1
+  trailSize: 1
 --- !u!54 &54084939265967506
 Rigidbody:
   m_ObjectHideFlags: 0

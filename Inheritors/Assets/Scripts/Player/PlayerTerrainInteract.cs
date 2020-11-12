@@ -8,13 +8,15 @@ public class PlayerTerrainInteract : MonoBehaviour
 {
     public bool leavePaths = true;
     public bool cutGrass = true;
+    public int trailLayer;
+
     Transform playerTransform;
     Terrain t;
 
-    public int texturePosZ;
-    public int texturePosX;
-    public int detailPosZ;
-    public int detailPosX;
+    int texturePosZ;
+    int texturePosX;
+    int detailPosZ;
+    int detailPosX;
 
     float[] texturesUnderfoot;
     float[,,] alphaMap;
@@ -47,14 +49,11 @@ public class PlayerTerrainInteract : MonoBehaviour
         ConvertPosition(playerTransform.position);
         CheckTextureUnderfoot();
 
-        if (true) // TODO: check a new function IsTouchingTerrain() here (simple raycast check?)
-        {
-            if (leavePaths)
-                ChangeTexture(trailSize);
+        if (leavePaths)
+            ChangeTexture(trailSize);
 
-            if (cutGrass)
-                RemoveDetails((int)(trailSize / 2));
-        }
+        if (cutGrass)
+            RemoveDetails(1);// (int)(trailSize / 2));
 
         // TakeDebugInputs();
     }
@@ -101,16 +100,12 @@ public class PlayerTerrainInteract : MonoBehaviour
             {
                 for (int k = 0; k < numLayers; k++)
                 {
-                    if (k == 1)
-                    {
-                        remap[i, j, k] = 1f; // TODO: temporary values only, homie
-                        remap[i, j, 0] = 0f; // TODO: temporary values only, homie
-                    }
-                    else
-                        remap[i, j, k] = alphaMap[i, j, k];
+                    remap[i, j, k] = alphaMap[i, j, k];
                 }
+                remap[i, j, trailLayer] = 0.1f;
+
                 // Record that we have walked here
-                walkedMap[texturePosZ - playerSplatmapSize + i, texturePosX - playerSplatmapSize + j] = true;
+                // walkedMap[texturePosZ - playerSplatmapSize + i, texturePosX - playerSplatmapSize + j] = true;
             }
         }
         t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
