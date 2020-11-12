@@ -30,6 +30,7 @@ public class PlayerTerrainInteract : MonoBehaviour
         playerTransform = GetComponent<Transform>();
         t = GameObject.Find("Terrain").GetComponent<Terrain>();
         numLayers = t.terrainData.alphamapLayers;
+        print(numLayers);
         playerSplatmapSize = (int)trailSize / 2;
         texturesUnderfoot = new float[numLayers];
 
@@ -101,7 +102,10 @@ public class PlayerTerrainInteract : MonoBehaviour
                 for (int k = 0; k < numLayers; k++)
                 {
                     if (k == 1)
-                        remap[i, j, k] = .03f; // TODO: temporary values only, homie
+                    {
+                        remap[i, j, k] = 1f; // TODO: temporary values only, homie
+                        remap[i, j, 0] = 0f; // TODO: temporary values only, homie
+                    }
                     else
                         remap[i, j, k] = alphaMap[i, j, k];
                 }
