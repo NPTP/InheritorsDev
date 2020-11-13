@@ -14,30 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabList: []
   prefabData:
-  - prefab: {fileID: 6687842579231636372, guid: 1f903d17eb9375642a7cc3956988afa1,
-      type: 3}
+  - prefab: {fileID: 919132149155446097, guid: 5423de788e2a13848bbe796d943dfd08, type: 3}
     selected: 1
-  - prefab: {fileID: 2664755760362394048, guid: a6d6081e17017ff47834691b4bc4e519,
-      type: 3}
+  - prefab: {fileID: 919132149155446097, guid: a6ea705386d16ad4d93219336c8daeda, type: 3}
     selected: 1
-  - prefab: {fileID: 9091451949429142427, guid: 7b25edb26a4968a4fae4524c3a7b15e4,
-      type: 3}
+  - prefab: {fileID: 919132149155446097, guid: 757d176352745044880dea9bdf0bfd42, type: 3}
     selected: 1
-  - prefab: {fileID: 2366892868543940585, guid: 55c63b3d203567942a354f83423c3ea2,
-      type: 3}
+  - prefab: {fileID: 919132149155446097, guid: 6fc468c5b12054a4c9733ac060d52b15, type: 3}
     selected: 1
-  - prefab: {fileID: 1612273161005096, guid: ae9772ea62bbc724eb9b8ef81109f733, type: 3}
+  - prefab: {fileID: 1733909988577898, guid: e88b7bb02ae149940a5a0cddf34fe370, type: 3}
     selected: 1
-  - prefab: {fileID: 1458573784885960, guid: 6910e2407cd484a42a0c2598114751a0, type: 3}
+  - prefab: {fileID: 1435283653269720, guid: 00e2e59cbc04eab4a982218df54ce70b, type: 3}
+    selected: 1
+  - prefab: {fileID: 1998486184958212, guid: e85c18dfba00c9540859ea847782af5b, type: 3}
+    selected: 1
+  - prefab: {fileID: 1157028143247034, guid: 5286e490afadac545ae3a1595b1e96e1, type: 3}
     selected: 1
   paintType: 0
   brushSize: 10
   minBrushSize: 0.1
   maxBrushSize: 20
-  paintDeltaDistance: 3
+  paintDeltaDistance: 0.73
   maxPaintDeltaDistance: 3
   minPaintDeltaDistance: 0.1
-  prefabsPerStroke: 1
+  prefabsPerStroke: 3
   maxprefabsPerStroke: 20
   minprefabsPerStroke: 1
   spawnHeight: 10
@@ -71,7 +71,7 @@ MonoBehaviour:
   scaleType: 1
   scaleApplicationType: 1
   minScale: 0.5
-  maxScale: 1
+  maxScale: 1.5
   minXScale: 0.1
   maxXScale: 1
   minYScale: 0.1
@@ -79,7 +79,7 @@ MonoBehaviour:
   minZScale: 0.1
   maxZScale: 1
   parentList: []
-  eraseBrushSize: 15.59
+  eraseBrushSize: 6.6
   minEraseBrushSize: 0.1
   maxEraseBrushSize: 20
   eraseType: 0

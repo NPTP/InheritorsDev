@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21cb495ffbca0404d878640680165899, type: 3}
+  m_Name: Trees01
+  m_EditorClassIdentifier: 
+  prefabList: []
+  prefabData:
+  - prefab: {fileID: 6687842579231636372, guid: 1f903d17eb9375642a7cc3956988afa1,
+      type: 3}
+    selected: 1
+  - prefab: {fileID: 2664755760362394048, guid: a6d6081e17017ff47834691b4bc4e519,
+      type: 3}
+    selected: 1
+  - prefab: {fileID: 9091451949429142427, guid: 7b25edb26a4968a4fae4524c3a7b15e4,
+      type: 3}
+    selected: 1
+  - prefab: {fileID: 2366892868543940585, guid: 55c63b3d203567942a354f83423c3ea2,
+      type: 3}
+    selected: 1
+  - prefab: {fileID: 1612273161005096, guid: ae9772ea62bbc724eb9b8ef81109f733, type: 3}
+    selected: 1
+  - prefab: {fileID: 1458573784885960, guid: 6910e2407cd484a42a0c2598114751a0, type: 3}
+    selected: 1
+  paintType: 0
+  brushSize: 10
+  minBrushSize: 0.1
+  maxBrushSize: 20
+  paintDeltaDistance: 3
+  maxPaintDeltaDistance: 3
+  minPaintDeltaDistance: 0.1
+  prefabsPerStroke: 1
+  maxprefabsPerStroke: 20
+  minprefabsPerStroke: 1
+  spawnHeight: 10
+  addRigidbodyToPaintedPrefab: 1
+  physicsIterations: 100
+  checkLayer: 0
+  checkTag: 0
+  checkSlope: 0
+  chainPivotAxis: 0
+  chainDirection: 0
+  requiredTagMask: 0
+  requiredLayerMask: 1024
+  minRequiredSlope: 0
+  maxRequiredSlope: 0
+  prefabOriginOffset: {x: 0, y: 0, z: 0}
+  prefabRotationOffset: {x: 0, y: 0, z: 0}
+  draggingAction: 0
+  rotationAxis: 0
+  rotationSensitivity: 10
+  parentingStyle: 2
+  parent: {fileID: 0}
+  rotateToMatchSurface: 0
+  rotateSurfaceDirection: 0
+  randomizeRotation: 1
+  minXRotation: 0
+  maxXRotation: 0
+  minYRotation: 0
+  maxYRotation: 359
+  minZRotation: 0
+  maxZRotation: 0
+  scaleType: 1
+  scaleApplicationType: 1
+  minScale: 0.5
+  maxScale: 1
+  minXScale: 0.1
+  maxXScale: 1
+  minYScale: 0.1
+  maxYScale: 1
+  minZScale: 0.1
+  maxZScale: 1
+  parentList: []
+  eraseBrushSize: 15.59
+  minEraseBrushSize: 0.1
+  maxEraseBrushSize: 20
+  eraseType: 0
+  checkLayerForErase: 0
+  checkTagForErase: 0
+  checkSlopeForErase: 0
+  requiredTagMaskForErase: 0
+  requiredLayerMaskForErase: 0
+  minRequiredSlopeForErase: 0
+  maxRequiredSlopeForErase: 0
+  eraseDetection: 1
+  paintBrushHotKey: 112
+  paintBrushHoldKey: 1
+  removeBrushHotKey: 306
+  removeBrushHoldKey: 1
+  disableBrushHotKey: 105
+  disableBrushHoldKey: 1

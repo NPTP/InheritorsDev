@@ -20,17 +20,22 @@ public class EditorTerrainTools : EditorWindow
             CopyTerrain();
         }
 
+        if (GUILayout.Button("Apply painting to original terrain"))
+        {
+            PaintTerrain(originalTerrainName);
+        }
+
         if (GUILayout.Button("Apply painting to copied terrain"))
         {
-            PaintTerrain();
+            PaintTerrain(copyTerrainName);
         }
     }
 
-    private void PaintTerrain()
+    private void PaintTerrain(string terrainName)
     {
         int cliffLayer = (int)TerrainManager.Layers.Cliffside;
         int grassLayer = (int)TerrainManager.Layers.GrassLight;
-        Terrain t = GameObject.Find(copyTerrainName)?.GetComponent<Terrain>();
+        Terrain t = GameObject.Find(terrainName)?.GetComponent<Terrain>();
         int numLayers = t.terrainData.alphamapLayers;
         float[,,] alphaMap = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
         float[,,] remap = new float[t.terrainData.alphamapWidth, t.terrainData.alphamapHeight, numLayers];

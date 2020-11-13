@@ -6,12 +6,12 @@
 
 public class PlayerTerrainInteract : MonoBehaviour
 {
+    public Terrain t;
     public bool leavePaths = true;
     public bool cutGrass = true;
     public int trailSize = 1;
 
     Transform playerTransform;
-    Terrain t;
 
     int texturePosZ;
     int texturePosX;
@@ -30,7 +30,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     void Start()
     {
         playerTransform = GetComponent<Transform>();
-        t = GameObject.Find("Terrain").GetComponent<Terrain>();
+        // t = GameObject.Find("Terrain").GetComponent<Terrain>();
         numLayers = t.terrainData.alphamapLayers;
         print(numLayers);
         playerSplatmapSize = (int)trailSize / 2;
