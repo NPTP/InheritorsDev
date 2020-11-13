@@ -4,10 +4,12 @@ public class GameTerrainCopy : MonoBehaviour
 {
     private string originalTerrainName = "OriginalTerrain";
     private string copyTerrainName = "Terrain";
+    public bool active = false;
 
     void Start()
     {
-        CopyTerrain();
+        if (active)
+            CopyTerrain();
     }
 
     private void CopyTerrain()

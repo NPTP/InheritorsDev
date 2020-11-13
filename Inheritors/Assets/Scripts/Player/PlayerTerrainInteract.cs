@@ -8,7 +8,7 @@ public class PlayerTerrainInteract : MonoBehaviour
 {
     public bool leavePaths = true;
     public bool cutGrass = true;
-    public int trailLayer;
+    public int trailSize = 1;
 
     Transform playerTransform;
     Terrain t;
@@ -21,8 +21,8 @@ public class PlayerTerrainInteract : MonoBehaviour
     float[] texturesUnderfoot;
     float[,,] alphaMap;
     int numLayers;
-    public int trailSize = 3;
-    private int playerSplatmapSize;
+    int playerSplatmapSize;
+    int trailLayer = (int)TerrainManager.Layers.Trail;
 
     bool[,] walkedMap;
     float[,,] debugWalked;
