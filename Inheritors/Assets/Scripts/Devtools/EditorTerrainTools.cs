@@ -66,9 +66,9 @@ public class EditorTerrainTools : EditorWindow
                     }
                     else
                     {
-                        remap[i, j, k] = 0;
-                        if (k == grassLayer)
-                            remap[i, j, k] = 1;
+                        remap[i, j, k] = alphaMap[i, j, k];
+                        // if (k == grassLayer)
+                        //     remap[i, j, k] = 1;
                     }
                 }
 
