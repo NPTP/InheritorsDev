@@ -132,18 +132,21 @@ public class InteractManager : MonoBehaviour
 
     IEnumerator PickUpItem(PickupTrigger currentPickup)
     {
+        bool alreadyHolding = pickupManager.IsHoldingItem();
         Vector3 startPosition = currentPickup.transform.position;
         float elapsed = 0f;
         float time = 0.25f;
+
         while (elapsed < time)
         {
             currentPickup.transform.position = Vector3.Lerp(
                 startPosition, GetItemHoldPosition(), Helper.SmoothStep(elapsed / time));
+            if (alreadyHolding)
+                currentPickup.transform.localScale *= 1 - (elapsed / time);
             elapsed += Time.deltaTime;
             yield return null;
         }
         currentPickup.transform.position = GetItemHoldPosition();
-        currentPickup.transform.SetParent(player.transform);
         stateManager.SetState(StateManager.State.Holding);
 
         // Hand it off here to the PickupManager, updates the inventory.
@@ -155,6 +158,12 @@ public class InteractManager : MonoBehaviour
             tag = currentPickup.GetTag(),
             inventory = pickupManager.GetInventory()
         });
+
+        // Don't show the player holding the pickup if we already have something in hand.
+        if (!alreadyHolding)
+            currentPickup.transform.SetParent(player.transform);
+        else
+            Destroy(currentPickup.gameObject);
     }
 
     Vector3 GetItemHoldPosition()
@@ -206,18 +215,18 @@ public class InteractManager : MonoBehaviour
         pickupManager.DropOff();
 
         DropoffTrigger thisDropoff = dropoffTrigger;
-        Vector3 startPosition = pickupTrigger.transform.position;
+        Vector3 startPosition = heldItem.transform.position;
         Vector3 endPosition = thisDropoff.targetTransform.position;
         float elapsed = 0f;
         float time = 0.5f;
         while (elapsed < time)
         {
-            pickupTrigger.transform.position = Vector3.Lerp(
+            heldItem.transform.position = Vector3.Lerp(
                 startPosition, endPosition, Helper.SmoothStep(elapsed / time));
             elapsed += Time.deltaTime;
             yield return null;
         }
-        pickupTrigger.transform.position = endPosition;
+        heldItem.transform.position = endPosition;
         var dropoffTarget = thisDropoff.targetTransform.gameObject.GetComponent<DropoffTarget>();
         if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
         heldItem.Remove();

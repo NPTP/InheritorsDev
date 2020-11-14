@@ -17,10 +17,10 @@ public class PickupManager : MonoBehaviour
     Inventory inventory = new Inventory();
     public class Inventory
     {
-        public PickupTrigger heldItem;
-        public bool holdingItem;
-        public PickupManager.ItemTypes itemType;
-        public int itemQuantity;
+        public PickupTrigger heldItem = null;
+        public bool holdingItem = false;
+        public ItemTypes itemType = ItemTypes.NULL;
+        public int itemQuantity = 0;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -29,9 +29,12 @@ public class PickupManager : MonoBehaviour
 
     public void PickUp(PickupTrigger currentPickup)
     {
-        inventory.heldItem = currentPickup;
-        inventory.holdingItem = true;
-        inventory.itemType = currentPickup.itemType;
+        if (!IsHoldingItem())
+        {
+            inventory.heldItem = currentPickup;
+            inventory.holdingItem = true;
+            inventory.itemType = currentPickup.itemType;
+        }
         inventory.itemQuantity++;
         uiManager.UpdateInventory(inventory);
     }
@@ -67,6 +70,11 @@ public class PickupManager : MonoBehaviour
         return inventory.heldItem;
     }
 
+    public PickupManager.ItemTypes GetHeldItemType()
+    {
+        return inventory.itemType;
+    }
+
     public PickupManager.Inventory GetInventory()
     {
         return inventory;
@@ -79,13 +87,6 @@ public class PickupManager : MonoBehaviour
     void Awake()
     {
         InitializeReferences();
-    }
-
-    void Start()
-    {
-        inventory.heldItem = null;
-        inventory.holdingItem = false;
-        inventory.itemQuantity = 0;
     }
 
     void InitializeReferences()
