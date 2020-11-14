@@ -12,10 +12,12 @@ public class TerrainManager : MonoBehaviour
         GrassDark,
         DirtLight,
         DirtDark,
+        Dust,
         LeavesYellow,
         LeavesGreen,
         LeavesBrown,
         Cliffside,
+        Farm,
         Trail
     }
 

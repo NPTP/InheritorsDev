@@ -241,7 +241,7 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(firepit, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        cameraManager.SendCamTo(GameObject.Find("woodchoprock").transform);
+        cameraManager.SendCamTo(GameObject.Find("FIREWOOD").transform);
         yield return new WaitForSeconds(1f);
 
         triggers["Pickup_Wood1"].Enable();
@@ -264,7 +264,7 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(StateManager.State.Inert);
         yield return new WaitForSeconds(1f);
 
-        cameraManager.SendCamTo(GameObject.Find("maloca").transform);
+        cameraManager.SendCamTo(GameObject.Find("MalocaMother").transform);
         dialogManager.NewDialog(maloca, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
