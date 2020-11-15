@@ -19,7 +19,7 @@ public class Day1 : MonoBehaviour
         SubscribeToEvents();
         InitializeDialogs();
         InitializeTasks();
-        saveManager.LoadGame(dayNumber);
+        // saveManager.LoadGame(dayNumber);
         StartCoroutine("Intro");
     }
 

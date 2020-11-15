@@ -30,9 +30,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     void Start()
     {
         playerTransform = GetComponent<Transform>();
-        // t = GameObject.Find("Terrain").GetComponent<Terrain>();
         numLayers = t.terrainData.alphamapLayers;
-        print(numLayers);
         playerSplatmapSize = (int)trailSize / 2;
         texturesUnderfoot = new float[numLayers];
 

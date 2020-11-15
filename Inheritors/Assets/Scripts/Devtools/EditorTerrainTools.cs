@@ -17,7 +17,7 @@ public class EditorTerrainTools : EditorWindow
     {
         if (GUILayout.Button("Copy Terrain"))
         {
-            CopyTerrain();
+            CopyTerrain(true);
         }
 
         if (GUILayout.Button("Apply painting to original terrain"))
@@ -28,6 +28,11 @@ public class EditorTerrainTools : EditorWindow
         if (GUILayout.Button("Apply painting to copied terrain"))
         {
             PaintTerrain(copyTerrainName);
+        }
+
+        if (GUILayout.Button("Reset Terrain from copied"))
+        {
+            CopyTerrain(false);
         }
     }
 
@@ -77,14 +82,25 @@ public class EditorTerrainTools : EditorWindow
         t.terrainData.SetAlphamaps(0, 0, remap);
     }
 
-    private void CopyTerrain()
+    private void CopyTerrain(bool origToCopy)
     {
         /* Terrain we're copying onto should have the same size, heightmap/detail/alphamap/etc resolutions,
         ** and same detail and tree layers. We're just copying the "layout" so to speak, not the parameters. */
-        TerrainData origData = GameObject.Find(originalTerrainName)?.GetComponent<Terrain>().terrainData;
-        Terrain copyTerrain = GameObject.Find(copyTerrainName)?.GetComponent<Terrain>();
+        TerrainData origData = null;
+        TerrainData copyData = null;
 
-        if (copyTerrain == null || origData == null)
+        if (origToCopy)
+        {
+            origData = GameObject.Find(originalTerrainName)?.GetComponent<Terrain>().terrainData;
+            copyData = GameObject.Find(copyTerrainName)?.GetComponent<Terrain>().terrainData;
+        }
+        else
+        {
+            copyData = GameObject.Find(originalTerrainName)?.GetComponent<Terrain>().terrainData;
+            origData = GameObject.Find(copyTerrainName)?.GetComponent<Terrain>().terrainData;
+        }
+
+        if (copyData == null || origData == null)
         {
             Debug.Log("You must name the original terrain '" + originalTerrainName +
             "' and the terrain to be copied into '" + copyTerrainName
@@ -93,7 +109,7 @@ public class EditorTerrainTools : EditorWindow
         }
 
         // Just a shorter reference for the readability's sake
-        TerrainData td = copyTerrain.terrainData;
+        TerrainData td = copyData;
 
         // Copy height data
         td.SetHeights(0, 0, origData.GetHeights(0, 0, origData.heightmapResolution, origData.heightmapResolution));
