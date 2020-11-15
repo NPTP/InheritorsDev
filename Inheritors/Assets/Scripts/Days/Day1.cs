@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class Day1 : MonoBehaviour
 {
-    int today = 0;
+    int dayNumber = 1;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
 
     void Start()
@@ -19,6 +19,7 @@ public class Day1 : MonoBehaviour
         SubscribeToEvents();
         InitializeDialogs();
         InitializeTasks();
+        saveManager.LoadGame(dayNumber);
         StartCoroutine("Intro");
     }
 
@@ -43,6 +44,7 @@ public class Day1 : MonoBehaviour
 
     }
 
+    SaveManager saveManager;
     StateManager stateManager;
     TaskManager taskManager;
     DialogManager dialogManager;
@@ -55,6 +57,7 @@ public class Day1 : MonoBehaviour
     PickupManager pickupManager;
     void InitializeReferences()
     {
+        saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
         taskManager = FindObjectOfType<TaskManager>();
         dialogManager = FindObjectOfType<DialogManager>();
@@ -119,7 +122,7 @@ public class Day1 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + dayNumber);
                 break;
         }
     }
@@ -149,7 +152,7 @@ public class Day1 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + dayNumber);
                 dialogManager.NewDialog(dialog);
                 StartCoroutine(WaitDialogEnd());
                 break;
@@ -173,7 +176,7 @@ public class Day1 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
                 break;
         }
     }
@@ -209,7 +212,7 @@ public class Day1 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown WALK tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown WALK tag to Day " + dayNumber);
                 break;
         }
     }
@@ -235,7 +238,7 @@ public class Day1 : MonoBehaviour
 
     void InitializeTasks()
     {
-        // None given all at once today
+        // None given all at once dayNumber
     }
 
     Dialog opening = new Dialog();

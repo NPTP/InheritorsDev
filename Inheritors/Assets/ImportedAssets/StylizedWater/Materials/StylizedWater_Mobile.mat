@@ -57,7 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Cutoff: 0.5
-    - _Depth: 28
+    - _Depth: 13
     - _Depthdarkness: 0
     - _ENABLE_GRADIENT: 0
     - _ENABLE_SHADOWS: 0
@@ -111,7 +111,7 @@ Material:
     - _Worldspacetiling: 0
     - __dirty: 1
     m_Colors:
-    - _FresnelColor: {r: 0, g: 0.7086613, b: 1, a: 0.084}
+    - _FresnelColor: {r: 0.5, g: 0.8551724, b: 1, a: 0.084}
     - _RimColor: {r: 1, g: 1, b: 1, a: 0.509}
     - _WaterColor: {r: 0.1176471, g: 0.6348885, b: 1, a: 0}
     - _WaterShallowColor: {r: 0.41911757, g: 1, b: 0.8798174, a: 1}

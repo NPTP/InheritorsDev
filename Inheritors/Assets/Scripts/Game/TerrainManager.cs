@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+// Current terrainbuilder params are saved in CSC494/Current Terrainbuilder Params.png
 public class TerrainManager : MonoBehaviour
 {
     private string originalTerrainName = "OriginalTerrain";

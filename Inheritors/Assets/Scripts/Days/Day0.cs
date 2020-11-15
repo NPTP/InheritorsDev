@@ -7,16 +7,19 @@ using DG.Tweening;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
-
 // TODO: make every day's tasks & dialogs their own classes so we never mis-label something.
 public class Day0 : MonoBehaviour
 {
-    int today = 0;
+    int dayNumber = 0;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
+
+    void Awake()
+    {
+        InitializeReferences();
+    }
 
     void Start()
     {
-        InitializeReferences();
         InitializeTriggers();
         SubscribeToEvents();
         InitializeDialogs();
@@ -39,16 +42,22 @@ public class Day0 : MonoBehaviour
             cameraManager.ResetSize();
             InitializeTasks();
         }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartCoroutine("End");
+        }
     }
 
     IEnumerator Intro()
     {
+        stateManager.SetState(StateManager.State.Inert);
+
         // uiManager.controls.SetAlpha(0f);
         cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
         cameraManager.ZoomToSize(5f, 2f);
 
         /* 01. Darken screen, fade in sound. */
-        stateManager.SetState(StateManager.State.Inert);
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
         audioManager.SetVolume(0f);
@@ -83,6 +92,7 @@ public class Day0 : MonoBehaviour
         triggers["Walk_Firepit"].Enable();
     }
 
+    SaveManager saveManager;
     StateManager stateManager;
     TaskManager taskManager;
     DialogManager dialogManager;
@@ -95,6 +105,7 @@ public class Day0 : MonoBehaviour
     PickupManager pickupManager;
     void InitializeReferences()
     {
+        saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
         taskManager = FindObjectOfType<TaskManager>();
         dialogManager = FindObjectOfType<DialogManager>();
@@ -158,7 +169,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + dayNumber);
                 break;
         }
     }
@@ -187,7 +198,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + dayNumber);
                 dialogManager.NewDialog(dialog);
                 StartCoroutine(WaitDialogEnd());
                 break;
@@ -211,7 +222,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
                 break;
         }
     }
@@ -231,7 +242,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown WALK tag to Day " + today);
+                Debug.Log("Interact Manager gave unknown WALK tag to Day " + dayNumber);
                 break;
         }
     }
@@ -278,12 +289,14 @@ public class Day0 : MonoBehaviour
 
     IEnumerator End()
     {
+
         stateManager.SetState(StateManager.State.Inert);
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
-        yield return new WaitForSeconds(.5f);
+
+        saveManager.SaveGame(dayNumber);
         SceneManager.LoadScene("Day1");
     }
 
