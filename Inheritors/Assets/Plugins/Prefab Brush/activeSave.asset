@@ -79,7 +79,7 @@ MonoBehaviour:
   minZScale: 0.1
   maxZScale: 1
   parentList: []
-  eraseBrushSize: 15.59
+  eraseBrushSize: 5
   minEraseBrushSize: 0.1
   maxEraseBrushSize: 20
   eraseType: 0
