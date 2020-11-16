@@ -104,7 +104,8 @@ public class DialogManager : MonoBehaviour
             for (int i = 0; i <= lines[line].Length; i++)
             {
                 uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
-                yield return new WaitForSeconds(speed);
+                yield return new WaitForEndOfFrame();
+                // yield return new WaitForSecondsRealtime(speed);
             }
             uiManager.dialogBox.ShowPrompt();
             dialogNext = false;

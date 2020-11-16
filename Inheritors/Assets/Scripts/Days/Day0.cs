@@ -10,11 +10,23 @@ using UnityEngine.SceneManagement;
 // TODO: make every day's tasks & dialogs their own classes so we never mis-label something.
 public class Day0 : MonoBehaviour
 {
+    public bool enableDayScripts = true;
     int dayNumber = 0;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
 
+    /* Day-specific objects, transforms, etc. */
+
+    [Header("Day-specific Objects")]
+    public Transform firepitTransform;
+    public Transform firewoodTransform;
+    public Transform malocaMotherTransform;
+
+    /* -------------------------------------- */
+
     void Awake()
     {
+        if (!enableDayScripts)
+            Destroy(this);
         InitializeReferences();
     }
 
@@ -39,7 +51,7 @@ public class Day0 : MonoBehaviour
             uiManager.controls.Hide();
             triggers["Walk_Firepit"].Enable();
             stateManager.SetState(StateManager.State.Normal);
-            cameraManager.ResetSize();
+            cameraManager.ResetZoom();
             InitializeTasks();
         }
 
@@ -54,8 +66,8 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(StateManager.State.Inert);
 
         // uiManager.controls.SetAlpha(0f);
-        cameraManager.SendCamTo(GameObject.Find("FirepitCollider").transform);
-        cameraManager.ZoomToSize(5f, 2f);
+        cameraManager.SendCamTo(firepitTransform);
+        cameraManager.Zoom(15f, 0f);
 
         /* 01. Darken screen, fade in sound. */
         transitionManager.SetColor(Color.black);
@@ -77,7 +89,7 @@ public class Day0 : MonoBehaviour
 
         /* 04. Change view from fire to player. */
         cameraManager.SwitchToPlayerCam();
-        cameraManager.ResetSize(2f);
+        cameraManager.ResetZoom(2f);
         yield return new WaitForSeconds(2f);
 
         /* 05. Display tutorial controls. */
@@ -241,6 +253,10 @@ public class Day0 : MonoBehaviour
                 StartCoroutine(End());
                 break;
 
+            case "Walk_SisterSleep":
+                dialogManager.NewDialog(sisterSleep);
+                break;
+
             default:
                 Debug.Log("Interact Manager gave unknown WALK tag to Day " + dayNumber);
                 break;
@@ -252,7 +268,7 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(firepit, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        cameraManager.SendCamTo(GameObject.Find("FIREWOOD").transform);
+        cameraManager.SendCamTo(firewoodTransform);
         yield return new WaitForSeconds(1f);
 
         triggers["Pickup_Wood1"].Enable();
@@ -262,7 +278,7 @@ public class Day0 : MonoBehaviour
         triggers["Pickup_Wood3"].Enable();
         yield return new WaitForSeconds(1f);
 
-        cameraManager.SwitchToPlayerCam();
+        cameraManager.SwitchToLastCam();
         yield return new WaitForSeconds(0.5f);
 
         taskManager.SetActiveTask("Branches");
@@ -275,7 +291,7 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(StateManager.State.Inert);
         yield return new WaitForSeconds(1f);
 
-        cameraManager.SendCamTo(GameObject.Find("MalocaMother").transform);
+        cameraManager.SendCamTo(malocaMotherTransform);
         dialogManager.NewDialog(maloca, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
@@ -314,6 +330,7 @@ public class Day0 : MonoBehaviour
     Dialog wood2 = new Dialog();
     Dialog wood3 = new Dialog();
     Dialog maloca = new Dialog();
+    Dialog sisterSleep = new Dialog();
     void InitializeDialogs()
     {
         string delay = DialogManager.Tools.DELAY;
@@ -344,8 +361,16 @@ public class Day0 : MonoBehaviour
         };
 
         maloca.lines = new string[] {
-             "Well done, my son! The fire must be beautiful. It is too bad I cannot see it from here.",
-             "But it is late now. Come to the maloca to sleep. Tomorrow is an important day."
+             "Well done, my son! I can see the shadows dancing on the inside of the maloca.",
+             "It is late now. Come join me inside to sleep.",
+             "Tomorrow is an important day."
+        };
+
+        sisterSleep.lines = new string[] {
+            "...",
+            "Hn... huh? Oh, you woke me up!",
+            "Brother, what are you doing here so late? Go to sleep.",
+            "Mother must be so worried..."
         };
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -19,6 +20,9 @@ public class LightFlicker : MonoBehaviour
     Queue<float> smoothQueue;
     float lastSum = 0;
 
+    Vector3 origPos;
+    bool changeHeight = true;
+
     /// <summary>
     /// Reset the randomness and start again. You usually don't need to call
     /// this, deactivating/reactivating is usually fine but if you want a strict
@@ -38,6 +42,8 @@ public class LightFlicker : MonoBehaviour
         {
             light = GetComponent<Light>();
         }
+        origPos = transform.position;
+        StartCoroutine(ChangeHeight());
     }
 
     void Update()
@@ -59,6 +65,19 @@ public class LightFlicker : MonoBehaviour
         // Calculate new smoothed average
         light.intensity = lastSum / (float)smoothQueue.Count;
 
-        transform.Rotate(Time.deltaTime, 0f, 0f, Space.World);
+        // transform.Rotate(Time.deltaTime, 0f, 0f, Space.World);
+    }
+
+    IEnumerator ChangeHeight()
+    {
+        while (changeHeight)
+        {
+            yield return new WaitForSeconds(Random.Range(0f, .25f));
+            transform.position = new Vector3(
+                origPos.x,
+                origPos.y + Random.Range(-0.15f, .15f),
+                origPos.z
+            );
+        }
     }
 }

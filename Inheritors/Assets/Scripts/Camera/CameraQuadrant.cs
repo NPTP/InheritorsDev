@@ -13,7 +13,7 @@ public class CameraQuadrant : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        cameraManager.SendCamTo(this.transform);
+        cameraManager.QuadrantCamActivate(this.transform);
     }
 
     private void OnTriggerExit(Collider other)

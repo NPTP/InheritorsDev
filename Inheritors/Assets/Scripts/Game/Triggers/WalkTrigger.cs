@@ -36,6 +36,12 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
         if (triggerEnabled) Enable();
         else Disable();
+
+        if (invisibleTrigger)
+        {
+            ps.Stop();
+            l.enabled = false;
+        }
     }
 
     public string GetTag()
