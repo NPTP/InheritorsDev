@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TriggerProjector
-  m_Shader: {fileID: 4800000, guid: 01a668cc78047034a8a0c5ca2d24c6f7, type: 3}
+  m_Shader: {fileID: 4800000, guid: 1eb60117df0471b4097fd005b37bf0cf, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -28,7 +28,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FalloffTex:
-        m_Texture: {fileID: 2800000, guid: 23740055e2b119e40a939138ab8070f8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 228af47692a8c7c49b93049646ac6c46, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _HiliteTex:
@@ -40,10 +40,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowTex:
-        m_Texture: {fileID: 2800000, guid: f65975b7fa4a76047a280c8c3c54730e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5dca8299ace07b341be7187e7e1719c1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Floats: []
+    m_Floats:
+    - _Attenuation: 1
     m_Colors:
     - BumpMapScale: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -59,6 +60,7 @@ Material:
     - _Projector_1: {r: -0.0014375485, g: 1.4636691, b: 0.77239656, a: 1.2343576}
     - _Projector_2: {r: -0.107604526, g: -0.18029094, b: 1.0079052, a: 1.9464619}
     - _Projector_3: {r: -0.10451689, g: -0.17511761, b: 0.9789842, a: 2.0877385}
+    - _Tint: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
     - _TintColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
 --- !u!1002 &2100001
 EditorExtensionImpl:
