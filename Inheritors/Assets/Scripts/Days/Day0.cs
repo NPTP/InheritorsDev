@@ -64,8 +64,6 @@ public class Day0 : MonoBehaviour
     IEnumerator Intro()
     {
         stateManager.SetState(StateManager.State.Inert);
-
-        // uiManager.controls.SetAlpha(0f);
         cameraManager.SendCamTo(firepitTransform);
         cameraManager.Zoom(15f, 0f);
 
@@ -90,11 +88,12 @@ public class Day0 : MonoBehaviour
         /* 04. Change view from fire to player. */
         cameraManager.SwitchToPlayerCam();
         cameraManager.ResetZoom(2f);
-        yield return new WaitForSeconds(2f);
+        // yield return new WaitForSeconds(2f);
+        yield return new WaitWhile(cameraManager.IsSwitching);
 
         /* 05. Display tutorial controls. */
         uiManager.controls.Show();
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.25f);
 
         /* 06. Let player control. When they move the joystick, fade out prompts. 
         ** Enable the firepite walk trigger. */
@@ -269,7 +268,8 @@ public class Day0 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(firewoodTransform);
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
+        yield return new WaitWhile(cameraManager.IsSwitching);
 
         triggers["Pickup_Wood1"].Enable();
         yield return new WaitForSeconds(1f);
@@ -279,10 +279,11 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         cameraManager.SwitchToLastCam();
-        yield return new WaitForSeconds(0.5f);
-
         taskManager.SetActiveTask("Branches");
         uiManager.SetUpTasksInventory();
+        // yield return new WaitForSeconds(0.5f);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+
         stateManager.SetState(StateManager.State.Normal);
     }
 
@@ -291,15 +292,13 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(StateManager.State.Inert);
         yield return new WaitForSeconds(1f);
 
-        cameraManager.SendCamTo(malocaMotherTransform);
         dialogManager.NewDialog(maloca, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        yield return new WaitForSeconds(.25f);
         taskManager.SetActiveTask("Maloca");
         triggers["Walk_End"].Enable();
-        yield return new WaitForSeconds(.25f);
 
-        cameraManager.SwitchToPlayerCam();
         stateManager.SetState(StateManager.State.Normal);
     }
 

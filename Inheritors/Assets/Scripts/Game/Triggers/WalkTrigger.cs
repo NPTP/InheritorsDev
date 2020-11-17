@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using DG.Tweening;
 
 // Trigger for walking into, works with InteractManager.
 public class WalkTrigger : MonoBehaviour, Trigger
@@ -16,6 +17,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     Vector3 itemLocalScale;
     BoxCollider itemCollider;
     Light l;
+    float originalIntensity;
     ParticleSystem ps;
 
     bool triggered = false;
@@ -32,6 +34,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
+        originalIntensity = l.intensity;
         ps = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
 
         if (triggerEnabled) Enable();
@@ -56,6 +59,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
             triggerEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
+            l.DOIntensity(originalIntensity, .25f).From(0f);
             ps.Play();
         }
     }
@@ -65,7 +69,8 @@ public class WalkTrigger : MonoBehaviour, Trigger
     {
         triggerEnabled = false;
         triggerCollider.enabled = false;
-        l.enabled = false;
+        l.DOIntensity(0f, .25f);
+        // l.enabled = false;
         ps.Stop();
     }
 

@@ -158,7 +158,8 @@ public class UI_Prompt
     public RectTransform rectTransform;
     public Image image;
     public TMP_Text text;
-    public Tween currentTween;
+    public Tween imageTween;
+    public Tween textTween;
 
     public void Show()
     {

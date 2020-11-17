@@ -11,30 +11,40 @@ public class CameraManager : MonoBehaviour
     StateManager stateManager;
     InputManager inputManager;
 
+    CinemachineBrain cmBrain;
+
     CinemachineVirtualCamera cmPlayerCam;
     CinemachineVirtualCamera cmQuadrantCam; // "QuadrantCam"
     CinemachineVirtualCamera cmOtherCam;
-    CinemachineVirtualCamera cmLookCam;
+    // CinemachineVirtualCamera cmLookCam;
 
     CinemachineVirtualCamera presentCam;
     CinemachineVirtualCamera lastCam;
 
     float defaultOrthoSize = 10f;
     float defaultFov = 40f;
+    bool isBlending = false;
 
     void Awake()
     {
+        cmBrain = FindObjectOfType<CinemachineBrain>();
+
         cmPlayerCam = GameObject.Find("CMPlayerCam").GetComponent<CinemachineVirtualCamera>();
         cmQuadrantCam = GameObject.Find("CMQuadrantCam").GetComponent<CinemachineVirtualCamera>();
         cmOtherCam = GameObject.Find("CMOtherCam").GetComponent<CinemachineVirtualCamera>();
-
-        // TODO: implement the look cam with an invisible object (right mouse/right stick scroll map)
         // cmLookCam = GameObject.Find("CMLookCam").GetComponent<CinemachineVirtualCamera>();
     }
 
     void Start()
     {
+
         presentCam = cmPlayerCam;
+    }
+
+    public bool IsSwitching()
+    {
+        // return cmBrain.IsBlending;
+        return CinemachineCore.Instance.IsLive(lastCam);
     }
 
     public void UseLookCam()
@@ -50,6 +60,7 @@ public class CameraManager : MonoBehaviour
 
     public void SwitchToPlayerCam()
     {
+        lastCam = presentCam;
         presentCam = cmPlayerCam;
         cmPlayerCam.Priority = 1;
         cmOtherCam.Priority = 0;

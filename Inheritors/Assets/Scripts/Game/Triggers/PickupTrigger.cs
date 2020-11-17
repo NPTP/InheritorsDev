@@ -18,6 +18,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     Vector3 itemLocalScale;
     BoxCollider itemCollider;
     Light l;
+    float originalIntensity;
     ParticleSystem ps;
 
     bool pickedUp = false;
@@ -36,6 +37,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
         itemLocalScale = itemTransform.localScale;
         itemCollider = itemTransform.gameObject.GetComponent<BoxCollider>();
         l = transform.GetChild(1).gameObject.GetComponent<Light>();
+        originalIntensity = l.intensity;
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
 
         if (triggerEnabled) Enable();
@@ -60,6 +62,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
             triggerCollider.enabled = true;
             itemCollider.enabled = true;
             l.enabled = true;
+            l.DOIntensity(originalIntensity, .25f).From(0f);
             ps.Play();
         }
     }
@@ -69,7 +72,8 @@ public class PickupTrigger : MonoBehaviour, Trigger
         triggerEnabled = false;
         triggerCollider.enabled = false;
         itemCollider.enabled = false;
-        l.enabled = false;
+        l.DOIntensity(0f, .25f);
+        // l.enabled = false;
         ps.Stop();
     }
 

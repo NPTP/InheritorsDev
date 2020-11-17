@@ -13,6 +13,9 @@ public class UIManager : MonoBehaviour
     InteractManager interactManager;
     PickupManager pickupManager;
 
+    GameObject player;
+    Vector3 playerHeight;
+
     public UI_TasksInventory tasksInventory = new UI_TasksInventory();
     public UI_Prompt pickupPrompt = new UI_Prompt();
     public UI_Prompt dialogPrompt = new UI_Prompt();
@@ -20,6 +23,8 @@ public class UIManager : MonoBehaviour
     public UI_Controls controls = new UI_Controls();
 
     public UIResources uiResources;
+
+    float promptFadeTime = .25f;
 
     void Awake()
     {
@@ -34,6 +39,8 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         Cursor.visible = false;
+        player = GameObject.FindWithTag("Player");
+        playerHeight = new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -174,14 +181,17 @@ public class UIManager : MonoBehaviour
 
     IEnumerator AlignPromptInRange(Transform target, UI_Prompt p, string triggerType)
     {
-        if (p.currentTween != null) p.currentTween.Kill();
-        p.currentTween = p.image.DOFade(1f, .25f).From(0f);
+        if (p.imageTween != null) p.imageTween.Kill();
+        p.imageTween = p.image.DOFade(1f, promptFadeTime).From(0f);
+        if (p.textTween != null) p.textTween.Kill();
+        if (p.text.enabled) p.textTween = p.text.DOFade(1f, promptFadeTime).From(0f);
 
         Func<bool> TargetInRange = GetInRangeFunction(triggerType);
         while (TargetInRange())
         {
-            Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
-            pos.y += 50;
+            // Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
+            Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
+            // pos.y += 150;
             p.rectTransform.position = pos;
             yield return new WaitForFixedUpdate();
         }
@@ -202,12 +212,16 @@ public class UIManager : MonoBehaviour
 
     IEnumerator AlignPromptOutOfRange(Transform target, UI_Prompt p, string triggerType)
     {
-        if (p.currentTween != null) p.currentTween.Kill();
-        p.currentTween = p.image.DOFade(0f, .25f).From(p.image.color.a);
-        while (p.currentTween != null & p.currentTween.IsPlaying())
+        if (p.imageTween != null) p.imageTween.Kill();
+        p.imageTween = p.image.DOFade(0f, promptFadeTime).From(p.image.color.a);
+        if (p.textTween != null) p.textTween.Kill();
+        if (p.text.enabled) p.textTween = p.text.DOFade(0f, promptFadeTime).From(p.text.alpha);
+
+        while (p.imageTween != null & p.imageTween.IsPlaying())
         {
-            Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
-            pos.y += 50f;
+            // Vector3 pos = Camera.main.WorldToScreenPoint(player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
+            Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
+            // pos.y += 150;
             p.rectTransform.position = pos;
             yield return null;
         }
