@@ -14,13 +14,16 @@ public class Day0 : MonoBehaviour
     int dayNumber = 0;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
 
+    /* -------------------------------------- */
     /* Day-specific objects, transforms, etc. */
+    /* -------------------------------------- */
 
     [Header("Day-specific Objects")]
     public Transform firepitTransform;
     public Transform firewoodTransform;
     public Transform malocaMotherTransform;
 
+    /* -------------------------------------- */
     /* -------------------------------------- */
 
     void Awake()
@@ -65,7 +68,7 @@ public class Day0 : MonoBehaviour
     {
         stateManager.SetState(StateManager.State.Inert);
         cameraManager.SendCamTo(firepitTransform);
-        cameraManager.Zoom(15f, 0f);
+        cameraManager.Zoom(0.375f, 0f);
 
         /* 01. Darken screen, fade in sound. */
         transitionManager.SetColor(Color.black);
@@ -88,7 +91,6 @@ public class Day0 : MonoBehaviour
         /* 04. Change view from fire to player. */
         cameraManager.SwitchToPlayerCam();
         cameraManager.ResetZoom(2f);
-        // yield return new WaitForSeconds(2f);
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         /* 05. Display tutorial controls. */
@@ -312,7 +314,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitWhile(() => t != null & t.IsPlaying());
 
         saveManager.SaveGame(dayNumber);
-        SceneManager.LoadScene("Day1");
+        Helper.LoadNextSceneInBuildOrder();
     }
 
 

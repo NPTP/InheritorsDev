@@ -28,7 +28,6 @@ public class TransitionManager : MonoBehaviour
 
     public void SetAlpha(float alpha)
     {
-        Debug.Log(canvasGroup);
         canvasGroup.alpha = alpha;
     }
 

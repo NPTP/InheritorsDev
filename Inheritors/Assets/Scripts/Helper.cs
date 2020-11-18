@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Helper : ScriptableObject
 {
@@ -18,5 +19,15 @@ public class Helper : ScriptableObject
     public static float SmoothStep(float t)
     {
         return t * t * (3f - 2f * t);
+    }
+
+    public static void LoadScene(string name)
+    {
+        SceneManager.LoadScene(name);
+    }
+
+    public static void LoadNextSceneInBuildOrder()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

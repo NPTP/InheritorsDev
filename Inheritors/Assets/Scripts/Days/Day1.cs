@@ -9,40 +9,304 @@ using UnityEngine.SceneManagement;
 
 public class Day1 : MonoBehaviour
 {
+    public bool enableDayScripts = true;
     int dayNumber = 1;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
+    Dictionary<string, AreaTrigger> areas = new Dictionary<string, AreaTrigger>();
+
+    /* -------------------------------------- */
+    /* Day-specific objects, transforms, etc. */
+    /* -------------------------------------- */
+
+    [Header("Day-specific Objects")]
+    public Transform firewoodTransform;
+    public Transform wateringHoleTransform;
+    public Transform fatherHuntingTransform;
+
+    /* -------------------------------------- */
+    /* -------------------------------------- */
+
+  void Awake()
+    {
+        if (!enableDayScripts)
+            Destroy(this);
+        InitializeReferences();
+    }
 
     void Start()
     {
-        InitializeReferences();
         InitializeTriggers();
+        InitializeAreas();
         SubscribeToEvents();
         InitializeDialogs();
-        InitializeTasks();
         // saveManager.LoadGame(dayNumber);
         StartCoroutine("Intro");
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartCoroutine(End());
+        }
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ SCRIPTED HAPPENINGS
+    // ████████████████████████████████████████████████████████████████████████
+
     IEnumerator Intro()
     {
-        transitionManager.Hide(0f);
-        yield return new WaitForSeconds(.25f);
+        // Fade in from a white screen.
+        stateManager.SetState(StateManager.State.Inert);
+        transitionManager.SetAlpha(1f);
+        transitionManager.SetColor(Color.white);
+        transitionManager.Hide(1f);
+        yield return new WaitForSeconds(1f);
 
-        taskManager.ClearTasks();
-        taskManager.AddTask("Test", "This is a test task.");
-        taskManager.AddTask("Inactive", "This should be inactive.");
-        taskManager.SetActiveTask("Test");
+        stateManager.SetState(StateManager.State.Normal);
+
+        // // Zoom up and queue the opening dialog, leave inert after dialog.
+        // cameraManager.ZoomDialog();       
+        // dialogManager.NewDialog(day1Opening, StateManager.State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // cameraManager.ResetZoom(.5f);
         uiManager.SetUpTasksInventory();
+        // yield return new WaitForSeconds(.5f);
 
-        yield return new WaitForSeconds(3f);
+        // // Give us context for firewood task.
+        // cameraManager.SendCamTo(firewoodTransform);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask("Firewood", "Gather firewood.");
+        // yield return new WaitForSeconds(2f);
 
-        taskManager.CompleteActiveTask();
-        yield return new WaitForSeconds(3f);
-        uiManager.TearDownTasksInventory();
+        // // Give us context for watering hole task.
+        // cameraManager.FocusOtherCamOn(wateringHoleTransform); // TODO: Smooth blends.
+        // yield return new WaitForSeconds(1f); // WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask("Water", "Fetch water from source.");
+        // yield return new WaitForSeconds(1f);
 
-        // dialogManager.NewDialog(opening);
+        // // Give us context for hunting task.
+        // cameraManager.FocusOtherCamOn(fatherHuntingTransform); // TODO: Smooth blends.
+        // yield return new WaitForSeconds(1f); // WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask("Father", "Meet father to hunt.");
+        // yield return new WaitForSeconds(1f);
 
+        // // Return to player to debrief before letting them loose.
+        // cameraManager.SwitchToLastCam();
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        // dialogManager.NewDialog(taskExplanation);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        // Player is now loose, and can repeat the task dialog with mother.
+        triggers["Dialog_TaskExplanation"].Enable(); // TODO: make dialog triggers snatch their dialog early on so we don't have to specify it in here.
     }
+
+    IEnumerator End()
+    {
+        stateManager.SetState(StateManager.State.Inert);
+        uiManager.TearDownTasksInventory();
+        Tween t = transitionManager.Show(2f);
+        audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        yield return new WaitWhile(() => t != null & t.IsPlaying());
+
+        // saveManager.SaveGame(dayNumber);
+        // Helper.LoadNextSceneInBuildOrder();
+        Helper.LoadScene("MainMenu");
+    }
+
+    void WoodPickups(PickupManager.Inventory inventory)
+    {
+        if (inventory.itemQuantity == 1)
+        {
+            // TODO: this can probably all be one function
+            areas["Firewood"].BeginTaskInArea();
+            TurnOffAreas();
+            taskManager.SetActiveTask("Firewood"); // TODO: enum the tasks since they'll be repeating and so we don't fuck up name matchings. Make day 0 & day 10 tasks unique
+        }
+        else if (inventory.itemQuantity == 3)
+        {
+            triggers["Dropoff_Firewood"].Enable();
+        }
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ EVENT HANDLERS
+    // ████████████████████████████████████████████████████████████████████████
+
+    // TODO: a better way to handle enabling areas (set them up beforehand?)
+    void HandleAreaEvent(object sender, InteractManager.AreaArgs args)
+    {
+        string tag = args.tag;
+        bool inside = args.inside;
+
+        switch (tag)
+        {
+            case "Firewood":
+                SetAreaTriggers(tag, inside);
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown AREA tag to Day " + dayNumber);
+                break;
+        }
+    }
+
+    void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
+    {
+        PickupManager.Inventory inventory = args.inventory;
+        switch (inventory.itemType)
+        {
+            case PickupManager.ItemTypes.WOOD:
+                WoodPickups(inventory);
+                break;
+
+            case PickupManager.ItemTypes.NULL:
+                Debug.Log("NULL pickup event");
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + dayNumber);
+                break;
+        }
+    }
+
+    void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
+    {
+        string tag = args.tag;
+        Dialog dialog = args.dialog;
+
+        switch (tag)
+        {
+            case "Dialog_TaskExplanation":
+                dialogManager.NewDialog(taskExplanation);
+                break;
+
+            case "Dialog_FatherStart":
+                dialogManager.NewDialog(fatherStart);
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + dayNumber);
+                dialogManager.NewDialog(dialog);
+                StartCoroutine(WaitDialogEnd());
+                break;
+        }
+    }
+
+    void HandleDropoffEvent(object sender, InteractManager.DropoffArgs args)
+    {
+        string tag = args.tag;
+
+        switch (tag)
+        {
+            case "Dropoff_Firewood":
+                taskManager.CompleteActiveTask(); // TODO: this doesn't work. Get it working even sans animation, at least
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
+                break;
+        }
+    }
+
+    void HandleWalkEvent(object sender, InteractManager.WalkArgs args)
+    {
+        string tag = args.tag;
+
+        switch (tag)
+        {
+            case "NULL":
+                StartCoroutine(End());
+                break;
+
+            default:
+                Debug.Log("Interact Manager gave unknown WALK tag to Day " + dayNumber);
+                break;
+        }
+    }
+
+    IEnumerator WaitDialogEnd()
+    {
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+    }
+
+    void SetAreaTriggers(string tag, bool insideArea)
+    {
+        switch (tag)
+        {
+            case "Firewood":
+                if (insideArea)
+                {
+                    triggers["Pickup_Wood1"].Enable();
+                    triggers["Pickup_Wood2"].Enable();
+                    triggers["Pickup_Wood3"].Enable();
+                }
+                else
+                {
+                    triggers["Pickup_Wood1"].Disable();
+                    triggers["Pickup_Wood2"].Disable();
+                    triggers["Pickup_Wood3"].Disable();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // 
+    void TurnOffAreas()
+    {
+        areas["Firewood"].Disable();
+        // More... make a list?
+    }
+
+    void TurnOnAreas()
+    {
+        areas["Firewood"].Enable();
+        // More... make a list?
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ DIALOGS OF THE DAY
+    // ████████████████████████████████████████████████████████████████████████
+
+
+    Dialog day1Opening = new Dialog();
+    Dialog taskExplanation = new Dialog();
+    Dialog fatherStart = new Dialog();
+    void InitializeDialogs()
+    {
+        day1Opening.lines = new string[] {
+            "Good morning, son.\nIt's a beautiful day.",
+            "You see the imprints and trails you left behind last night? This land has memory.",
+            "Every step has meaning, and deepens our connection to this place, and to our past.",
+            "Our ancestors laid paths for us, and you will tread your own!",
+            "If you walk a path over and over again, the grass bends under your feet, the forest learns who you are...",
+            "And it will keep a memory of you.",
+            "Just something to keep in mind as you pursue each task. Here is the list for today."
+        };
+
+        taskExplanation.lines = new string[] {
+            "Go to a task’s area to get started. You will have everything you need for that task when you get there!",
+            "Once you begin a task, you must complete it before you can begin another.",
+            "Begin the tasks in any order you like.",
+            "And if you need to take a break, don't worry. Your progress is saved at the start of each day.",
+            "Talk to me again if you forget any of that. Off you go now, son!"
+        };
+
+        fatherStart.lines = new string[] {
+            "My son! Good to see you finally come to the hunt. I’m glad you’re with us now.",
+            "We did not have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
+            "They had not grown up with it, and caught little food. But you, you’ll make a great hunter one day - just like your father!",
+            "Let’s kill the wild pig. Take the bow."
+        };
+    }
+    
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ INITIALIZERS & DESTROYERS
+    // ████████████████████████████████████████████████████████████████████████
 
     SaveManager saveManager;
     StateManager stateManager;
@@ -80,8 +344,19 @@ public class Day1 : MonoBehaviour
         }
     }
 
+    // TODO: find triggers in bounds, make lists, profit?
+    void InitializeAreas()
+    {
+        AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
+        foreach (AreaTrigger areaTrigger in worldAreas)
+        {
+            areas[areaTrigger.GetTag()] = areaTrigger;
+        }
+    }
+
     void SubscribeToEvents()
     {
+        interactManager.OnArea += HandleAreaEvent;
         interactManager.OnPickup += HandlePickupEvent;
         interactManager.OnDropoff += HandleDropoffEvent;
         interactManager.OnDialog += HandleDialogEvent;
@@ -91,196 +366,12 @@ public class Day1 : MonoBehaviour
 
     void OnDestroy()
     {
+        interactManager.OnArea -= HandleAreaEvent;
         interactManager.OnPickup -= HandlePickupEvent;
         interactManager.OnDropoff -= HandleDropoffEvent;
         interactManager.OnDialog -= HandleDialogEvent;
         interactManager.OnWalk -= HandleWalkEvent;
     }
 
-    void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
-    {
-        PickupManager.Inventory inventory = args.inventory;
-        switch (inventory.itemType)
-        {
-            case PickupManager.ItemTypes.WOOD:
-                if (inventory.itemQuantity == 1)
-                {
-                    dialogManager.NewDialog(wood1);
-                }
-                else if (inventory.itemQuantity == 2)
-                {
-                    dialogManager.NewDialog(wood2);
-                }
-                else if (inventory.itemQuantity == 3)
-                {
-                    StartCoroutine(AllWoodCollected());
-                }
-                break;
-
-            case PickupManager.ItemTypes.NULL:
-                Debug.Log("NULL pickup event");
-                break;
-
-            default:
-                Debug.Log("Interact Manager gave unknown PICKUP tag to Day " + dayNumber);
-                break;
-        }
-    }
-
-    IEnumerator AllWoodCollected()
-    {
-        dialogManager.NewDialog(wood3, StateManager.State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        taskManager.CompleteActiveTask();
-        taskManager.AddTask("WoodFire", "Bring wood to fire.");
-        taskManager.SetActiveTask("");
-
-        triggers["Dropoff_Wood"].Enable();
-
-        stateManager.SetState(StateManager.State.Normal);
-    }
-
-    void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
-    {
-        string tag = args.tag;
-        Dialog dialog = args.dialog;
-
-        switch (tag)
-        {
-            case "DUMMY":
-                break;
-
-            default:
-                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + dayNumber);
-                dialogManager.NewDialog(dialog);
-                StartCoroutine(WaitDialogEnd());
-                break;
-        }
-    }
-
-    IEnumerator WaitDialogEnd()
-    {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        print("Dialog done, m'boy!");
-    }
-
-    void HandleDropoffEvent(object sender, InteractManager.DropoffArgs args)
-    {
-        string tag = args.tag;
-
-        switch (tag)
-        {
-            case "Dropoff_Wood":
-                StartCoroutine(DropoffWood());
-                break;
-
-            default:
-                Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
-                break;
-        }
-    }
-
-    IEnumerator DropoffWood()
-    {
-        stateManager.SetState(StateManager.State.Inert);
-        yield return new WaitForSeconds(1f);
-
-        cameraManager.SendCamTo(GameObject.Find("maloca").transform);
-        dialogManager.NewDialog(maloca, StateManager.State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        triggers["Walk_End"].Enable();
-        yield return new WaitForSeconds(.25f);
-
-        cameraManager.SwitchToPlayerCam();
-        stateManager.SetState(StateManager.State.Normal);
-    }
-
-    void HandleWalkEvent(object sender, InteractManager.WalkArgs args)
-    {
-        string tag = args.tag;
-
-        switch (tag)
-        {
-            case "Walk_Firepit":
-                StartCoroutine(Firepit());
-                break;
-
-            case "Walk_End":
-                StartCoroutine(End());
-                break;
-
-            default:
-                Debug.Log("Interact Manager gave unknown WALK tag to Day " + dayNumber);
-                break;
-        }
-    }
-
-    IEnumerator Firepit()
-    {
-
-        yield return new WaitForSeconds(0.5f);
-
-        stateManager.SetState(StateManager.State.Normal);
-    }
-
-    IEnumerator End()
-    {
-        stateManager.SetState(StateManager.State.Inert);
-        Tween t = transitionManager.Show(2f);
-        audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
-        yield return new WaitWhile(() => t != null & t.IsPlaying());
-        yield return new WaitForSeconds(.5f);
-        SceneManager.LoadScene(0);
-    }
-
-
-    void InitializeTasks()
-    {
-        // None given all at once dayNumber
-    }
-
-    Dialog opening = new Dialog();
-    Dialog firepit = new Dialog();
-    Dialog wood1 = new Dialog();
-    Dialog wood2 = new Dialog();
-    Dialog wood3 = new Dialog();
-    Dialog maloca = new Dialog();
-    void InitializeDialogs()
-    {
-        string delay = DialogManager.Tools.DELAY;
-
-        opening.lines = new string[] {
-            "Good morning, son.\nIt's a beautiful day.",
-            "You see the imprints and trails you left behind last night? This land has memory.",
-            "Every step has meaning, and deepens our connection to this place, and to our past.",
-            "Our ancestors laid paths for us, and you will tread your own!",
-            "If you walk a path over and over again, the land bends under your feet, the forest learns who you are...",
-            "And it will keep a memory of you.",
-            "Just something to keep in mind as you pursue each task."
-        };
-
-        firepit.lines = new string[] {
-            "This fire is dying.",
-            "Fetch dry branches from our collection, so that it might find new life."
-        };
-
-        wood1.lines = new string[] {
-            "The Cumaru wood. Tough, ancient, everlasting."
-        };
-        wood2.lines = new string[] {
-            "Massaranduba. Hard-won, deep, rich, and beautiful."
-        };
-        wood3.lines = new string[] {
-            "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
-            "That is enough wood for now. Return to the fire."
-        };
-
-        maloca.lines = new string[] {
-             "Well done, my son! The fire must be beautiful. It is too bad I cannot see it from here.",
-             "But it is late now. Come to the maloca to sleep. Tomorrow is an important day."
-        };
-    }
 
 }

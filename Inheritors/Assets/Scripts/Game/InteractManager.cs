@@ -14,6 +14,16 @@ public class InteractManager : MonoBehaviour
     DialogManager dialogManager;
     PickupManager pickupManager;
 
+    AreaTrigger areaTrigger = null;
+    string areaTag = null;
+    bool insideArea = false;
+    public event EventHandler<AreaArgs> OnArea;
+    public class AreaArgs : EventArgs
+    {
+        public string tag;
+        public bool inside;
+    }
+
     PickupTrigger pickupTrigger = null;
     string pickupTag = null;
     bool pickupInRange = false;
@@ -82,6 +92,34 @@ public class InteractManager : MonoBehaviour
                 break;
         }
     }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ AREA
+    // ████████████████████████████████████████████████████████████████████████
+
+    public bool IsInsideArea()
+    {
+        return insideArea;
+    }
+
+    public void AreaEnter(AreaTrigger sender)
+    {
+        areaTrigger = sender;
+        areaTag = areaTrigger.GetTag();
+        insideArea = true;
+        print("Inside area.");
+        OnArea?.Invoke(this, new AreaArgs { tag = areaTag, inside = true });
+    }
+
+    public void AreaLeave(AreaTrigger sender)
+    {
+        areaTrigger = null;
+        areaTag = null;
+        insideArea = false;
+        print("Outside area.");
+        OnArea?.Invoke(this, new AreaArgs { tag = sender.GetTag(), inside = false });
+    }
+
 
     // ████████████████████████████████████████████████████████████████████████
     // ███ PICKUP
@@ -284,7 +322,7 @@ public class InteractManager : MonoBehaviour
         // Send dialog event to Day, which will display it and run any connected events.
         OnDialog.Invoke(this, new DialogArgs
         {
-            tag = dialogTrigger.tag,
+            tag = dialogTrigger.triggerTag,
             dialog = dialogTrigger.dialog
         });
 

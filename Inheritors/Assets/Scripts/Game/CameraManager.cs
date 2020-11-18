@@ -23,6 +23,7 @@ public class CameraManager : MonoBehaviour
 
     float defaultOrthoSize = 10f;
     float defaultFov = 40f;
+    float dialogZoomMultiplier = 0.75f;
     bool isBlending = false;
 
     void Awake()
@@ -158,20 +159,27 @@ public class CameraManager : MonoBehaviour
         );
     }
 
-    public void Zoom(float fov, float duration = 0f)
+    public void Zoom(float multiplier, float duration = 0f)
     {
+        float value = defaultFov * multiplier;
         DOTween.To(
             () => cmOtherCam.m_Lens.FieldOfView,
             x => cmOtherCam.m_Lens.FieldOfView = x,
-            fov,
+            value,
             duration
         );
         DOTween.To(
             () => cmPlayerCam.m_Lens.FieldOfView,
             x => cmPlayerCam.m_Lens.FieldOfView = x,
-            fov,
+            value,
             duration
         );
+    }
+
+    // TODO: There needs to be a dialog cam with a different angle.
+    public void ZoomDialog()
+    {
+        Zoom(dialogZoomMultiplier, .25f);
     }
 
     public void ResetZoom(float duration = 0f)

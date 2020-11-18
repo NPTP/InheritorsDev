@@ -16,6 +16,7 @@ public class UIResources : ScriptableObject
 
     [Header("Items")]
     public Sprite WOOD;
+    public Sprite WATER;
 
     public Sprite GetItemIcon(PickupManager.ItemTypes type)
     {
