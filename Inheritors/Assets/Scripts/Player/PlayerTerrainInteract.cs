@@ -10,6 +10,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     public bool leavePaths = true;
     public bool cutGrass = true;
     public int trailSize = 1;
+    public int grassCutSize = 2;
 
     Transform playerTransform;
 
@@ -24,8 +25,8 @@ public class PlayerTerrainInteract : MonoBehaviour
     int playerSplatmapSize;
     int trailLayer = (int)TerrainManager.Layers.Trail;
 
-    bool[,] walkedMap;
-    float[,,] debugWalked;
+    bool[,] walkedToday;
+    float[,] pastTrail;
 
     void Start()
     {
@@ -34,58 +35,26 @@ public class PlayerTerrainInteract : MonoBehaviour
         playerSplatmapSize = (int)trailSize / 2;
         texturesUnderfoot = new float[numLayers];
 
-        // Splat map width = splat map height. Irrelevant distinction
+        // Splat map is always a square so width = height. Irrelevant distinction
         int width = t.terrainData.alphamapWidth;
         int height = t.terrainData.alphamapHeight;
         debugWalked = new float[width, height, numLayers];
-        InitializeWalkedMap();
+        InitializeWalkedToday();
         // InitializeDebugWalked();
     }
 
     void Update()
     {
         ConvertPosition(playerTransform.position);
-        CheckTextureUnderfoot();
+        GetTexturesUnderfoot();
 
         if (leavePaths)
             ChangeTexture(trailSize);
 
         if (cutGrass)
-            RemoveDetails(1);// (int)(trailSize / 2));
+            RemoveDetails(grassCutSize);
 
         // TakeDebugInputs();
-    }
-
-    // Use for testing terrain modifications in debug.
-    void TakeDebugInputs()
-    {
-        // Test walked map
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            for (int i = 0; i < t.terrainData.detailWidth; i++)
-                for (int j = 0; j < t.terrainData.detailHeight; j++)
-                    if (walkedMap[i, j])
-                        debugWalked[i, j, 0] = 1f;
-            t.terrainData.SetAlphamaps(0, 0, debugWalked);
-        }
-        // Remove all details layer 0
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];
-            for (int i = 0; i < t.terrainData.detailWidth; i++)
-                for (int j = 0; j < t.terrainData.detailHeight; j++)
-                    details[i, j] = 0;
-            t.terrainData.SetDetailLayer(0, 0, 0, details);
-        }
-        // Fill terrain with details layer 0
-        else if (Input.GetKeyDown(KeyCode.T))
-        {
-            int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];
-            for (int i = 0; i < t.terrainData.detailWidth; i++)
-                for (int j = 0; j < t.terrainData.detailHeight; j++)
-                    details[i, j] = 8;
-            t.terrainData.SetDetailLayer(0, 0, 0, details);
-        }
     }
 
     void ChangeTexture(int areaSize)
@@ -100,10 +69,17 @@ public class PlayerTerrainInteract : MonoBehaviour
                 {
                     remap[i, j, k] = alphaMap[i, j, k];
                 }
-                remap[i, j, trailLayer] = 0.1f;
 
-                // Record that we have walked here
-                // walkedMap[texturePosZ - playerSplatmapSize + i, texturePosX - playerSplatmapSize + j] = true;
+                // Flipped order intentionally
+                int z = texturePosZ - playerSplatmapSize + i;
+                int x = texturePosX - playerSplatmapSize + j;
+
+                // Check if we've walked here already today - if not, lay down some trail (limit at 1f).
+                if (!walkedToday[z, x] && alphaMap[i, j, trailLayer] < 1)
+                {
+                    walkedToday[z, x] = true;
+                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.25f;
+                }
             }
         }
         t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
@@ -135,22 +111,61 @@ public class PlayerTerrainInteract : MonoBehaviour
     }
 
     // Stores the underfoot texture mix per layer in texturesUnderfoot.
-    void CheckTextureUnderfoot()
+    void GetTexturesUnderfoot()
     {
         alphaMap = t.terrainData.GetAlphamaps(texturePosX, texturePosZ, 1, 1);
         for (int k = 0; k < numLayers; k++)
             texturesUnderfoot[k] = alphaMap[0, 0, k];
     }
 
-    void InitializeWalkedMap()
+    void InitializeWalkedToday()
     {
         int width = t.terrainData.alphamapWidth;
         int height = t.terrainData.alphamapHeight;
-        walkedMap = new bool[width, height];
+        walkedToday = new bool[width, height];
         for (int i = 0; i < width; i++)
             for (int j = 0; j < height; j++)
-                walkedMap[i, j] = false;
+                walkedToday[i, j] = false;
     }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ DEBUG
+    // ████████████████████████████████████████████████████████████████████████
+
+    // Use for testing terrain modifications in debug.
+    void TakeDebugInputs()
+    {
+        // Test walked map
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            for (int i = 0; i < t.terrainData.detailWidth; i++)
+                for (int j = 0; j < t.terrainData.detailHeight; j++)
+                    if (walkedToday[i, j])
+                        debugWalked[i, j, 0] = 1f;
+            t.terrainData.SetAlphamaps(0, 0, debugWalked);
+        }
+        // Remove all details layer 0
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];
+            for (int i = 0; i < t.terrainData.detailWidth; i++)
+                for (int j = 0; j < t.terrainData.detailHeight; j++)
+                    details[i, j] = 0;
+            t.terrainData.SetDetailLayer(0, 0, 0, details);
+        }
+        // Fill terrain with details layer 0
+        else if (Input.GetKeyDown(KeyCode.T))
+        {
+            int[,] details = new int[t.terrainData.detailWidth, t.terrainData.detailHeight];
+            for (int i = 0; i < t.terrainData.detailWidth; i++)
+                for (int j = 0; j < t.terrainData.detailHeight; j++)
+                    details[i, j] = 8;
+            t.terrainData.SetDetailLayer(0, 0, 0, details);
+        }
+    }
+
+    // float array for debugging
+    float[,,] debugWalked;
 
     void InitializeDebugWalked()
     {

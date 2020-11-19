@@ -10,6 +10,7 @@ TagManager:
   - DialogBox
   - UI_Prompt
   - TriggerInArea
+  - Pickup
   layers:
   - Default
   - TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   - Trigger
   - Area
   - Item
-  - 
+  - Terrain
   - 
   - 
   - 

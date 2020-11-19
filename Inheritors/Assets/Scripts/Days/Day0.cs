@@ -48,7 +48,7 @@ public class Day0 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             StopCoroutine("Intro");
-            cameraManager.SwitchToPlayerCam();
+            cameraManager.SwitchToCam("Player");
             transitionManager.Hide();
             dialogManager.EndDialog();
             uiManager.controls.Hide();
@@ -89,7 +89,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(4f);
 
         /* 04. Change view from fire to player. */
-        cameraManager.SwitchToPlayerCam();
+        cameraManager.SwitchToCam("Player");
         cameraManager.ResetZoom(2f);
         yield return new WaitWhile(cameraManager.IsSwitching);
 

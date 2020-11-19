@@ -4,19 +4,29 @@ public class TriggerProjector : MonoBehaviour
 {
     Projector projector;
     float speed = 12.5f;
+    bool projectorEnabled;
 
-    void Start()
+    void Awake()
     {
         projector = GetComponent<Projector>();
     }
 
     void Update()
     {
-        transform.Rotate(0, 0, Time.deltaTime * speed, Space.Self);
+        if (projectorEnabled)
+            transform.Rotate(0, 0, Time.deltaTime * speed, Space.Self);
     }
 
-    void Enable()
+    // TODO: nice fades in/out for the projector enable/disable.
+    public void Enable()
     {
-        
+        projector.enabled = true;
+        projectorEnabled = true;
+    }
+
+    public void Disable()
+    {
+        projector.enabled = false;
+        projectorEnabled = false;
     }
 }

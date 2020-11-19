@@ -18,6 +18,6 @@ public class CameraQuadrant : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        cameraManager.SwitchToPlayerCam();
+        cameraManager.SwitchToCam("Player");
     }
 }

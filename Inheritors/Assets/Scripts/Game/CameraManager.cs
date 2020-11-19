@@ -14,9 +14,9 @@ public class CameraManager : MonoBehaviour
     CinemachineBrain cmBrain;
 
     CinemachineVirtualCamera cmPlayerCam;
-    CinemachineVirtualCamera cmQuadrantCam; // "QuadrantCam"
-    CinemachineVirtualCamera cmOtherCam;
-    // CinemachineVirtualCamera cmLookCam;
+    CinemachineVirtualCamera cmQuadrantCam;
+    CinemachineVirtualCamera cmOtherCam1;
+    CinemachineVirtualCamera cmOtherCam2;
 
     CinemachineVirtualCamera presentCam;
     CinemachineVirtualCamera lastCam;
@@ -32,8 +32,8 @@ public class CameraManager : MonoBehaviour
 
         cmPlayerCam = GameObject.Find("CMPlayerCam").GetComponent<CinemachineVirtualCamera>();
         cmQuadrantCam = GameObject.Find("CMQuadrantCam").GetComponent<CinemachineVirtualCamera>();
-        cmOtherCam = GameObject.Find("CMOtherCam").GetComponent<CinemachineVirtualCamera>();
-        // cmLookCam = GameObject.Find("CMLookCam").GetComponent<CinemachineVirtualCamera>();
+        cmOtherCam1 = GameObject.Find("CMOtherCam1").GetComponent<CinemachineVirtualCamera>();
+        cmOtherCam2 = GameObject.Find("CMOtherCam2").GetComponent<CinemachineVirtualCamera>();
     }
 
     void Start()
@@ -48,90 +48,88 @@ public class CameraManager : MonoBehaviour
         return CinemachineCore.Instance.IsLive(lastCam);
     }
 
-    public void UseLookCam()
+    void SetAllCamsZeroPriority()
     {
-        if (stateManager.GetState() == StateManager.State.Normal)
-        {
-            // Do the look stuff:
-            // presentCam = cmOtherCam;
-            // - set state to "Looking" (zero axes, disallow other inputs)
-            // - align lookcam to thingy
-        }
-    }
-
-    public void SwitchToPlayerCam()
-    {
-        lastCam = presentCam;
-        presentCam = cmPlayerCam;
-        cmPlayerCam.Priority = 1;
-        cmOtherCam.Priority = 0;
-        // cmLookCam.Priority = 0;
-    }
-
-    public void SwitchToOtherCam()
-    {
-        lastCam = presentCam;
-        presentCam = cmOtherCam;
         cmPlayerCam.Priority = 0;
-        cmOtherCam.Priority = 1;
-        // cmLookCam.Priority = 0;
+        cmQuadrantCam.Priority = 0;
+        cmOtherCam1.Priority = 0;
+        cmOtherCam2.Priority = 0;
     }
 
     public void SwitchToCam(string camName)
     {
         lastCam = presentCam;
-        if (camName == "QuadrantCam")
-        {
-            presentCam = cmQuadrantCam;
-            cmQuadrantCam.Priority = 1;
-            cmPlayerCam.Priority = 0;
-            cmOtherCam.Priority = 0;
-            // cmLookCam.Priority = 0;
-        }
+        SetAllCamsZeroPriority();
+        CinemachineVirtualCamera switchedtoCam = GetCameraByName(camName);
+        presentCam = switchedtoCam;
+        presentCam.Priority = 1;
     }
 
     public void SwitchToLastCam()
     {
-        cmQuadrantCam.Priority = 0;
-        cmPlayerCam.Priority = 0;
-        cmOtherCam.Priority = 0;
-        // cmLookCam.Priority = 0;
-
+        SetAllCamsZeroPriority();
         CinemachineVirtualCamera temp = presentCam;
         presentCam = lastCam;
         lastCam = temp;
         presentCam.Priority = 1;
     }
 
-    public void FocusOtherCamOn(Transform transform)
+    public void FocusCamOn(string camName, Transform transform)
     {
-        cmOtherCam.Follow = transform;
-        cmOtherCam.LookAt = transform;
-    }
-
-    public void FocusCamOn(CinemachineVirtualCamera cam, Transform transform)
-    {
+        CinemachineVirtualCamera cam = GetCameraByName(camName);
         cam.Follow = transform;
         cam.LookAt = transform;
     }
 
     public void SendCamTo(Transform transform)
     {
-        FocusOtherCamOn(transform);
-        SwitchToOtherCam();
+        if (presentCam != cmOtherCam1)
+        {
+            FocusCamOn("Other1", transform);
+            SwitchToCam("Other1");
+        }
+        else
+        {
+            FocusCamOn("Other2", transform);
+            SwitchToCam("Other2");
+        }
     }
 
     public void QuadrantCamActivate(Transform transform)
     {
-        FocusCamOn(cmQuadrantCam, transform);
-        SwitchToCam("QuadrantCam");
+        FocusCamOn("Quadrant", transform);
+        SwitchToCam("Quadrant");
+    }
+
+    
+    CinemachineVirtualCamera GetCameraByName(string camName)
+    {
+          switch(camName)
+        {
+            case "Player":
+                return cmPlayerCam;
+
+            case "Other":
+            case "Other1":
+                return cmOtherCam1;
+
+            case "Other2":
+                return cmOtherCam2;
+
+            case "Quadrant":
+                return cmQuadrantCam;
+
+            default:
+                print("Unknown camera name given to camera manager. Returning player cam.");
+                return cmPlayerCam;
+        }
     }
 
     public void ZoomToSizeOrtho(float orthographicSize, float duration = 0f)
     {
         DOTween.To(
-            () => cmOtherCam.m_Lens.OrthographicSize,
-            x => cmOtherCam.m_Lens.OrthographicSize = x,
+            () => cmOtherCam1.m_Lens.OrthographicSize,
+            x => cmOtherCam1.m_Lens.OrthographicSize = x,
             orthographicSize,
             duration
         );
@@ -146,8 +144,8 @@ public class CameraManager : MonoBehaviour
     public void ResetSizeOrtho(float duration = 0f)
     {
         DOTween.To(
-            () => cmOtherCam.m_Lens.OrthographicSize,
-            x => cmOtherCam.m_Lens.OrthographicSize = x,
+            () => cmOtherCam1.m_Lens.OrthographicSize,
+            x => cmOtherCam1.m_Lens.OrthographicSize = x,
             defaultOrthoSize,
             duration
         );
@@ -163,8 +161,8 @@ public class CameraManager : MonoBehaviour
     {
         float value = defaultFov * multiplier;
         DOTween.To(
-            () => cmOtherCam.m_Lens.FieldOfView,
-            x => cmOtherCam.m_Lens.FieldOfView = x,
+            () => cmOtherCam1.m_Lens.FieldOfView,
+            x => cmOtherCam1.m_Lens.FieldOfView = x,
             value,
             duration
         );
@@ -185,8 +183,8 @@ public class CameraManager : MonoBehaviour
     public void ResetZoom(float duration = 0f)
     {
         DOTween.To(
-              () => cmOtherCam.m_Lens.FieldOfView,
-              x => cmOtherCam.m_Lens.FieldOfView = x,
+              () => cmOtherCam1.m_Lens.FieldOfView,
+              x => cmOtherCam1.m_Lens.FieldOfView = x,
               defaultFov,
               duration
           );

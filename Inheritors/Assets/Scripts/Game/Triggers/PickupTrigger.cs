@@ -19,6 +19,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     Light l;
     float originalIntensity;
     ParticleSystem ps;
+    TriggerProjector triggerProjector;
 
     bool pickedUp = false;
     bool droppedOff = false;
@@ -26,18 +27,18 @@ public class PickupTrigger : MonoBehaviour, Trigger
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
-    }
-
-    void Start()
-    {
-        originalParent = transform.parent;
+            originalParent = transform.parent;
         triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
         l = transform.GetChild(1).gameObject.GetComponent<Light>();
         originalIntensity = l.intensity;
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
+        triggerProjector = transform.GetChild(3).GetComponent<TriggerProjector>();
+    }
 
+    void Start()
+    {
         if (triggerEnabled) Enable();
         else Disable();
     }
@@ -66,6 +67,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
             ps.Play();
+            triggerProjector.Enable();
         }
     }
 
@@ -75,6 +77,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
         triggerCollider.enabled = false;
         l.DOIntensity(0f, .25f);
         ps.Stop();
+        triggerProjector.Disable();
     }
 
     // ONLY call this from another script once that script has finished with the trigger!
