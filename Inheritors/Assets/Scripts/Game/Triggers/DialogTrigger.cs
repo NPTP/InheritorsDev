@@ -49,6 +49,11 @@ public class DialogTrigger : MonoBehaviour, Trigger
         return triggerTag;
     }
 
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
     public void Enable()
     {
         triggerCollider.enabled = true;

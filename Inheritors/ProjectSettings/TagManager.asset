@@ -7,10 +7,9 @@ TagManager:
   - FogOfWar
   - Terrain
   - TaskText
-  - Pickup
-  - Putdown
   - DialogBox
   - UI_Prompt
+  - TriggerInArea
   layers:
   - Default
   - TransparentFX
@@ -26,9 +25,9 @@ TagManager:
   - CameraQuadrant
   - Player
   - Tree
-  - 
-  - 
-  - 
+  - Trigger
+  - Area
+  - Item
   - 
   - 
   - 

@@ -66,37 +66,37 @@ public class Day1 : MonoBehaviour
 
         stateManager.SetState(StateManager.State.Normal);
 
-        // // Zoom up and queue the opening dialog, leave inert after dialog.
-        // cameraManager.ZoomDialog();       
-        // dialogManager.NewDialog(day1Opening, StateManager.State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
-        // cameraManager.ResetZoom(.5f);
+        // Zoom up and queue the opening dialog, leave inert after dialog.
+        cameraManager.ZoomDialog();       
+        dialogManager.NewDialog(day1Opening, StateManager.State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        cameraManager.ResetZoom(.5f);
         uiManager.SetUpTasksInventory();
-        // yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.5f);
 
-        // // Give us context for firewood task.
-        // cameraManager.SendCamTo(firewoodTransform);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
+        // Give us context for firewood task.
+        cameraManager.SendCamTo(firewoodTransform);
+        yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask("Firewood", "Gather firewood.");
-        // yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2f);
 
-        // // Give us context for watering hole task.
-        // cameraManager.FocusOtherCamOn(wateringHoleTransform); // TODO: Smooth blends.
-        // yield return new WaitForSeconds(1f); // WaitWhile(cameraManager.IsSwitching);
+        // Give us context for watering hole task.
+        cameraManager.FocusOtherCamOn(wateringHoleTransform); // TODO: Smooth blends.
+        yield return new WaitForSeconds(1f); // WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask("Water", "Fetch water from source.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
-        // // Give us context for hunting task.
-        // cameraManager.FocusOtherCamOn(fatherHuntingTransform); // TODO: Smooth blends.
-        // yield return new WaitForSeconds(1f); // WaitWhile(cameraManager.IsSwitching);
+        // Give us context for hunting task.
+        cameraManager.FocusOtherCamOn(fatherHuntingTransform); // TODO: Smooth blends.
+        yield return new WaitForSeconds(1f); // WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask("Father", "Meet father to hunt.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
-        // // Return to player to debrief before letting them loose.
-        // cameraManager.SwitchToLastCam();
-        // yield return new WaitWhile(cameraManager.IsSwitching);
-        // dialogManager.NewDialog(taskExplanation);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // Return to player to debrief before letting them loose.
+        cameraManager.SwitchToLastCam();
+        yield return new WaitWhile(cameraManager.IsSwitching);
+        dialogManager.NewDialog(taskExplanation);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Player is now loose, and can repeat the task dialog with mother.
         triggers["Dialog_TaskExplanation"].Enable(); // TODO: make dialog triggers snatch their dialog early on so we don't have to specify it in here.

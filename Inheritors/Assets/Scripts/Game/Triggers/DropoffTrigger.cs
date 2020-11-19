@@ -40,6 +40,11 @@ public class DropoffTrigger : MonoBehaviour, Trigger
         return triggerTag;
     }
 
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
     public void Enable()
     {
         if (!dropoffDone)

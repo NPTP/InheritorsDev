@@ -16,7 +16,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
     Collider triggerCollider;
     Transform itemTransform;
     Vector3 itemLocalScale;
-    BoxCollider itemCollider;
     Light l;
     float originalIntensity;
     ParticleSystem ps;
@@ -35,7 +34,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
         triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
-        itemCollider = itemTransform.gameObject.GetComponent<BoxCollider>();
         l = transform.GetChild(1).gameObject.GetComponent<Light>();
         originalIntensity = l.intensity;
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
@@ -49,6 +47,11 @@ public class PickupTrigger : MonoBehaviour, Trigger
         return triggerTag;
     }
 
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
     public void ResetParent()
     {
         transform.parent = originalParent;
@@ -60,7 +63,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
         {
             triggerEnabled = true;
             triggerCollider.enabled = true;
-            itemCollider.enabled = true;
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
             ps.Play();
@@ -71,9 +73,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     {
         triggerEnabled = false;
         triggerCollider.enabled = false;
-        itemCollider.enabled = false;
         l.DOIntensity(0f, .25f);
-        // l.enabled = false;
         ps.Stop();
     }
 
