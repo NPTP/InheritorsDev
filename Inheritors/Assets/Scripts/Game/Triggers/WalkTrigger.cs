@@ -93,4 +93,6 @@ public class WalkTrigger : MonoBehaviour, Trigger
             interactManager.WalkEnter(this);
         }
     }
+
+    public void FlagInArea(AreaTrigger area) { }
 }

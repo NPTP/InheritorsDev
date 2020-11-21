@@ -24,10 +24,12 @@ public class PickupTrigger : MonoBehaviour, Trigger
     bool pickedUp = false;
     bool droppedOff = false;
 
+    AreaTrigger myArea = null;
+
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
-            originalParent = transform.parent;
+        originalParent = transform.parent;
         triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
         itemLocalScale = itemTransform.localScale;
@@ -91,6 +93,10 @@ public class PickupTrigger : MonoBehaviour, Trigger
         pickedUp = true;
         itemTransform.DOScale(itemLocalScale, .25f);
         Disable();
+        if (myArea != null)
+        {
+            myArea.BeginTaskInArea();
+        }
     }
 
     public void GetDroppedOff()
@@ -116,5 +122,10 @@ public class PickupTrigger : MonoBehaviour, Trigger
             interactManager.PickupExitRange(this);
             itemTransform.DOScale(itemLocalScale, .25f);
         }
+    }
+
+    public void FlagInArea(AreaTrigger area)
+    {
+        myArea = area;
     }
 }

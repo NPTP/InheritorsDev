@@ -9,4 +9,5 @@ public interface Trigger
     void Enable();
     void Disable();
     void Remove();
+    void FlagInArea(AreaTrigger area);
 }

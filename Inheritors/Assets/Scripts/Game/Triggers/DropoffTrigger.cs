@@ -92,4 +92,5 @@ public class DropoffTrigger : MonoBehaviour, Trigger
         }
     }
 
+    public void FlagInArea(AreaTrigger area) { }
 }

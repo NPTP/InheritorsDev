@@ -11,6 +11,8 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public bool triggerEnabled = true;
     public string triggerTag;
+    TriggerProjector triggerProjector;
+    Transform projectorTransform;
 
     [Header("Dialog-Specific Properties")]
     public string speakerName = "Trigger Placeholder";
@@ -32,18 +34,23 @@ public class DialogTrigger : MonoBehaviour, Trigger
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
+        projectorTransform = transform.GetChild(1);
+        triggerProjector = projectorTransform.gameObject.GetComponent<TriggerProjector>();
+        triggerCollider = GetComponent<Collider>();
+        l = transform.GetChild(0).gameObject.GetComponent<Light>();
     }
 
     void Start()
     {
-        triggerCollider = GetComponent<Collider>();
-        l = transform.GetChild(0).gameObject.GetComponent<Light>();
-
         dialog = new Dialog();
         dialog.name = speakerName;
         dialog.lines = dialogLines;
         dialog.speed = dialogSpeed;
         dialog.skippable = dialogSkippable;
+
+        if (myTarget != null)
+            projectorTransform.transform.position = myTarget.position;
+        triggerProjector.Disable();
 
         if (triggerEnabled) Enable();
         else Disable();
@@ -81,6 +88,8 @@ public class DialogTrigger : MonoBehaviour, Trigger
         if (other.tag == "Player")
         {
             interactManager.DialogEnterRange(this);
+            if (myTarget != null)
+                triggerProjector.Enable();
         }
     }
 
@@ -89,6 +98,10 @@ public class DialogTrigger : MonoBehaviour, Trigger
         if (other.tag == "Player")
         {
             interactManager.DialogExitRange(this);
+            if (myTarget != null)
+                triggerProjector.Disable();
         }
     }
+
+    public void FlagInArea(AreaTrigger area) { }
 }
