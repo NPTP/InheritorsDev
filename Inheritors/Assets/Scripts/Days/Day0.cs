@@ -336,6 +336,8 @@ public class Day0 : MonoBehaviour
     {
         string delay = DialogManager.Tools.DELAY;
 
+        opening.name = "Mother";
+        opening.skippable = false;
         opening.lines = new string[] {
             "The Omerê is our home." + delay,
             "Our people have lived here for hundreds of years." + delay,
@@ -345,28 +347,40 @@ public class Day0 : MonoBehaviour
         };
         opening.speed = DialogManager.Speed.SLOW;
 
+        firepit.name = "Mother";
+        firepit.skippable = false;
         firepit.lines = new string[] {
             "This fire is dying.",
             "Fetch <color=blue>3 branches</color> from our pile of dried wood, so that it might find new life."
         };
 
+        wood1.name = "Mother";
+        wood1.skippable = false;
         wood1.lines = new string[] {
             "The Cumaru wood. Tough, ancient, everlasting."
         };
+        wood2.name = "Mother";
+        wood2.skippable = false;
         wood2.lines = new string[] {
             "Massaranduba tree. Hard-won, deep, rich, and beautiful."
         };
+        wood3.name = "Mother";
+        wood3.skippable = false;
         wood3.lines = new string[] {
             "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
             "That is enough wood for now. Return to the fire."
         };
 
+        maloca.name = "Mother";
+        maloca.skippable = false;
         maloca.lines = new string[] {
              "Well done, my son! I can see the shadows dancing on the inside of the maloca.",
              "It is late now. Come join me inside to sleep.",
              "Tomorrow is an important day."
         };
 
+        sisterSleep.name = "Sister";
+        sisterSleep.skippable = false;
         sisterSleep.lines = new string[] {
             "...",
             "Hn... huh? Oh, you woke me up!",

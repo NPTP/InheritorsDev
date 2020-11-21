@@ -21,6 +21,7 @@ public class Save
 
 public class SaveManager : MonoBehaviour
 {
+    public bool enableSaveManager = false;
     string filePath;
     TerrainData todayTerrainData;
     Save save;
@@ -42,6 +43,8 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void SaveGame(int dayNumber)
     {
+        if (!enableSaveManager) return;
+
         SaveTerrain();
         save.dayNumber = dayNumber + 1;
 
@@ -55,6 +58,8 @@ public class SaveManager : MonoBehaviour
 
     public void LoadGame(int dayNumber)
     {
+        if (!enableSaveManager) return;
+
         if (File.Exists(filePath))
         {
             // File exists 

@@ -165,7 +165,7 @@ public class UIManager : MonoBehaviour
         {
             p = pickupPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.X_Button;
+            p.image.sprite = uiResources.A_Button; // X_Button;
             p.text.enabled = true;
             p.text.text = prompText;
         }
@@ -194,6 +194,7 @@ public class UIManager : MonoBehaviour
             // Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
             // pos.y += 150;
+            if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
             p.rectTransform.position = pos;
             yield return new WaitForFixedUpdate();
         }
@@ -224,6 +225,7 @@ public class UIManager : MonoBehaviour
             // Vector3 pos = Camera.main.WorldToScreenPoint(player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
             // pos.y += 150;
+            if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
             p.rectTransform.position = pos;
             yield return null;
         }
@@ -265,6 +267,7 @@ public class UIManager : MonoBehaviour
         GameObject db = GameObject.FindGameObjectWithTag("DialogBox");
         dialogBox.canvasGroup = db.GetComponent<CanvasGroup>();
         dialogBox.rectTransform = db.GetComponent<RectTransform>();
+        dialogBox.nameText = GameObject.Find("DialogBoxNameText").GetComponent<TMP_Text>();
         dialogBox.tmpText = GameObject.Find("DialogBoxText").GetComponent<TMP_Text>();
         GameObject dbp = GameObject.Find("DialogBoxPrompt");
         dialogBox.prompt = dbp.GetComponent<Image>();

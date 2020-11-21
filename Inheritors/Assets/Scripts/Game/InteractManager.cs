@@ -76,10 +76,7 @@ public class InteractManager : MonoBehaviour
             case InputManager.A:
                 if (pickupInRange)
                     TryPickUp();
-                break;
-
-            case InputManager.X:
-                if (dropoffInRange)
+                else if (!pickupInRange && dropoffInRange)
                     TryDropoff();
                 break;
 
@@ -87,6 +84,11 @@ public class InteractManager : MonoBehaviour
                 if (dialogInRange)
                     StartDialog();
                 break;
+
+            // case InputManager.X:
+            //     if (dropoffInRange)
+            //         TryDropoff();
+            //     break;
 
             default:
                 break;
@@ -319,12 +321,20 @@ public class InteractManager : MonoBehaviour
             player.GetComponent<Rigidbody>().rotation = Quaternion.Euler(lookRotation);
         }
 
-        // Send dialog event to Day, which will display it and run any connected events.
-        OnDialog.Invoke(this, new DialogArgs
+        // See if anyone is subscribed to OnDialog. If not, play the trigger's stored dialog.
+        // If so, fire an event to the Day script to handle it.
+        if (OnDialog == null)
         {
-            tag = dialogTrigger.triggerTag,
-            dialog = dialogTrigger.dialog
-        });
+            dialogManager.NewDialog(dialogTrigger.dialog);
+        }
+        else
+        {
+            OnDialog.Invoke(this, new DialogArgs
+            {
+                tag = dialogTrigger.triggerTag,
+                dialog = dialogTrigger.dialog
+            });
+        }
 
         if (dialogTrigger.dialogPersists)
             StartCoroutine(WaitToResetTrigger());

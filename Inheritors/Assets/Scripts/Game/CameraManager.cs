@@ -14,6 +14,7 @@ public class CameraManager : MonoBehaviour
     CinemachineBrain cmBrain;
 
     CinemachineVirtualCamera cmPlayerCam;
+    CinemachineVirtualCamera cmDialogCam;
     CinemachineVirtualCamera cmQuadrantCam;
     CinemachineVirtualCamera cmOtherCam1;
     CinemachineVirtualCamera cmOtherCam2;
@@ -24,13 +25,15 @@ public class CameraManager : MonoBehaviour
     float defaultOrthoSize = 10f;
     float defaultFov = 40f;
     float dialogZoomMultiplier = 0.75f;
+    float defaultBlendSpeed;
     bool isBlending = false;
 
     void Awake()
     {
         cmBrain = FindObjectOfType<CinemachineBrain>();
-
+        defaultBlendSpeed = cmBrain.m_DefaultBlend.m_Time;
         cmPlayerCam = GameObject.Find("CMPlayerCam").GetComponent<CinemachineVirtualCamera>();
+        cmDialogCam = GameObject.Find("CMDialogCam").GetComponent<CinemachineVirtualCamera>();
         cmQuadrantCam = GameObject.Find("CMQuadrantCam").GetComponent<CinemachineVirtualCamera>();
         cmOtherCam1 = GameObject.Find("CMOtherCam1").GetComponent<CinemachineVirtualCamera>();
         cmOtherCam2 = GameObject.Find("CMOtherCam2").GetComponent<CinemachineVirtualCamera>();
@@ -38,7 +41,6 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-
         presentCam = cmPlayerCam;
     }
 
@@ -101,22 +103,30 @@ public class CameraManager : MonoBehaviour
         SwitchToCam("Quadrant");
     }
 
-    
+
     CinemachineVirtualCamera GetCameraByName(string camName)
     {
-          switch(camName)
+        switch (camName)
         {
             case "Player":
+                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmPlayerCam;
+
+            case "Dialog":
+                cmBrain.m_DefaultBlend.m_Time = 1f;
+                return cmDialogCam;
 
             case "Other":
             case "Other1":
+                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmOtherCam1;
 
             case "Other2":
+                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmOtherCam2;
 
             case "Quadrant":
+                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmQuadrantCam;
 
             default:

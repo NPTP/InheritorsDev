@@ -13,7 +13,10 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public string triggerTag;
 
     [Header("Dialog-Specific Properties")]
+    public string speakerName = "Trigger Placeholder";
+    [Space(10)]
     public bool dialogPersists = false;
+    public bool dialogSkippable = false;
     [Space(10)]
     public bool lookAtMyTarget = false;
     public Transform myTarget = null;
@@ -37,8 +40,10 @@ public class DialogTrigger : MonoBehaviour, Trigger
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
 
         dialog = new Dialog();
+        dialog.name = speakerName;
         dialog.lines = dialogLines;
         dialog.speed = dialogSpeed;
+        dialog.skippable = dialogSkippable;
 
         if (triggerEnabled) Enable();
         else Disable();

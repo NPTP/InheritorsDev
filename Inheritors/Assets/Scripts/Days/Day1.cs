@@ -27,11 +27,12 @@ public class Day1 : MonoBehaviour
     /* -------------------------------------- */
     /* -------------------------------------- */
 
-  void Awake()
+    void Awake()
     {
         if (!enableDayScripts)
             Destroy(this);
-        InitializeReferences();
+        else
+            InitializeReferences();
     }
 
     void Start()
@@ -40,7 +41,7 @@ public class Day1 : MonoBehaviour
         InitializeAreas();
         SubscribeToEvents();
         InitializeDialogs();
-        // saveManager.LoadGame(dayNumber);
+        saveManager.LoadGame(dayNumber);
         StartCoroutine("Intro");
     }
 
@@ -68,10 +69,8 @@ public class Day1 : MonoBehaviour
         stateManager.SetState(StateManager.State.Normal);
 
         // Zoom up and queue the opening dialog, leave inert after dialog.
-        cameraManager.ZoomDialog();       
         dialogManager.NewDialog(day1Opening, StateManager.State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        cameraManager.ResetZoom(.5f);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(.5f);
 
@@ -111,8 +110,7 @@ public class Day1 : MonoBehaviour
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
 
-        // saveManager.SaveGame(dayNumber);
-        // Helper.LoadNextSceneInBuildOrder();
+        saveManager.SaveGame(dayNumber);
         Helper.LoadScene("MainMenu");
     }
 
@@ -279,6 +277,8 @@ public class Day1 : MonoBehaviour
     Dialog fatherStart = new Dialog();
     void InitializeDialogs()
     {
+        day1Opening.name = "Mother";
+        day1Opening.skippable = false;
         day1Opening.lines = new string[] {
             "Good morning, son.\nIt's a beautiful day.",
             "You see the imprints and trails you left behind last night? This land has memory.",
@@ -289,6 +289,7 @@ public class Day1 : MonoBehaviour
             "Just something to keep in mind as you pursue each task. Here is the list for today."
         };
 
+        taskExplanation.name = "Mother";
         taskExplanation.lines = new string[] {
             "Go to a task’s area to get started. You will have everything you need for that task when you get there!",
             "Once you begin a task, you must complete it before you can begin another.",
@@ -297,6 +298,7 @@ public class Day1 : MonoBehaviour
             "Talk to me again if you forget any of that. Off you go now, son!"
         };
 
+        fatherStart.name = "Father";
         fatherStart.lines = new string[] {
             "My son! Good to see you finally come to the hunt. I’m glad you’re with us now.",
             "We did not have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
@@ -304,7 +306,7 @@ public class Day1 : MonoBehaviour
             "Let’s kill the wild pig. Take the bow."
         };
     }
-    
+
     // ████████████████████████████████████████████████████████████████████████
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
@@ -367,11 +369,14 @@ public class Day1 : MonoBehaviour
 
     void OnDestroy()
     {
-        interactManager.OnArea -= HandleAreaEvent;
-        interactManager.OnPickup -= HandlePickupEvent;
-        interactManager.OnDropoff -= HandleDropoffEvent;
-        interactManager.OnDialog -= HandleDialogEvent;
-        interactManager.OnWalk -= HandleWalkEvent;
+        if (enableDayScripts)
+        {
+            interactManager.OnArea -= HandleAreaEvent;
+            interactManager.OnPickup -= HandlePickupEvent;
+            interactManager.OnDropoff -= HandleDropoffEvent;
+            interactManager.OnDialog -= HandleDialogEvent;
+            interactManager.OnWalk -= HandleWalkEvent;
+        }
     }
 
 

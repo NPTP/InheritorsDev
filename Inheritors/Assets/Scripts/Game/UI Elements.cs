@@ -1,6 +1,6 @@
 ﻿/* INHERITORS by Nick Perrin (c) 2020 */
 // UI elements for use inside UIManager only.
-
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -92,6 +92,7 @@ public class UI_DialogBox
 {
     public CanvasGroup canvasGroup;
     public RectTransform rectTransform;
+    public TMP_Text nameText;
     public TMP_Text tmpText;
     public Image prompt;
     public Animator animator; // TODO: polish stage: animate the waiting dialog prompt
@@ -99,10 +100,23 @@ public class UI_DialogBox
     float fadeUpTime = 0.4f;
     float moveDownTime = 1f;
     float fadeDownTime = 0.8f;
-    float yPos = 192f;
+    float yPosUp = 145f;
+    float yPosDown = -315.11f;
+    Dictionary<string, Color> nameColors = new Dictionary<string, Color>();
 
-    public Tween SetUp()
+    public UI_DialogBox()
     {
+        nameColors["mother"] = Color.white;
+        nameColors["father"] = Color.blue;
+        nameColors["sister"] = Color.yellow;
+        nameColors["grandmother"] = Color.gray;
+        nameColors["grandfather"] = Color.green;
+    }
+
+    public Tween SetUp(string name)
+    {
+        nameText.text = name.ToUpper();
+        nameText.faceColor = nameColors[name.ToLower()];
         tmpText.maxVisibleCharacters = 0;
         prompt.enabled = true;
         // prompt.gameObject.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 1);
@@ -122,7 +136,7 @@ public class UI_DialogBox
 
     Tween BringUpDown(string dir, float duration)
     {
-        float y = dir == "Up" ? yPos : -yPos;
+        float y = dir == "Up" ? yPosUp : yPosDown;
         return DOTween.To(
             () => rectTransform.anchoredPosition3D,
             x => rectTransform.anchoredPosition3D = x,

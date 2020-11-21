@@ -1,6 +1,7 @@
 ﻿/* INHERITORS by Nick Perrin (c) 2020 */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
@@ -9,11 +10,14 @@ using UnityEngine.UI;
 // Class for encapsulating dialogs sent from other classes to be played back.
 public class Dialog
 {
+    public string name;
     public string[] lines;
     public DialogManager.Speed speed;
+    public bool skippable = true;
 
     public Dialog()
     {
+        this.name = "NO NAME GIVEN";
         this.speed = DialogManager.Speed.FAST;
     }
 }
@@ -23,11 +27,11 @@ public class Dialog
 public class DialogManager : MonoBehaviour
 {
     StateManager stateManager;
+    CameraManager cameraManager;
     InputManager inputManager;
     InteractManager interactManager;
     UIManager uiManager;
 
-    float dialogBoxYPosition = 192f;
     bool dialogNext = false;
     bool dialogFinished = true;
 
@@ -42,14 +46,15 @@ public class DialogManager : MonoBehaviour
         FAST
     }
 
-    float SLOW = 0.03f;
-    float MED = 0.01f;
-    float FAST = 0.005f;
+    float slow = 0.03f;
+    float med = 0.01f;
+    float fast = 0.005f;
     float[] speeds;
 
     void Awake()
     {
         stateManager = FindObjectOfType<StateManager>();
+        cameraManager = FindObjectOfType<CameraManager>();
         uiManager = FindObjectOfType<UIManager>();
         inputManager = FindObjectOfType<InputManager>();
         inputManager.OnButtonDown += HandleInputEvent;
@@ -64,7 +69,8 @@ public class DialogManager : MonoBehaviour
 
     void Start()
     {
-        speeds = new float[] { SLOW, MED, FAST };
+        speeds = new float[] { slow, med, fast };
+
     }
 
     // Start a new dialog and switch into specified state after dialog finishes
@@ -72,7 +78,7 @@ public class DialogManager : MonoBehaviour
     {
         dialogFinished = false;
         stateManager.SetState(StateManager.State.Dialog);
-        StartCoroutine(DialogPlay(dialog.lines, speeds[(int)dialog.speed], finishState));
+        StartCoroutine(DialogPlay(dialog, finishState));
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
@@ -90,22 +96,34 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    IEnumerator DialogPlay(string[] lines, float speed, StateManager.State finishState)
+    IEnumerator DialogPlay(Dialog dialog, StateManager.State finishState)
     {
-        // STEP 1 : Set up, bring dialog box up to screen
+        string name = dialog.name;
+        string[] lines = dialog.lines;
+        float speed = speeds[(int)dialog.speed];
+        bool skippable = dialog.skippable;
+
+        // STEP 1 : Set up, change cam & bring dialog box up to screen
         dialogFinished = false;
-        Tween setup = uiManager.dialogBox.SetUp();
+        cameraManager.SwitchToCam("Dialog");
+        Tween setup = uiManager.dialogBox.SetUp(name);
         yield return new WaitWhile(() => setup != null && setup.IsPlaying());
 
         // STEP 2 : Dialog display and input to go through it.
         for (int line = 0; line < lines.Length; line++)
         {
+            dialogNext = false;
             uiManager.dialogBox.SetLine(lines[line]);
             for (int i = 0; i <= lines[line].Length; i++)
             {
                 uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
-                yield return new WaitForEndOfFrame();
+                yield return null;
                 // yield return new WaitForSecondsRealtime(speed);
+                if (skippable && dialogNext)
+                {
+                    uiManager.dialogBox.tmpText.maxVisibleCharacters = lines[line].Length;
+                    break;
+                }
             }
             uiManager.dialogBox.ShowPrompt();
             dialogNext = false;
@@ -117,6 +135,7 @@ public class DialogManager : MonoBehaviour
         // STEP 3 : Finish, tear down dialog box, set state to specified.
         uiManager.dialogBox.TearDown();
         dialogFinished = true;
+        cameraManager.SwitchToLastCam();
         stateManager.SetState(finishState);
     }
 
