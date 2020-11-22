@@ -14,11 +14,13 @@ public class Dialog
     public string[] lines;
     public DialogManager.Speed speed;
     public bool skippable = true;
+    public Transform target;
 
     public Dialog()
     {
         this.name = "NO NAME GIVEN";
         this.speed = DialogManager.Speed.FAST;
+        target = null;
     }
 }
 
@@ -102,10 +104,15 @@ public class DialogManager : MonoBehaviour
         string[] lines = dialog.lines;
         float speed = speeds[(int)dialog.speed];
         bool skippable = dialog.skippable;
+        bool hasTarget = dialog.target != null;
 
         // STEP 1 : Set up, change cam & bring dialog box up to screen
         dialogFinished = false;
-        cameraManager.SwitchToCam("Dialog");
+        if (hasTarget)
+        {
+            cameraManager.FocusCamOn("Dialog", dialog.target);
+            cameraManager.SwitchToCam("Dialog");
+        }
         Tween setup = uiManager.dialogBox.SetUp(name);
         yield return new WaitWhile(() => setup != null && setup.IsPlaying());
 
@@ -135,7 +142,8 @@ public class DialogManager : MonoBehaviour
         // STEP 3 : Finish, tear down dialog box, set state to specified.
         uiManager.dialogBox.TearDown();
         dialogFinished = true;
-        cameraManager.SwitchToLastCam();
+        if (hasTarget)
+            cameraManager.SwitchToLastCam();
         stateManager.SetState(finishState);
     }
 

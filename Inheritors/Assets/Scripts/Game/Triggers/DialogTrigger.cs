@@ -49,7 +49,10 @@ public class DialogTrigger : MonoBehaviour, Trigger
         dialog.skippable = dialogSkippable;
 
         if (myTarget != null)
+        {
             projectorTransform.transform.position = myTarget.position;
+            dialog.target = myTarget;
+        }
         triggerProjector.Disable();
 
         if (triggerEnabled) Enable();

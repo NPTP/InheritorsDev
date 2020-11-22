@@ -12,7 +12,7 @@ public class MenuButtonScripts : MonoBehaviour
 
     public void BeginGame()
     {
-        sceneLoader.LoadNextScene();
+        sceneLoader.LoadSceneByName("Day0");
     }
 
     public void ExitGame()
