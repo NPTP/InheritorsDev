@@ -6,6 +6,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum TaskTypes
+{
+    MotherWood,
+    MotherWater,
+    Father,
+    Sister,
+    Grandmother,
+    Grandfather
+}
+
 public class TaskManager : MonoBehaviour
 {
     public class Task
@@ -128,6 +138,7 @@ public class TaskManager : MonoBehaviour
     public void CompleteActiveTask()
     {
         activeTask.Complete();
+        activeTask = new Task();
 
         CheckAllTasksCompleted();
         UpdateTasks();

@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using DG.Tweening;
 using Cinemachine;
 
@@ -10,6 +11,10 @@ public class CameraManager : MonoBehaviour
 {
     StateManager stateManager;
     InputManager inputManager;
+    PostProcessVolume postProcessVolume;
+    DepthOfField postProcessDOF;
+    float dofDefaultAperture;
+    float dofDefaultFocalLength;
 
     CinemachineBrain cmBrain;
 
@@ -37,6 +42,15 @@ public class CameraManager : MonoBehaviour
         cmQuadrantCam = GameObject.Find("CMQuadrantCam").GetComponent<CinemachineVirtualCamera>();
         cmOtherCam1 = GameObject.Find("CMOtherCam1").GetComponent<CinemachineVirtualCamera>();
         cmOtherCam2 = GameObject.Find("CMOtherCam2").GetComponent<CinemachineVirtualCamera>();
+
+        postProcessVolume = GameObject.Find("PostProcessVolume").GetComponent<PostProcessVolume>();
+        postProcessDOF = null;
+        postProcessVolume.profile.TryGetSettings(out postProcessDOF);
+        dofDefaultAperture = postProcessDOF.aperture.value;
+        dofDefaultFocalLength = postProcessDOF.focalLength.value;
+
+        // postProcessDOF.active = false;
+        // postProcessDOF.focusDistance.value = .1f;
     }
 
     void Start()
@@ -63,8 +77,50 @@ public class CameraManager : MonoBehaviour
         lastCam = presentCam;
         SetAllCamsZeroPriority();
         CinemachineVirtualCamera switchedtoCam = GetCameraByName(camName);
+
+        if (switchedtoCam == cmDialogCam)
+            SetDialogCamDOF();
+        else
+            ResetDOF();
+
         presentCam = switchedtoCam;
         presentCam.Priority = 1;
+    }
+
+    void ResetDOF()
+    {
+        if (postProcessDOF is null) return;
+
+        DOTween.To(
+            () => postProcessDOF.aperture.value,
+            x => postProcessDOF.aperture.value = x,
+            20f,
+            cmBrain.m_DefaultBlend.m_Time
+        );
+        DOTween.To(
+            () => postProcessDOF.focalLength.value,
+            y => postProcessDOF.focalLength.value = y,
+            300f,
+            cmBrain.m_DefaultBlend.m_Time
+        );
+    }
+
+    void SetDialogCamDOF()
+    {
+        if (postProcessDOF is null) return;
+
+        DOTween.To(
+            () => postProcessDOF.aperture.value,
+            x => postProcessDOF.aperture.value = x,
+            18f,
+            cmBrain.m_DefaultBlend.m_Time
+        );
+        DOTween.To(
+            () => postProcessDOF.focalLength.value,
+            y => postProcessDOF.focalLength.value = y,
+            190f,
+            cmBrain.m_DefaultBlend.m_Time
+        );
     }
 
     public void SwitchToLastCam()
