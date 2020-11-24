@@ -32,6 +32,7 @@ public class TaskManager : MonoBehaviour
         string failedColorTag = "<color=#808080>";
         string endColorTag = "</color>";
         string lineBreak = "\n";
+        string doubleLineBreak = "\n\n";
 
         public Task(string label = "", string originalText = "")
         {
@@ -43,14 +44,14 @@ public class TaskManager : MonoBehaviour
 
         public void Inactive()
         {
-            this.currentText = inactiveColorTag + this.originalText + endColorTag + lineBreak;
+            this.currentText = inactiveColorTag + this.originalText + endColorTag + doubleLineBreak;
             this.active = false;
             this.completed = false;
         }
 
         public void Active()
         {
-            this.currentText = activeColorTag + "<b>" + this.originalText + "</b>" + endColorTag + lineBreak;
+            this.currentText = activeColorTag + "<b>" + this.originalText + "</b>" + endColorTag; // + lineBreak;
             this.active = true;
             this.completed = false;
         }
@@ -58,8 +59,8 @@ public class TaskManager : MonoBehaviour
         public void Complete()
         {
             // string strikethroughText = StrikeThrough(this.originalText);
-            // this.currentText = completedColorTag + strikethroughText + endColorTag + lineBreak;
-            this.currentText = completedColorTag + originalText + endColorTag + lineBreak;
+            // this.currentText = completedColorTag + strikethroughText + endColorTag + doubleLineBreak;
+            this.currentText = completedColorTag + originalText + endColorTag + doubleLineBreak;
             this.active = false;
             this.completed = true;
         }
@@ -67,7 +68,7 @@ public class TaskManager : MonoBehaviour
         public void Fail()
         {
             string strikethroughText = StrikeThrough(this.originalText);
-            this.currentText = failedColorTag + strikethroughText + endColorTag + lineBreak;
+            this.currentText = failedColorTag + strikethroughText + endColorTag + doubleLineBreak;
             this.active = false;
             this.failed = true;
         }
@@ -111,6 +112,12 @@ public class TaskManager : MonoBehaviour
 
     public void SetActiveTask(string label)
     {
+        if (activeTask.active)
+        {
+            print("A task is already active.");
+            return;
+        }
+
         Task newActiveTask = new Task();
         int index = 0;
         for (int i = 0; i < taskList.Count; i++)

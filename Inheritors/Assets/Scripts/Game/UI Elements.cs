@@ -174,6 +174,7 @@ public class UI_Prompt
     public TMP_Text text;
     public Tween imageTween;
     public Tween textTween;
+    public Vector3 ogLocalScale;
 
     public void Show()
     {
@@ -185,6 +186,24 @@ public class UI_Prompt
     {
         image.enabled = false;
         text.enabled = false;
+    }
+
+    public Tween Appear(float time)
+    {
+        Show();
+        image.color = Helper.ChangedAlpha(image.color, 1);
+        return rectTransform.DOScaleY(ogLocalScale.y, time).SetEase(Ease.OutBounce);
+    }
+
+    public Tween Disappear(float time)
+    {
+        image.color = Helper.ChangedAlpha(image.color, 1);
+        return rectTransform.DOScaleY(0f, time * .5f).SetEase(Ease.InBack);
+    }
+
+    public void SetYZero()
+    {
+        rectTransform.localScale = new Vector3(rectTransform.localScale.x, 0f, rectTransform.localScale.z);
     }
 
     public void SetSize(float x, float y, float z)

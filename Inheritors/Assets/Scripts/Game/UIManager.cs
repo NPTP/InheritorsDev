@@ -159,7 +159,7 @@ public class UIManager : MonoBehaviour
         {
             p = pickupPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.A_Button;
+            p.image.sprite = uiResources.A_Button_Inworld;
         }
         else if (triggerType == "Dropoff")
         {
@@ -173,7 +173,7 @@ public class UIManager : MonoBehaviour
         {
             p = dialogPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.Y_Button;
+            p.image.sprite = uiResources.Y_Button_Inworld;
         }
 
         StartCoroutine(AlignPromptInRange(target, p, triggerType));
@@ -184,18 +184,20 @@ public class UIManager : MonoBehaviour
         // TODO: use a canvas group to fade the prompt in/out instead of worrying about img/text separately...
         // Just leave text blank if you don't need it.
         if (p.imageTween != null) p.imageTween.Kill();
-        p.imageTween = p.image.DOFade(1f, promptFadeTime).From(0f);
+        p.imageTween = p.Appear(promptFadeTime); // p.image.DOFade(1f, promptFadeTime).From(0f);
         if (p.textTween != null) p.textTween.Kill();
         if (p.text.enabled) p.textTween = p.text.DOFade(1f, promptFadeTime).From(0f);
 
         Func<bool> TargetInRange = GetInRangeFunction(triggerType);
+        bool firstFrameAligned = false;
         while (TargetInRange())
         {
             // Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
-            // pos.y += 150;
             if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
-            p.rectTransform.position = pos;
+            if (!firstFrameAligned) p.rectTransform.position = pos;
+            firstFrameAligned = true;
+            p.rectTransform.position = Vector3.Lerp(p.rectTransform.position, pos, 45 * Time.deltaTime);
             yield return new WaitForFixedUpdate();
         }
     }
@@ -216,25 +218,26 @@ public class UIManager : MonoBehaviour
     IEnumerator AlignPromptOutOfRange(Transform target, UI_Prompt p, string triggerType)
     {
         if (p.imageTween != null) p.imageTween.Kill();
-        p.imageTween = p.image.DOFade(0f, promptFadeTime).From(p.image.color.a);
+        p.imageTween = p.Disappear(promptFadeTime); // p.image.DOFade(0f, promptFadeTime).From(p.image.color.a);
         if (p.textTween != null) p.textTween.Kill();
         if (p.text.enabled) p.textTween = p.text.DOFade(0f, promptFadeTime).From(p.text.alpha);
 
+        bool firstFrameAligned = false;
         while (p.imageTween != null & p.imageTween.IsPlaying())
         {
             // Vector3 pos = Camera.main.WorldToScreenPoint(player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
-            // pos.y += 150;
             if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
-            p.rectTransform.position = pos;
+            if (!firstFrameAligned) p.rectTransform.position = pos;
+            firstFrameAligned = true;
+            p.rectTransform.position = Vector3.Lerp(p.rectTransform.position, pos, 45 * Time.deltaTime);
             yield return null;
         }
 
         Func<bool> TargetInRange = GetInRangeFunction(triggerType);
         if (!TargetInRange())
         {
-            p.image.enabled = false;
-            p.text.enabled = false;
+            p.Hide();
         }
     }
 
@@ -301,6 +304,8 @@ public class UIManager : MonoBehaviour
     {
         GameObject pgo = GameObject.Find(gameobjectName);
         prompt.rectTransform = pgo.GetComponent<RectTransform>();
+        prompt.ogLocalScale = prompt.rectTransform.localScale;
+        prompt.SetYZero();
         prompt.image = pgo.GetComponent<Image>();
         prompt.image.enabled = false;
         prompt.text = GameObject.Find(gameobjectName + "Text").GetComponent<TMP_Text>();

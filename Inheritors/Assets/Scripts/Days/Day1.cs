@@ -74,16 +74,10 @@ public class Day1 : MonoBehaviour
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(.5f);
 
-        // Give us context for firewood task.
-        cameraManager.SendCamTo(firewoodTransform);
-        yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask("Firewood", "Gather firewood.");
-        yield return new WaitForSeconds(1f);
-
         // Give us context for watering hole task.
         cameraManager.SendCamTo(wateringHoleTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask("Water", "Fetch water from source.");
+        taskManager.AddTask("Water", "Fetch water for mother.");
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.

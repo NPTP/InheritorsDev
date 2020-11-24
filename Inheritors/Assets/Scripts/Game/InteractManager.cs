@@ -165,7 +165,7 @@ public class InteractManager : MonoBehaviour
         stateManager.SetState(StateManager.State.PickingUp);
         PickupTrigger currentPickup = pickupTrigger;
         currentPickup.GetPickedUp();
-        uiManager.pickupPrompt.Hide();
+        uiManager.ExitRange(currentPickup.transform, "Pickup"); // pickupPrompt.Hide();
         pickupInRange = false;
         StartCoroutine(PickUpItem(currentPickup));
     }

@@ -18,5 +18,7 @@ MonoBehaviour:
   X_Button: {fileID: 21300000, guid: 87ff84036bd7219448b840fdd544d455, type: 3}
   Y_Button: {fileID: 21300000, guid: 8ba1b73e257f0f442bc2ab6691d466a8, type: 3}
   B_Button: {fileID: 21300000, guid: 00172190581457046ab2078d64366eaf, type: 3}
+  A_Button_Inworld: {fileID: 21300000, guid: 1856dfafe4d6bff49a1a7a3ed4735c79, type: 3}
+  Y_Button_Inworld: {fileID: 21300000, guid: 4fbc1e86bd5a27c41b2c75d24957e6b1, type: 3}
   WOOD: {fileID: 21300000, guid: 2feb0f9522e60054b8bdd38bee469e50, type: 3}
   WATER: {fileID: 21300000, guid: 51e574bf908cd8c4bb15172dfdd30ab2, type: 3}
