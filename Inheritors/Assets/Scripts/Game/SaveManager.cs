@@ -21,21 +21,35 @@ public class Save
 
 public class SaveManager : MonoBehaviour
 {
-    public bool enableSaveManager = false;
+    public bool enableSaveManager = true;
     string filePath;
-    TerrainData todayTerrainData;
     Save save;
+    TerrainData todayTerrainData;
 
     void Awake()
     {
         filePath = Application.persistentDataPath + "/save.data";
+        todayTerrainData = GameObject.FindWithTag("Terrain").GetComponent<Terrain>().terrainData;
     }
 
     void Start()
     {
-        todayTerrainData = GameObject.FindWithTag("Terrain").GetComponent<Terrain>().terrainData;
-        save = new Save();
+        if (PlayerPrefs.HasKey("continuing"))
+        {
+            PlayerPrefs.DeleteKey("continuing");
+            PlayerPrefs.Save();
+            LoadGame();
+        }
     }
+
+    // DEBUG ONLY
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.P))
+    //     {
+    //         SaveGame(SceneManager.GetActiveScene().buildIndex - 1);
+    //     }
+    // }
 
     /// <summary>
     /// Should only be used at the end of a day. Save the current state of the terrain,
@@ -45,18 +59,24 @@ public class SaveManager : MonoBehaviour
     {
         if (!enableSaveManager) return;
 
+        print("Saving day: " + dayNumber);
+
+        save = new Save();
+
         SaveTerrain();
         save.dayNumber = dayNumber + 1;
 
         FileStream dataStream = new FileStream(filePath, FileMode.Create);
         BinaryFormatter converter = new BinaryFormatter();
-        print("pre-serialize");
         converter.Serialize(dataStream, save);
-        print("post-serialize");
         dataStream.Close();
+
+        PlayerPrefs.SetInt("saveExists", 1);
+        PlayerPrefs.SetInt("savedDayNumber", dayNumber);
+        PlayerPrefs.Save();
     }
 
-    public void LoadGame(int dayNumber)
+    public void LoadGame()
     {
         if (!enableSaveManager) return;
 
@@ -66,18 +86,18 @@ public class SaveManager : MonoBehaviour
             FileStream dataStream = new FileStream(filePath, FileMode.Open);
 
             BinaryFormatter converter = new BinaryFormatter();
-            print("pre-de-serialize");
             save = converter.Deserialize(dataStream) as Save;
-            print("post-de-serialize");
+
+            print("Loaded save for day #: " + save.dayNumber);
 
             dataStream.Close();
 
-            // Check that we're loading the right day here.
-            if (save.dayNumber != dayNumber)
-            {
-                print("Trying to load the wrong day number.");
-                return;
-            }
+            // // Check that we're loading the right day here.
+            // if (save.dayNumber != dayNumber)
+            // {
+            //     print("Trying to load the wrong day number.");
+            //     return;
+            // }
 
             LoadTerrain();
         }

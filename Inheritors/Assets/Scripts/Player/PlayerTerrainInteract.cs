@@ -30,6 +30,12 @@ public class PlayerTerrainInteract : MonoBehaviour
 
     void Start()
     {
+        if (!Application.isEditor)
+        {
+            leavePaths = true;
+            cutGrass = true;
+        }
+
         playerTransform = GetComponent<Transform>();
         numLayers = t.terrainData.alphamapLayers;
         playerSplatmapSize = (int)trailSize / 2;

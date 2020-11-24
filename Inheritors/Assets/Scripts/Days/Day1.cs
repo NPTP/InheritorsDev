@@ -41,7 +41,6 @@ public class Day1 : MonoBehaviour
         InitializeAreas();
         SubscribeToEvents();
         InitializeDialogs();
-        saveManager.LoadGame(dayNumber);
         StartCoroutine("Intro");
     }
 
@@ -104,7 +103,7 @@ public class Day1 : MonoBehaviour
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
 
-        saveManager.SaveGame(dayNumber);
+        saveManager.SaveGame(dayNumber + 1);
         Helper.LoadScene("MainMenu");
     }
 

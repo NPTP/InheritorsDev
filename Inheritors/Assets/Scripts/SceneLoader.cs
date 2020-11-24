@@ -33,6 +33,7 @@ public class SceneLoader : MonoBehaviour
         audioSourceVolumePairs = new List<Tuple<AudioSource, float>>();
         foreach (AudioSource audioSource in audioSources)
         {
+            print(audioSource.gameObject.name);
             audioSourceVolumePairs.Add(new Tuple<AudioSource, float>(audioSource, audioSource.volume));
         }
     }
@@ -54,12 +55,13 @@ public class SceneLoader : MonoBehaviour
     IEnumerator SceneStartProcess()
     {
         yield return null;
-        canvasGroup.DOFade(0f, inFadeDuration);
+        canvasGroup.DOFade(0f, inFadeDuration).SetEase(Ease.InCubic);
         if (fadeAudioWithScreen)
         {
             foreach (Tuple<AudioSource, float> pair in audioSourceVolumePairs)
             {
-                pair.Item1.DOFade(pair.Item2, inFadeDuration);
+                pair.Item1.volume = 0f;
+                pair.Item1.DOFade(pair.Item2, inFadeDuration).SetEase(Ease.InCubic);
             }
         }
     }
@@ -85,16 +87,17 @@ public class SceneLoader : MonoBehaviour
         if (fadeOutOnSceneEnd)
         {
             image.color = endSceneColor;
-            Tween t = canvasGroup.DOFade(1f, outFadeDuration);
+            Tween t = canvasGroup.DOFade(1f, outFadeDuration).SetEase(Ease.InCubic);
             if (fadeAudioWithScreen)
             {
                 foreach (Tuple<AudioSource, float> pair in audioSourceVolumePairs)
                 {
-                    pair.Item1.DOFade(0f, outFadeDuration);
+                    pair.Item1.DOFade(0f, outFadeDuration).SetEase(Ease.InOutCubic);
                 }
             }
             yield return new WaitWhile(() => t != null && t.IsPlaying());
         }
+        print("name: " + name);
         if (name == "")
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         else
