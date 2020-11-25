@@ -59,16 +59,16 @@ public class Day1 : MonoBehaviour
     IEnumerator Intro()
     {
         // Fade in from a white screen.
-        stateManager.SetState(StateManager.State.Inert);
+        stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
         transitionManager.SetColor(Color.white);
         transitionManager.Hide(1f);
         yield return new WaitForSeconds(1f);
 
-        stateManager.SetState(StateManager.State.Normal);
+        stateManager.SetState(State.Normal);
 
         // Zoom up and queue the opening dialog, leave inert after dialog.
-        dialogManager.NewDialog(day1Opening, StateManager.State.Inert);
+        dialogManager.NewDialog(day1Opening, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(.5f);
@@ -97,7 +97,7 @@ public class Day1 : MonoBehaviour
 
     IEnumerator End()
     {
-        stateManager.SetState(StateManager.State.Inert);
+        stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);

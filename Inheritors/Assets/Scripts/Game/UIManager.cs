@@ -334,7 +334,7 @@ public class UIManager : MonoBehaviour
 //         pickupPrompt.image.enabled = true;
 //         pickupPrompt.tmpText.enabled = true;
 //         pickupPrompt.image.sprite = uiResources.X_Button;
-//         while (stateManager.state == StateManager.State.Holding)
+//         while (stateManager.GetState() == State.Holding)
 //         {
 //             Vector3 pos = Camera.main.WorldToScreenPoint(target.position);
 //             pos.y -= 25f;

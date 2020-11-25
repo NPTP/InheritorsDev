@@ -53,30 +53,32 @@ public class InputManager : MonoBehaviour
     {
         if (allowInput)
         {
-            switch (stateManager.state)
+            switch (stateManager.GetState())
             {
-                case StateManager.State.Normal:
+                case State.Normal:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     GetRightSidebuttons();
                     break;
-                case StateManager.State.PickingUp:
+                case State.PickingUp:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     break;
-                case StateManager.State.Holding:
+                case State.Holding:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     GetRightSidebuttons(); // We'll see if we need to block B later.
                     break;
-                case StateManager.State.DroppingOff:
+                case State.DroppingOff:
                     GetJoystickAxes();
                     GetMiddleButtons();
                     break;
-                case StateManager.State.Dialog:
+                case State.Dialog:
                     GetButtonDown("A", A);
                     break;
-                case StateManager.State.Inert:
+                case State.Inert:
+                    break;
+                case State.Debug:
                     break;
                 default:
                     Debug.Log("Input manager trying to get input in unknown State.");
@@ -95,24 +97,24 @@ public class InputManager : MonoBehaviour
     {
         switch (args.state)
         {
-            case StateManager.State.Normal:
+            case State.Normal:
                 AllowInput();
                 break;
-            case StateManager.State.Dialog:
+            case State.Dialog:
                 AllowInput();
                 ZeroAxes();
                 break;
-            case StateManager.State.PickingUp:
+            case State.PickingUp:
                 AllowInput();
                 break;
-            case StateManager.State.Holding:
+            case State.Holding:
                 AllowInput();
                 break;
-            case StateManager.State.DroppingOff:
+            case State.DroppingOff:
                 BlockInput();
                 ZeroAxes();
                 break;
-            case StateManager.State.Inert:
+            case State.Inert:
                 BlockInput();
                 ZeroAxes();
                 break;

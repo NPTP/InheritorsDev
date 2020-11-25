@@ -53,7 +53,7 @@ public class Day0 : MonoBehaviour
             dialogManager.EndDialog();
             uiManager.controls.Hide();
             triggers["Walk_Firepit"].Enable();
-            stateManager.SetState(StateManager.State.Normal);
+            stateManager.SetState(State.Normal);
             cameraManager.ResetZoom();
             InitializeTasks();
         }
@@ -66,7 +66,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator Intro()
     {
-        stateManager.SetState(StateManager.State.Inert);
+        stateManager.SetState(State.Inert);
         cameraManager.SendCamTo(firepitTransform);
         cameraManager.Zoom(0.375f, 0f);
 
@@ -80,7 +80,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(4f);
 
         /* 02. Kick off the intro narration dialog. */
-        dialogManager.NewDialog(opening, StateManager.State.Inert);
+        dialogManager.NewDialog(opening, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         /* 03. Fade away the blackness. */
@@ -99,7 +99,7 @@ public class Day0 : MonoBehaviour
 
         /* 06. Let player control. When they move the joystick, fade out prompts. 
         ** Enable the firepite walk trigger. */
-        stateManager.SetState(StateManager.State.Normal);
+        stateManager.SetState(State.Normal);
         yield return new WaitUntil(inputManager.IsLeftJoystickMoving);
         uiManager.controls.Hide();
         triggers["Walk_Firepit"].Enable();
@@ -189,7 +189,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator AllWoodCollected()
     {
-        dialogManager.NewDialog(wood3, StateManager.State.Inert);
+        dialogManager.NewDialog(wood3, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.CompleteActiveTask(); // CompleteTask("Branches");
@@ -197,7 +197,7 @@ public class Day0 : MonoBehaviour
 
         triggers["Dropoff_Wood"].Enable();
 
-        stateManager.SetState(StateManager.State.Normal);
+        stateManager.SetState(State.Normal);
     }
 
     void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
@@ -266,7 +266,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator Firepit()
     {
-        dialogManager.NewDialog(firepit, StateManager.State.Inert);
+        dialogManager.NewDialog(firepit, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(firewoodTransform);
@@ -286,28 +286,28 @@ public class Day0 : MonoBehaviour
         // yield return new WaitForSeconds(0.5f);
         yield return new WaitWhile(cameraManager.IsSwitching);
 
-        stateManager.SetState(StateManager.State.Normal);
+        stateManager.SetState(State.Normal);
     }
 
     IEnumerator DropoffWood()
     {
-        stateManager.SetState(StateManager.State.Inert);
+        stateManager.SetState(State.Inert);
         yield return new WaitForSeconds(1f);
 
-        dialogManager.NewDialog(maloca, StateManager.State.Inert);
+        dialogManager.NewDialog(maloca, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         yield return new WaitForSeconds(.25f);
         taskManager.SetActiveTask("Maloca");
         triggers["Walk_End"].Enable();
 
-        stateManager.SetState(StateManager.State.Normal);
+        stateManager.SetState(State.Normal);
     }
 
     IEnumerator End()
     {
 
-        stateManager.SetState(StateManager.State.Inert);
+        stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
         audioManager.FadeTo(0f, 2f, Ease.InOutQuad);

@@ -76,29 +76,29 @@ public class DialogManager : MonoBehaviour
     }
 
     // Start a new dialog and switch into specified state after dialog finishes
-    public void NewDialog(Dialog dialog, StateManager.State finishState = StateManager.State.Normal)
+    public void NewDialog(Dialog dialog, State finishState = State.Normal)
     {
         dialogFinished = false;
-        stateManager.SetState(StateManager.State.Dialog);
+        stateManager.SetState(State.Dialog);
         StartCoroutine(DialogPlay(dialog, finishState));
     }
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        if (stateManager.GetState() == StateManager.State.Dialog && args.buttonCode == InputManager.A)
+        if (stateManager.GetState() == State.Dialog && args.buttonCode == InputManager.A)
             dialogNext = true;
     }
 
     public void EndDialog()
     {
-        if (stateManager.GetState() == StateManager.State.Dialog && !dialogFinished)
+        if (stateManager.GetState() == State.Dialog && !dialogFinished)
         {
             uiManager.dialogBox.TearDown();
             dialogFinished = true;
         }
     }
 
-    IEnumerator DialogPlay(Dialog dialog, StateManager.State finishState)
+    IEnumerator DialogPlay(Dialog dialog, State finishState)
     {
         string name = dialog.name;
         string[] lines = dialog.lines;
@@ -184,6 +184,6 @@ public class DialogManager : MonoBehaviour
 //     // STEP 3 : Finish, deconstruct, and send dialog box back down
 //     TweenBox("Down", 1f);
 //     canvasGroup.DOFade(0f, 0.8f);
-//     stateManager.SetState(StateManager.State.Normal);
+//     stateManager.SetState(State.Normal);
 //     OnDialogFinish?.Invoke(this, EventArgs.Empty);
 // }

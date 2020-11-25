@@ -162,7 +162,7 @@ public class InteractManager : MonoBehaviour
             "pickupTrigger: " + pickupTrigger);
             return;
         }
-        stateManager.SetState(StateManager.State.PickingUp);
+        stateManager.SetState(State.PickingUp);
         PickupTrigger currentPickup = pickupTrigger;
         currentPickup.GetPickedUp();
         uiManager.ExitRange(currentPickup.transform, "Pickup"); // pickupPrompt.Hide();
@@ -187,7 +187,7 @@ public class InteractManager : MonoBehaviour
             yield return null;
         }
         currentPickup.transform.position = GetItemHoldPosition();
-        stateManager.SetState(StateManager.State.Holding);
+        stateManager.SetState(State.Holding);
 
         // Hand it off here to the PickupManager, updates the inventory.
         pickupManager.PickUp(currentPickup);
@@ -241,7 +241,7 @@ public class InteractManager : MonoBehaviour
     {
         if (pickupManager.IsHoldingItem())
         {
-            stateManager.SetState(StateManager.State.DroppingOff);
+            stateManager.SetState(State.DroppingOff);
             uiManager.pickupPrompt.Hide();
             dropoffTrigger.CompleteDropoff();
             dropoffInRange = false;
@@ -270,7 +270,7 @@ public class InteractManager : MonoBehaviour
         var dropoffTarget = thisDropoff.targetTransform.gameObject.GetComponent<DropoffTarget>();
         if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
         heldItem.Remove();
-        stateManager.SetState(StateManager.State.Normal);
+        stateManager.SetState(State.Normal);
 
         OnDropoff?.Invoke(this, new DropoffArgs { tag = thisDropoff.GetTag() });
 
@@ -304,7 +304,7 @@ public class InteractManager : MonoBehaviour
 
     void StartDialog()
     {
-        stateManager.SetState(StateManager.State.Dialog);
+        stateManager.SetState(State.Dialog);
         dialogTrigger.Disable();
         dialogInRange = false;
         uiManager.dialogPrompt.Hide();
