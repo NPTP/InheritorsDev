@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float m_currentV = 0;
     private float m_currentH = 0;
+    public Vector3 direction;
 
     private readonly float m_interpolation = 10;
     private readonly float m_walkScale = 0.33f;
@@ -52,8 +53,9 @@ public class PlayerMovement : MonoBehaviour
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
         inputManager = GameObject.FindObjectOfType<InputManager>();
         stateManager = GameObject.FindObjectOfType<StateManager>();
-
         stateManager.OnState += HandleState;
+
+        direction = Vector3.zero;
     }
 
     void OnDestroy()
@@ -65,22 +67,22 @@ public class PlayerMovement : MonoBehaviour
     {
         switch (args.state)
         {
-            case StateManager.State.Normal:
+            case State.Normal:
                 break;
 
-            case StateManager.State.Dialog:
+            case State.Dialog:
                 break;
 
-            case StateManager.State.PickingUp:
+            case State.PickingUp:
 
                 break;
-            case StateManager.State.Holding:
+            case State.Holding:
 
                 break;
-            case StateManager.State.DroppingOff:
+            case State.DroppingOff:
 
                 break;
-            case StateManager.State.Inert:
+            case State.Inert:
 
                 break;
             default:
@@ -217,7 +219,8 @@ public class PlayerMovement : MonoBehaviour
         m_currentV = Mathf.Lerp(m_currentV, v, Time.deltaTime * m_interpolation);
         m_currentH = Mathf.Lerp(m_currentH, h, Time.deltaTime * m_interpolation);
 
-        Vector3 direction = camera.forward * m_currentV + camera.right * m_currentH;
+        // Vector3 direction = camera.forward * m_currentV + camera.right * m_currentH;
+        direction = camera.forward * m_currentV + camera.right * m_currentH;
 
         float directionLength = direction.magnitude;
         direction.y = 0;
@@ -226,7 +229,7 @@ public class PlayerMovement : MonoBehaviour
         if (direction != Vector3.zero)
         {
             // Ensure we're in a good state to change rotation & position.
-            if (stateManager.state != StateManager.State.Dialog || stateManager.state != StateManager.State.Inert)
+            if (stateManager.GetState() != State.Dialog || stateManager.GetState() != State.Inert)
             {
                 m_currentDirection = Vector3.Slerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
                 transform.rotation = Quaternion.LookRotation(m_currentDirection);
@@ -236,7 +239,18 @@ public class PlayerMovement : MonoBehaviour
             m_animator.SetFloat("MoveSpeed", direction.magnitude);
         }
 
+
+
         // JumpingAndLanding();
+    }
+
+    public Sample GetSample()
+    {
+        Sample sample = new Sample();
+        sample.direction = direction;
+        sample.position = transform.position;
+        sample.rotation = transform.rotation;
+        return sample;
     }
 
     private void JumpingAndLanding()
