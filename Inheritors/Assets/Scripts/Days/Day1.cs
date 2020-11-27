@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* INHERITORS by Nick Perrin (c) 2020 */
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ public class Day1 : MonoBehaviour
 
     void Awake()
     {
+        PlayerPrefs.SetInt("currentDayNumber", dayNumber);
         if (!enableDayScripts)
             Destroy(this);
         else
@@ -100,7 +102,7 @@ public class Day1 : MonoBehaviour
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
-        audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        audioManager.FadeOtherSources("down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
 
         saveManager.SaveGame(dayNumber + 1);

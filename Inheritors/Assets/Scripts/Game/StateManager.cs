@@ -38,7 +38,7 @@ public class StateManager : MonoBehaviour
     public void SetState(State newState)
     {
         this.state = newState;
-        Debug.Log(">>>>>>>>>> STATE SET TO: " + this.state);
+        // Debug.Log(">>>>>>>>>> STATE SET TO: " + this.state);
         OnState?.Invoke(this, new StateArgs { state = newState });
     }
 

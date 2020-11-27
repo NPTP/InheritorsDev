@@ -3,29 +3,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private enum ControlMode
-    {
-        /// <summary>
-        /// Up moves the character forward, left and right turn the character gradually and down moves the character backwards
-        /// </summary>
-        Tank,
-        /// <summary>
-        /// Character freely moves in the chosen direction from the perspective of the camera
-        /// </summary>
-        Direct
-    }
-
     StateManager stateManager;
     InputManager inputManager;
 
-    [SerializeField] private float m_moveSpeed = 5;
+    [SerializeField] private float m_moveSpeed = 6;
     [SerializeField] private float m_turnSpeed = 200;
     [SerializeField] private float m_jumpForce = 4;
 
     [SerializeField] private Animator m_animator = null;
     [SerializeField] private Rigidbody m_rigidBody = null;
-
-    [SerializeField] private ControlMode m_controlMode = ControlMode.Direct;
 
     private float m_currentV = 0;
     private float m_currentH = 0;
@@ -53,43 +39,70 @@ public class PlayerMovement : MonoBehaviour
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
         inputManager = GameObject.FindObjectOfType<InputManager>();
         stateManager = GameObject.FindObjectOfType<StateManager>();
-        stateManager.OnState += HandleState;
 
         direction = Vector3.zero;
     }
 
-    void OnDestroy()
+    public Sample GetSample()
     {
-        stateManager.OnState -= HandleState;
+        Sample sample = new Sample();
+        sample.isGrounded = m_isGrounded;
+        sample.direction = direction;
+        sample.position = transform.position;
+        sample.rotation = transform.rotation;
+        return sample;
     }
 
-    private void HandleState(object sender, StateManager.StateArgs args)
+    private void FixedUpdate()
     {
-        switch (args.state)
+        m_animator.SetBool("Grounded", m_isGrounded);
+
+        DirectUpdate();
+
+        m_wasGrounded = m_isGrounded;
+        m_jumpInput = false;
+    }
+
+    private void DirectUpdate()
+    {
+        float v = inputManager.leftStickVertical;
+        float h = inputManager.leftStickHorizontal;
+
+        Transform camera = Camera.main.transform;
+
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            case State.Normal:
-                break;
-
-            case State.Dialog:
-                break;
-
-            case State.PickingUp:
-
-                break;
-            case State.Holding:
-
-                break;
-            case State.DroppingOff:
-
-                break;
-            case State.Inert:
-
-                break;
-            default:
-                Debug.Log("Player movement tried to handle unknown State event.");
-                break;
+            v *= m_walkScale;
+            h *= m_walkScale;
         }
+
+        m_currentV = Mathf.Lerp(m_currentV, v, Time.deltaTime * m_interpolation);
+        m_currentH = Mathf.Lerp(m_currentH, h, Time.deltaTime * m_interpolation);
+
+        // Vector3 direction = camera.forward * m_currentV + camera.right * m_currentH;
+        direction = camera.forward * m_currentV + camera.right * m_currentH;
+
+        float directionLength = direction.magnitude;
+        direction.y = 0;
+        direction = direction.normalized * directionLength;
+
+        if (direction != Vector3.zero)
+        {
+            // Ensure we're in a good state to change rotation & position.
+            if (stateManager.GetState() != State.Dialog || stateManager.GetState() != State.Inert)
+            {
+                m_currentDirection = Vector3.Slerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
+                transform.rotation = Quaternion.LookRotation(m_currentDirection);
+                transform.position += m_currentDirection * m_moveSpeed * Time.deltaTime;
+            }
+
+            m_animator.SetFloat("MoveSpeed", direction.magnitude);
+        }
+
+        // JumpingAndLanding();
     }
+
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -146,113 +159,7 @@ public class PlayerMovement : MonoBehaviour
         if (m_collisions.Count == 0) { m_isGrounded = false; }
     }
 
-    // private void Update()
-    // {
-    //     if (!m_jumpInput && Input.GetKey(KeyCode.Space))
-    //         m_jumpInput = true;
-    // }
-
-    private void FixedUpdate()
-    {
-        m_animator.SetBool("Grounded", m_isGrounded);
-
-        switch (m_controlMode)
-        {
-            case ControlMode.Direct:
-                DirectUpdate();
-                break;
-
-            case ControlMode.Tank:
-                TankUpdate();
-                break;
-
-            default:
-                Debug.LogError("Unsupported state");
-                break;
-        }
-
-        m_wasGrounded = m_isGrounded;
-        m_jumpInput = false;
-    }
-
-    private void TankUpdate()
-    {
-        float v = inputManager.leftStickVertical;
-        float h = inputManager.leftStickHorizontal;
-
-        bool walk = Input.GetKey(KeyCode.LeftShift);
-
-        if (v < 0)
-        {
-            if (walk) { v *= m_backwardsWalkScale; }
-            else { v *= m_backwardRunScale; }
-        }
-        else if (walk)
-        {
-            v *= m_walkScale;
-        }
-
-        m_currentV = Mathf.Lerp(m_currentV, v, Time.deltaTime * m_interpolation);
-        m_currentH = Mathf.Lerp(m_currentH, h, Time.deltaTime * m_interpolation);
-
-        transform.position += transform.forward * m_currentV * m_moveSpeed * Time.deltaTime;
-        transform.Rotate(0, m_currentH * m_turnSpeed * Time.deltaTime, 0);
-
-        m_animator.SetFloat("MoveSpeed", m_currentV);
-
-        // JumpingAndLanding();
-    }
-
-    private void DirectUpdate()
-    {
-        float v = inputManager.leftStickVertical;
-        float h = inputManager.leftStickHorizontal;
-
-        Transform camera = Camera.main.transform;
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            v *= m_walkScale;
-            h *= m_walkScale;
-        }
-
-        m_currentV = Mathf.Lerp(m_currentV, v, Time.deltaTime * m_interpolation);
-        m_currentH = Mathf.Lerp(m_currentH, h, Time.deltaTime * m_interpolation);
-
-        // Vector3 direction = camera.forward * m_currentV + camera.right * m_currentH;
-        direction = camera.forward * m_currentV + camera.right * m_currentH;
-
-        float directionLength = direction.magnitude;
-        direction.y = 0;
-        direction = direction.normalized * directionLength;
-
-        if (direction != Vector3.zero)
-        {
-            // Ensure we're in a good state to change rotation & position.
-            if (stateManager.GetState() != State.Dialog || stateManager.GetState() != State.Inert)
-            {
-                m_currentDirection = Vector3.Slerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
-                transform.rotation = Quaternion.LookRotation(m_currentDirection);
-                transform.position += m_currentDirection * m_moveSpeed * Time.deltaTime;
-            }
-
-            m_animator.SetFloat("MoveSpeed", direction.magnitude);
-        }
-
-
-
-        // JumpingAndLanding();
-    }
-
-    public Sample GetSample()
-    {
-        Sample sample = new Sample();
-        sample.direction = direction;
-        sample.position = transform.position;
-        sample.rotation = transform.rotation;
-        return sample;
-    }
-
+    /*
     private void JumpingAndLanding()
     {
         bool jumpCooldownOver = (Time.time - m_jumpTimeStamp) >= m_minJumpInterval;
@@ -273,4 +180,6 @@ public class PlayerMovement : MonoBehaviour
             m_animator.SetTrigger("Jump");
         }
     }
+    */
+
 }

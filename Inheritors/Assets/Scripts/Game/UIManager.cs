@@ -152,6 +152,14 @@ public class UIManager : MonoBehaviour
     // ███ ENTER/EXIT RANGE
     // ████████████████████████████████████████████████████████████████████████
 
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.P))
+    //     {
+    //         pickupPrompt.text.enabled = !pickupPrompt.text.enabled;
+    //     }
+    // }
+
     public void EnterRange(Transform target, string triggerType, string prompText = "TEXT NOT PASSED")
     {
         UI_Prompt p;
@@ -160,12 +168,13 @@ public class UIManager : MonoBehaviour
             p = pickupPrompt;
             p.image.enabled = true;
             p.image.sprite = uiResources.A_Button_Inworld;
+            p.text.enabled = false;
         }
         else if (triggerType == "Dropoff")
         {
             p = pickupPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.A_Button; // X_Button;
+            p.image.sprite = uiResources.A_Button_Inworld;
             p.text.enabled = true;
             p.text.text = prompText;
         }
@@ -174,6 +183,7 @@ public class UIManager : MonoBehaviour
             p = dialogPrompt;
             p.image.enabled = true;
             p.image.sprite = uiResources.Y_Button_Inworld;
+            p.text.enabled = false;
         }
 
         StartCoroutine(AlignPromptInRange(target, p, triggerType));
@@ -183,10 +193,10 @@ public class UIManager : MonoBehaviour
     {
         // TODO: use a canvas group to fade the prompt in/out instead of worrying about img/text separately...
         // Just leave text blank if you don't need it.
-        if (p.imageTween != null) p.imageTween.Kill();
-        p.imageTween = p.Appear(promptFadeTime); // p.image.DOFade(1f, promptFadeTime).From(0f);
-        if (p.textTween != null) p.textTween.Kill();
-        if (p.text.enabled) p.textTween = p.text.DOFade(1f, promptFadeTime).From(0f);
+        if (p.imageTween != null) { p.imageTween.Kill(); }
+        p.imageTween = p.ImageAppear(promptFadeTime);
+        if (p.textTween != null) { p.textTween.Kill(); }
+        if (p.text.enabled) { p.textTween = p.text.DOFade(1f, promptFadeTime).From(0f); }
 
         Func<bool> TargetInRange = GetInRangeFunction(triggerType);
         bool firstFrameAligned = false;
@@ -194,7 +204,7 @@ public class UIManager : MonoBehaviour
         {
             // Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
-            if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
+            // if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
             if (!firstFrameAligned) p.rectTransform.position = pos;
             firstFrameAligned = true;
             p.rectTransform.position = Vector3.Lerp(p.rectTransform.position, pos, 45 * Time.deltaTime);

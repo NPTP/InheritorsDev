@@ -101,7 +101,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public void GetDroppedOff()
     {
-        Debug.Log("Item placed in drop trigger!");
         droppedOff = true;
         Tween t = itemTransform.DOScale(0f, .5f).SetEase(Ease.InQuart);
     }

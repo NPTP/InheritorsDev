@@ -78,8 +78,6 @@ public class InputManager : MonoBehaviour
                     break;
                 case State.Inert:
                     break;
-                case State.Debug:
-                    break;
                 default:
                     Debug.Log("Input manager trying to get input in unknown State.");
                     break;

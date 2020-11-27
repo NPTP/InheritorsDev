@@ -85,7 +85,6 @@ public class PlayerMovementOld : MonoBehaviour
 
     // void CreatePlaybackGhost()
     // {
-    //     Debug.Log("CreatePlaybackGhost called.");
     //     GameObject newGhost = Instantiate(playerGhost, initialPosition, initialRotation);
     //     newGhost.GetComponent<GhostMovement>().PassRecord(moveVectors, headings);
     // }

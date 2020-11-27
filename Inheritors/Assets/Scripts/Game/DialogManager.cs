@@ -125,7 +125,7 @@ public class DialogManager : MonoBehaviour
             {
                 uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
                 // yield return null;
-                // yield return new WaitForSecondsRealtime(speed);
+                yield return new WaitForSecondsRealtime(0.001f);
                 if (skippable && dialogNext)
                 {
                     uiManager.dialogBox.tmpText.maxVisibleCharacters = lines[line].Length;

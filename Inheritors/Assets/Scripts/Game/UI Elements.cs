@@ -176,21 +176,15 @@ public class UI_Prompt
     public Tween textTween;
     public Vector3 ogLocalScale;
 
-    public void Show()
-    {
-        image.enabled = true;
-        text.enabled = true;
-    }
-
     public void Hide()
     {
         image.enabled = false;
         text.enabled = false;
     }
 
-    public Tween Appear(float time)
+    public Tween ImageAppear(float time)
     {
-        Show();
+        image.enabled = true;
         image.color = Helper.ChangedAlpha(image.color, 1);
         return rectTransform.DOScaleY(ogLocalScale.y, time).SetEase(Ease.OutBounce);
     }

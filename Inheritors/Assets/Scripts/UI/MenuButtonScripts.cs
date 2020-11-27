@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class MenuButtonScripts : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class MenuButtonScripts : MonoBehaviour
     void Start()
     {
         Cursor.visible = true;
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+        camera.transform.DOMoveY(camera.transform.position.y, 8f).From(0.8f).SetEase(Ease.OutQuad);
 
         // Resets player prefs in a build only.
         if (!Application.isEditor && !PlayerPrefs.HasKey("playedBefore"))
@@ -29,9 +32,8 @@ public class MenuButtonScripts : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // PlayerPrefs.DeleteAll();
         PlayerPrefs.DeleteKey("continuing");
-        SetUpResumeButton();
+        SetUpContinueButton();
     }
 
     public void BeginGame()
@@ -57,7 +59,7 @@ public class MenuButtonScripts : MonoBehaviour
 #endif
     }
 
-    void SetUpResumeButton()
+    void SetUpContinueButton()
     {
         if (PlayerPrefs.HasKey("saveExists"))
         {

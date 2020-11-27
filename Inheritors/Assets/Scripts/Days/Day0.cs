@@ -26,8 +26,15 @@ public class Day0 : MonoBehaviour
     /* -------------------------------------- */
     /* -------------------------------------- */
 
+    void OnEnable()
+    {
+        print("set playerprefs in day");
+        PlayerPrefs.SetInt("currentDayNumber", dayNumber);
+    }
+
     void Awake()
     {
+
         if (!enableDayScripts)
             Destroy(this);
         InitializeReferences();
@@ -70,13 +77,9 @@ public class Day0 : MonoBehaviour
         cameraManager.SendCamTo(firepitTransform);
         cameraManager.Zoom(0.375f, 0f);
 
-        /* 01. Darken screen, fade in sound. */
+        /* 01. Darken screen, wait. */
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
-        audioManager.SetVolume(0f);
-        yield return new WaitForSeconds(2f);
-        audioManager.Play(true);
-        audioManager.FadeTo(0.5f, 5f, Ease.InOutCubic);
         yield return new WaitForSeconds(4f);
 
         /* 02. Kick off the intro narration dialog. */
@@ -116,6 +119,7 @@ public class Day0 : MonoBehaviour
     UIManager uiManager;
     InteractManager interactManager;
     PickupManager pickupManager;
+    RecordManager recordManager;
     void InitializeReferences()
     {
         saveManager = FindObjectOfType<SaveManager>();
@@ -130,6 +134,7 @@ public class Day0 : MonoBehaviour
         interactManager = FindObjectOfType<InteractManager>();
         interactManager = FindObjectOfType<InteractManager>();
         pickupManager = FindObjectOfType<PickupManager>();
+        recordManager = FindObjectOfType<RecordManager>();
     }
 
     void InitializeTriggers()
@@ -165,6 +170,7 @@ public class Day0 : MonoBehaviour
             case PickupManager.ItemTypes.WOOD:
                 if (inventory.itemQuantity == 1)
                 {
+                    recordManager.StartNewRecording();
                     dialogManager.NewDialog(wood1);
                 }
                 else if (inventory.itemQuantity == 2)
@@ -291,6 +297,8 @@ public class Day0 : MonoBehaviour
 
     IEnumerator DropoffWood()
     {
+        recordManager.StopRecording();
+
         stateManager.SetState(State.Inert);
         yield return new WaitForSeconds(1f);
 
@@ -310,7 +318,7 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
-        audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return new WaitWhile(() => t != null & t.IsPlaying());
 
         saveManager.SaveGame(dayNumber + 1);
