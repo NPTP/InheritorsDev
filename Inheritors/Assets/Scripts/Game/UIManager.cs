@@ -205,8 +205,11 @@ public class UIManager : MonoBehaviour
             // Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));
             // if (triggerType == "Dropoff") pos.y += 50; // Account for "DROP" text
-            if (!firstFrameAligned) p.rectTransform.position = pos;
-            firstFrameAligned = true;
+            if (!firstFrameAligned)
+            {
+                p.rectTransform.position = pos;
+                firstFrameAligned = true;
+            }
             p.rectTransform.position = Vector3.Lerp(p.rectTransform.position, pos, 45 * Time.deltaTime);
             yield return new WaitForFixedUpdate();
         }

@@ -98,7 +98,7 @@ Material:
     - _RefractionAmount: 0.0247
     - _RimDistance: 1.91
     - _RimDistortion: 0.139
-    - _RimSize: 4.6
+    - _RimSize: 0.8
     - _Rimfalloff: 2.7
     - _Rimtiling: 0.5
     - _SECONDARY_WAVES: 1
@@ -126,7 +126,7 @@ Material:
     - __dirty: 0
     m_Colors:
     - _FresnelColor: {r: 0.5, g: 0.8551724, b: 1, a: 0.666}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0.453}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 0.45490196}
     - _WaterColor: {r: 0.029411765, g: 0.0627451, b: 0.27254903, a: 1}
     - _WaterShallowColor: {r: 0.4190787, g: 1, b: 0.8798174, a: 1}
     - _WaveDirection: {r: 1, g: 0, b: 0, a: 0}
