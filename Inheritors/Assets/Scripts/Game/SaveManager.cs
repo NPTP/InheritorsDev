@@ -46,13 +46,11 @@ public class SaveManager : MonoBehaviour
             PlayerPrefs.Save();
             LoadGame("All");
             recordManager.Begin();
-            print("had the pref 1");
         }
         else if (PlayerPrefs.GetInt("currentDayNumber", -1) > 0)
         {
             LoadGame("Recordings");
             recordManager.Begin();
-            print("had the pref 2");
         }
         else
         {
