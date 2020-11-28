@@ -74,12 +74,12 @@ public class Day0 : MonoBehaviour
     IEnumerator Intro()
     {
         stateManager.SetState(State.Inert);
-        cameraManager.SendCamTo(firepitTransform);
-        cameraManager.Zoom(0.375f, 0f);
+        cameraManager.SwitchToCam("IntroCam");
 
         /* 01. Darken screen, wait. */
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
+        transitionManager.Hide(8f);
         yield return new WaitForSeconds(4f);
 
         /* 02. Kick off the intro narration dialog. */
@@ -87,8 +87,9 @@ public class Day0 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         /* 03. Fade away the blackness. */
-        yield return new WaitForSeconds(2f);
-        transitionManager.Hide(8f);
+        yield return new WaitForSeconds(1f);
+        cameraManager.SendCamTo(firepitTransform);
+        cameraManager.Zoom(0.375f, 0f);
         yield return new WaitForSeconds(4f);
 
         /* 04. Change view from fire to player. */

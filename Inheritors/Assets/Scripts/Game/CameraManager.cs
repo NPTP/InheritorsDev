@@ -66,12 +66,18 @@ public class CameraManager : MonoBehaviour
 
     void SetAllCamsZeroPriority()
     {
+        presentCam.Priority = 0; // In case this is a bespoke cam
         cmPlayerCam.Priority = 0;
         cmQuadrantCam.Priority = 0;
         cmOtherCam1.Priority = 0;
         cmOtherCam2.Priority = 0;
     }
 
+    /// <summary>
+    /// Switches to the prefab virtual camera that goes by camName, or,
+    /// if camName is the name of a gameObject containing a virtual camera
+    /// that is not in the prefabs, switch to that.
+    /// </summary>
     public void SwitchToCam(string camName)
     {
         lastCam = presentCam;
@@ -186,8 +192,17 @@ public class CameraManager : MonoBehaviour
                 return cmQuadrantCam;
 
             default:
-                print("Unknown camera name given to camera manager. Returning player cam.");
-                return cmPlayerCam;
+                CinemachineVirtualCamera bespokeVCam = GameObject.Find(camName).GetComponent<CinemachineVirtualCamera>();
+                if (bespokeVCam != null)
+                {
+                    cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
+                    return bespokeVCam;
+                }
+                else
+                {
+                    print("Unknown camera name given to camera manager. Returning player cam.");
+                    return cmPlayerCam;
+                }
         }
     }
 
