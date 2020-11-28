@@ -63,7 +63,7 @@ public class Day1 : MonoBehaviour
         // Fade in from a white screen.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
-        transitionManager.SetColor(Color.white);
+        transitionManager.SetColor(Color.green);
         transitionManager.Hide(1f);
         yield return new WaitForSeconds(1f);
 
@@ -103,7 +103,7 @@ public class Day1 : MonoBehaviour
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
         audioManager.FadeOtherSources("down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
-        yield return new WaitWhile(() => t != null & t.IsPlaying());
+        yield return t.WaitForCompletion();
 
         saveManager.SaveGame(dayNumber + 1);
         Helper.LoadScene("MainMenu");

@@ -51,7 +51,7 @@ public class TransitionManager : MonoBehaviour
     IEnumerator Out(float hideTime)
     {
         Tween t = canvasGroup.DOFade(0f, hideTime);
-        yield return new WaitWhile(() => t != null && t.IsPlaying());
+        yield return t.WaitForCompletion();
         transition.enabled = false;
         canvasGroup.enabled = false;
     }

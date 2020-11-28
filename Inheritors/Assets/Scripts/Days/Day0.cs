@@ -320,7 +320,7 @@ public class Day0 : MonoBehaviour
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
         audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
-        yield return new WaitWhile(() => t != null & t.IsPlaying());
+        yield return t.WaitForCompletion();
 
         saveManager.SaveGame(dayNumber + 1);
         Helper.LoadNextSceneInBuildOrder();

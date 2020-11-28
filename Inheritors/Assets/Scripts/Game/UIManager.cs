@@ -236,7 +236,7 @@ public class UIManager : MonoBehaviour
         if (p.text.enabled) p.textTween = p.text.DOFade(0f, promptFadeTime).From(p.text.alpha);
 
         bool firstFrameAligned = false;
-        while (p.imageTween != null & p.imageTween.IsPlaying())
+        while (p.imageTween.IsActive())
         {
             // Vector3 pos = Camera.main.WorldToScreenPoint(player.transform.position + player.transform.TransformVector(new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f)));
             Vector3 pos = Camera.main.WorldToScreenPoint(target.position + player.transform.TransformVector(playerHeight));

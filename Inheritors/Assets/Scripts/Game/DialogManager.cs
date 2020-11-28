@@ -114,7 +114,7 @@ public class DialogManager : MonoBehaviour
             cameraManager.SwitchToCam("Dialog");
         }
         Tween setup = uiManager.dialogBox.SetUp(name);
-        yield return new WaitWhile(() => setup != null && setup.IsPlaying());
+        yield return setup.WaitForCompletion();
 
         // STEP 2 : Dialog display and input to go through it.
         for (int line = 0; line < lines.Length; line++)
@@ -161,7 +161,7 @@ public class DialogManager : MonoBehaviour
 //     dialogBoxPrompt.color = Helper.ChangedAlpha(dialogBoxPrompt.color, 0);
 //     Tween t1 = TweenBox("Up", 1f);
 //     canvasGroup.DOFade(1f, 1f).From(0f);
-//     yield return new WaitWhile(() => t1.IsPlaying());
+//     yield return t1.WaitForCompletion();
 
 //     // STEP 2 : Dialog display and input to go through it.
 //     for (int line = 0; line < lines.Length; line++)

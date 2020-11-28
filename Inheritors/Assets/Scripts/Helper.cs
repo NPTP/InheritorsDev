@@ -30,4 +30,9 @@ public class Helper : ScriptableObject
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
+
+    public static void GoToLoadingScreen()
+    {
+        SceneManager.LoadScene("Loading");
+    }
 }

@@ -84,7 +84,7 @@ public class PlayerTerrainInteract : MonoBehaviour
                 if (!walkedToday[z, x] && alphaMap[i, j, trailLayer] < 1)
                 {
                     walkedToday[z, x] = true;
-                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.25f;
+                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.1f;
                 }
             }
         }

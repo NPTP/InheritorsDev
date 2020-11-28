@@ -47,7 +47,7 @@ public class TriggerProjector : MonoBehaviour
             0f,
             0.25f
         ).From(projector.orthographicSize);
-        yield return new WaitWhile(() => t != null && t.IsPlaying());
+        yield return t.WaitForCompletion();
         projector.enabled = false;
         projectorEnabled = false;
     }

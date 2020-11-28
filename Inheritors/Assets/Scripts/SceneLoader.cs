@@ -95,7 +95,7 @@ public class SceneLoader : MonoBehaviour
                     pair.Item1.DOFade(0f, outFadeDuration).SetEase(Ease.InOutCubic);
                 }
             }
-            yield return new WaitWhile(() => t != null && t.IsPlaying());
+            yield return t.WaitForCompletion();
         }
         print("name: " + name);
         if (name == "")
