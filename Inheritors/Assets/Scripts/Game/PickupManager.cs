@@ -1,26 +1,29 @@
 ﻿/* INHERITORS by Nick Perrin (c) 2020 */
 using System;
 using UnityEngine;
+using DG.Tweening;
+
+public enum ItemType
+{
+    Null,
+    Wood,
+    Jug
+}
 
 public class PickupManager : MonoBehaviour
 {
+    GameObject player;
     InteractManager interactManager;
     UIManager uiManager;
-
-    public enum ItemTypes
-    {
-        NULL,
-        WOOD,
-        JUG
-    }
 
     Inventory inventory = new Inventory();
     public class Inventory
     {
         public PickupTrigger heldItem = null;
         public bool holdingItem = false;
-        public ItemTypes itemType = ItemTypes.NULL;
+        public ItemType itemType = ItemType.Null;
         public int itemQuantity = 0;
+        public bool haveReadyItem = false;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -46,10 +49,32 @@ public class PickupManager : MonoBehaviour
         inventory.heldItem.GetDroppedOff();
         inventory.heldItem = null;
         inventory.holdingItem = false;
-        inventory.itemType = ItemTypes.NULL;
+        inventory.itemType = ItemType.Null;
         inventory.itemQuantity = 0;
         uiManager.UpdateInventory(inventory);
     }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ AUTO-GET
+    // ████████████████████████████████████████████████████████████████████████
+
+    public void AutoGetItem(string resourceName = "INVALID")
+    {
+        inventory.haveReadyItem = true;
+        GameObject item = GameObject.Instantiate(
+            Resources.Load<GameObject>(resourceName),
+            GetItemHoldPosition(),
+            player.transform.rotation,
+            player.transform
+        );
+        item.transform.DOScale(1f, 0.25f).From(0f);
+    }
+
+    Vector3 GetItemHoldPosition()
+    {
+        return player.transform.position + (.5f * player.transform.up) + (.5f * player.transform.forward);
+    }
+
 
     // ████████████████████████████████████████████████████████████████████████
     // ███ GETTERS & SETTERS
@@ -70,7 +95,7 @@ public class PickupManager : MonoBehaviour
         return inventory.heldItem;
     }
 
-    public PickupManager.ItemTypes GetHeldItemType()
+    public ItemType GetHeldItemType()
     {
         return inventory.itemType;
     }
@@ -91,6 +116,7 @@ public class PickupManager : MonoBehaviour
 
     void InitializeReferences()
     {
+        player = GameObject.FindWithTag("Player");
         interactManager = FindObjectOfType<InteractManager>();
         uiManager = FindObjectOfType<UIManager>();
     }

@@ -10,7 +10,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public bool triggerEnabled = true;
     public string triggerTag;
-    public PickupManager.ItemTypes itemType;
+    public ItemType itemType;
 
     Transform originalParent;
     Collider triggerCollider;

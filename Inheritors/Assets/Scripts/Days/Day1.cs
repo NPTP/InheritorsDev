@@ -69,32 +69,35 @@ public class Day1 : MonoBehaviour
 
         stateManager.SetState(State.Normal);
 
-        // Zoom up and queue the opening dialog, leave inert after dialog.
-        dialogManager.NewDialog(day1Opening, State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        uiManager.SetUpTasksInventory();
-        yield return new WaitForSeconds(.5f);
+        // // Zoom up and queue the opening dialog, leave inert after dialog.
+        // dialogManager.NewDialog(day1Opening, State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // uiManager.SetUpTasksInventory();
+        // yield return new WaitForSeconds(.5f);
 
-        // Give us context for watering hole task.
-        cameraManager.SendCamTo(wateringHoleTransform);
-        yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
-        yield return new WaitForSeconds(1f);
+        // // Give us context for watering hole task.
+        // cameraManager.SendCamTo(wateringHoleTransform);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        // taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
+        // yield return new WaitForSeconds(1f);
 
-        // Give us context for hunting task.
-        cameraManager.SendCamTo(fatherHuntingTransform);
-        yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
-        yield return new WaitForSeconds(1f);
+        // // Give us context for hunting task.
+        // cameraManager.SendCamTo(fatherHuntingTransform);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        // taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
+        // yield return new WaitForSeconds(1f);
 
-        // Return to player to debrief before letting them loose.
-        cameraManager.QuadrantCamActivate(motherQuadrantTransform);
-        yield return new WaitWhile(cameraManager.IsSwitching);
-        dialogManager.NewDialog(taskExplanation);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // // Return to player to debrief before letting them loose.
+        // cameraManager.QuadrantCamActivate(motherQuadrantTransform);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        // dialogManager.NewDialog(taskExplanation);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Player is now loose, and can repeat the task dialog with mother.
         triggers["Dialog_TaskExplanation"].Enable(); // TODO: make dialog triggers snatch their dialog early on so we don't have to specify it in here.
+
+        yield return new WaitForSeconds(3f);
+        pickupManager.AutoGetItem("Jug");
     }
 
     IEnumerator End()
@@ -116,7 +119,7 @@ public class Day1 : MonoBehaviour
             // TODO: this can probably all be one function
             areas["Firewood"].BeginTaskInArea();
             TurnOffAreas();
-            taskManager.SetActiveTask(TaskType.MotherWater); // TODO: enum the tasks since they'll be repeating and so we don't fuck up name matchings. Make day 0 & day 10 tasks unique
+            taskManager.SetActiveTask(TaskType.MotherWater);
         }
         else if (inventory.itemQuantity == 3)
         {
@@ -152,11 +155,11 @@ public class Day1 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case PickupManager.ItemTypes.WOOD:
+            case ItemType.Wood:
                 WoodPickups(inventory);
                 break;
 
-            case PickupManager.ItemTypes.NULL:
+            case ItemType.Null:
                 Debug.Log("NULL pickup event");
                 break;
 
@@ -196,7 +199,7 @@ public class Day1 : MonoBehaviour
         switch (tag)
         {
             case "Dropoff_Firewood":
-                taskManager.CompleteActiveTask(); // TODO: this doesn't work. Get it working even sans animation, at least
+                taskManager.CompleteActiveTask();
                 break;
 
             default:

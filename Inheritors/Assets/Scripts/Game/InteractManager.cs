@@ -27,7 +27,7 @@ public class InteractManager : MonoBehaviour
     PickupTrigger pickupTrigger = null;
     string pickupTag = null;
     bool pickupInRange = false;
-    PickupManager.ItemTypes itemType;
+    ItemType itemType;
     public event EventHandler<PickupArgs> OnPickup;
     public class PickupArgs : EventArgs
     {
@@ -38,7 +38,7 @@ public class InteractManager : MonoBehaviour
     DropoffTrigger dropoffTrigger = null;
     string dropoffTag = null;
     bool dropoffInRange = false;
-    PickupManager.ItemTypes dropoffItemType;
+    ItemType dropoffItemType;
     public event EventHandler<DropoffArgs> OnDropoff;
     public class DropoffArgs : EventArgs
     {
@@ -317,8 +317,10 @@ public class InteractManager : MonoBehaviour
             lookRotation.z = 0f;
 
             // TODO: get this facing-dialog-target-rotation working later (for polish).
-            player.transform.DORotate(lookRotation, .25f);
-            player.GetComponent<Rigidbody>().rotation = Quaternion.Euler(lookRotation);
+            // player.transform.DORotate(lookRotation, .25f);
+            player.GetComponent<Rigidbody>().isKinematic = true;
+            player.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(lookRotation));
+            player.GetComponent<Rigidbody>().isKinematic = false;
         }
 
         // See if anyone is subscribed to OnDialog. If not, play the trigger's stored dialog.

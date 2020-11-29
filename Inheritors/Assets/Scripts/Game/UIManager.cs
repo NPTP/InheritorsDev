@@ -191,8 +191,6 @@ public class UIManager : MonoBehaviour
 
     IEnumerator AlignPromptInRange(Transform target, UI_Prompt p, string triggerType)
     {
-        // TODO: use a canvas group to fade the prompt in/out instead of worrying about img/text separately...
-        // Just leave text blank if you don't need it.
         if (p.imageTween != null) { p.imageTween.Kill(); }
         p.imageTween = p.ImageAppear(promptFadeTime);
         if (p.textTween != null) { p.textTween.Kill(); }

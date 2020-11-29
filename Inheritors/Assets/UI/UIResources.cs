@@ -22,11 +22,11 @@ public class UIResources : ScriptableObject
     public Sprite WOOD;
     public Sprite WATER;
 
-    public Sprite GetItemIcon(PickupManager.ItemTypes type)
+    public Sprite GetItemIcon(ItemType type)
     {
         switch (type)
         {
-            case PickupManager.ItemTypes.WOOD:
+            case ItemType.Wood:
                 return WOOD;
 
             default:

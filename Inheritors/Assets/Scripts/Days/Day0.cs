@@ -166,7 +166,7 @@ public class Day0 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case PickupManager.ItemTypes.WOOD:
+            case ItemType.Wood:
                 if (inventory.itemQuantity == 1)
                 {
                     taskManager.SetActiveTask(TaskType.IntroFirewood);
@@ -182,7 +182,7 @@ public class Day0 : MonoBehaviour
                 }
                 break;
 
-            case PickupManager.ItemTypes.NULL:
+            case ItemType.Null:
                 Debug.Log("NULL pickup event");
                 break;
 
