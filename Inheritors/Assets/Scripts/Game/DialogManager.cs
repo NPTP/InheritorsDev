@@ -85,11 +85,8 @@ public class DialogManager : MonoBehaviour
 
     private void HandleInputEvent(object sender, InputManager.ButtonArgs args)
     {
-        if (stateManager.GetState() == State.Dialog)
-        {
-            if (args.buttonCode == InputManager.A)
-                dialogNext = true;
-        }
+        if (stateManager.GetState() == State.Dialog && args.buttonCode == InputManager.A)
+            dialogNext = true;
     }
 
     public void EndDialog()
@@ -123,17 +120,17 @@ public class DialogManager : MonoBehaviour
         for (int line = 0; line < lines.Length; line++)
         {
             dialogNext = false;
-            string nextLine = lines[line];
-            uiManager.dialogBox.SetLine(nextLine);
-            for (int i = 0; i <= nextLine.Length; i++)
+            uiManager.dialogBox.SetLine(lines[line]);
+            for (int i = 0; i <= lines[line].Length; i++)
             {
                 uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
+                // yield return null;
+                yield return new WaitForSecondsRealtime(0.001f);
                 if (skippable && dialogNext)
                 {
-                    uiManager.dialogBox.tmpText.maxVisibleCharacters = nextLine.Length;
+                    uiManager.dialogBox.tmpText.maxVisibleCharacters = lines[line].Length;
                     break;
                 }
-                if (i > 0 && nextLine[i - 1] != ' ') { yield return null; }
             }
             uiManager.dialogBox.ShowPrompt();
             dialogNext = false;

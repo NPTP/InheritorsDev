@@ -86,15 +86,15 @@ public class UIManager : MonoBehaviour
 
     public void UpdateTasks(TaskManager.Task activeTask, List<TaskManager.Task> taskList)
     {
-        tasksInventory.activeBarTxt.text = activeTask.text;
+        tasksInventory.activeBarTxt.text = activeTask.currentText;
         // TODO: get the strikethru working later (polish stage)
         // if (activeTask.completed)
         //     StrikethruActiveTask(0.5f);
 
         string listBuilder = "";
-        foreach (TaskManager.Task task in taskList)
+        foreach (TaskManager.Task t in taskList)
         {
-            listBuilder += task.text + "\n\n";
+            listBuilder += t.currentText; // Linebreaks are already in the task text
         }
         tasksInventory.taskListTxt.text = listBuilder;
     }

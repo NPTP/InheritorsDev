@@ -78,13 +78,13 @@ public class Day1 : MonoBehaviour
         // Give us context for watering hole task.
         cameraManager.SendCamTo(wateringHoleTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
+        taskManager.AddTask("Water", "Fetch water for mother.");
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.
         cameraManager.SendCamTo(fatherHuntingTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
+        taskManager.AddTask("Father", "Meet father to hunt.");
         yield return new WaitForSeconds(1f);
 
         // Return to player to debrief before letting them loose.
@@ -116,11 +116,10 @@ public class Day1 : MonoBehaviour
             // TODO: this can probably all be one function
             areas["Firewood"].BeginTaskInArea();
             TurnOffAreas();
-            taskManager.SetActiveTask(TaskType.MotherWater); // TODO: enum the tasks since they'll be repeating and so we don't fuck up name matchings. Make day 0 & day 10 tasks unique
+            taskManager.SetActiveTask("Firewood"); // TODO: enum the tasks since they'll be repeating and so we don't fuck up name matchings. Make day 0 & day 10 tasks unique
         }
         else if (inventory.itemQuantity == 3)
         {
-            taskManager.ChangeTask(TaskType.MotherWater, "Drop wood into fire pit.");
             triggers["Dropoff_Firewood"].Enable();
         }
     }
@@ -287,9 +286,9 @@ public class Day1 : MonoBehaviour
 
         taskExplanation.name = "Mother";
         taskExplanation.lines = new string[] {
-            "Go to a task's area to get started. You will have everything you need for that task when you get there!",
+            "Go to a task’s area to get started. You will have everything you need for that task when you get there!",
             "Once you begin a task, you must complete it before you can begin another.",
-            "Begin in any order you like.",
+            "Begin the tasks in any order you like.",
             "And if you need to take a break, don't worry. Your progress is saved at the start of each day.",
             "Talk to me again if you forget any of that. Off you go now, son!"
         };

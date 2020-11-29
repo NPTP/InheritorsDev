@@ -78,7 +78,7 @@ public class RecordManager : MonoBehaviour
         playerMovement = FindObjectOfType<PlayerMovement>();
     }
 
-    public void PlayRecordings()
+    public void Begin()
     {
         if (hasRecordings)
             StartCoroutine(Playback());
@@ -95,12 +95,9 @@ public class RecordManager : MonoBehaviour
 
     public void StartNewRecording()
     {
-        if (!recording)
-        {
-            print("Starting new recording ...");
-            sb = new SampleBuffer(maxRecLength);
-            recording = true;
-        }
+        print("Starting new recording ...");
+        sb = new SampleBuffer(maxRecLength);
+        recording = true;
     }
 
     public void StopRecording()
@@ -113,6 +110,7 @@ public class RecordManager : MonoBehaviour
             newRecordings.Add(sb);
             if (debugMode)
             {
+                print("We have " + newRecordings.Count + " newRecordings.\nLast recording is " + sb.length + " frames.");
                 StartCoroutine(Playback());
             }
         }

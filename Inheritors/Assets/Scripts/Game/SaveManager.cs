@@ -39,18 +39,18 @@ public class SaveManager : MonoBehaviour
 
     void Start()
     {
+        print("Checking playerprefs in savemanager");
         if (PlayerPrefs.HasKey("continuing"))
         {
             PlayerPrefs.DeleteKey("continuing");
             PlayerPrefs.Save();
             LoadGame("All");
-            recordManager.PlayRecordings(); // TODO: remove later
+            recordManager.Begin();
         }
         else if (PlayerPrefs.GetInt("currentDayNumber", -1) > 0)
         {
-            // LoadGame("Recordings");
-            LoadGame("All");
-            recordManager.PlayRecordings(); // TODO: remove later
+            LoadGame("Recordings");
+            recordManager.Begin();
         }
         else
         {
@@ -94,7 +94,7 @@ public class SaveManager : MonoBehaviour
 
         // PlayerPrefs bookkeeping
         PlayerPrefs.SetInt("saveExists", 1);
-        PlayerPrefs.SetInt("savedDayNumber", save.dayNumber);
+        PlayerPrefs.SetInt("savedDayNumber", dayNumber);
         PlayerPrefs.Save();
     }
 

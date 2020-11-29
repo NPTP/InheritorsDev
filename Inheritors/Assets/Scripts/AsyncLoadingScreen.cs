@@ -45,6 +45,7 @@ public class AsyncLoadingScreen : MonoBehaviour
         finishedTextCG = ft.GetComponent<CanvasGroup>();
         finishedText = ft.GetComponent<Text>();
 
+        PlayerPrefs.SetInt("currentDayNumber", 0);
         StartCoroutine(LoadingProcess());
     }
 
