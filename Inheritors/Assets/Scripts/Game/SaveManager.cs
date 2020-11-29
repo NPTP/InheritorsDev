@@ -82,7 +82,9 @@ public class SaveManager : MonoBehaviour
         save.recordings = recordManager.GetCombinedRecordings();
 
         // Terrain
-        SaveTerrain();
+        if (!Application.isEditor)
+            SaveTerrain();
+
         save.dayNumber = dayNumber + 1;
 
         // Serialization
@@ -154,6 +156,9 @@ public class SaveManager : MonoBehaviour
     {
         /* Terrain we're copying onto should have the same size, heightmap/detail/alphamap/etc resolutions,
         ** and same detail and tree layers. We're just copying the "layout" so to speak, not the parameters. */
+
+        if (Application.isEditor)
+            return;
 
         // Load height data
         todayTerrainData.SetHeights(0, 0, save.heights);
