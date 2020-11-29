@@ -34,7 +34,6 @@ public class Day0 : MonoBehaviour
 
     void Awake()
     {
-
         if (!enableDayScripts)
             Destroy(this);
         InitializeReferences();
@@ -45,7 +44,6 @@ public class Day0 : MonoBehaviour
         InitializeTriggers();
         SubscribeToEvents();
         InitializeDialogs();
-        InitializeTasks();
         StartCoroutine("Intro");
         Debug.Log("Press Backspace to kill the intro.");
     }
@@ -62,7 +60,6 @@ public class Day0 : MonoBehaviour
             triggers["Walk_Firepit"].Enable();
             stateManager.SetState(State.Normal);
             cameraManager.ResetZoom();
-            InitializeTasks();
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
@@ -80,17 +77,18 @@ public class Day0 : MonoBehaviour
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
         transitionManager.Hide(8f);
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(6f);
 
         /* 02. Kick off the intro narration dialog. */
         dialogManager.NewDialog(opening, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         /* 03. Fade away the blackness. */
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         cameraManager.SendCamTo(firepitTransform);
-        cameraManager.Zoom(0.375f, 0f);
-        yield return new WaitForSeconds(4f);
+        cameraManager.Zoom(0.375f, 1f);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+        yield return new WaitForSeconds(2f);
 
         /* 04. Change view from fire to player. */
         cameraManager.SwitchToCam("Player");
@@ -171,7 +169,7 @@ public class Day0 : MonoBehaviour
             case PickupManager.ItemTypes.WOOD:
                 if (inventory.itemQuantity == 1)
                 {
-                    recordManager.StartNewRecording();
+                    taskManager.SetActiveTask(TaskType.IntroFirewood);
                     dialogManager.NewDialog(wood1);
                 }
                 else if (inventory.itemQuantity == 2)
@@ -199,8 +197,7 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(wood3, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        taskManager.CompleteActiveTask(); // CompleteTask("Branches");
-        taskManager.SetActiveTask("WoodFire");
+        taskManager.ChangeTask(TaskType.IntroFirewood, "Drop wood on fire.");
 
         triggers["Dropoff_Wood"].Enable();
 
@@ -254,7 +251,7 @@ public class Day0 : MonoBehaviour
         switch (tag)
         {
             case "Walk_Firepit":
-                StartCoroutine(Firepit());
+                StartCoroutine(Walk_Firepit());
                 break;
 
             case "Walk_End":
@@ -271,7 +268,7 @@ public class Day0 : MonoBehaviour
         }
     }
 
-    IEnumerator Firepit()
+    IEnumerator Walk_Firepit()
     {
         dialogManager.NewDialog(firepit, State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -288,17 +285,19 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         cameraManager.SwitchToLastCam();
-        taskManager.SetActiveTask("Branches");
         uiManager.SetUpTasksInventory();
         // yield return new WaitForSeconds(0.5f);
         yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask(TaskType.IntroFirewood, "Fetch 3 branches.");
+        taskManager.AddTask(TaskType.IntroMaloca, "Return to Maloca to sleep.");
+        taskManager.SetActiveTask(TaskType.IntroFirewood);
 
         stateManager.SetState(State.Normal);
     }
 
     IEnumerator DropoffWood()
     {
-        recordManager.StopRecording();
+        taskManager.CompleteActiveTask();
 
         stateManager.SetState(State.Inert);
         yield return new WaitForSeconds(1f);
@@ -307,7 +306,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         yield return new WaitForSeconds(.25f);
-        taskManager.SetActiveTask("Maloca");
+        taskManager.SetActiveTask(TaskType.IntroFirewood, false);
         triggers["Walk_End"].Enable();
 
         stateManager.SetState(State.Normal);
@@ -322,16 +321,8 @@ public class Day0 : MonoBehaviour
         audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return t.WaitForCompletion();
 
-        saveManager.SaveGame(dayNumber + 1);
+        saveManager.SaveGame(dayNumber);
         Helper.LoadNextSceneInBuildOrder();
-    }
-
-
-    void InitializeTasks()
-    {
-        taskManager.AddTask("Branches", "Fetch 3 branches.");
-        taskManager.AddTask("WoodFire", "Bring wood to fire.");
-        taskManager.AddTask("Maloca", "Return to Maloca to sleep.");
     }
 
     Dialog opening = new Dialog();
@@ -384,8 +375,7 @@ public class Day0 : MonoBehaviour
         maloca.skippable = false;
         maloca.lines = new string[] {
              "Well done, my son! I can see the shadows dancing on the inside of the maloca.",
-             "It is late now. Come join me inside to sleep.",
-             "Tomorrow is an important day."
+             "It is late now. Come join me inside to sleep. Tomorrow is an important day."
         };
 
         sisterSleep.name = "Sister";

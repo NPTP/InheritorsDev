@@ -6,8 +6,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum TaskTypes
+public enum TaskType
 {
+    Null,
+    IntroFirewood,
+    IntroMaloca,
     MotherWood,
     MotherWater,
     Father,
@@ -20,55 +23,52 @@ public class TaskManager : MonoBehaviour
 {
     public class Task
     {
-        public string label;        // Identifier for the task, e.g. "GetWood"
-        public string originalText; // The actual text to display for the task, e.g. "Get wood for the fire."
-        public string currentText;
+        public TaskType type;        // Identifier for the task
+        public string text;         // The actual text to display for the task, e.g. "Get wood for the fire."
         public bool active;
         public bool completed;
         public bool failed;
-        string completedColorTag = "<color=green>"; // "<color=#006400>";
+
+        string completedColorTag = "<color=green>";
         string activeColorTag = "<color=#0000ff>";
         string inactiveColorTag = "<color=#808080>";
         string failedColorTag = "<color=#808080>";
         string endColorTag = "</color>";
-        string lineBreak = "\n";
-        string doubleLineBreak = "\n\n";
 
-        public Task(string label = "", string originalText = "")
+        public Task(TaskType type = TaskType.Null, string text = "")
         {
-            this.label = label;
-            this.originalText = originalText;
+            this.type = type;
+            this.text = text;
             this.completed = false;
             Inactive();
         }
 
         public void Inactive()
         {
-            this.currentText = inactiveColorTag + this.originalText + endColorTag + doubleLineBreak;
+            this.text = inactiveColorTag + this.text + endColorTag;
             this.active = false;
             this.completed = false;
         }
 
         public void Active()
         {
-            this.currentText = activeColorTag + "<b>" + this.originalText + "</b>" + endColorTag; // + lineBreak;
+            this.text = activeColorTag + "<b>" + this.text + "</b>" + endColorTag; // + lineBreak;
             this.active = true;
             this.completed = false;
         }
 
         public void Complete()
         {
-            // string strikethroughText = StrikeThrough(this.originalText);
-            // this.currentText = completedColorTag + strikethroughText + endColorTag + doubleLineBreak;
-            this.currentText = completedColorTag + originalText + endColorTag + doubleLineBreak;
+            // string strikethroughText = StrikeThrough(this.text);
+            // this.text = completedColorTag + strikethroughText + endColorTag + doubleLineBreak;
+            this.text = completedColorTag + text + endColorTag;
             this.active = false;
             this.completed = true;
         }
 
         public void Fail()
         {
-            string strikethroughText = StrikeThrough(this.originalText);
-            this.currentText = failedColorTag + strikethroughText + endColorTag + doubleLineBreak;
+            this.text = failedColorTag + StrikeThrough(this.text) + endColorTag;
             this.active = false;
             this.failed = true;
         }
@@ -89,28 +89,54 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    /* TaskManager properties */
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ TASKMANAGER PROPERTIES
+    // ████████████████████████████████████████████████████████████████████████
+
     UIManager uiManager;
+    RecordManager recordManager;
     List<Task> taskList;
     Task activeTask;
-    public bool allTasksCompleted = false;
+    bool allTasksCompleted = false;
 
     void Awake()
     {
         uiManager = FindObjectOfType<UIManager>();
+        recordManager = FindObjectOfType<RecordManager>();
         taskList = new List<Task>();
         activeTask = new Task();
         ResetAllTasks();
     }
 
-    public void AddTask(string label, string taskText)
+    public void AddTask(TaskType type, string taskText)
     {
-        Task newTask = new Task(label, taskText);
+        Task newTask = new Task(type, taskText);
         taskList.Add(newTask);
         UpdateTasks();
     }
 
-    public void SetActiveTask(string label)
+    public void ChangeTask(TaskType type, string newText)
+    {
+        if (activeTask.type == type)
+        {
+            activeTask.text = newText;
+        }
+        else
+        {
+            foreach (Task task in taskList)
+            {
+                if (task.type == type)
+                {
+                    task.text = newText;
+                    break;
+                }
+            }
+        }
+
+        UpdateTasks();
+    }
+
+    public void SetActiveTask(TaskType type, bool startRecording = true)
     {
         if (activeTask.active)
         {
@@ -122,24 +148,30 @@ public class TaskManager : MonoBehaviour
         int index = 0;
         for (int i = 0; i < taskList.Count; i++)
         {
-            if (taskList[i].label == label)
+            if (taskList[i].type == type)
             {
                 index = i;
                 newActiveTask = taskList[i];
                 break;
             }
         }
+        if (newActiveTask.type == TaskType.Null)
+        {
+            print("No task with that type in active task or task list.");
+            return;
+        }
         newActiveTask.Active();
         activeTask = newActiveTask;
         taskList.RemoveAt(index);
 
+        if (startRecording) { recordManager.StartNewRecording(); }
         UpdateTasks();
     }
 
-    public void AddAndSetActive(string label, string taskText)
+    public void AddAndSetActive(TaskType type, string taskText, bool startRecording = true)
     {
-        AddTask(label, taskText);
-        SetActiveTask(label);
+        AddTask(type, taskText);
+        SetActiveTask(type, startRecording);
     }
 
     public void CompleteActiveTask()
@@ -147,6 +179,7 @@ public class TaskManager : MonoBehaviour
         activeTask.Complete();
         activeTask = new Task();
 
+        recordManager.StopRecording();
         CheckAllTasksCompleted();
         UpdateTasks();
     }
@@ -155,7 +188,7 @@ public class TaskManager : MonoBehaviour
     {
         if (activeTask.completed && taskList.Count == 0)
         {
-            Debug.Log("All tasks completed!"); // TODO: remove debug logs
+            Debug.Log("All tasks completed!");
             allTasksCompleted = true;
         }
     }
