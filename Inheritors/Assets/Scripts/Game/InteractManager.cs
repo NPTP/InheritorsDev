@@ -368,11 +368,10 @@ public class InteractManager : MonoBehaviour
 
     IEnumerator WalkTriggerActivate(WalkTrigger thisTrigger)
     {
-        yield return new WaitForSeconds(0.3f);
         walkTag = thisTrigger.GetTag();
-        thisTrigger.Disable();
+        thisTrigger.Activate();
+        yield return new WaitForSeconds(0.5f);
         OnWalk?.Invoke(this, new WalkArgs { tag = thisTrigger.GetTag() });
-        thisTrigger.Remove();
     }
 
     // ████████████████████████████████████████████████████████████████████████

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaEnabled: 1
-  areaTag: Area_
+  areaTag: Area_???
   taskTool: {fileID: 0}
   taskHasBegun: 0
 --- !u!33 &7882203307446306945
