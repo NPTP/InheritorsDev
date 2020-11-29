@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private bool m_jumpInput = false;
 
     private bool m_isGrounded;
+    private bool mobile = true;
 
     private List<Collider> m_collisions = new List<Collider>();
 
@@ -57,7 +58,8 @@ public class PlayerMovement : MonoBehaviour
     {
         m_animator.SetBool("Grounded", m_isGrounded);
 
-        DirectUpdate();
+        if (stateManager.GetState() == State.Normal)
+            DirectUpdate();
 
         m_wasGrounded = m_isGrounded;
         m_jumpInput = false;
@@ -102,7 +104,13 @@ public class PlayerMovement : MonoBehaviour
         // JumpingAndLanding();
     }
 
-
+    public void Halt()
+    {
+        m_currentV = 0;
+        m_currentH = 0;
+        direction = Vector3.zero;
+        m_animator.SetFloat("MoveSpeed", direction.magnitude);
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

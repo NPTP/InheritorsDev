@@ -1,5 +1,6 @@
 ﻿/* INHERITORS by Nick Perrin (c) 2020 */
 using System;
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 
@@ -23,7 +24,8 @@ public class PickupManager : MonoBehaviour
         public bool holdingItem = false;
         public ItemType itemType = ItemType.Null;
         public int itemQuantity = 0;
-        public bool haveReadyItem = false;
+        public GameObject taskTool = null;
+        public bool haveTaskTool = false;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -55,26 +57,57 @@ public class PickupManager : MonoBehaviour
     }
 
     // ████████████████████████████████████████████████████████████████████████
-    // ███ AUTO-GET
+    // ███ TASK TOOL
     // ████████████████████████████████████████████████████████████████████████
 
-    public void AutoGetItem(string resourceName = "INVALID")
+    // Game object version
+    public void GetTaskTool(GameObject toolPrefab)
     {
-        inventory.haveReadyItem = true;
-        GameObject item = GameObject.Instantiate(
+        inventory.haveTaskTool = true;
+        GameObject tool = GameObject.Instantiate(
+            toolPrefab,
+            GetItemHoldPosition(),
+            player.transform.rotation,
+            player.transform
+        );
+        tool.transform.DOScale(1f, 0.25f).From(0f);
+        inventory.taskTool = tool;
+    }
+
+    // Resources load version (string name)
+    public void GetTaskTool(string resourceName = "INVALID")
+    {
+        inventory.haveTaskTool = true;
+        GameObject tool = GameObject.Instantiate(
             Resources.Load<GameObject>(resourceName),
             GetItemHoldPosition(),
             player.transform.rotation,
             player.transform
         );
-        item.transform.DOScale(1f, 0.25f).From(0f);
+        tool.transform.DOScale(1f, 0.25f).From(0f);
+        inventory.taskTool = tool;
+    }
+
+    public void LoseTaskTool()
+    {
+        if (!inventory.haveTaskTool) { return; }
+        StartCoroutine(KillTaskTool());
+    }
+
+    IEnumerator KillTaskTool()
+    {
+        GameObject toolReference = inventory.taskTool;
+        inventory.taskTool = null;
+        inventory.haveTaskTool = false;
+        Tween t = toolReference.transform.DOScale(0f, 0.25f);
+        yield return t.WaitForCompletion();
+        Destroy(toolReference);
     }
 
     Vector3 GetItemHoldPosition()
     {
         return player.transform.position + (.5f * player.transform.up) + (.5f * player.transform.forward);
     }
-
 
     // ████████████████████████████████████████████████████████████████████████
     // ███ GETTERS & SETTERS

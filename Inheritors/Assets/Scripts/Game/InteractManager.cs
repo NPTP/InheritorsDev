@@ -1,6 +1,7 @@
 ﻿/* INHERITORS by Nick Perrin (c) 2020 */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
@@ -104,22 +105,31 @@ public class InteractManager : MonoBehaviour
         return insideArea;
     }
 
-    public void AreaEnter(AreaTrigger sender)
+    public void AreaEnter(AreaTrigger sender, ref List<Trigger> triggersInside, GameObject taskTool)
     {
         areaTrigger = sender;
         areaTag = areaTrigger.GetTag();
         insideArea = true;
-        print("Inside area.");
-        OnArea?.Invoke(this, new AreaArgs { tag = areaTag, inside = true });
+        foreach (Trigger trigger in triggersInside)
+        {
+            trigger.Enable();
+        }
+        if (taskTool != null)
+            pickupManager.GetTaskTool(taskTool);
+        // OnArea?.Invoke(this, new AreaArgs { tag = areaTag, inside = true });
     }
 
-    public void AreaLeave(AreaTrigger sender)
+    public void AreaLeave(AreaTrigger sender, ref List<Trigger> triggersInside)
     {
         areaTrigger = null;
         areaTag = null;
         insideArea = false;
-        print("Outside area.");
-        OnArea?.Invoke(this, new AreaArgs { tag = sender.GetTag(), inside = false });
+        foreach (Trigger trigger in triggersInside)
+        {
+            trigger.Disable();
+        }
+        pickupManager.LoseTaskTool();
+        // OnArea?.Invoke(this, new AreaArgs { tag = sender.GetTag(), inside = false });
     }
 
 
@@ -316,11 +326,9 @@ public class InteractManager : MonoBehaviour
             lookRotation.x = 0f;
             lookRotation.z = 0f;
 
-            // TODO: get this facing-dialog-target-rotation working later (for polish).
-            // player.transform.DORotate(lookRotation, .25f);
-            player.GetComponent<Rigidbody>().isKinematic = true;
-            player.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(lookRotation));
-            player.GetComponent<Rigidbody>().isKinematic = false;
+            // Halt and face the subject of the dialog!
+            player.GetComponent<PlayerMovement>().Halt();
+            player.GetComponent<Rigidbody>().DORotate(lookRotation, .4f);
         }
 
         // See if anyone is subscribed to OnDialog. If not, play the trigger's stored dialog.

@@ -97,7 +97,6 @@ public class Day1 : MonoBehaviour
         triggers["Dialog_TaskExplanation"].Enable(); // TODO: make dialog triggers snatch their dialog early on so we don't have to specify it in here.
 
         yield return new WaitForSeconds(3f);
-        pickupManager.AutoGetItem("Jug");
     }
 
     IEnumerator End()
@@ -117,7 +116,7 @@ public class Day1 : MonoBehaviour
         if (inventory.itemQuantity == 1)
         {
             // TODO: this can probably all be one function
-            areas["Firewood"].BeginTaskInArea();
+            areas["Area_Firewood"].BeginTaskInArea();
             TurnOffAreas();
             taskManager.SetActiveTask(TaskType.MotherWater);
         }
@@ -140,10 +139,6 @@ public class Day1 : MonoBehaviour
 
         switch (tag)
         {
-            case "Firewood":
-                SetAreaTriggers(tag, inside);
-                break;
-
             default:
                 Debug.Log("Interact Manager gave unknown AREA tag to Day " + dayNumber);
                 break;
@@ -229,40 +224,16 @@ public class Day1 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
     }
 
-    void SetAreaTriggers(string tag, bool insideArea)
-    {
-        switch (tag)
-        {
-            case "Firewood":
-                if (insideArea)
-                {
-                    triggers["Pickup_Wood1"].Enable();
-                    triggers["Pickup_Wood2"].Enable();
-                    triggers["Pickup_Wood3"].Enable();
-                }
-                else
-                {
-                    triggers["Pickup_Wood1"].Disable();
-                    triggers["Pickup_Wood2"].Disable();
-                    triggers["Pickup_Wood3"].Disable();
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
     // 
     void TurnOffAreas()
     {
-        areas["Firewood"].Disable();
+        areas["Area_Firewood"].Disable();
         // More... make a list?
     }
 
     void TurnOnAreas()
     {
-        areas["Firewood"].Enable();
+        areas["Area_Firewood"].Enable();
         // More... make a list?
     }
 

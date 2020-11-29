@@ -13,8 +13,12 @@ public class AreaTrigger : MonoBehaviour, Trigger
     public event EventHandler OnAreaEnter;
     public event EventHandler OnAreaLeave;
 
+    [Header("Area-specific options")]
     public bool areaEnabled = true;
     public string areaTag;
+    [Space]
+    [Header("Optional task tool appearing in area")]
+    public GameObject taskTool;
 
     [HideInInspector]
     public bool taskHasBegun = false;
@@ -110,8 +114,8 @@ public class AreaTrigger : MonoBehaviour, Trigger
     {
         if (other.tag == "Player")
         {
-            EnableTriggersInside();
-            // interactManager.AreaEnter(this);
+            // EnableTriggersInside();
+            interactManager.AreaEnter(this, ref triggersInside, taskTool);
         }
     }
 
@@ -119,24 +123,7 @@ public class AreaTrigger : MonoBehaviour, Trigger
     {
         if (other.tag == "Player")
         {
-            DisableTriggersInside();
-            // interactManager.AreaLeave(this);
-        }
-    }
-
-    void EnableTriggersInside()
-    {
-        foreach (Trigger trigger in triggersInside)
-        {
-            trigger.Enable();
-        }
-    }
-
-    void DisableTriggersInside()
-    {
-        foreach (Trigger trigger in triggersInside)
-        {
-            trigger.Disable();
+            interactManager.AreaLeave(this, ref triggersInside);
         }
     }
 }
