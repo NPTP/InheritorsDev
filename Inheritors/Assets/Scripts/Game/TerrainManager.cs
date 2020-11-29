@@ -17,9 +17,10 @@ public class TerrainManager : MonoBehaviour
         LeavesYellow,
         LeavesGreen,
         LeavesBrown,
+        AshDark,
         Cliffside,
         Farm,
-        Trail
+        Trail,
     }
 
     void Start()

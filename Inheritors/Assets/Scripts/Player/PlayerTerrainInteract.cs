@@ -71,20 +71,24 @@ public class PlayerTerrainInteract : MonoBehaviour
         {
             for (int j = 0; j < areaSize; j++)
             {
-                for (int k = 0; k < numLayers; k++)
-                {
-                    remap[i, j, k] = alphaMap[i, j, k];
-                }
-
                 // Flipped order intentionally
                 int z = texturePosZ - playerSplatmapSize + i;
                 int x = texturePosX - playerSplatmapSize + j;
 
                 // Check if we've walked here already today - if not, lay down some trail (limit at 1f).
+                bool changeTex = false;
                 if (!walkedToday[z, x] && alphaMap[i, j, trailLayer] < 1)
                 {
                     walkedToday[z, x] = true;
                     remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.1f;
+                    changeTex = true;
+                }
+                for (int k = 0; k < numLayers; k++)
+                {
+                    if (changeTex && k != trailLayer)
+                        remap[i, j, k] = alphaMap[i, j, k] - (0.1f / (float)(numLayers - 1));
+                    else
+                        remap[i, j, k] = alphaMap[i, j, k];
                 }
             }
         }
