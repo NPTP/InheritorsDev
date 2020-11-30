@@ -97,15 +97,18 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     IEnumerator ActivateAnimation()
     {
-        triggerEnabled = false;
-        triggerCollider.enabled = false;
-        ps.Stop();
-        triggerProjector.Disable();
-        activateParticles.Play();
-        Tween t = l.DOIntensity(3 * originalIntensity, .25f).SetEase(Ease.OutQuad);
-        yield return t.WaitForCompletion();
-        t = l.DOIntensity(0f, 0.5f).SetEase(Ease.InQuad);
-        yield return t.WaitForCompletion();
+        if (!invisibleTrigger)
+        {
+            triggerEnabled = false;
+            triggerCollider.enabled = false;
+            ps.Stop();
+            triggerProjector.Disable();
+            activateParticles.Play();
+            Tween t = l.DOIntensity(3 * originalIntensity, .25f).SetEase(Ease.OutQuad);
+            yield return t.WaitForCompletion();
+            t = l.DOIntensity(0f, 0.5f).SetEase(Ease.InQuad);
+            yield return t.WaitForCompletion();
+        }
 
         // Delay, then kill
         yield return new WaitForSeconds(2);

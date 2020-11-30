@@ -9600,7 +9600,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3641075888319120835}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.42415524, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3125, z: 0}
   m_LocalScale: {x: 0.24688917, y: 0.24688917, z: 0.24688917}
   m_Children: []
   m_Father: {fileID: 3641075888876771837}
@@ -9655,7 +9655,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 131383
+    m_Bits: 131072
   m_RenderingLayerMask: 1
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0

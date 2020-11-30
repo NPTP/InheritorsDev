@@ -6,23 +6,19 @@ using Cinemachine;
 public class CameraQuadrant : MonoBehaviour
 {
     CameraManager cameraManager;
-    CinemachineVirtualCamera cmVCam = null;
+
+    [SerializeField] CinemachineVirtualCamera cmVCam;
     bool hasOwnCam = false;
 
     CameraQuadrantActions cameraQuadrantActions;
     bool hasActions = false;
 
-
     void Start()
     {
         cameraManager = FindObjectOfType<CameraManager>();
         cameraQuadrantActions = GetComponent<CameraQuadrantActions>();
-        if (cameraQuadrantActions != null) hasActions = true;
-
-        if (transform.childCount > 0)
-            cmVCam = transform.GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
-        if (cmVCam != null)
-            hasOwnCam = true;
+        if (cameraQuadrantActions != null) { hasActions = true; }
+        if (cmVCam != null) { hasOwnCam = true; }
     }
 
     private void OnTriggerEnter(Collider other)
