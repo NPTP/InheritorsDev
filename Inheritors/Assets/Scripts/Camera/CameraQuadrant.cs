@@ -9,9 +9,15 @@ public class CameraQuadrant : MonoBehaviour
     CinemachineVirtualCamera cmVCam = null;
     bool hasOwnCam = false;
 
+    CameraQuadrantActions cameraQuadrantActions;
+    bool hasActions = false;
+
+
     void Start()
     {
         cameraManager = FindObjectOfType<CameraManager>();
+        cameraQuadrantActions = GetComponent<CameraQuadrantActions>();
+        if (cameraQuadrantActions != null) hasActions = true;
 
         if (transform.childCount > 0)
             cmVCam = transform.GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
@@ -25,10 +31,16 @@ public class CameraQuadrant : MonoBehaviour
             cameraManager.SwitchToCam(cmVCam.gameObject.name);
         else
             cameraManager.QuadrantCamActivate(this.transform);
+
+        if (hasActions)
+            cameraQuadrantActions.StartAction();
     }
 
     private void OnTriggerExit(Collider other)
     {
         cameraManager.SwitchToCam("Player");
+
+        if (hasActions)
+            cameraQuadrantActions.StopAction();
     }
 }
