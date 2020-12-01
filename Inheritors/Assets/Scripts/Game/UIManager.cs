@@ -326,7 +326,8 @@ public class UIManager : MonoBehaviour
     void InitializeControls()
     {
         controls.canvasGroup = GameObject.Find("Controls").GetComponent<CanvasGroup>();
-        controls.tmpText = GameObject.Find("ControlsText").GetComponent<TMP_Text>();
+        controls.image = GameObject.Find("ControlsImage").GetComponent<Image>();
+        controls.text = GameObject.Find("ControlsText").GetComponent<TMP_Text>();
         controls.Hide(0f);
     }
 }

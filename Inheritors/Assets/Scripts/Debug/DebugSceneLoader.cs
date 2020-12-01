@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 // For debug only.
 public class DebugSceneLoader : MonoBehaviour
 {
-    public bool debugSceneLoaderEnabled = true;
+    public bool debugEnabled = true;
 
     void Start()
     {

@@ -373,14 +373,8 @@ public class InteractManager : MonoBehaviour
     public void WalkEnter(WalkTrigger sender)
     {
         WalkTrigger thisTrigger = sender;
-        StartCoroutine(WalkTriggerActivate(thisTrigger));
-    }
-
-    IEnumerator WalkTriggerActivate(WalkTrigger thisTrigger)
-    {
         walkTag = thisTrigger.GetTag();
         thisTrigger.Activate();
-        yield return new WaitForSeconds(0.25f);
         OnWalk?.Invoke(this, new WalkArgs { tag = thisTrigger.GetTag() });
     }
 

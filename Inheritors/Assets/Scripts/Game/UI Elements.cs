@@ -210,11 +210,11 @@ public class UI_Prompt
 // ███ UI_Controls
 // ████████████████████████████████████████████████████████████████████████
 
-// Probably just going to be used for joystick, and once only. Could replace with a UI_Prompt.
 public class UI_Controls
 {
     public CanvasGroup canvasGroup;
-    public TMP_Text tmpText;
+    public Image image;
+    public TMP_Text text;
 
     public void Show(float duration = 1f)
     {

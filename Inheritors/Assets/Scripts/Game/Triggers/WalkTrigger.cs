@@ -9,8 +9,11 @@ public class WalkTrigger : MonoBehaviour, Trigger
     InteractManager interactManager;
 
     public bool triggerEnabled = true;
-    public bool invisibleTrigger = false;
     public string triggerTag;
+
+    [Header("Walk-specific Options")]
+    public bool invisibleTrigger = false;
+    public bool haltPlayerOnActivate = true;
 
     Transform playerTransform;
     Collider triggerCollider;
@@ -89,10 +92,19 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     public void Activate()
     {
+        if (haltPlayerOnActivate)
+            StartCoroutine(HaltPlayerProcess());
+
         if (!invisibleTrigger)
             StartCoroutine(ActivateAnimation());
         else
             Remove();
+    }
+
+    IEnumerator HaltPlayerProcess()
+    {
+        yield return new WaitForSeconds(0.25f);
+        FindObjectOfType<PlayerMovement>().Halt();
     }
 
     IEnumerator ActivateAnimation()
