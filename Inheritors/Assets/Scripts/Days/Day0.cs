@@ -288,7 +288,7 @@ public class Day0 : MonoBehaviour
         uiManager.SetUpTasksInventory();
         // yield return new WaitForSeconds(0.5f);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.IntroFirewood, "Fetch 3 branches.");
+        taskManager.AddTask(TaskType.IntroFirewood, "Fetch 3 logs.");
         taskManager.AddTask(TaskType.IntroMaloca, "Return to Maloca to sleep.");
         taskManager.SetActiveTask(TaskType.IntroFirewood);
 
@@ -351,7 +351,7 @@ public class Day0 : MonoBehaviour
         firepit.skippable = false;
         firepit.lines = new string[] {
             "This fire is dying.",
-            "Fetch <color=blue>3 branches</color> from our pile of dried wood, so that it might find new life."
+            "Fetch <color=blue>3 logs</color> from our pile of dried wood, so that it might find new life."
         };
 
         wood1.name = "Mother";

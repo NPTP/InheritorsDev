@@ -11,7 +11,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     public string triggerTag;
 
     [Header("Dropoff-Specific Properties")]
-    public Transform targetTransform;
+    public Transform target;
     public string promptText;
     Transform playerTransform;
     Collider triggerCollider;

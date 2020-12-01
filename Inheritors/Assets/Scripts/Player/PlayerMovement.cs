@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -106,8 +107,25 @@ public class PlayerMovement : MonoBehaviour
 
     public void Halt()
     {
+        StartCoroutine(HaltProcess());
+    }
+
+    IEnumerator HaltProcess()
+    {
         m_currentV = 0;
         m_currentH = 0;
+
+        float elapsed = 0;
+        float time = .25f;
+        Vector3 savedDirection = direction;
+        while (elapsed < time)
+        {
+            float t = Helper.SmoothStep(elapsed / time);
+            direction = Vector3.Lerp(savedDirection, Vector3.zero, t);
+            m_animator.SetFloat("MoveSpeed", direction.magnitude);
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
         direction = Vector3.zero;
         m_animator.SetFloat("MoveSpeed", direction.magnitude);
     }

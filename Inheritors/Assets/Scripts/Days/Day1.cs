@@ -63,35 +63,35 @@ public class Day1 : MonoBehaviour
         // Fade in from a white screen.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
-        transitionManager.SetColor(Color.green);
+        transitionManager.SetColor(Color.white);
         transitionManager.Hide(1f);
         yield return new WaitForSeconds(1f);
 
         stateManager.SetState(State.Normal);
 
-        // // Zoom up and queue the opening dialog, leave inert after dialog.
-        // dialogManager.NewDialog(day1Opening, State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
-        // uiManager.SetUpTasksInventory();
-        // yield return new WaitForSeconds(.5f);
+        // Zoom up and queue the opening dialog, leave inert after dialog.
+        dialogManager.NewDialog(day1Opening, State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        uiManager.SetUpTasksInventory();
+        yield return new WaitForSeconds(.5f);
 
-        // // Give us context for watering hole task.
-        // cameraManager.SendCamTo(wateringHoleTransform);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
-        // taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
-        // yield return new WaitForSeconds(1f);
+        // Give us context for watering hole task.
+        cameraManager.SendCamTo(wateringHoleTransform);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
+        yield return new WaitForSeconds(1f);
 
-        // // Give us context for hunting task.
-        // cameraManager.SendCamTo(fatherHuntingTransform);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
-        // taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
-        // yield return new WaitForSeconds(1f);
+        // Give us context for hunting task.
+        cameraManager.SendCamTo(fatherHuntingTransform);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
+        yield return new WaitForSeconds(1f);
 
-        // // Return to player to debrief before letting them loose.
-        // cameraManager.QuadrantCamActivate(motherQuadrantTransform);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
-        // dialogManager.NewDialog(taskExplanation);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // Return to player to debrief before letting them loose.
+        cameraManager.QuadrantCamActivate(motherQuadrantTransform);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+        dialogManager.NewDialog(taskExplanation);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Player is now loose, and can repeat the task dialog with mother.
         triggers["Dialog_TaskExplanation"].Enable(); // TODO: make dialog triggers snatch their dialog early on so we don't have to specify it in here.

@@ -31,7 +31,7 @@ MonoBehaviour:
   - prefab: {fileID: 1458573784885960, guid: 6910e2407cd484a42a0c2598114751a0, type: 3}
     selected: 1
   paintType: 0
-  brushSize: 10
+  brushSize: 1
   minBrushSize: 0.1
   maxBrushSize: 20
   paintDeltaDistance: 3

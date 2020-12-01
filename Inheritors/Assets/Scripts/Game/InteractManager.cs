@@ -162,7 +162,7 @@ public class InteractManager : MonoBehaviour
 
     void TryPickUp()
     {
-        // Currently not checking against item type & quantity, just allow all.
+        // Currently not checking against item type & quantity, just allowing all.
         // Make a safety check before allowing pickup.
         if (!pickupInRange || pickupTag is null || pickupTrigger is null)
         {
@@ -184,6 +184,7 @@ public class InteractManager : MonoBehaviour
     {
         bool alreadyHolding = pickupManager.IsHoldingItem();
         Vector3 startPosition = currentPickup.transform.position;
+        Quaternion startRotation = currentPickup.transform.localRotation;
         float elapsed = 0f;
         float time = 0.25f;
 
@@ -191,12 +192,15 @@ public class InteractManager : MonoBehaviour
         {
             currentPickup.transform.position = Vector3.Lerp(
                 startPosition, GetItemHoldPosition(), Helper.SmoothStep(elapsed / time));
+            currentPickup.transform.localRotation = Quaternion.Slerp(
+                startRotation, Quaternion.Euler(player.transform.forward), Helper.SmoothStep(elapsed / time));
             if (alreadyHolding)
                 currentPickup.transform.localScale *= 1 - (elapsed / time);
             elapsed += Time.deltaTime;
             yield return null;
         }
         currentPickup.transform.position = GetItemHoldPosition();
+        currentPickup.transform.rotation = Quaternion.Euler(player.transform.forward);
         stateManager.SetState(State.Holding);
 
         // Hand it off here to the PickupManager, updates the inventory.
@@ -265,8 +269,9 @@ public class InteractManager : MonoBehaviour
         pickupManager.DropOff();
 
         DropoffTrigger thisDropoff = dropoffTrigger;
+        LookAtTarget(thisDropoff.target);
         Vector3 startPosition = heldItem.transform.position;
-        Vector3 endPosition = thisDropoff.targetTransform.position;
+        Vector3 endPosition = thisDropoff.target.position;
         float elapsed = 0f;
         float time = 0.5f;
         while (elapsed < time)
@@ -277,7 +282,7 @@ public class InteractManager : MonoBehaviour
             yield return null;
         }
         heldItem.transform.position = endPosition;
-        var dropoffTarget = thisDropoff.targetTransform.gameObject.GetComponent<DropoffTarget>();
+        var dropoffTarget = thisDropoff.target.gameObject.GetComponent<DropoffTarget>();
         if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
         heldItem.Remove();
         stateManager.SetState(State.Normal);
@@ -320,15 +325,9 @@ public class InteractManager : MonoBehaviour
         uiManager.dialogPrompt.Hide();
         if (dialogTrigger.lookAtMyTarget && dialogTrigger.myTarget != null)
         {
-            Vector3 lookRotation = Quaternion.LookRotation(
-                dialogTrigger.myTarget.position - player.transform.position,
-                Vector3.up).eulerAngles;
-            lookRotation.x = 0f;
-            lookRotation.z = 0f;
-
             // Halt and face the subject of the dialog!
             player.GetComponent<PlayerMovement>().Halt();
-            player.GetComponent<Rigidbody>().DORotate(lookRotation, .4f);
+            LookAtTarget(dialogTrigger.myTarget);
         }
 
         // See if anyone is subscribed to OnDialog. If not, play the trigger's stored dialog.
@@ -350,6 +349,17 @@ public class InteractManager : MonoBehaviour
             StartCoroutine(WaitToResetTrigger());
     }
 
+    void LookAtTarget(Transform target)
+    {
+        Vector3 lookRotation = Quaternion.LookRotation(
+                target.position - player.transform.position,
+                Vector3.up).eulerAngles;
+        lookRotation.x = 0f;
+        lookRotation.z = 0f;
+        player.GetComponent<Rigidbody>().DORotate(lookRotation, .4f);
+    }
+
+
     IEnumerator WaitToResetTrigger()
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -370,7 +380,7 @@ public class InteractManager : MonoBehaviour
     {
         walkTag = thisTrigger.GetTag();
         thisTrigger.Activate();
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
         OnWalk?.Invoke(this, new WalkArgs { tag = thisTrigger.GetTag() });
     }
 
