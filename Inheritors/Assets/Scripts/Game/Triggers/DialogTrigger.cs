@@ -24,12 +24,16 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public Transform myTarget = null;
     [Space(10)]
     public string[] dialogLines = new string[] { };
-    public DialogManager.Speed dialogSpeed;
 
     public Dialog dialog;
 
     Collider triggerCollider;
     Light l;
+
+    public bool StartedEnabled()
+    {
+        return triggerEnabled;
+    }
 
     void Awake()
     {
@@ -38,14 +42,10 @@ public class DialogTrigger : MonoBehaviour, Trigger
         triggerProjector = projectorTransform.gameObject.GetComponent<TriggerProjector>();
         triggerCollider = GetComponent<Collider>();
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
-    }
 
-    void Start()
-    {
         dialog = new Dialog();
         dialog.name = speakerName;
         dialog.lines = dialogLines;
-        dialog.speed = dialogSpeed;
         dialog.skippable = dialogSkippable;
 
         if (myTarget != null)
@@ -107,5 +107,4 @@ public class DialogTrigger : MonoBehaviour, Trigger
         }
     }
 
-    public void FlagInArea(AreaTrigger area) { }
 }

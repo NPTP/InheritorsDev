@@ -26,6 +26,7 @@ public class TaskManager : MonoBehaviour
     {
         public TaskType type;        // Identifier for the task
         public string text;         // The actual text to display for the task, e.g. "Get wood for the fire."
+        public AreaTrigger area;
         public bool active;
         public bool completed;
         public bool failed;
@@ -36,10 +37,11 @@ public class TaskManager : MonoBehaviour
         string failedColorTag = "<color=#808080>";
         string endColorTag = "</color>";
 
-        public Task(TaskType type = TaskType.Null, string text = "")
+        public Task(TaskType type = TaskType.Null, string text = "", AreaTrigger area = null)
         {
             this.type = type;
             this.text = text;
+            this.area = area;
             this.completed = false;
             Inactive();
         }
@@ -119,9 +121,9 @@ public class TaskManager : MonoBehaviour
             areas[areaTrigger.GetTag()] = areaTrigger;
     }
 
-    public void AddTask(TaskType type, string taskText)
+    public void AddTask(TaskType type, string taskText, AreaTrigger area = null)
     {
-        Task newTask = new Task(type, taskText);
+        Task newTask = new Task(type, taskText, area);
         taskList.Add(newTask);
         UpdateTasks();
     }
@@ -149,11 +151,6 @@ public class TaskManager : MonoBehaviour
 
     public void SetActiveTask(TaskType type, bool startRecording = true)
     {
-        foreach (AreaTrigger area in areas.Values)
-        {
-            if (area != null) { area.Disable(); }
-        }
-
         if (activeTask.active)
         {
             print("A task is already active.");
@@ -176,6 +173,16 @@ public class TaskManager : MonoBehaviour
             print("No task with that type in active task or task list.");
             return;
         }
+
+        if (newActiveTask.area != null)
+        {
+            newActiveTask.area.Disable();
+            foreach (AreaTrigger area in areas.Values)
+            {
+                if (area != newActiveTask.area) { area.ShutDownArea(); }
+            }
+        }
+
         newActiveTask.Active();
         activeTask = newActiveTask;
         taskList.RemoveAt(index);
@@ -184,7 +191,7 @@ public class TaskManager : MonoBehaviour
         UpdateTasks();
     }
 
-    public void AddAndSetActive(TaskType type, string taskText, bool startRecording = true)
+    public void AddAndSetActive(TaskType type, string taskText, bool startRecording = true, AreaTrigger area = null)
     {
         AddTask(type, taskText);
         SetActiveTask(type, startRecording);
@@ -194,11 +201,16 @@ public class TaskManager : MonoBehaviour
     {
         recordManager.StopRecording();
 
-        activeTask.Complete();
-        activeTask = new Task();
-        foreach (AreaTrigger area in areas.Values)
-            if (area != null) { area.Enable(); }
+        if (activeTask.area != null)
+        {
+            activeTask.area.Remove();
+            foreach (AreaTrigger area in areas.Values)
+                if (area != null) { area.StartUpArea(); }
+        }
 
+        activeTask.Complete();
+
+        activeTask = new Task();
         CheckAllTasksCompleted();
         UpdateTasks();
     }

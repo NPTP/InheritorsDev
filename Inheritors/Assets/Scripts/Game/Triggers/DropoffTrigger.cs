@@ -19,13 +19,14 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     ParticleSystem ps;
     bool dropoffDone = false;
 
+    public bool StartedEnabled()
+    {
+        return triggerEnabled;
+    }
+
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
-    }
-
-    void Start()
-    {
         playerTransform = GameObject.Find("Player").transform;
         triggerCollider = GetComponent<Collider>();
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
@@ -49,7 +50,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     {
         if (!dropoffDone)
         {
-            triggerEnabled = true;
+            // triggerEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             ps.Play();
@@ -58,7 +59,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     public void Disable()
     {
-        triggerEnabled = false;
+        // triggerEnabled = false;
         triggerCollider.enabled = false;
         l.enabled = false;
         ps.Stop();
@@ -78,7 +79,8 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggerEnabled && !dropoffDone && other.tag == "Player")
+        // if (triggerEnabled && !dropoffDone && other.tag == "Player")
+        if (!dropoffDone && other.tag == "Player")
         {
             interactManager.DropoffEnterRange(this, promptText);
         }
@@ -86,11 +88,11 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerExit(Collider other)
     {
-        if (triggerEnabled && !dropoffDone && other.tag == "Player")
+        // if (triggerEnabled && !dropoffDone && other.tag == "Player")
+        if (!dropoffDone && other.tag == "Player")
         {
             interactManager.DropoffExitRange(this);
         }
     }
 
-    public void FlagInArea(AreaTrigger area) { }
 }

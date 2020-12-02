@@ -114,7 +114,8 @@ public class InteractManager : MonoBehaviour
         {
             foreach (Trigger trigger in triggersInside)
             {
-                trigger.Enable();
+                print(trigger.StartedEnabled());
+                if (trigger.StartedEnabled()) { trigger.Enable(); }
             }
         }
         if (toolType != ItemType.Null)
@@ -336,8 +337,9 @@ public class InteractManager : MonoBehaviour
             LookAtTarget(dialogTrigger.myTarget);
         }
 
-        // See if anyone is subscribed to OnDialog. If not, play the trigger's stored dialog.
-        // If so, fire an event to the Day script to handle it.
+        // See if anyone is subscribed to OnDialog.
+        // If not, play ONLY the trigger's stored dialog.
+        // If so, fire an event to the Day script to handle it, which may play a pre-written dialog or the trigger's stored dialog.
         if (OnDialog == null)
         {
             dialogManager.NewDialog(dialogTrigger.dialog);

@@ -65,34 +65,33 @@ public class PlayerTerrainInteract : MonoBehaviour
 
     void ChangeTexture(int areaSize)
     {
+        bool changedTex = false;
         alphaMap = t.terrainData.GetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, areaSize, areaSize);
         float[,,] remap = new float[areaSize, areaSize, numLayers];
         for (int i = 0; i < areaSize; i++)
         {
             for (int j = 0; j < areaSize; j++)
             {
+                for (int k = 0; k < numLayers; k++)
+                {
+                    remap[i, j, k] = alphaMap[i, j, k];
+                }
+
                 // Flipped order intentionally
                 int z = texturePosZ - playerSplatmapSize + i;
                 int x = texturePosX - playerSplatmapSize + j;
 
                 // Check if we've walked here already today - if not, lay down some trail (limit at 1f).
-                bool changeTex = false;
                 if (!walkedToday[z, x] && alphaMap[i, j, trailLayer] < 1)
                 {
                     walkedToday[z, x] = true;
-                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.1f;
-                    changeTex = true;
-                }
-                for (int k = 0; k < numLayers; k++)
-                {
-                    if (changeTex && k != trailLayer)
-                        remap[i, j, k] = alphaMap[i, j, k] - (0.1f / (float)(numLayers - 1));
-                    else
-                        remap[i, j, k] = alphaMap[i, j, k];
+                    changedTex = true;
+                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.2f;
                 }
             }
         }
-        t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
+        if (changedTex) // Performance boost. SetAlphaMaps is the bottleneck, don't call it when on an already-walked position.
+            t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
     }
 
     void RemoveDetails(int areaSize)

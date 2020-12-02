@@ -41,6 +41,7 @@ public class TriggerProjector : MonoBehaviour
 
     IEnumerator DisableAnimation()
     {
+        yield return null;
         Tween t = DOTween.To(
             () => projector.orthographicSize,
             x => projector.orthographicSize = x,

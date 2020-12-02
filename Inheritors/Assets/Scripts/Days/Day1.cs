@@ -55,7 +55,7 @@ public class Day1 : MonoBehaviour
     }
 
     // ████████████████████████████████████████████████████████████████████████
-    // ███ SCRIPTED HAPPENINGS
+    // ███ INTRO
     // ████████████████████████████████████████████████████████████████████████
 
     IEnumerator Intro()
@@ -70,31 +70,31 @@ public class Day1 : MonoBehaviour
         stateManager.SetState(State.Normal);
 
         // Zoom up and queue the opening dialog, leave inert after dialog.
-        dialogManager.NewDialog(day1Opening, State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // dialogManager.NewDialog(dialogs["Day1Opening"], State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(.5f);
 
         // Give us context for watering hole task.
         cameraManager.SendCamTo(wateringHoleTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
+        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.", areas["Area_Water"]);
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.
         cameraManager.SendCamTo(fatherHuntingTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
+        taskManager.AddTask(TaskType.Father, "Meet father to hunt.", areas["Area_Father"]);
         yield return new WaitForSeconds(1f);
 
         // Return to player to debrief before letting them loose.
         cameraManager.QuadrantCamActivate(motherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        dialogManager.NewDialog(taskExplanation);
+        dialogManager.NewDialog(dialogs["Dialog_TaskExplanation"]);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Player is now loose, and can repeat the task dialog with mother.
-        triggers["Dialog_TaskExplanation"].Enable(); // TODO: make dialog triggers snatch their dialog early on so we don't have to specify it in here.
+        triggers["Dialog_TaskExplanation"].Enable();
 
         yield return new WaitForSeconds(3f);
     }
@@ -103,7 +103,7 @@ public class Day1 : MonoBehaviour
     // ███ EVENT HANDLERS
     // ████████████████████████████████████████████████████████████████████████
 
-    // TODO: a better way to handle enabling areas (set them up beforehand?)
+    // Currently unused.
     void HandleAreaEvent(object sender, InteractManager.AreaArgs args)
     {
         string tag = args.tag;
@@ -143,34 +143,20 @@ public class Day1 : MonoBehaviour
     void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
     {
         string tag = args.tag;
-        Dialog dialog = args.dialog;
+
+        // Day dialog takes priority over the one stored in the trigger.
+        if (dialogs.ContainsKey(tag))
+            dialogManager.NewDialog(dialogs[tag]);
+        else
+            dialogManager.NewDialog(args.dialog);
 
         switch (tag)
         {
-            case "Dialog_TaskExplanation":
-                dialogManager.NewDialog(taskExplanation);
-                break;
-
-            case "Dialog_HavePig":
-                dialogManager.NewDialog(havePig);
-                break;
-
-            case "Dialog_HaveWater":
-                dialogManager.NewDialog(haveWater);
-                break;
-
             case "Dialog_HuntBegin":
                 StartCoroutine(HuntBegin());
                 break;
 
-            case "Dialog_Sister":
-                dialogManager.NewDialog(sister);
-                break;
-
             default:
-                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + dayNumber);
-                dialogManager.NewDialog(dialog);
-                StartCoroutine(WaitDialogEnd());
                 break;
         }
     }
@@ -229,14 +215,9 @@ public class Day1 : MonoBehaviour
     // ███ HAPPENINGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
 
-
     IEnumerator HuntBegin()
     {
-        dialogManager.NewDialog(huntBegin);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        triggers["Dialog_HuntBegin"].Disable();
-        areas["Area_Father"].Remove();
         taskManager.SetActiveTask(TaskType.Father, false);
         taskManager.ChangeTask(TaskType.Father, "Kill the pig with the bow.");
 
@@ -246,7 +227,7 @@ public class Day1 : MonoBehaviour
         // END PIG KILLING
 
         Destroy(GameObject.Find("Pig").GetComponent<Animator>());
-        dialogManager.NewDialog(huntEnd);
+        dialogManager.NewDialog(dialogs["Dialog_HuntEnd"]);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseTaskTool();
@@ -276,6 +257,7 @@ public class Day1 : MonoBehaviour
         triggers["Dropoff_Water"].Enable();
         triggers["Dialog_TaskExplanation"].Disable();
         triggers["Dialog_HaveWater"].Enable();
+        triggers["Dialog_HuntBegin"].Disable();
     }
 
     void DropoffWater()
@@ -283,19 +265,20 @@ public class Day1 : MonoBehaviour
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
         triggers["Dialog_HaveWater"].Disable();
+        triggers["Dialog_HuntBegin"].Disable();
     }
 
     IEnumerator AllTasksProcess()
     {
         yield return new WaitForSeconds(1f);
-        dialogManager.NewDialog(dayOver);
+        dialogManager.NewDialog(dialogs["DayOver"]);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        StartCoroutine(RemoveNPCs());
+        StartCoroutine(SendNPCsHome());
         taskManager.AddAndSetActive(TaskType.DayEnd, "Head inside the maloca for siesta.", false);
         triggers["Walk_End"].Enable();
     }
 
-    IEnumerator RemoveNPCs()
+    IEnumerator SendNPCsHome()
     {
         yield return null;
         // TODO: direct NPCs to walk inside their malocas if they have'em and disappear.
@@ -320,92 +303,113 @@ public class Day1 : MonoBehaviour
     // ███ DIALOGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
 
+    Dictionary<string, Dialog> dialogs = new Dictionary<string, Dialog>();
 
-    Dialog day1Opening = new Dialog();
-    Dialog taskExplanation = new Dialog();
-    Dialog havePig = new Dialog();
-    Dialog haveWater = new Dialog();
-    Dialog huntBegin = new Dialog();
-    Dialog huntEnd = new Dialog();
-    Dialog huntOver = new Dialog();
-    Dialog dayOver = new Dialog();
-    Dialog sister = new Dialog();
-    Dialog noHunt = new Dialog();
     void InitializeDialogs()
     {
-        day1Opening.name = "Mother";
-        day1Opening.skippable = false;
-        day1Opening.lines = new string[] {
-            "Good morning, son.\nIt's a beautiful day.",
-            "You see the imprints and trails you left behind last night? This land has memory.",
-            "Every step has meaning, and deepens our connection to this place, and to our past.",
-            "Our ancestors laid paths for us, and you will tread your own!",
-            "If you walk a path over and over again, the grass bends under your feet, the forest learns who you are...",
-            "And it will keep a memory of you.",
-            "Just something to keep in mind as you pursue each task. Here is the list for today."
-        };
+        dialogs.Add("Day1Opening", new Dialog
+        {
+            name = "Mother",
+            skippable = false,
+            lines = new string[] {
+                "Good morning, son.\nIt's a beautiful day.",
+                "You see the imprints and trails you left behind last night? This land has memory.",
+                "Every step has meaning, and deepens our connection to this place, and to our past.",
+                "Our ancestors laid paths for us, and you will tread your own!",
+                "If you walk a path over and over again, the grass bends under your feet, the forest learns who you are...",
+                "And it will keep a memory of you.",
+                "Just something to keep in mind as you pursue each task. Here is the list for today."
+            }
+        });
 
-        taskExplanation.name = "Mother";
-        taskExplanation.lines = new string[] {
-            "Go to a task's area to get started. You will have everything you need for that task when you get there!",
-            "Once you begin a task, you must complete it before you can begin another.",
-            "Begin in any order you like.",
-            "And if you need to take a break, don't worry. Your progress is saved at the start of each day.",
-            "Talk to me again if you forget any of that. Off you go now, son!"
-        };
+        dialogs.Add("Dialog_TaskExplanation", new Dialog
+        {
+            name = "Mother",
+            lines = new string[] {
+                "Go to a task's area to get started. You will have everything you need for that task when you get there!",
+                "Once you begin a task, you must complete it before you can begin another.",
+                "Begin in any order you like.",
+                "And if you need to take a break, don't worry. Your progress is saved at the start of each day.",
+                "Talk to me again if you forget any of that. Off you go now, son!"
+            }
+        });
 
-        havePig.name = "Mother";
-        havePig.lines = new string[] {
-            "Oh, you brought fresh pig!",
-            "Just put it there over the fire. We will cook it later."
-        };
+        dialogs.Add("Dialog_HavePig", new Dialog
+        {
+            name = "Mother",
+            lines = new string[] {
+                "Oh, you brought fresh pig!",
+                "Just put it there over the fire. We will cook it later."
+            }
+        });
 
-        haveWater.name = "Mother";
-        haveWater.lines = new string[] {
-            "Just pour the water into the big grey pot."
-        };
+        dialogs.Add("Dialog_HaveWater", new Dialog
+        {
+            name = "Mother",
+            lines = new string[] {
+                "Just pour the water into the big grey pot."
+            }
+        });
 
-        huntBegin.name = "Father";
-        huntBegin.lines = new string[] {
-            "Son! Good to see you're finally old enough to come to the hunt.",
-            "We didn't have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
-            "They didn't grow up with it, so they couldn't catch anything! But you, you might make a great hunter one day.",
-            "Never as good as your father though, heh heh!",
-            "We're hunting wild pig. Aim the bow, use as many arrows as you need, and kill it for today's meat."
-        };
+        dialogs.Add("Dialog_HuntBegin", new Dialog
+        {
+            name = "Father",
+            lines = new string[] {
+                "Son! Good to see you're finally old enough to come to the hunt.",
+                "We didn't have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
+                "They didn't grow up with it, so they couldn't catch anything! But you, you might make a great hunter one day.",
+                "Never as good as your father though, heh heh!",
+                "We're hunting wild pig. Aim the bow, use as many arrows as you need, and kill it for today's meat."
+            }
+        });
 
-        huntEnd.name = "Father";
-        huntEnd.lines = new string[] {
-            "Great start, son.",
-            "We're blessed to have wild animals here that we can eat. But we must rely on luck as well.",
-            "There is a plain through that path to the north leaving the forest. I've seen cows there.",
-            "Oh I agree son, they would be nice to eat. But outside of the forest, it's not safe. So promise me one thing, boy.",
-            "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?",
-            "Good. Now, take the meat and bring it home to mother. I'll see you for siesta later."
-        };
+        dialogs.Add("Dialog_HuntEnd", new Dialog
+        {
+            name = "Father",
+            lines = new string[] {
+                "Great start, son.",
+                "We're blessed to have wild animals here that we can eat. But we're relying on luck too.",
+                "There is a plain through that path to the north leaving the forest. I've seen cows there.",
+                "Oh I agree son, they would be nice to eat. But outside of the forest, it's not safe. So promise me one thing, boy.",
+                "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?",
+                "Good. Now, take the meat and bring it home to mother. I'll see you for siesta later."
+            }
+        });
 
-        noHunt.name = "Father";
-        noHunt.lines = new string[] {
-            "Shouldn't you be taking that water back to your mother?"
-        };
+        dialogs.Add("Dialog_NoHunt", new Dialog
+        {
+            name = "Father",
+            lines = new string[] {
+                "Shouldn't you be taking that water back to your mother?"
+            }
+        });
 
-        huntOver.name = "Father";
-        huntOver.lines = new string[] {
-            "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?"
-        };
+        dialogs.Add("Dialog_HuntOver", new Dialog
+        {
+            name = "Father",
+            lines = new string[] {
+                "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?"
+            }
+        });
 
-        dayOver.name = "Mother";
-        dayOver.lines = new string[] {
-            "Thank you, son. That's everything for today!",
-            "You've been hard at work, it's time for a siesta. Come on inside."
-        };
+        dialogs.Add("DayOver", new Dialog
+        {
+            name = "Mother",
+            lines = new string[] {
+                "Thank you, son. That's everything for today!",
+                "You've been hard at work, it's time for a siesta. Come on inside."
+            }
+        });
 
-        sister.name = "Sister";
-        sister.lines = new string[] {
-            "Oh hey little bro. Mom and dad got you working hard today?",
-            "I mean, <b>finally!</b> Someone else should do some of the work around here...",
-            "Come around tomorrow, I may need your help with something."
-        };
+        dialogs.Add("Dialog_Sister", new Dialog
+        {
+            name = "Sister",
+            lines = new string[] {
+                "Oh hey little bro. Mom and dad got you working hard today?",
+                "I mean, <b>finally!</b> Someone else should do some of the work around here...",
+                "Come around tomorrow, I may need your help with something."
+            }
+        });
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -450,7 +454,6 @@ public class Day1 : MonoBehaviour
         }
     }
 
-    // TODO: find triggers in bounds, make lists, profit?
     void InitializeAreas()
     {
         AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
@@ -481,6 +484,8 @@ public class Day1 : MonoBehaviour
             interactManager.OnDropoff -= HandleDropoffEvent;
             interactManager.OnDialog -= HandleDialogEvent;
             interactManager.OnWalk -= HandleWalkEvent;
+
+            taskManager.OnAllTasks -= HandleAllTasksComplete;
         }
     }
 

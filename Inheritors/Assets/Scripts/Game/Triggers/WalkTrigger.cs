@@ -28,13 +28,14 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     bool triggered = false;
 
+    public bool StartedEnabled()
+    {
+        return triggerEnabled;
+    }
+
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
-    }
-
-    public void Start()
-    {
         playerTransform = GameObject.Find("Player").transform;
         triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
@@ -70,7 +71,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     {
         if (!triggered)
         {
-            triggerEnabled = true;
+            // triggerEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
@@ -82,7 +83,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     // Disables collider and visual fx but keeps script alive so we can refer to it elsewhere.
     public void Disable()
     {
-        triggerEnabled = false;
+        // triggerEnabled = false;
         triggerCollider.enabled = false;
         l.DOIntensity(0f, .25f);
         // l.enabled = false;
@@ -111,7 +112,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     {
         if (!invisibleTrigger)
         {
-            triggerEnabled = false;
+            // triggerEnabled = false;
             triggerCollider.enabled = false;
             ps.Stop();
             triggerProjector.Disable();
@@ -135,12 +136,12 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggerEnabled && !triggered && other.tag == "Player")
+        // if (triggerEnabled && !triggered && other.tag == "Player")
+        if (!triggered && other.tag == "Player")
         {
             triggered = true;
             interactManager.WalkEnter(this);
         }
     }
 
-    public void FlagInArea(AreaTrigger area) { }
 }

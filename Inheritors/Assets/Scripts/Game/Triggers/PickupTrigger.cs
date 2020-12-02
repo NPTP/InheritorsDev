@@ -24,7 +24,10 @@ public class PickupTrigger : MonoBehaviour, Trigger
     bool pickedUp = false;
     bool droppedOff = false;
 
-    AreaTrigger myArea = null;
+    public bool StartedEnabled()
+    {
+        return triggerEnabled;
+    }
 
     void Awake()
     {
@@ -37,10 +40,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
         originalIntensity = l.intensity;
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
         triggerProjector = transform.GetChild(3).GetComponent<TriggerProjector>();
-    }
 
-    void Start()
-    {
         if (triggerEnabled) Enable();
         else Disable();
     }
@@ -64,7 +64,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     {
         if (!pickedUp)
         {
-            triggerEnabled = true;
+            // triggerEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
@@ -75,7 +75,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public void Disable()
     {
-        triggerEnabled = false;
+        // triggerEnabled = false;
         triggerCollider.enabled = false;
         l.DOIntensity(0f, .25f);
         ps.Stop();
@@ -93,10 +93,6 @@ public class PickupTrigger : MonoBehaviour, Trigger
         pickedUp = true;
         itemTransform.DOScale(itemLocalScale, .25f);
         Disable();
-        if (myArea != null)
-        {
-            myArea.BeginTaskInArea();
-        }
     }
 
     public void GetDroppedOff()
@@ -107,7 +103,8 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggerEnabled && other.tag == "Player")
+        // if (triggerEnabled && other.tag == "Player")
+        if (other.tag == "Player")
         {
             interactManager.PickupEnterRange(this);
             itemTransform.DOScale(itemLocalScale * 1.15f, .25f);
@@ -116,15 +113,12 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerExit(Collider other)
     {
-        if (triggerEnabled && other.tag == "Player")
+        // if (triggerEnabled && other.tag == "Player")
+        if (other.tag == "Player")
         {
             interactManager.PickupExitRange(this);
             itemTransform.DOScale(itemLocalScale, .25f);
         }
     }
 
-    public void FlagInArea(AreaTrigger area)
-    {
-        myArea = area;
-    }
 }

@@ -12,16 +12,8 @@ public class Dialog
 {
     public string name;
     public string[] lines;
-    public DialogManager.Speed speed;
     public bool skippable = true;
     public Transform target;
-
-    public Dialog()
-    {
-        this.name = "NO NAME GIVEN";
-        this.speed = DialogManager.Speed.FAST;
-        target = null;
-    }
 }
 
 // The dialog manager handles all dialogs and sends info to the UI to control it.
@@ -109,7 +101,6 @@ public class DialogManager : MonoBehaviour
     {
         string name = dialog.name;
         string[] lines = dialog.lines;
-        float speed = speeds[(int)dialog.speed];
         bool skippable = dialog.skippable;
         bool hasTarget = dialog.target != null;
 

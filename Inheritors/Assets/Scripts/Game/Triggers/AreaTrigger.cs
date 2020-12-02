@@ -3,11 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: consider making areas not inherit from Trigger interface, let them just be AREAS and have a different setup in the Day script
-public class AreaTrigger : MonoBehaviour, Trigger
+public class AreaTrigger : MonoBehaviour
 {
-    public void FlagInArea(AreaTrigger area) { }
-
     InteractManager interactManager;
 
     public event EventHandler OnAreaEnter;
@@ -16,27 +13,30 @@ public class AreaTrigger : MonoBehaviour, Trigger
     [Header("Area-specific options")]
     public bool areaEnabled = true;
     public string areaTag;
-    public bool enableTriggersOnEnter = false;
+    public bool enableTriggersOnEnter = true;
     [Space]
     [Header("Optional auto-acquire task tool")]
     public ItemType taskTool;
 
-    [HideInInspector]
-    public bool taskHasBegun = false;
     List<Trigger> triggersInside = new List<Trigger>();
-
     Collider areaCollider;
+    bool removed = false;
+
+    public bool StartedEnabled()
+    {
+        return areaEnabled;
+    }
 
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
+        areaCollider = GetComponent<Collider>();
     }
 
     void Start()
     {
-        areaCollider = GetComponent<Collider>();
         CaptureTriggers();
-
+        TurnOffTriggers();
         if (areaEnabled) Enable();
         else Disable();
     }
@@ -44,7 +44,7 @@ public class AreaTrigger : MonoBehaviour, Trigger
     void CaptureTriggers()
     {
         // Find the triggers inside this area.
-        IEnumerable<Trigger> allTriggers = allTriggers = FindObjectsOfType<MonoBehaviour>().OfType<Trigger>();
+        IEnumerable<Trigger> allTriggers = FindObjectsOfType<MonoBehaviour>().OfType<Trigger>();
         if (GetComponent<SphereCollider>())
         {
             float areaRadius = areaCollider.bounds.extents.x;
@@ -62,11 +62,22 @@ public class AreaTrigger : MonoBehaviour, Trigger
                     triggersInside.Add(trigger);
             }
         }
+    }
 
-        // Now tell those triggers they are inside this area.
-        foreach (Trigger triggerInside in triggersInside)
+    void TurnOffTriggers()
+    {
+        foreach (Trigger trigger in triggersInside)
         {
-            triggerInside.FlagInArea(this);
+            if (trigger != null) trigger.Disable();
+        }
+    }
+
+    void TurnOnTriggers()
+    {
+        foreach (Trigger trigger in triggersInside)
+        {
+            if (trigger.StartedEnabled())
+                trigger.Enable();
         }
     }
 
@@ -80,22 +91,24 @@ public class AreaTrigger : MonoBehaviour, Trigger
         return transform.position;
     }
 
-    public void BeginTaskInArea()
+    public void ShutDownArea()
     {
-        if (!taskHasBegun)
-        {
-            Disable();
-            taskHasBegun = true;
-        }
+        if (removed) return;
+        TurnOffTriggers();
+        Disable();
     }
 
-    public bool HasTaskBegun()
+    public void StartUpArea()
     {
-        return taskHasBegun;
+        if (removed) return;
+        TurnOnTriggers();
+        Enable();
     }
 
     public void Enable()
     {
+        if (removed) return;
+
         areaEnabled = true;
         areaCollider.enabled = true;
     }
@@ -106,9 +119,11 @@ public class AreaTrigger : MonoBehaviour, Trigger
         areaCollider.enabled = false;
     }
 
+    // Area removal doesn't truly get rid of it
     public void Remove()
     {
-        Destroy(this.gameObject);
+        Disable();
+        removed = true;
     }
 
     private void OnTriggerEnter(Collider other)

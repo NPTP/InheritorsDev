@@ -207,7 +207,6 @@ public class Day0 : MonoBehaviour
     void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
     {
         string tag = args.tag;
-        Dialog dialog = args.dialog;
 
         switch (tag)
         {
@@ -215,9 +214,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Interact Manager gave unknown DIALOG tag to Day " + dayNumber);
-                dialogManager.NewDialog(dialog);
-                StartCoroutine(WaitDialogEnd());
+                Debug.Log("Interact Manager gave unknown dialog tag " + tag + " to Day " + dayNumber);
                 break;
         }
     }
@@ -345,7 +342,6 @@ public class Day0 : MonoBehaviour
             "You are young, <b>son</b>." + delay + "\nYou are the inheritor of this land." + delay + "\nThe inheritor of our tradition." + delay,
             "You will bring us hope." + delay + delay
         };
-        opening.speed = DialogManager.Speed.SLOW;
 
         firepit.name = "Mother";
         firepit.skippable = false;
