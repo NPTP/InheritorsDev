@@ -11,6 +11,11 @@ TagManager:
   - UI_Prompt
   - TriggerInArea
   - Pickup
+  - MotherNPC
+  - FatherNPC
+  - SisterNPC
+  - GrandmotherNPC
+  - GrandfatherNPC
   layers:
   - Default
   - TransparentFX

@@ -16,9 +16,10 @@ public class AreaTrigger : MonoBehaviour, Trigger
     [Header("Area-specific options")]
     public bool areaEnabled = true;
     public string areaTag;
+    public bool enableTriggersOnEnter = false;
     [Space]
-    [Header("Optional task tool appearing in area")]
-    public GameObject taskTool;
+    [Header("Optional auto-acquire task tool")]
+    public ItemType taskTool;
 
     [HideInInspector]
     public bool taskHasBegun = false;
@@ -114,7 +115,6 @@ public class AreaTrigger : MonoBehaviour, Trigger
     {
         if (other.tag == "Player")
         {
-            // EnableTriggersInside();
             interactManager.AreaEnter(this, ref triggersInside, taskTool);
         }
     }

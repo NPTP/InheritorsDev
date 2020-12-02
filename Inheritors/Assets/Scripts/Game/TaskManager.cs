@@ -16,7 +16,8 @@ public enum TaskType
     Father,
     Sister,
     Grandmother,
-    Grandfather
+    Grandfather,
+    DayEnd
 }
 
 public class TaskManager : MonoBehaviour
@@ -98,6 +99,8 @@ public class TaskManager : MonoBehaviour
     List<Task> taskList;
     Task activeTask;
     bool allTasksCompleted = false;
+    public event EventHandler<EventArgs> OnAllTasks;
+    Dictionary<string, AreaTrigger> areas = new Dictionary<string, AreaTrigger>();
 
     void Awake()
     {
@@ -106,6 +109,14 @@ public class TaskManager : MonoBehaviour
         taskList = new List<Task>();
         activeTask = new Task();
         ResetAllTasks();
+        InitializeAreas();
+    }
+
+    void InitializeAreas()
+    {
+        AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
+        foreach (AreaTrigger areaTrigger in worldAreas)
+            areas[areaTrigger.GetTag()] = areaTrigger;
     }
 
     public void AddTask(TaskType type, string taskText)
@@ -138,6 +149,11 @@ public class TaskManager : MonoBehaviour
 
     public void SetActiveTask(TaskType type, bool startRecording = true)
     {
+        foreach (AreaTrigger area in areas.Values)
+        {
+            if (area != null) { area.Disable(); }
+        }
+
         if (activeTask.active)
         {
             print("A task is already active.");
@@ -176,20 +192,24 @@ public class TaskManager : MonoBehaviour
 
     public void CompleteActiveTask()
     {
+        recordManager.StopRecording();
+
         activeTask.Complete();
         activeTask = new Task();
+        foreach (AreaTrigger area in areas.Values)
+            if (area != null) { area.Enable(); }
 
-        recordManager.StopRecording();
         CheckAllTasksCompleted();
         UpdateTasks();
     }
 
     private void CheckAllTasksCompleted()
     {
-        if (activeTask.completed && taskList.Count == 0)
+        if (taskList.Count == 0)
         {
             Debug.Log("All tasks completed!");
             allTasksCompleted = true;
+            OnAllTasks?.Invoke(this, EventArgs.Empty);
         }
     }
 

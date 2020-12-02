@@ -59,7 +59,8 @@ public class PlayerMovement : MonoBehaviour
     {
         m_animator.SetBool("Grounded", m_isGrounded);
 
-        if (stateManager.GetState() == State.Normal)
+        State state = stateManager.GetState();
+        if (state == State.Normal || state == State.PickingUp || state == State.Holding)
             DirectUpdate();
 
         m_wasGrounded = m_isGrounded;

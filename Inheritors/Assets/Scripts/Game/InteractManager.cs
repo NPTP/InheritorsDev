@@ -105,17 +105,20 @@ public class InteractManager : MonoBehaviour
         return insideArea;
     }
 
-    public void AreaEnter(AreaTrigger sender, ref List<Trigger> triggersInside, GameObject taskTool)
+    public void AreaEnter(AreaTrigger sender, ref List<Trigger> triggersInside, ItemType toolType)
     {
         areaTrigger = sender;
         areaTag = areaTrigger.GetTag();
         insideArea = true;
-        foreach (Trigger trigger in triggersInside)
+        if (areaTrigger.enableTriggersOnEnter)
         {
-            trigger.Enable();
+            foreach (Trigger trigger in triggersInside)
+            {
+                trigger.Enable();
+            }
         }
-        if (taskTool != null)
-            pickupManager.GetTaskTool(taskTool);
+        if (toolType != ItemType.Null)
+            pickupManager.GetTaskTool(toolType);
         // OnArea?.Invoke(this, new AreaArgs { tag = areaTag, inside = true });
     }
 
@@ -124,9 +127,12 @@ public class InteractManager : MonoBehaviour
         areaTrigger = null;
         areaTag = null;
         insideArea = false;
-        foreach (Trigger trigger in triggersInside)
+        if (sender.enableTriggersOnEnter)
         {
-            trigger.Disable();
+            foreach (Trigger trigger in triggersInside)
+            {
+                trigger.Disable();
+            }
         }
         pickupManager.LoseTaskTool();
         // OnArea?.Invoke(this, new AreaArgs { tag = sender.GetTag(), inside = false });

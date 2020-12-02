@@ -8,7 +8,10 @@ public enum ItemType
 {
     Null,
     Wood,
-    Jug
+    Jug,
+    Water,
+    Bow,
+    Pig
 }
 
 public class PickupManager : MonoBehaviour
@@ -26,6 +29,7 @@ public class PickupManager : MonoBehaviour
         public int itemQuantity = 0;
         public GameObject taskTool = null;
         public bool haveTaskTool = false;
+        public bool toolIsAttached = false;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -60,32 +64,46 @@ public class PickupManager : MonoBehaviour
     // ███ TASK TOOL
     // ████████████████████████████████████████████████████████████████████████
 
-    // Game object version
-    public void GetTaskTool(GameObject toolPrefab)
+    // Resources load version (string name)
+    public void GetTaskTool(ItemType itemType)
     {
+        GameObject tool = null;
+        switch (itemType)
+        {
+            case ItemType.Jug:
+                tool = ResourcesTool("Jug");
+                inventory.toolIsAttached = false;
+                break;
+
+            case ItemType.Bow:
+                tool = PlayerSkeletonTool(itemType);
+                inventory.toolIsAttached = true;
+                break;
+
+            default:
+                print("Unknown item type in GetTaskTool, pickup manager.");
+                return;
+        }
         inventory.haveTaskTool = true;
-        GameObject tool = GameObject.Instantiate(
-            toolPrefab,
-            GetItemHoldPosition(),
-            player.transform.rotation,
-            player.transform
-        );
         tool.transform.DOScale(1f, 0.25f).From(0f);
         inventory.taskTool = tool;
     }
 
-    // Resources load version (string name)
-    public void GetTaskTool(string resourceName = "INVALID")
+    GameObject ResourcesTool(string resourceName)
     {
-        inventory.haveTaskTool = true;
-        GameObject tool = GameObject.Instantiate(
+        return GameObject.Instantiate(
             Resources.Load<GameObject>(resourceName),
             GetItemHoldPosition(),
             player.transform.rotation,
             player.transform
         );
-        tool.transform.DOScale(1f, 0.25f).From(0f);
-        inventory.taskTool = tool;
+    }
+
+    GameObject PlayerSkeletonTool(ItemType type)
+    {
+        GameObject tool = FindObjectOfType<PlayerSkeletonItems>().GetItem(type);
+        tool.SetActive(true);
+        return tool;
     }
 
     public void LoseTaskTool()
@@ -101,7 +119,13 @@ public class PickupManager : MonoBehaviour
         inventory.haveTaskTool = false;
         Tween t = toolReference.transform.DOScale(0f, 0.25f);
         yield return t.WaitForCompletion();
-        Destroy(toolReference);
+
+        if (inventory.toolIsAttached)
+            toolReference.SetActive(false);
+        else
+            Destroy(toolReference);
+
+        inventory.toolIsAttached = false;
     }
 
     Vector3 GetItemHoldPosition()

@@ -99,34 +99,6 @@ public class Day1 : MonoBehaviour
         yield return new WaitForSeconds(3f);
     }
 
-    IEnumerator End()
-    {
-        stateManager.SetState(State.Inert);
-        uiManager.TearDownTasksInventory();
-        Tween t = transitionManager.Show(2f);
-        audioManager.FadeOtherSources("down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
-        yield return t.WaitForCompletion();
-
-        saveManager.SaveGame(dayNumber + 1);
-        Helper.LoadScene("MainMenu");
-    }
-
-    void WoodPickups(PickupManager.Inventory inventory)
-    {
-        if (inventory.itemQuantity == 1)
-        {
-            // TODO: this can probably all be one function
-            areas["Area_Firewood"].BeginTaskInArea();
-            TurnOffAreas();
-            taskManager.SetActiveTask(TaskType.MotherWater);
-        }
-        else if (inventory.itemQuantity == 3)
-        {
-            taskManager.ChangeTask(TaskType.MotherWater, "Drop wood into fire pit.");
-            triggers["Dropoff_Firewood"].Enable();
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ EVENT HANDLERS
     // ████████████████████████████████████████████████████████████████████████
@@ -150,8 +122,12 @@ public class Day1 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Wood:
-                WoodPickups(inventory);
+            case ItemType.Pig:
+                PickupPig();
+                break;
+
+            case ItemType.Water:
+                PickupWater();
                 break;
 
             case ItemType.Null:
@@ -175,8 +151,20 @@ public class Day1 : MonoBehaviour
                 dialogManager.NewDialog(taskExplanation);
                 break;
 
-            case "Dialog_FatherStart":
-                dialogManager.NewDialog(fatherStart);
+            case "Dialog_HavePig":
+                dialogManager.NewDialog(havePig);
+                break;
+
+            case "Dialog_HaveWater":
+                dialogManager.NewDialog(haveWater);
+                break;
+
+            case "Dialog_HuntBegin":
+                StartCoroutine(HuntBegin());
+                break;
+
+            case "Dialog_Sister":
+                dialogManager.NewDialog(sister);
                 break;
 
             default:
@@ -197,6 +185,14 @@ public class Day1 : MonoBehaviour
                 taskManager.CompleteActiveTask();
                 break;
 
+            case "Dropoff_Meat":
+                DropoffMeat();
+                break;
+
+            case "Dropoff_Water":
+                DropoffWater();
+                break;
+
             default:
                 Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
                 break;
@@ -209,7 +205,7 @@ public class Day1 : MonoBehaviour
 
         switch (tag)
         {
-            case "NULL":
+            case "Walk_End":
                 StartCoroutine(End());
                 break;
 
@@ -224,17 +220,100 @@ public class Day1 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
     }
 
-    // 
-    void TurnOffAreas()
+    void HandleAllTasksComplete(object sender, EventArgs args)
     {
-        areas["Area_Firewood"].Disable();
-        // More... make a list?
+        StartCoroutine(AllTasksProcess());
     }
 
-    void TurnOnAreas()
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ HAPPENINGS OF THE DAY
+    // ████████████████████████████████████████████████████████████████████████
+
+
+    IEnumerator HuntBegin()
     {
-        areas["Area_Firewood"].Enable();
-        // More... make a list?
+        dialogManager.NewDialog(huntBegin);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        triggers["Dialog_HuntBegin"].Disable();
+        areas["Area_Father"].Remove();
+        taskManager.SetActiveTask(TaskType.Father, false);
+        taskManager.ChangeTask(TaskType.Father, "Kill the pig with the bow.");
+
+        // PIG KILLING MINIGAME GOES ON HERE
+        // stateManager.SetState(State.Hunting); ???
+        yield return new WaitForSeconds(2f);
+        // END PIG KILLING
+
+        Destroy(GameObject.Find("Pig").GetComponent<Animator>());
+        dialogManager.NewDialog(huntEnd);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        pickupManager.LoseTaskTool();
+        taskManager.ChangeTask(TaskType.Father, "Collect the meat.");
+        triggers["Pickup_Pig"].Enable();
+    }
+
+    void PickupPig()
+    {
+        taskManager.ChangeTask(TaskType.Father, "Bring the meat to mother's fire.");
+        triggers["Dropoff_Meat"].Enable();
+        triggers["Dialog_TaskExplanation"].Disable();
+        triggers["Dialog_HavePig"].Enable();
+        recordManager.StartNewRecording();
+    }
+
+    void DropoffMeat()
+    {
+        taskManager.CompleteActiveTask();
+        triggers["Dialog_HavePig"].Disable();
+    }
+
+    void PickupWater()
+    {
+        taskManager.SetActiveTask(TaskType.MotherWater);
+        taskManager.ChangeTask(TaskType.MotherWater, "Bring the water to mother's pot.");
+        triggers["Dropoff_Water"].Enable();
+        triggers["Dialog_TaskExplanation"].Disable();
+        triggers["Dialog_HaveWater"].Enable();
+    }
+
+    void DropoffWater()
+    {
+        pickupManager.LoseTaskTool();
+        taskManager.CompleteActiveTask();
+        triggers["Dialog_HaveWater"].Disable();
+    }
+
+    IEnumerator AllTasksProcess()
+    {
+        yield return new WaitForSeconds(1f);
+        dialogManager.NewDialog(dayOver);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        StartCoroutine(RemoveNPCs());
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Head inside the maloca for siesta.", false);
+        triggers["Walk_End"].Enable();
+    }
+
+    IEnumerator RemoveNPCs()
+    {
+        yield return null;
+        // TODO: direct NPCs to walk inside their malocas if they have'em and disappear.
+        Destroy(GameObject.FindWithTag("MotherNPC"));
+        Destroy(GameObject.FindWithTag("FatherNPC"));
+        Destroy(GameObject.FindWithTag("SisterNPC"));
+    }
+
+    IEnumerator End()
+    {
+        stateManager.SetState(State.Inert);
+        uiManager.TearDownTasksInventory();
+        Tween t = transitionManager.Show(2f);
+        audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        yield return t.WaitForCompletion();
+
+        saveManager.SaveGame(dayNumber);
+        Helper.LoadScene("Loading");
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -244,7 +323,14 @@ public class Day1 : MonoBehaviour
 
     Dialog day1Opening = new Dialog();
     Dialog taskExplanation = new Dialog();
-    Dialog fatherStart = new Dialog();
+    Dialog havePig = new Dialog();
+    Dialog haveWater = new Dialog();
+    Dialog huntBegin = new Dialog();
+    Dialog huntEnd = new Dialog();
+    Dialog huntOver = new Dialog();
+    Dialog dayOver = new Dialog();
+    Dialog sister = new Dialog();
+    Dialog noHunt = new Dialog();
     void InitializeDialogs()
     {
         day1Opening.name = "Mother";
@@ -268,12 +354,57 @@ public class Day1 : MonoBehaviour
             "Talk to me again if you forget any of that. Off you go now, son!"
         };
 
-        fatherStart.name = "Father";
-        fatherStart.lines = new string[] {
-            "My son! Good to see you finally come to the hunt. I’m glad you’re with us now.",
-            "We did not have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
-            "They had not grown up with it, and caught little food. But you, you’ll make a great hunter one day - just like your father!",
-            "Let’s kill the wild pig. Take the bow."
+        havePig.name = "Mother";
+        havePig.lines = new string[] {
+            "Oh, you brought fresh pig!",
+            "Just put it there over the fire. We will cook it later."
+        };
+
+        haveWater.name = "Mother";
+        haveWater.lines = new string[] {
+            "Just pour the water into the big grey pot."
+        };
+
+        huntBegin.name = "Father";
+        huntBegin.lines = new string[] {
+            "Son! Good to see you're finally old enough to come to the hunt.",
+            "We didn't have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
+            "They didn't grow up with it, so they couldn't catch anything! But you, you might make a great hunter one day.",
+            "Never as good as your father though, heh heh!",
+            "We're hunting wild pig. Aim the bow, use as many arrows as you need, and kill it for today's meat."
+        };
+
+        huntEnd.name = "Father";
+        huntEnd.lines = new string[] {
+            "Great start, son.",
+            "We're blessed to have wild animals here that we can eat. But we must rely on luck as well.",
+            "There is a plain through that path to the north leaving the forest. I've seen cows there.",
+            "Oh I agree son, they would be nice to eat. But outside of the forest, it's not safe. So promise me one thing, boy.",
+            "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?",
+            "Good. Now, take the meat and bring it home to mother. I'll see you for siesta later."
+        };
+
+        noHunt.name = "Father";
+        noHunt.lines = new string[] {
+            "Shouldn't you be taking that water back to your mother?"
+        };
+
+        huntOver.name = "Father";
+        huntOver.lines = new string[] {
+            "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?"
+        };
+
+        dayOver.name = "Mother";
+        dayOver.lines = new string[] {
+            "Thank you, son. That's everything for today!",
+            "You've been hard at work, it's time for a siesta. Come on inside."
+        };
+
+        sister.name = "Sister";
+        sister.lines = new string[] {
+            "Oh hey little bro. Mom and dad got you working hard today?",
+            "I mean, <b>finally!</b> Someone else should do some of the work around here...",
+            "Come around tomorrow, I may need your help with something."
         };
     }
 
@@ -292,6 +423,7 @@ public class Day1 : MonoBehaviour
     UIManager uiManager;
     InteractManager interactManager;
     PickupManager pickupManager;
+    RecordManager recordManager;
     void InitializeReferences()
     {
         saveManager = FindObjectOfType<SaveManager>();
@@ -306,6 +438,7 @@ public class Day1 : MonoBehaviour
         interactManager = FindObjectOfType<InteractManager>();
         interactManager = FindObjectOfType<InteractManager>();
         pickupManager = FindObjectOfType<PickupManager>();
+        recordManager = FindObjectOfType<RecordManager>();
     }
 
     void InitializeTriggers()
@@ -334,6 +467,8 @@ public class Day1 : MonoBehaviour
         interactManager.OnDropoff += HandleDropoffEvent;
         interactManager.OnDialog += HandleDialogEvent;
         interactManager.OnWalk += HandleWalkEvent;
+
+        taskManager.OnAllTasks += HandleAllTasksComplete;
     }
 
 

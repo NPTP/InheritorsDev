@@ -318,11 +318,11 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
         Tween t = transitionManager.Show(2f);
-        audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        audioManager.FadeOtherSources("Down", 2f);
         yield return t.WaitForCompletion();
 
         saveManager.SaveGame(dayNumber);
-        Helper.LoadNextSceneInBuildOrder();
+        Helper.LoadScene("Loading");
     }
 
     Dialog opening = new Dialog();

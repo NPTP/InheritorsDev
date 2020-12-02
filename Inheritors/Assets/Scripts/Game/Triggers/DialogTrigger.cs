@@ -50,7 +50,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
         if (myTarget != null)
         {
-            projectorTransform.transform.position = myTarget.position;
+            projectorTransform.position = myTarget.position;
             dialog.target = myTarget;
         }
         triggerProjector.Disable();
@@ -79,6 +79,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
     {
         triggerCollider.enabled = false;
         l.enabled = false;
+        triggerProjector.Disable();
     }
 
     public void Remove()
