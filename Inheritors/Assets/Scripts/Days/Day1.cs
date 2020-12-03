@@ -70,8 +70,8 @@ public class Day1 : MonoBehaviour
         stateManager.SetState(State.Normal);
 
         // Zoom up and queue the opening dialog, leave inert after dialog.
-        // dialogManager.NewDialog(dialogs["Day1Opening"], State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogManager.NewDialog(dialogs["Day1Opening"], State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(.5f);
 
