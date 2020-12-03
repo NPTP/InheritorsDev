@@ -22,6 +22,7 @@ public class UIResources : ScriptableObject
     public Sprite WOOD;
     public Sprite WATER;
     public Sprite PIG;
+    public Sprite PAPAYA;
 
     public Sprite GetItemIcon(ItemType type)
     {
@@ -30,11 +31,14 @@ public class UIResources : ScriptableObject
             case ItemType.Wood:
                 return WOOD;
 
+            case ItemType.Water:
+                return WATER;
+
             case ItemType.Pig:
                 return PIG;
 
-            case ItemType.Water:
-                return WATER;
+            case ItemType.Papaya:
+                return PAPAYA;
 
             default:
                 return null;

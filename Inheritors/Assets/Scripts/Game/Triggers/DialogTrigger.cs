@@ -11,6 +11,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public bool triggerEnabled = true;
     public string triggerTag;
+    bool alreadyDisabled = false;
     TriggerProjector triggerProjector;
     Transform projectorTransform;
 
@@ -71,15 +72,20 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public void Enable()
     {
+        alreadyDisabled = false;
         triggerCollider.enabled = true;
         l.enabled = true;
     }
 
     public void Disable()
     {
-        triggerCollider.enabled = false;
-        l.enabled = false;
-        triggerProjector.Disable();
+        if (!alreadyDisabled)
+        {
+            alreadyDisabled = true;
+            triggerCollider.enabled = false;
+            l.enabled = false;
+            triggerProjector.Disable();
+        }
     }
 
     public void Remove()

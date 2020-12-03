@@ -23,3 +23,4 @@ MonoBehaviour:
   WOOD: {fileID: 21300000, guid: 2feb0f9522e60054b8bdd38bee469e50, type: 3}
   WATER: {fileID: 21300000, guid: 51e574bf908cd8c4bb15172dfdd30ab2, type: 3}
   PIG: {fileID: 21300000, guid: a33557ad5a3c6904db607c86a177cb67, type: 3}
+  PAPAYA: {fileID: 21300000, guid: 8184a053e5940654a8db577981177c58, type: 3}

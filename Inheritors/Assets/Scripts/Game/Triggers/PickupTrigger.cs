@@ -12,6 +12,8 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public string triggerTag;
     public ItemType itemType;
 
+    bool destroyed = false;
+
     Transform originalParent;
     Collider triggerCollider;
     Transform itemTransform;
@@ -76,10 +78,18 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public void Disable()
     {
         // triggerEnabled = false;
-        triggerCollider.enabled = false;
-        l.DOIntensity(0f, .25f);
-        ps.Stop();
-        triggerProjector.Disable();
+        if (!destroyed)
+        {
+            triggerCollider.enabled = false;
+            l.DOIntensity(0f, .25f);
+            ps.Stop();
+            triggerProjector.Disable();
+        }
+    }
+
+    void OnDestroy()
+    {
+        destroyed = true;
     }
 
     // ONLY call this from another script once that script has finished with the trigger!

@@ -72,11 +72,12 @@ public class AsyncLoadingScreen : MonoBehaviour
         bool finishedLoading = false;
         while (!finishedLoading)
         {
-            loadingText.text = "Loading: " + ((asyncOperation.progress / 0.9) * 100) + "%";
+            loadingText.text = "Loading: " + (int)((asyncOperation.progress / 0.9) * 100) + "%";
 
             if (asyncOperation.progress >= 0.9f)
             {
                 loadingTextCG.alpha = 0;
+                loadingTextCG.gameObject.SetActive(false);
                 finishedTextCG.alpha = 1;
                 if (Input.GetButtonDown("A"))
                 {

@@ -75,7 +75,7 @@ public class Day2 : MonoBehaviour
         // Show the tasks, only cam send on the new one.
         cameraManager.SendCamTo(sisterQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Sister, "Gather 6 papaya with sister.");
+        taskManager.AddTask(TaskType.Sister, "Gather papayas for sister.");
         yield return new WaitForSeconds(1f);
         cameraManager.QuadrantCamActivate(motherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
@@ -87,7 +87,7 @@ public class Day2 : MonoBehaviour
         // Final dialog of opening.
         dialogManager.NewDialog(dialogs["Day2Opening_2"]);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        // triggers["Dialog_Mother"].Enable();
+        triggers["Dialog_MotherNoTask"].Enable();
 
         yield return new WaitForSeconds(1f);
     }
@@ -119,8 +119,12 @@ public class Day2 : MonoBehaviour
                 PickupPig();
                 break;
 
-            case ItemType.Water:
-                PickupWater();
+            case ItemType.Wood:
+                PickupWood(inventory.itemQuantity);
+                break;
+
+            case ItemType.Papaya:
+                PickupPapaya(inventory.itemQuantity);
                 break;
 
             case ItemType.Null:
@@ -149,6 +153,10 @@ public class Day2 : MonoBehaviour
                 StartCoroutine(HuntBegin());
                 break;
 
+            case "Dialog_SisterStart":
+                StartCoroutine(SisterStart());
+                break;
+
             default:
                 break;
         }
@@ -160,7 +168,11 @@ public class Day2 : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Firewood":
+            case "Dropoff_Wood":
+                taskManager.CompleteActiveTask();
+                break;
+
+            case "Dropoff_Papaya":
                 taskManager.CompleteActiveTask();
                 break;
 
@@ -194,6 +206,55 @@ public class Day2 : MonoBehaviour
         }
     }
 
+    void HandleUpdateTasks(object sender, TaskManager.TaskArgs args)
+    {
+        SetTaskState(args.tasks);
+    }
+
+    void SetTaskState(Dictionary<TaskType, Task> taskList)
+    {
+        print("Got task state set");
+        Dictionary<TaskType, Task> t = taskList;
+
+        // On starting ANY task:
+        triggers["Dialog_MotherNoTask"].Disable();
+
+        // Mother
+        // --------------------------------------------------------------------
+        if (t[TaskType.MotherWood].status == TaskStatus.Active)
+        {
+            triggers["Dialog_DoingWood"].Enable();
+        }
+        else if (t[TaskType.MotherWood].status == TaskStatus.Completed)
+        {
+            triggers["Dialog_DoingWood"].Disable();
+        }
+
+        // Father
+        // --------------------------------------------------------------------
+        if (t[TaskType.Father].status == TaskStatus.Active)
+        {
+
+        }
+        else if (t[TaskType.Father].status == TaskStatus.Completed)
+        {
+            triggers["Dialog_HuntOver"].Enable();
+        }
+
+        // Sister
+        // --------------------------------------------------------------------
+        if (t[TaskType.Sister].status == TaskStatus.Active)
+        {
+            triggers["Dialog_SisterStart"].Disable();
+            triggers["Dialog_SisterActive"].Enable();
+        }
+        else if (t[TaskType.Sister].status == TaskStatus.Completed)
+        {
+            triggers["Dialog_SisterActive"].Disable();
+            triggers["Dialog_SisterComplete"].Enable();
+        }
+    }
+
     IEnumerator WaitDialogEnd()
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -208,24 +269,39 @@ public class Day2 : MonoBehaviour
     // ███ HAPPENINGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
 
+    IEnumerator SisterStart()
+    {
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        taskManager.SetActiveTask(TaskType.Sister);
+        taskManager.ChangeTask(TaskType.Sister, "Gather 6 papayas.");
+        Transform papayaPickups = GameObject.Find("PapayaPickups").transform;
+        foreach (Transform child in papayaPickups)
+        {
+            child.GetComponent<Trigger>().Enable();
+        }
+
+
+    }
+
     IEnumerator HuntBegin()
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.SetActiveTask(TaskType.Father, false);
-        taskManager.ChangeTask(TaskType.Father, "Kill the pig with the bow.");
+        taskManager.SetActiveTask(TaskType.Father);
+        taskManager.ChangeTask(TaskType.Father, "Kill the agoutis with the bow.");
 
         // PIG KILLING MINIGAME GOES ON HERE
         // stateManager.SetState(State.Hunting); ???
         yield return new WaitForSeconds(2f);
         // END PIG KILLING
 
-        Destroy(GameObject.Find("Pig").GetComponent<Animator>());
+        Destroy(GameObject.Find("Agoutis").GetComponent<Animator>());
+        recordManager.StopRecording();
         dialogManager.NewDialog(dialogs["Dialog_HuntEnd"]);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-
         pickupManager.LoseTaskTool();
-        taskManager.ChangeTask(TaskType.Father, "Collect the meat.");
-        triggers["Pickup_Pig"].Enable();
+
+        taskManager.CompleteActiveTask();
     }
 
     void PickupPig()
@@ -243,14 +319,39 @@ public class Day2 : MonoBehaviour
         triggers["Dialog_HavePig"].Disable();
     }
 
-    void PickupWater()
+    void PickupWood(int itemQuantity)
     {
-        taskManager.SetActiveTask(TaskType.MotherWater);
-        taskManager.ChangeTask(TaskType.MotherWater, "Bring the water to mother's pot.");
-        triggers["Dropoff_Water"].Enable();
-        triggers["Dialog_TaskExplanation"].Disable();
-        triggers["Dialog_HaveWater"].Enable();
-        triggers["Dialog_HuntBegin"].Disable();
+        if (itemQuantity == 1)
+        {
+            taskManager.SetActiveTask(TaskType.MotherWood);
+            taskManager.ChangeTask(TaskType.MotherWood, "Collect 2 more logs.");
+        }
+        else if (itemQuantity == 2)
+        {
+            taskManager.ChangeTask(TaskType.MotherWood, "Collect 1 more log.");
+        }
+        else if (itemQuantity == 3)
+        {
+            taskManager.ChangeTask(TaskType.MotherWood, "Bring logs back to fire pit.");
+            triggers["Dropoff_Wood"].Enable();
+        }
+    }
+
+    void PickupPapaya(int itemQuantity)
+    {
+        if (itemQuantity > 0 && itemQuantity < 5)
+        {
+            taskManager.ChangeTask(TaskType.Sister, "Gather " + (6 - itemQuantity).ToString() + " more papayas.");
+        }
+        else if (itemQuantity == 5)
+        {
+            taskManager.ChangeTask(TaskType.Sister, "Gather 1 more papaya.");
+        }
+        else if (itemQuantity == 6)
+        {
+            taskManager.ChangeTask(TaskType.Sister, "Bring papayas back to sister.");
+            triggers["Dropoff_Papaya"].Enable();
+        }
     }
 
     void DropoffWater()
@@ -303,7 +404,7 @@ public class Day2 : MonoBehaviour
         dialogs.Add("Day2Opening_1", new Dialog
         {
             name = "Mother",
-            skippable = false,
+            // skippable = false,
             lines = new string[] {
                 "It’s so nice to see you running around making your own path here.",
                 "I couldn’t have imagined it. When I was young, the Kanoe and the Akuntsu would never...",
@@ -317,33 +418,24 @@ public class Day2 : MonoBehaviour
             name = "Mother",
             lines = new string[] {
                 "You already know where to find your father, and the firewood.",
-                "But this will be your first time helping your sister! Off you go now."
+                "But this will be your first time helping your sister! Ask her what she needs. Off you go now."
             }
         });
 
-        dialogs.Add("MotherNoTask", new Dialog
+        dialogs.Add("Dialog_MotherNoTask", new Dialog
         {
             name = "Mother",
             lines = new string[] {
-                "There are so few of us now, but we are together. That's what counts.",
-                "You still have work to do, don't you? Off you go now!"
+                "Ohh... There are so few of us now, but we are together. That's what counts.",
+                "Son, what are you hanging around for? You still have work to do, off you go now!"
             }
         });
 
-        dialogs.Add("Dialog_HavePig", new Dialog
+        dialogs.Add("Dialog_DoingWood", new Dialog
         {
             name = "Mother",
             lines = new string[] {
-                "Oh, you brought fresh pig!",
-                "Just put it there over the fire. We will cook it later."
-            }
-        });
-
-        dialogs.Add("Dialog_HaveWater", new Dialog
-        {
-            name = "Mother",
-            lines = new string[] {
-                "Just pour the water into the big grey pot."
+                "Once you have all the wood, just drop it onto the firepit."
             }
         });
 
@@ -351,11 +443,8 @@ public class Day2 : MonoBehaviour
         {
             name = "Father",
             lines = new string[] {
-                "Son! Good to see you're finally old enough to come to the hunt.",
-                "We didn't have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
-                "They didn't grow up with it, so they couldn't catch anything! But you, you might make a great hunter one day.",
-                "Never as good as your father though, heh heh!",
-                "We're hunting wild pig. Aim the bow, use as many arrows as you need, and kill it for today's meat."
+                "Hey! Son! You did good yesterday. Now, today, we’ve got a faster and smaller target than a pig: the agoutis.",
+                 "Try to hit one of their group; you’ll have to lead your target. That’ll <i>really</i> teach you how to use a bow."
             }
         });
 
@@ -363,20 +452,10 @@ public class Day2 : MonoBehaviour
         {
             name = "Father",
             lines = new string[] {
-                "Great start, son.",
-                "We're blessed to have wild animals here that we can eat. But we're relying on luck too.",
-                "There is a plain through that path to the north leaving the forest. I've seen cows there.",
-                "Oh I agree son, they would be nice to eat. But outside of the forest, it's not safe. So promise me one thing, boy.",
-                "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?",
-                "Good. Now, take the meat and bring it home to mother. I'll see you for siesta later."
-            }
-        });
-
-        dialogs.Add("Dialog_NoHunt", new Dialog
-        {
-            name = "Father",
-            lines = new string[] {
-                "Shouldn't you be taking that water back to your mother?"
+                "Nice shot!",
+                "Don’t worry about bringing any meat home today. One agoutis is too small, so dad is going to catch a few more first.",
+                "Hey, me and your grandfather were hoping to get the bridge back up over the river tomorrow.",
+                "When we do, you should go across and say hi to him. It’s been a while."
             }
         });
 
@@ -384,7 +463,39 @@ public class Day2 : MonoBehaviour
         {
             name = "Father",
             lines = new string[] {
-                "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?"
+                "Tomorrow we'll have the bridge put up over the river again. Your grandfather's been waiting to see you."
+            }
+        });
+
+        dialogs.Add("Dialog_SisterStart", new Dialog
+        {
+            name = "Sister",
+            lines = new string[] {
+                "I heard that on the other side of the river, there’s a tree bigger and older than any other.",
+                "Grandmother said she climbed it as a child, as her own grandmother did before her.",
+                "I've grown a lot of plants, but nothing like that. If we get to cross the river soon, let's mark our names on it!",
+                "I wonder how deep its roots go...",
+                "But first! Let’s get the <color=blue>papayas</color> we need. 6 in total - one for each of the family.",
+                "Gather some from my garden, but it may not be enough. I think I saw some more growing at the <color=green>south entrance</color> to this forest.",
+                "Come back when you have <color=blue>6 papayas</color>, and drop them in my bucket. I’m sure I could eat all 6 myself…"
+            }
+        });
+
+        dialogs.Add("Dialog_SisterActive", new Dialog
+        {
+            name = "Sister",
+            lines = new string[] {
+                "Have you found all the papayas yet? We need 6!",
+                "There are 3 in my garden, and 3 near the <color=green>south entrance</color> to this forest."
+            }
+        });
+
+        dialogs.Add("Dialog_SisterComplete", new Dialog
+        {
+            name = "Sister",
+            lines = new string[] {
+                "Thanks little bro! That's all we need!",
+                "Maybe you're not so lazy after all. Come back again tomorrow, and we'll grow something new."
             }
         });
 
@@ -467,6 +578,7 @@ public class Day2 : MonoBehaviour
         interactManager.OnDialog += HandleDialogEvent;
         interactManager.OnWalk += HandleWalkEvent;
 
+        taskManager.OnUpdateTasks += HandleUpdateTasks;
         taskManager.OnAllTasks += HandleAllTasksComplete;
     }
 
@@ -481,6 +593,7 @@ public class Day2 : MonoBehaviour
             interactManager.OnDialog -= HandleDialogEvent;
             interactManager.OnWalk -= HandleWalkEvent;
 
+            taskManager.OnUpdateTasks -= HandleUpdateTasks;
             taskManager.OnAllTasks -= HandleAllTasksComplete;
         }
     }

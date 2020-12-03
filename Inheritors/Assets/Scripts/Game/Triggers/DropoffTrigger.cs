@@ -10,6 +10,8 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     public bool triggerEnabled = true;
     public string triggerTag;
 
+    bool destroyed = false;
+
     [Header("Dropoff-Specific Properties")]
     public Transform target;
     public string promptText;
@@ -59,10 +61,18 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     public void Disable()
     {
-        // triggerEnabled = false;
-        triggerCollider.enabled = false;
-        l.enabled = false;
-        ps.Stop();
+        if (!destroyed)
+        {
+            // triggerEnabled = false;
+            triggerCollider.enabled = false;
+            l.enabled = false;
+            ps.Stop();
+        }
+    }
+
+    void OnDestroy()
+    {
+        destroyed = true;
     }
 
     // ONLY call this from the Day when you have used its information already.

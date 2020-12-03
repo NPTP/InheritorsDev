@@ -11,7 +11,9 @@ public enum ItemType
     Jug,
     Water,
     Bow,
-    Pig
+    Pig,
+    Agoutis,
+    Papaya
 }
 
 public class PickupManager : MonoBehaviour

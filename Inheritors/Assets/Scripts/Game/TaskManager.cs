@@ -49,9 +49,15 @@ public class TaskManager : MonoBehaviour
     RecordManager recordManager;
     Task activeTask;
     bool allTasksCompleted = false;
-    public event EventHandler<EventArgs> OnAllTasks;
     Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
     Dictionary<TaskType, Task> taskList = new Dictionary<TaskType, Task>();
+
+    public event EventHandler<EventArgs> OnAllTasks;
+    public event EventHandler<TaskArgs> OnUpdateTasks;
+    public class TaskArgs : EventArgs
+    {
+        public Dictionary<TaskType, Task> tasks;
+    }
 
     void Awake()
     {
@@ -101,7 +107,7 @@ public class TaskManager : MonoBehaviour
     public void ChangeTask(TaskType taskType, string newText)
     {
         taskList[taskType].text = newText;
-        UpdateTasks();
+        UpdateTasks(false);
     }
 
     public void SetActiveTask(TaskType taskType, bool startRecording = true)
@@ -171,8 +177,9 @@ public class TaskManager : MonoBehaviour
         OnAllTasks?.Invoke(this, EventArgs.Empty);
     }
 
-    void UpdateTasks()
+    void UpdateTasks(bool sendEvent = true)
     {
+        if (sendEvent) { OnUpdateTasks?.Invoke(this, new TaskArgs { tasks = taskList }); }
         uiManager.UpdateTasks(activeTask, taskList);
     }
 

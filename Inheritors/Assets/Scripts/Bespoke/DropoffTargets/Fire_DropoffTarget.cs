@@ -33,7 +33,6 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
 
     public void ReactToDropoff()
     {
-        print("Reacted to dropoff");
         // TODO: also play a sound here. e.g.:
         // audioManager.PlayOneShot("fire-burst");
         float flareTime = 3f;

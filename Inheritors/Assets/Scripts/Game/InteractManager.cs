@@ -132,7 +132,7 @@ public class InteractManager : MonoBehaviour
         {
             foreach (Trigger trigger in triggersInside)
             {
-                trigger.Disable();
+                if (trigger != null) { trigger.Disable(); }
             }
         }
         pickupManager.LoseTaskTool();
