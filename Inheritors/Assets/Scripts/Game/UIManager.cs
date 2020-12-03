@@ -84,17 +84,27 @@ public class UIManager : MonoBehaviour
     // ███ TASKS
     // ████████████████████████████████████████████████████████████████████████
 
-    public void UpdateTasks(TaskManager.Task activeTask, List<TaskManager.Task> taskList)
+    public void UpdateTasks(Task activeTask, Dictionary<TaskType, Task> taskList)
     {
-        tasksInventory.activeBarTxt.text = activeTask.text;
+        if (activeTask.status == TaskStatus.Active)
+        {
+            tasksInventory.activeBarTxt.text = activeTask.text;
+            tasksInventory.activeBarArrow.DOColor(Color.green, 0.25f);
+        }
+        else
+        {
+            tasksInventory.activeBarTxt.text = "";
+            tasksInventory.activeBarArrow.DOColor(Color.white, 0.25f);
+        }
         // TODO: get the strikethru working later (polish stage)
         // if (activeTask.completed)
         //     StrikethruActiveTask(0.5f);
 
         string listBuilder = "";
-        foreach (TaskManager.Task task in taskList)
+        foreach (Task task in taskList.Values)
         {
-            listBuilder += task.text + "\n\n";
+            if (task.status == TaskStatus.Waiting)
+                listBuilder += task.text + "\n\n";
         }
         tasksInventory.taskListTxt.text = listBuilder;
     }
@@ -293,6 +303,7 @@ public class UIManager : MonoBehaviour
         GameObject activeBar = GameObject.Find("ActiveBar");
         tasksInventory.activeBarRT = activeBar.GetComponent<RectTransform>();
         tasksInventory.activeBarImg = activeBar.GetComponent<Image>();
+        tasksInventory.activeBarArrow = activeBar.transform.GetChild(1).GetComponent<Image>();
         tasksInventory.activeBarTxt = activeBar.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
         tasksInventory.strikethruRT = activeBar.transform.GetChild(0).GetChild(0).gameObject.GetComponent<RectTransform>();
         tasksInventory.strikethruImg = activeBar.transform.GetChild(0).GetChild(0).gameObject.GetComponent<Image>();

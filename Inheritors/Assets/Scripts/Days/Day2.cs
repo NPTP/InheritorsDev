@@ -75,13 +75,13 @@ public class Day2 : MonoBehaviour
         // Show the tasks, only cam send on the new one.
         cameraManager.SendCamTo(sisterQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Sister, "Gather 6 papaya with sister.", areas["Area_Sister"]);
+        taskManager.AddTask(TaskType.Sister, "Gather 6 papaya with sister.");
         yield return new WaitForSeconds(1f);
         cameraManager.QuadrantCamActivate(motherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.MotherWood, "Fetch 3 logs for firewood.", areas["Area_Firewood"]);
+        taskManager.AddTask(TaskType.MotherWood, "Fetch 3 logs for firewood.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "See father for next hunting lesson.", areas["Area_Father"]);
+        taskManager.AddTask(TaskType.Father, "See father for next hunting lesson.");
         yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.

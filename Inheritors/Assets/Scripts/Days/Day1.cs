@@ -78,13 +78,13 @@ public class Day1 : MonoBehaviour
         // Give us context for watering hole task.
         cameraManager.SendCamTo(wateringHoleTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.", areas["Area_Water"]);
+        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.
         cameraManager.SendCamTo(fatherHuntingTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Father, "Meet father to hunt.", areas["Area_Father"]);
+        taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
         yield return new WaitForSeconds(1f);
 
         // Return to player to debrief before letting them loose.
@@ -167,10 +167,6 @@ public class Day1 : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Firewood":
-                taskManager.CompleteActiveTask();
-                break;
-
             case "Dropoff_Meat":
                 DropoffMeat();
                 break;

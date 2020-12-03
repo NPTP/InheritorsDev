@@ -16,6 +16,7 @@ public class UI_TasksInventory
     Vector3 activeBarEndPos;   // For use with rect transform.
     public RectTransform activeBarRT;
     public Image activeBarImg;
+    public Image activeBarArrow;
     public TMP_Text activeBarTxt;
     public RectTransform strikethruRT;
     public Image strikethruImg;

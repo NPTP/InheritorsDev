@@ -4,7 +4,6 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum TaskType
 {
@@ -20,15 +19,173 @@ public enum TaskType
     DayEnd
 }
 
+public enum TaskStatus
+{
+    Disabled,
+    Waiting,
+    Active,
+    Completed
+}
+
+public class Task
+{
+    public TaskType type;        // Identifier for the task
+    public string text;         // The actual text to display for the task, e.g. "Get wood for the fire."
+    public AreaTrigger area;
+    public TaskStatus status;
+
+    public Task(TaskType type = TaskType.Null, string text = "", AreaTrigger area = null)
+    {
+        this.type = type;
+        this.text = text;
+        this.area = area;
+        this.status = TaskStatus.Disabled;
+    }
+}
+
 public class TaskManager : MonoBehaviour
 {
-    public class Task
+    UIManager uiManager;
+    RecordManager recordManager;
+    Task activeTask;
+    bool allTasksCompleted = false;
+    public event EventHandler<EventArgs> OnAllTasks;
+    Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
+    Dictionary<TaskType, Task> taskList = new Dictionary<TaskType, Task>();
+
+    void Awake()
+    {
+        uiManager = FindObjectOfType<UIManager>();
+        recordManager = FindObjectOfType<RecordManager>();
+        taskList = new Dictionary<TaskType, Task>();
+        activeTask = new Task();
+        InitializeTaskList();
+        InitializeAreas();
+    }
+
+    void InitializeTaskList()
+    {
+        foreach (TaskType taskType in Enum.GetValues(typeof(TaskType)))
+        {
+            taskList[taskType] = new Task(taskType);
+        }
+        uiManager.UpdateTasks(activeTask, taskList);
+    }
+
+    void InitializeAreas()
+    {
+        AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
+        foreach (AreaTrigger areaTrigger in worldAreas)
+            areas[areaTrigger.taskType] = areaTrigger;
+    }
+
+    Task GetTask(TaskType taskType)
+    {
+        return taskList[taskType];
+    }
+
+    public void AddTask(TaskType taskType, string taskText)
+    {
+        Task thisTask = taskList[taskType];
+        thisTask.text = taskText;
+        thisTask.status = TaskStatus.Waiting;
+
+        if (areas.ContainsKey(taskType))
+            thisTask.area = areas[taskType];
+        else
+            thisTask.area = null;
+
+        UpdateTasks();
+    }
+
+    public void ChangeTask(TaskType taskType, string newText)
+    {
+        taskList[taskType].text = newText;
+        UpdateTasks();
+    }
+
+    public void SetActiveTask(TaskType taskType, bool startRecording = true)
+    {
+        foreach (Task task in taskList.Values)
+        {
+            if (task.status == TaskStatus.Active)
+            {
+                print("A task is already active.");
+                return;
+            }
+        }
+
+        activeTask = taskList[taskType];
+        activeTask.status = TaskStatus.Active;
+
+        if (activeTask.area != null)
+        {
+            activeTask.area.Disable();
+            foreach (AreaTrigger area in areas.Values)
+            {
+                if (area != activeTask.area) { area.ShutDownArea(); }
+            }
+        }
+
+        if (startRecording) { recordManager.StartNewRecording(); }
+        UpdateTasks();
+    }
+
+    public void AddAndSetActive(TaskType taskType, string taskText, bool startRecording = true, AreaTrigger area = null)
+    {
+        AddTask(taskType, taskText);
+        SetActiveTask(taskType, startRecording);
+    }
+
+    public void CompleteActiveTask()
+    {
+        recordManager.StopRecording();
+
+        if (activeTask.area != null)
+        {
+            activeTask.area.Remove();
+            foreach (AreaTrigger area in areas.Values)
+                if (area != null) { area.StartUpArea(); }
+        }
+
+        activeTask.status = TaskStatus.Completed;
+        CheckAllTasksCompleted();
+        UpdateTasks();
+
+        activeTask = new Task();
+    }
+
+    // Just checks if any Waiting or Active tasks remain.
+    // If not, then it's only Completed and Disabled tasks, so we must be all done.
+    private void CheckAllTasksCompleted()
+    {
+        foreach (Task task in taskList.Values)
+        {
+            if (task.status == TaskStatus.Waiting || task.status == TaskStatus.Active)
+            {
+                return;
+            }
+        }
+
+        allTasksCompleted = true;
+        OnAllTasks?.Invoke(this, EventArgs.Empty);
+    }
+
+    void UpdateTasks()
+    {
+        uiManager.UpdateTasks(activeTask, taskList);
+    }
+
+    // TODO: Remove this if unused.
+    public class OldTask
     {
         public TaskType type;        // Identifier for the task
         public string text;         // The actual text to display for the task, e.g. "Get wood for the fire."
         public AreaTrigger area;
-        public bool active;
-        public bool completed;
+        public TaskStatus status;
+        public bool waiting = true;
+        public bool active = false;
+        public bool completed = false;
         public bool failed;
 
         string completedColorTag = "<color=green>";
@@ -37,13 +194,13 @@ public class TaskManager : MonoBehaviour
         string failedColorTag = "<color=#808080>";
         string endColorTag = "</color>";
 
-        public Task(TaskType type = TaskType.Null, string text = "", AreaTrigger area = null)
+        public OldTask(TaskType type = TaskType.Null, string text = "", AreaTrigger area = null)
         {
             this.type = type;
             this.text = text;
             this.area = area;
-            this.completed = false;
-            Inactive();
+            this.status = TaskStatus.Waiting;
+            // Inactive();
         }
 
         public void Inactive()
@@ -91,156 +248,5 @@ public class TaskManager : MonoBehaviour
             Inactive();
         }
     }
-
-    // ████████████████████████████████████████████████████████████████████████
-    // ███ TASKMANAGER PROPERTIES
-    // ████████████████████████████████████████████████████████████████████████
-
-    UIManager uiManager;
-    RecordManager recordManager;
-    List<Task> taskList;
-    Task activeTask;
-    bool allTasksCompleted = false;
-    public event EventHandler<EventArgs> OnAllTasks;
-    Dictionary<string, AreaTrigger> areas = new Dictionary<string, AreaTrigger>();
-
-    void Awake()
-    {
-        uiManager = FindObjectOfType<UIManager>();
-        recordManager = FindObjectOfType<RecordManager>();
-        taskList = new List<Task>();
-        activeTask = new Task();
-        ResetAllTasks();
-        InitializeAreas();
-    }
-
-    void InitializeAreas()
-    {
-        AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
-        foreach (AreaTrigger areaTrigger in worldAreas)
-            areas[areaTrigger.GetTag()] = areaTrigger;
-    }
-
-    public void AddTask(TaskType type, string taskText, AreaTrigger area = null)
-    {
-        Task newTask = new Task(type, taskText, area);
-        taskList.Add(newTask);
-        UpdateTasks();
-    }
-
-    public void ChangeTask(TaskType type, string newText)
-    {
-        if (activeTask.type == type)
-        {
-            activeTask.text = newText;
-        }
-        else
-        {
-            foreach (Task task in taskList)
-            {
-                if (task.type == type)
-                {
-                    task.text = newText;
-                    break;
-                }
-            }
-        }
-
-        UpdateTasks();
-    }
-
-    public void SetActiveTask(TaskType type, bool startRecording = true)
-    {
-        if (activeTask.active)
-        {
-            print("A task is already active.");
-            return;
-        }
-
-        Task newActiveTask = new Task();
-        int index = 0;
-        for (int i = 0; i < taskList.Count; i++)
-        {
-            if (taskList[i].type == type)
-            {
-                index = i;
-                newActiveTask = taskList[i];
-                break;
-            }
-        }
-        if (newActiveTask.type == TaskType.Null)
-        {
-            print("No task with that type in active task or task list.");
-            return;
-        }
-
-        if (newActiveTask.area != null)
-        {
-            newActiveTask.area.Disable();
-            foreach (AreaTrigger area in areas.Values)
-            {
-                if (area != newActiveTask.area) { area.ShutDownArea(); }
-            }
-        }
-
-        newActiveTask.Active();
-        activeTask = newActiveTask;
-        taskList.RemoveAt(index);
-
-        if (startRecording) { recordManager.StartNewRecording(); }
-        UpdateTasks();
-    }
-
-    public void AddAndSetActive(TaskType type, string taskText, bool startRecording = true, AreaTrigger area = null)
-    {
-        AddTask(type, taskText);
-        SetActiveTask(type, startRecording);
-    }
-
-    public void CompleteActiveTask()
-    {
-        recordManager.StopRecording();
-
-        if (activeTask.area != null)
-        {
-            activeTask.area.Remove();
-            foreach (AreaTrigger area in areas.Values)
-                if (area != null) { area.StartUpArea(); }
-        }
-
-        activeTask.Complete();
-
-        activeTask = new Task();
-        CheckAllTasksCompleted();
-        UpdateTasks();
-    }
-
-    private void CheckAllTasksCompleted()
-    {
-        if (taskList.Count == 0)
-        {
-            Debug.Log("All tasks completed!");
-            allTasksCompleted = true;
-            OnAllTasks?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    public void ResetAllTasks()
-    {
-        foreach (Task task in taskList)
-            task.Reset();
-        UpdateTasks();
-    }
-
-    public void ClearTasks()
-    {
-        activeTask = new Task();
-        taskList.Clear();
-        UpdateTasks();
-    }
-
-    void UpdateTasks()
-    {
-        uiManager.UpdateTasks(activeTask, taskList);
-    }
 }
+

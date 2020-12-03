@@ -12,6 +12,7 @@ public class AreaTrigger : MonoBehaviour
 
     [Header("Area-specific options")]
     public bool areaEnabled = true;
+    public TaskType taskType;
     public string areaTag;
     public bool enableTriggersOnEnter = true;
     [Space]
