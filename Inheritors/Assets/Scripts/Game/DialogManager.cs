@@ -7,10 +7,21 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 
+public enum Character
+{
+    Null,
+    Mother,
+    Father,
+    Sister,
+    Grandfather,
+    Grandmother,
+    Narrator
+}
+
 // Class for encapsulating dialogs sent from other classes to be played back.
 public class Dialog
 {
-    public string name;
+    public Character character;
     public string[] lines;
     public bool skippable = true;
     public Transform target;
@@ -26,6 +37,8 @@ public class DialogManager : MonoBehaviour
     InteractManager interactManager;
     UIManager uiManager;
     PlayerMovement playerMovement;
+
+    Dictionary<Character, string> charNames = new Dictionary<Character, string>();
 
     bool dialogNext = false;
     bool dialogFinished = true;
@@ -48,25 +61,10 @@ public class DialogManager : MonoBehaviour
 
     void Awake()
     {
-        stateManager = FindObjectOfType<StateManager>();
-        cameraManager = FindObjectOfType<CameraManager>();
-        uiManager = FindObjectOfType<UIManager>();
-        inputManager = FindObjectOfType<InputManager>();
-        inputManager.OnButtonDown += HandleInputEvent;
-        interactManager = FindObjectOfType<InteractManager>();
-        playerMovement = FindObjectOfType<PlayerMovement>();
-    }
-
-    // Unsubscribe from all events
-    void OnDestroy()
-    {
-        inputManager.OnButtonDown -= HandleInputEvent;
-    }
-
-    void Start()
-    {
+        InitializeReferences();
+        SubscribeToEvents();
+        InitializeCharNames();
         speeds = new float[] { slow, med, fast };
-
     }
 
     // Start a new dialog and switch into specified state after dialog finishes
@@ -99,7 +97,7 @@ public class DialogManager : MonoBehaviour
 
     IEnumerator DialogPlay(Dialog dialog, State finishState)
     {
-        string name = dialog.name;
+        Character character = dialog.character;
         string[] lines = dialog.lines;
         bool skippable = dialog.skippable;
         bool hasTarget = dialog.target != null;
@@ -111,7 +109,7 @@ public class DialogManager : MonoBehaviour
             cameraManager.FocusCamOn("Dialog", dialog.target);
             cameraManager.SwitchToCam("Dialog");
         }
-        Tween setup = uiManager.dialogBox.SetUp(name);
+        Tween setup = uiManager.dialogBox.SetUp(character);
         yield return setup.WaitForCompletion();
 
         // STEP 2 : Dialog display and input to go through it.
@@ -148,5 +146,33 @@ public class DialogManager : MonoBehaviour
     public bool IsDialogFinished()
     {
         return dialogFinished;
+    }
+
+    void InitializeReferences()
+    {
+        stateManager = FindObjectOfType<StateManager>();
+        cameraManager = FindObjectOfType<CameraManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        inputManager = FindObjectOfType<InputManager>();
+        interactManager = FindObjectOfType<InteractManager>();
+        playerMovement = FindObjectOfType<PlayerMovement>();
+    }
+
+    void SubscribeToEvents()
+    {
+        inputManager.OnButtonDown += HandleInputEvent;
+    }
+
+    void OnDestroy()
+    {
+        inputManager.OnButtonDown -= HandleInputEvent;
+    }
+
+    void InitializeCharNames()
+    {
+        foreach (Character character in Enum.GetValues(typeof(Character)))
+        {
+            charNames[character] = character.ToString();
+        }
     }
 }

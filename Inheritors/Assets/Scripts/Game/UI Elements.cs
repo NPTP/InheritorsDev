@@ -114,8 +114,9 @@ public class UI_DialogBox
         nameColors["grandfather"] = Color.green;
     }
 
-    public Tween SetUp(string name)
+    public Tween SetUp(Character character)
     {
+        string name = character.ToString();
         nameText.text = name.ToUpper();
         nameText.faceColor = nameColors[name.ToLower()];
         tmpText.maxVisibleCharacters = 0;

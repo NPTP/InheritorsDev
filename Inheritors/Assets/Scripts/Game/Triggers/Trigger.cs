@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 // Interface for enabling/disabling different types of triggers in each day script.
 public interface Trigger

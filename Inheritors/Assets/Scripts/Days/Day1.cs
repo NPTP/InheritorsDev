@@ -78,7 +78,7 @@ public class Day1 : MonoBehaviour
         // Give us context for watering hole task.
         cameraManager.SendCamTo(wateringHoleTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.MotherWater, "Fetch water for mother.");
+        taskManager.AddTask(TaskType.Mother, "Fetch water for mother.");
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.
@@ -248,8 +248,8 @@ public class Day1 : MonoBehaviour
 
     void PickupWater()
     {
-        taskManager.SetActiveTask(TaskType.MotherWater);
-        taskManager.ChangeTask(TaskType.MotherWater, "Bring the water to mother's pot.");
+        taskManager.SetActiveTask(TaskType.Mother);
+        taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother's pot.");
         triggers["Dropoff_Water"].Enable();
         triggers["Dialog_TaskExplanation"].Disable();
         triggers["Dialog_HaveWater"].Enable();
@@ -305,7 +305,7 @@ public class Day1 : MonoBehaviour
     {
         dialogs.Add("Day1Opening", new Dialog
         {
-            name = "Mother",
+            character = Character.Mother,
             skippable = false,
             lines = new string[] {
                 "Good morning, son.\nIt's a beautiful day.",
@@ -320,7 +320,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_TaskExplanation", new Dialog
         {
-            name = "Mother",
+            character = Character.Mother,
             lines = new string[] {
                 "Go to a task's area to get started. You will have everything you need for that task when you get there!",
                 "Once you begin a task, you must complete it before you can begin another.",
@@ -332,7 +332,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_HavePig", new Dialog
         {
-            name = "Mother",
+            character = Character.Mother,
             lines = new string[] {
                 "Oh, you brought fresh pig!",
                 "Just put it there over the fire. We will cook it later."
@@ -341,7 +341,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_HaveWater", new Dialog
         {
-            name = "Mother",
+            character = Character.Mother,
             lines = new string[] {
                 "Just pour the water into the big grey pot."
             }
@@ -349,7 +349,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_HuntBegin", new Dialog
         {
-            name = "Father",
+            character = Character.Father,
             lines = new string[] {
                 "Son! Good to see you're finally old enough to come to the hunt.",
                 "We didn't have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
@@ -361,7 +361,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_HuntEnd", new Dialog
         {
-            name = "Father",
+            character = Character.Father,
             lines = new string[] {
                 "Great start, son.",
                 "We're blessed to have wild animals here that we can eat. But we're relying on luck too.",
@@ -374,7 +374,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_NoHunt", new Dialog
         {
-            name = "Father",
+            character = Character.Father,
             lines = new string[] {
                 "Shouldn't you be taking that water back to your mother?"
             }
@@ -382,7 +382,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_HuntOver", new Dialog
         {
-            name = "Father",
+            character = Character.Father,
             lines = new string[] {
                 "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?"
             }
@@ -390,7 +390,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("DayOver", new Dialog
         {
-            name = "Mother",
+            character = Character.Mother,
             lines = new string[] {
                 "Thank you, son. That's everything for today!",
                 "You've been hard at work, it's time for a siesta. Come on inside."
@@ -399,7 +399,7 @@ public class Day1 : MonoBehaviour
 
         dialogs.Add("Dialog_Sister", new Dialog
         {
-            name = "Sister",
+            character = Character.Sister,
             lines = new string[] {
                 "Oh hey little bro. Mom and dad got you working hard today?",
                 "I mean, <b>finally!</b> Someone else should do some of the work around here...",

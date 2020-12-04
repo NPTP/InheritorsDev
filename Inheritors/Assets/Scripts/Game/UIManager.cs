@@ -93,12 +93,10 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            // TODO: this is where the completed task strikethru anim can go
             tasksInventory.activeBarTxt.text = "";
             tasksInventory.activeBarArrow.DOColor(Color.white, 0.25f);
         }
-        // TODO: get the strikethru working later (polish stage)
-        // if (activeTask.completed)
-        //     StrikethruActiveTask(0.5f);
 
         string listBuilder = "";
         foreach (Task task in taskList.Values)

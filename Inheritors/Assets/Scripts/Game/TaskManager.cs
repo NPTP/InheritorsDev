@@ -10,8 +10,7 @@ public enum TaskType
     Null,
     IntroFirewood,
     IntroMaloca,
-    MotherWood,
-    MotherWater,
+    Mother,
     Father,
     Sister,
     Grandmother,
@@ -30,6 +29,7 @@ public enum TaskStatus
 public class Task
 {
     public TaskType type;        // Identifier for the task
+    public Character character; // The most likely character to be connected to this task
     public string text;         // The actual text to display for the task, e.g. "Get wood for the fire."
     public AreaTrigger area;
     public TaskStatus status;
@@ -37,9 +37,39 @@ public class Task
     public Task(TaskType type = TaskType.Null, string text = "", AreaTrigger area = null)
     {
         this.type = type;
+        AssignCharacter(type);
         this.text = text;
         this.area = area;
         this.status = TaskStatus.Disabled;
+    }
+
+    void AssignCharacter(TaskType taskType)
+    {
+        switch (taskType)
+        {
+            case TaskType.IntroFirewood:
+            case TaskType.IntroMaloca:
+            case TaskType.Mother:
+            case TaskType.DayEnd:
+                this.character = Character.Mother;
+                break;
+            case TaskType.Father:
+                this.character = Character.Father;
+                break;
+            case TaskType.Sister:
+                this.character = Character.Sister;
+                break;
+            case TaskType.Grandmother:
+                this.character = Character.Grandmother;
+                break;
+            case TaskType.Grandfather:
+                this.character = Character.Grandfather;
+                break;
+            case TaskType.Null:
+            default:
+                this.character = Character.Null;
+                break;
+        }
     }
 }
 
@@ -56,7 +86,8 @@ public class TaskManager : MonoBehaviour
     public event EventHandler<TaskArgs> OnUpdateTasks;
     public class TaskArgs : EventArgs
     {
-        public Dictionary<TaskType, Task> tasks;
+        public Task activeTask;
+        public Dictionary<TaskType, Task> taskList;
     }
 
     void Awake()
@@ -85,9 +116,14 @@ public class TaskManager : MonoBehaviour
             areas[areaTrigger.taskType] = areaTrigger;
     }
 
-    Task GetTask(TaskType taskType)
+    public Task GetTask(TaskType taskType)
     {
         return taskList[taskType];
+    }
+
+    public TaskStatus GetStatus(TaskType taskType)
+    {
+        return taskList[taskType].status;
     }
 
     public void AddTask(TaskType taskType, string taskText)
@@ -121,23 +157,22 @@ public class TaskManager : MonoBehaviour
             }
         }
 
+        foreach (AreaTrigger area in areas.Values)
+        {
+            if (area.taskType == taskType)
+                area.Remove();
+            else
+                area.Disable();
+        }
+
         activeTask = taskList[taskType];
         activeTask.status = TaskStatus.Active;
-
-        if (activeTask.area != null)
-        {
-            activeTask.area.Disable();
-            foreach (AreaTrigger area in areas.Values)
-            {
-                if (area != activeTask.area) { area.ShutDownArea(); }
-            }
-        }
 
         if (startRecording) { recordManager.StartNewRecording(); }
         UpdateTasks();
     }
 
-    public void AddAndSetActive(TaskType taskType, string taskText, bool startRecording = true, AreaTrigger area = null)
+    public void AddAndSetActive(TaskType taskType, string taskText, bool startRecording = true)
     {
         AddTask(taskType, taskText);
         SetActiveTask(taskType, startRecording);
@@ -147,18 +182,16 @@ public class TaskManager : MonoBehaviour
     {
         recordManager.StopRecording();
 
-        if (activeTask.area != null)
+        foreach (AreaTrigger area in areas.Values)
         {
-            activeTask.area.Remove();
-            foreach (AreaTrigger area in areas.Values)
-                if (area != null) { area.StartUpArea(); }
+            area.Enable();
         }
 
         activeTask.status = TaskStatus.Completed;
         CheckAllTasksCompleted();
-        UpdateTasks();
 
-        activeTask = new Task();
+        activeTask = new Task(); // Null TaskType.
+        UpdateTasks();
     }
 
     // Just checks if any Waiting or Active tasks remain.
@@ -179,81 +212,15 @@ public class TaskManager : MonoBehaviour
 
     void UpdateTasks(bool sendEvent = true)
     {
-        if (sendEvent) { OnUpdateTasks?.Invoke(this, new TaskArgs { tasks = taskList }); }
-        uiManager.UpdateTasks(activeTask, taskList);
-    }
-
-    // TODO: Remove this if unused.
-    public class OldTask
-    {
-        public TaskType type;        // Identifier for the task
-        public string text;         // The actual text to display for the task, e.g. "Get wood for the fire."
-        public AreaTrigger area;
-        public TaskStatus status;
-        public bool waiting = true;
-        public bool active = false;
-        public bool completed = false;
-        public bool failed;
-
-        string completedColorTag = "<color=green>";
-        string activeColorTag = "<color=#0000ff>";
-        string inactiveColorTag = "<color=#808080>";
-        string failedColorTag = "<color=#808080>";
-        string endColorTag = "</color>";
-
-        public OldTask(TaskType type = TaskType.Null, string text = "", AreaTrigger area = null)
+        if (sendEvent)
         {
-            this.type = type;
-            this.text = text;
-            this.area = area;
-            this.status = TaskStatus.Waiting;
-            // Inactive();
-        }
-
-        public void Inactive()
-        {
-            this.text = inactiveColorTag + this.text + endColorTag;
-            this.active = false;
-            this.completed = false;
-        }
-
-        public void Active()
-        {
-            this.text = activeColorTag + "<b>" + this.text + "</b>" + endColorTag; // + lineBreak;
-            this.active = true;
-            this.completed = false;
-        }
-
-        public void Complete()
-        {
-            // string strikethroughText = StrikeThrough(this.text);
-            // this.text = completedColorTag + strikethroughText + endColorTag + doubleLineBreak;
-            this.text = completedColorTag + text + endColorTag;
-            this.active = false;
-            this.completed = true;
-        }
-
-        public void Fail()
-        {
-            this.text = failedColorTag + StrikeThrough(this.text) + endColorTag;
-            this.active = false;
-            this.failed = true;
-        }
-
-        private string StrikeThrough(string s)
-        {
-            string strikethrough = "";
-            foreach (char c in s)
+            OnUpdateTasks?.Invoke(this, new TaskArgs
             {
-                strikethrough = strikethrough + c + '\u0336';
-            }
-            return strikethrough;
+                activeTask = this.activeTask,
+                taskList = this.taskList
+            });
         }
-
-        public void Reset()
-        {
-            Inactive();
-        }
+        uiManager.UpdateTasks(activeTask, taskList);
     }
 }
 

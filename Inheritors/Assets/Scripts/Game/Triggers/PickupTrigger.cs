@@ -11,6 +11,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     public bool triggerEnabled = true;
     public string triggerTag;
     public ItemType itemType;
+    public TaskType taskType;
 
     bool destroyed = false;
 

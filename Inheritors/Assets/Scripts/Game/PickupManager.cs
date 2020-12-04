@@ -78,7 +78,7 @@ public class PickupManager : MonoBehaviour
                 break;
 
             case ItemType.Bow:
-                tool = PlayerSkeletonTool(itemType);
+                tool = ActivatePlayerSkeletonItem(itemType);
                 inventory.toolIsAttached = true;
                 break;
 
@@ -101,11 +101,11 @@ public class PickupManager : MonoBehaviour
         );
     }
 
-    GameObject PlayerSkeletonTool(ItemType type)
+    GameObject ActivatePlayerSkeletonItem(ItemType type)
     {
-        GameObject tool = FindObjectOfType<PlayerSkeletonItems>().GetItem(type);
-        tool.SetActive(true);
-        return tool;
+        GameObject item = FindObjectOfType<PlayerSkeletonItems>().GetItem(type);
+        item.SetActive(true);
+        return item;
     }
 
     public void LoseTaskTool()

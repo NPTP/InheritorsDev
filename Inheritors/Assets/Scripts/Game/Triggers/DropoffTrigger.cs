@@ -1,24 +1,22 @@
-﻿using System;
-using UnityEngine;
-using DG.Tweening;
+﻿using UnityEngine;
 
-// Trigger to be placed around any dropoff point, coupled with InteractManager.
 public class DropoffTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
     public bool triggerEnabled = true;
     public string triggerTag;
-
     bool destroyed = false;
+
+    Collider triggerCollider;
+    Light l;
+    ParticleSystem ps;
+    TriggerProjector triggerProjector;
+    Transform projectorTransform;
 
     [Header("Dropoff-Specific Properties")]
     public Transform target;
     public string promptText;
-    Transform playerTransform;
-    Collider triggerCollider;
-    Light l;
-    ParticleSystem ps;
     bool dropoffDone = false;
 
     public bool StartedEnabled()
@@ -29,10 +27,10 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
-        playerTransform = GameObject.Find("Player").transform;
         triggerCollider = GetComponent<Collider>();
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
         ps = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
+        triggerProjector = transform.GetChild(2).GetComponent<TriggerProjector>();
 
         if (triggerEnabled) Enable();
         else Disable();
@@ -56,6 +54,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
             triggerCollider.enabled = true;
             l.enabled = true;
             ps.Play();
+            triggerProjector.Enable();
         }
     }
 
@@ -67,6 +66,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
             triggerCollider.enabled = false;
             l.enabled = false;
             ps.Stop();
+            triggerProjector.Disable();
         }
     }
 
@@ -75,7 +75,6 @@ public class DropoffTrigger : MonoBehaviour, Trigger
         destroyed = true;
     }
 
-    // ONLY call this from the Day when you have used its information already.
     public void Remove()
     {
         Destroy(this.gameObject);

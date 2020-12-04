@@ -9719,8 +9719,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerEnabled: 1
-  invisibleTrigger: 0
   triggerTag: Walk_???
+  invisibleTrigger: 0
+  haltPlayerOnActivate: 1
 --- !u!33 &3641075888876771835
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -9812,7 +9813,7 @@ PrefabInstance:
     - target: {fileID: 6816573938768928240, guid: d7bce99bc606ac2439247efb79ed8b0a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.0625
+      value: 0.3125
       objectReference: {fileID: 0}
     - target: {fileID: 6816573938768928240, guid: d7bce99bc606ac2439247efb79ed8b0a,
         type: 3}

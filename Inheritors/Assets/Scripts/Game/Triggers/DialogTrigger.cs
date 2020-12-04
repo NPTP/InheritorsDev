@@ -1,22 +1,20 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DialogTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public event EventHandler OnDialogEnterRange;
-    public event EventHandler OnDialogLeaveRange;
-    public event EventHandler OnTriggerActivate;
-
     public bool triggerEnabled = true;
     public string triggerTag;
-    bool alreadyDisabled = false;
+    bool destroyed = false;
+
+    Collider triggerCollider;
+    Light l;
     TriggerProjector triggerProjector;
     Transform projectorTransform;
 
     [Header("Dialog-Specific Properties")]
-    public string speakerName = "Trigger Placeholder";
+    public Character character;
     [Space(10)]
     public bool dialogPersists = false;
     public bool dialogSkippable = false;
@@ -24,12 +22,8 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public bool lookAtMyTarget = false;
     public Transform myTarget = null;
     [Space(10)]
-    public string[] dialogLines = new string[] { };
 
     public Dialog dialog;
-
-    Collider triggerCollider;
-    Light l;
 
     public bool StartedEnabled()
     {
@@ -45,8 +39,8 @@ public class DialogTrigger : MonoBehaviour, Trigger
         l = transform.GetChild(0).gameObject.GetComponent<Light>();
 
         dialog = new Dialog();
-        dialog.name = speakerName;
-        dialog.lines = dialogLines;
+        dialog.character = character;
+        dialog.lines = new string[] { "< NO DIALOG REFERENCE >" };
         dialog.skippable = dialogSkippable;
 
         if (myTarget != null)
@@ -72,20 +66,23 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public void Enable()
     {
-        alreadyDisabled = false;
         triggerCollider.enabled = true;
         l.enabled = true;
     }
 
     public void Disable()
     {
-        if (!alreadyDisabled)
+        if (!destroyed)
         {
-            alreadyDisabled = true;
             triggerCollider.enabled = false;
             l.enabled = false;
             triggerProjector.Disable();
         }
+    }
+
+    void OnDestroy()
+    {
+        destroyed = true;
     }
 
     public void Remove()

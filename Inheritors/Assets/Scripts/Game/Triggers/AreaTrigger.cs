@@ -7,14 +7,10 @@ public class AreaTrigger : MonoBehaviour
 {
     InteractManager interactManager;
 
-    public event EventHandler OnAreaEnter;
-    public event EventHandler OnAreaLeave;
-
     [Header("Area-specific options")]
     public bool areaEnabled = true;
     public TaskType taskType;
     public string areaTag;
-    public bool enableTriggersOnEnter = true;
     [Space]
     [Header("Optional auto-acquire task tool")]
     public ItemType taskTool;
@@ -65,19 +61,20 @@ public class AreaTrigger : MonoBehaviour
         }
     }
 
-    void TurnOffTriggers()
+    public void TurnOffTriggers()
     {
         foreach (Trigger trigger in triggersInside)
         {
-            if (trigger != null) trigger.Disable();
+            if (trigger != null && trigger.GetType() != typeof(DialogTrigger))
+                trigger.Disable();
         }
     }
 
-    void TurnOnTriggers()
+    public void TurnOnTriggers()
     {
         foreach (Trigger trigger in triggersInside)
         {
-            if (trigger.StartedEnabled())
+            if (trigger.StartedEnabled() && trigger.GetType() != typeof(DialogTrigger))
                 trigger.Enable();
         }
     }
@@ -116,6 +113,8 @@ public class AreaTrigger : MonoBehaviour
 
     public void Disable()
     {
+        if (removed) return;
+
         areaEnabled = false;
         areaCollider.enabled = false;
     }
@@ -131,7 +130,7 @@ public class AreaTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            interactManager.AreaEnter(this, ref triggersInside, taskTool);
+            interactManager.AreaEnter(this, taskTool);
         }
     }
 
@@ -139,7 +138,7 @@ public class AreaTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            interactManager.AreaLeave(this, ref triggersInside);
+            interactManager.AreaLeave(this);
         }
     }
 }

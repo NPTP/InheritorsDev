@@ -1,0 +1,1 @@
+#define PHYSICS_SIMPLE 1
