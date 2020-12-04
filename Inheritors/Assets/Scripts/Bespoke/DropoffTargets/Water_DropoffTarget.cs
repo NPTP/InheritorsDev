@@ -6,6 +6,7 @@ public class Water_DropoffTarget : MonoBehaviour, DropoffTarget
 {
     Renderer waterRenderer;
     GameObject jug;
+    ParticleSystem ps;
 
     bool doneReaction = false;
     public bool DoneReaction()
@@ -19,6 +20,7 @@ public class Water_DropoffTarget : MonoBehaviour, DropoffTarget
         waterRenderer.enabled = false;
         jug = transform.GetChild(1).gameObject;
         jug.SetActive(false);
+        ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
     }
 
     public void ReactToDropoff()
@@ -35,8 +37,10 @@ public class Water_DropoffTarget : MonoBehaviour, DropoffTarget
         Tween t = jug.transform.DOScale(jug.transform.localScale, .25f).From(Vector3.zero);
         yield return t.WaitForCompletion();
 
+        ps.Play();
         t = waterRenderer.material.DOColor(Helper.ChangedAlpha(waterRenderer.material.color, 1f), 1f);
         yield return t.WaitForCompletion();
+        ps.Stop();
 
         t = jug.transform.DOScale(0f, .25f);
         yield return t.WaitForCompletion();

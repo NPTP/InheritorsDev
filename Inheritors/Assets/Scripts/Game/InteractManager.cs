@@ -258,7 +258,9 @@ public class InteractManager : MonoBehaviour
         pickupManager.DropOff();
 
         DropoffTrigger thisDropoff = dropoffTrigger;
+        player.GetComponent<PlayerMovement>().Halt();
         LookAtTarget(thisDropoff.target);
+
         Vector3 startPosition = heldItem.transform.position;
         Vector3 endPosition = thisDropoff.target.position;
         float elapsed = 0f;
@@ -272,15 +274,16 @@ public class InteractManager : MonoBehaviour
         }
         heldItem.transform.position = endPosition;
         var dropoffTarget = thisDropoff.target.gameObject.GetComponent<DropoffTarget>();
+        thisDropoff.Disable();
         heldItem.Remove();
         pickupManager.LoseTaskTool();
         if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
         yield return new WaitUntil(dropoffTarget.DoneReaction);
 
         stateManager.SetState(State.Normal);
-
         OnDropoff?.Invoke(this, new DropoffArgs { tag = thisDropoff.GetTag() });
 
+        yield return new WaitForSeconds(1);
         thisDropoff.Remove();
     }
 

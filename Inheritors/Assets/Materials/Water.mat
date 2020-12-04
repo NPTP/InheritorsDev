@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Water
   m_Shader: {fileID: 4800000, guid: dbe137e5a3a5ef844879348af63e734c, type: 3}
-  m_ShaderKeywords: _ALPHABLEND_ON _LIGHTING_ON _PARALLAXMAP
+  m_ShaderKeywords: _ALPHABLEND_ON _LIGHTING_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -61,7 +61,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
-        m_Texture: {fileID: 2800000, guid: dc65e34691684c146abaa6a90524de28, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Shadermap:
@@ -93,7 +93,7 @@ Material:
     - _FoamTiling: 0
     - _Fresnelexponent: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 0.7
     - _GlossyReflections: 1
     - _LIGHTING: 1
     - _MACRO_WAVES: 0
@@ -131,7 +131,7 @@ Material:
     - _ZWrite: 0
     - __dirty: 1
     m_Colors:
-    - _Color: {r: 0, g: 0.30805036, b: 0.745283, a: 1}
+    - _Color: {r: 0.41255784, g: 0.5278613, b: 0.6886792, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelColor: {r: 0, g: 0, b: 0, a: 0}
     - _RimColor: {r: 0, g: 0, b: 0, a: 0}
