@@ -8,7 +8,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public bool triggerEnabled = true;
+    public bool startEnabled = true;
     public string triggerTag;
 
     [Header("Walk-specific Options")]
@@ -30,7 +30,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     public bool StartedEnabled()
     {
-        return triggerEnabled;
+        return startEnabled;
     }
 
     void Awake()
@@ -46,7 +46,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
         activateParticles = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
         triggerProjector = transform.GetChild(3).GetComponent<TriggerProjector>();
 
-        if (triggerEnabled) Enable();
+        if (startEnabled) Enable();
         else Disable();
 
         if (invisibleTrigger)
@@ -71,7 +71,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     {
         if (!triggered)
         {
-            // triggerEnabled = true;
+            // startEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
@@ -83,7 +83,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     // Disables collider and visual fx but keeps script alive so we can refer to it elsewhere.
     public void Disable()
     {
-        // triggerEnabled = false;
+        // startEnabled = false;
         triggerCollider.enabled = false;
         l.DOIntensity(0f, .25f);
         // l.enabled = false;
@@ -112,7 +112,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     {
         if (!invisibleTrigger)
         {
-            // triggerEnabled = false;
+            // startEnabled = false;
             triggerCollider.enabled = false;
             ps.Stop();
             triggerProjector.Disable();
@@ -136,7 +136,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        // if (triggerEnabled && !triggered && other.tag == "Player")
+        // if (startEnabled && !triggered && other.tag == "Player")
         if (!triggered && other.tag == "Player")
         {
             triggered = true;

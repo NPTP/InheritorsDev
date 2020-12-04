@@ -4,7 +4,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public bool triggerEnabled = true;
+    public bool startEnabled = true;
     public string triggerTag;
     bool destroyed = false;
 
@@ -27,7 +27,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public bool StartedEnabled()
     {
-        return triggerEnabled;
+        return startEnabled;
     }
 
     void Awake()
@@ -50,7 +50,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
         }
         triggerProjector.Disable();
 
-        if (triggerEnabled) Enable();
+        if (startEnabled) Enable();
         else Disable();
     }
 

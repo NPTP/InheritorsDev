@@ -8,7 +8,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public bool triggerEnabled = true;
+    public bool startEnabled = true;
     public string triggerTag;
     public ItemType itemType;
     public TaskType taskType;
@@ -29,7 +29,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public bool StartedEnabled()
     {
-        return triggerEnabled;
+        return startEnabled;
     }
 
     void Awake()
@@ -44,7 +44,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
         triggerProjector = transform.GetChild(3).GetComponent<TriggerProjector>();
 
-        if (triggerEnabled) Enable();
+        if (startEnabled) Enable();
         else Disable();
     }
 
@@ -67,7 +67,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
     {
         if (!pickedUp)
         {
-            // triggerEnabled = true;
+            // startEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
@@ -78,7 +78,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public void Disable()
     {
-        // triggerEnabled = false;
+        // startEnabled = false;
         if (!destroyed)
         {
             triggerCollider.enabled = false;
@@ -114,7 +114,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        // if (triggerEnabled && other.tag == "Player")
+        // if (startEnabled && other.tag == "Player")
         if (other.tag == "Player")
         {
             interactManager.PickupEnterRange(this);
@@ -124,7 +124,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerExit(Collider other)
     {
-        // if (triggerEnabled && other.tag == "Player")
+        // if (startEnabled && other.tag == "Player")
         if (other.tag == "Player")
         {
             interactManager.PickupExitRange(this);

@@ -4,7 +4,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
 
-    public bool triggerEnabled = true;
+    public bool startEnabled = true;
     public string triggerTag;
     bool destroyed = false;
 
@@ -21,7 +21,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     public bool StartedEnabled()
     {
-        return triggerEnabled;
+        return startEnabled;
     }
 
     void Awake()
@@ -32,7 +32,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
         ps = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
         triggerProjector = transform.GetChild(2).GetComponent<TriggerProjector>();
 
-        if (triggerEnabled) Enable();
+        if (startEnabled) Enable();
         else Disable();
     }
 
@@ -50,7 +50,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     {
         if (!dropoffDone)
         {
-            // triggerEnabled = true;
+            // startEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             ps.Play();
@@ -62,7 +62,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     {
         if (!destroyed)
         {
-            // triggerEnabled = false;
+            // startEnabled = false;
             triggerCollider.enabled = false;
             l.enabled = false;
             ps.Stop();
@@ -88,7 +88,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        // if (triggerEnabled && !dropoffDone && other.tag == "Player")
+        // if (startEnabled && !dropoffDone && other.tag == "Player")
         if (!dropoffDone && other.tag == "Player")
         {
             interactManager.DropoffEnterRange(this, promptText);
@@ -97,7 +97,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
 
     private void OnTriggerExit(Collider other)
     {
-        // if (triggerEnabled && !dropoffDone && other.tag == "Player")
+        // if (startEnabled && !dropoffDone && other.tag == "Player")
         if (!dropoffDone && other.tag == "Player")
         {
             interactManager.DropoffExitRange(this);
