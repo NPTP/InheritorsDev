@@ -43,6 +43,24 @@ public class UIManager : MonoBehaviour
         playerHeight = new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f);
     }
 
+    void UIPop(ref RectTransform rectTransform)
+    {
+        float popScale = 1.25f;
+        float popTime = 0.25f;
+        Sequence s = DOTween.Sequence();
+        s.Append(rectTransform.DOScale(popScale, popTime).SetEase(Ease.OutQuad))
+            .Append(rectTransform.DOScale(Vector3.one, popTime).SetEase(Ease.InQuad));
+    }
+
+    void ColorFlash(ref TMP_Text text, Color originalColor, Color flashColor)
+    {
+        float flashTime = 0.1f;
+        float dieOffTime = 0.75f;
+        Sequence s = DOTween.Sequence();
+        s.Append(text.DOColor(flashColor, flashTime))
+            .Append(text.DOColor(originalColor, dieOffTime));
+    }
+
     // ████████████████████████████████████████████████████████████████████████
     // ███ TASKS / INVENTORY SETUP/TEARDOWN
     // ████████████████████████████████████████████████████████████████████████
@@ -90,6 +108,7 @@ public class UIManager : MonoBehaviour
         {
             tasksInventory.activeBarTxt.text = activeTask.text;
             tasksInventory.activeBarArrow.DOColor(Color.green, 0.25f);
+            UIPop(ref tasksInventory.activeBarRT);
         }
         else
         {
@@ -104,6 +123,8 @@ public class UIManager : MonoBehaviour
             if (task.status == TaskStatus.Waiting)
                 listBuilder += task.text + "\n\n";
         }
+        if (listBuilder.Length > tasksInventory.taskListTxt.text.Length)
+            UIPop(ref tasksInventory.taskListRT);
         tasksInventory.taskListTxt.text = listBuilder;
     }
 
@@ -136,8 +157,11 @@ public class UIManager : MonoBehaviour
     // TODO: Animations
     public void UpdateInventory(PickupManager.Inventory inventory)
     {
+        float itemFadeTime = 0.25f;
+
         if (inventory.itemQuantity > 1)
         {
+            UIPop(ref tasksInventory.inventoryRT);
             tasksInventory.inventoryTxt.enabled = true;
             tasksInventory.inventoryItemImg.enabled = true;
             tasksInventory.inventoryItemImg.sprite = uiResources.GetItemIcon(inventory.itemType);
@@ -145,9 +169,11 @@ public class UIManager : MonoBehaviour
         }
         else if (inventory.itemQuantity == 1)
         {
+            UIPop(ref tasksInventory.inventoryRT);
             tasksInventory.inventoryTxt.enabled = false;
             tasksInventory.inventoryItemImg.enabled = true;
             tasksInventory.inventoryItemImg.sprite = uiResources.GetItemIcon(inventory.itemType);
+            tasksInventory.inventoryItemImg.DOFade(1f, itemFadeTime).From(0f);
         }
         else
         {
@@ -298,6 +324,8 @@ public class UIManager : MonoBehaviour
 
     void InitializeTasksInventory()
     {
+        tasksInventory.front = GameObject.Find("TasksInventoryFront").transform;
+
         GameObject activeBar = GameObject.Find("ActiveBar");
         tasksInventory.activeBarRT = activeBar.GetComponent<RectTransform>();
         tasksInventory.activeBarImg = activeBar.GetComponent<Image>();

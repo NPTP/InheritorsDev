@@ -129,7 +129,7 @@ public class RecordManager : MonoBehaviour
         {
             foreach (SampleBuffer sb in loadedRecordings)
             {
-                print("Starting playback with " + loadedRecordings.Count + " loadedRecordings saved");
+                // print("Starting playback with " + loadedRecordings.Count + " loadedRecordings saved");
                 GameObject newGhost = Instantiate(ghostPrefab, sb.Get(0).position, sb.Get(0).rotation);
                 newGhost.GetComponent<Ghost>().PassBuffer(sb);
                 yield return new WaitForSeconds(Random.Range(5, 25));

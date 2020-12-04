@@ -17,10 +17,10 @@ public class Day2DialogContent : ScriptableObject
         {
             character = Character.Mother,
             lines = new string[] {
-                "It’s so nice to see you running around making your own path here.",
-                "I couldn’t have imagined it. When I was young, the Kanoe and the Akuntsu would never...",
-                "Well, maybe that’s a story for when you’re older.",
-                "Here’s what I need you to do today."
+                "It is so nice to see you running around, making your own path.",
+                "I could not have imagined it. When I was young, the Kanoe and the Akuntsu would never...",
+                "Well, maybe that is a story for when you are older.",
+                "Here is what I need you to do today."
             }
         });
 

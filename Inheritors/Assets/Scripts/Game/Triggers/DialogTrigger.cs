@@ -66,8 +66,11 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
     public void Enable()
     {
-        triggerCollider.enabled = true;
-        l.enabled = true;
+        if (!destroyed)
+        {
+            triggerCollider.enabled = true;
+            l.enabled = true;
+        }
     }
 
     public void Disable()
@@ -80,14 +83,14 @@ public class DialogTrigger : MonoBehaviour, Trigger
         }
     }
 
-    void OnDestroy()
-    {
-        destroyed = true;
-    }
-
     public void Remove()
     {
         Destroy(this.gameObject);
+    }
+
+    void OnDestroy()
+    {
+        destroyed = true;
     }
 
     private void OnTriggerEnter(Collider other)

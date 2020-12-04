@@ -12,6 +12,8 @@ using DG.Tweening;
 
 public class UI_TasksInventory
 {
+    public Transform front; // For pulling UI element to the front.
+
     Vector3 activeBarStartPos; // For use with rect transform.
     Vector3 activeBarEndPos;   // For use with rect transform.
     public RectTransform activeBarRT;
@@ -38,16 +40,17 @@ public class UI_TasksInventory
 
     public void Initialize()
     {
+        // The position numbers in here come from working on the canvas visually.
         activeBarEndPos = activeBarRT.anchoredPosition3D;
-        activeBarStartPos = new Vector3(-201, activeBarEndPos.y, activeBarEndPos.z);
+        activeBarStartPos = new Vector3(-400, activeBarEndPos.y, activeBarEndPos.z);
         activeBarRT.anchoredPosition3D = activeBarStartPos;
 
         taskListEndPos = taskListRT.anchoredPosition3D;
-        taskListStartPos = new Vector3(-136, taskListEndPos.y, taskListEndPos.z);
+        taskListStartPos = new Vector3(-269, taskListEndPos.y, taskListEndPos.z);
         taskListRT.anchoredPosition3D = taskListStartPos;
 
         inventoryEndPos = inventoryRT.anchoredPosition3D;
-        inventoryStartPos = new Vector3(inventoryEndPos.x, 65, inventoryEndPos.z);
+        inventoryStartPos = new Vector3(inventoryEndPos.x, 126, inventoryEndPos.z);
         inventoryRT.anchoredPosition3D = inventoryStartPos;
 
         inventoryItemImg.enabled = false;

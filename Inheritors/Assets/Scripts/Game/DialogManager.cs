@@ -42,6 +42,7 @@ public class DialogManager : MonoBehaviour
 
     bool dialogNext = false;
     bool dialogFinished = true;
+    int charsPerSecond = 60;
 
     public class Tools
     {
@@ -118,15 +119,25 @@ public class DialogManager : MonoBehaviour
             dialogNext = false;
             string nextLine = lines[line];
             uiManager.dialogBox.SetLine(nextLine);
-            for (int i = 0; i <= nextLine.Length; i++)
+            int runningCharCount = 0;
+            // for (int i = 0; i <= nextLine.Length; i++)
+            uiManager.dialogBox.tmpText.maxVisibleCharacters = 0;
+            while (uiManager.dialogBox.tmpText.maxVisibleCharacters < nextLine.Length)
             {
-                uiManager.dialogBox.tmpText.maxVisibleCharacters = i;
+                int charAddition = (int)(charsPerSecond * Time.deltaTime);
+                if (charAddition < 1) { charAddition = 1; }
+                runningCharCount = runningCharCount + charAddition;
+                if (runningCharCount > nextLine.Length) { runningCharCount = nextLine.Length; }
+
+                uiManager.dialogBox.tmpText.maxVisibleCharacters = runningCharCount;
+
                 if (skippable && dialogNext)
                 {
                     uiManager.dialogBox.tmpText.maxVisibleCharacters = nextLine.Length;
                     break;
                 }
-                if (i > 0 && nextLine[i - 1] != ' ') { yield return null; }
+                // if (i > 0 && nextLine[i - 1] != ' ') { yield return null; }
+                yield return null;
             }
             uiManager.dialogBox.ShowPrompt();
             dialogNext = false;

@@ -77,18 +77,19 @@ public class Day2 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("Day2Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
+        yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
+        taskManager.AddTask(TaskType.Mother, "Fetch 3 logs for firewood.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Father, "Hunting with father.");
+        yield return new WaitForSeconds(1f);
         cameraManager.SendCamTo(sisterQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Sister, "Gather papayas for sister.");
+        taskManager.AddTask(TaskType.Sister, "Talk to sister.");
         yield return new WaitForSeconds(1f);
         cameraManager.QuadrantCamActivate(motherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Mother, "Fetch 3 logs for firewood.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "See father for next hunting lesson.");
-        yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
         dialogManager.NewDialog(GetDialog("Day2Opening_2"));

@@ -213,9 +213,10 @@ public class Day1 : MonoBehaviour
 
     IEnumerator HuntBegin()
     {
+        triggers["Dialog_HuntBegin"].Remove();
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.SetActiveTask(TaskType.Father, false);
-        taskManager.ChangeTask(TaskType.Father, "Kill the pig with the bow.");
+        taskManager.ChangeTask(TaskType.Father, "Kill pig with the bow.");
 
         // PIG KILLING MINIGAME GOES ON HERE
         // stateManager.SetState(State.Hunting); ???
@@ -229,11 +230,12 @@ public class Day1 : MonoBehaviour
         pickupManager.LoseTaskTool();
         taskManager.ChangeTask(TaskType.Father, "Collect the meat.");
         triggers["Pickup_Pig"].Enable();
+        triggers["Dialog_HuntOver"].Enable();
     }
 
     void PickupPig()
     {
-        taskManager.ChangeTask(TaskType.Father, "Bring the meat to mother's fire.");
+        taskManager.ChangeTask(TaskType.Father, "Bring the meat home.");
         triggers["Dropoff_Meat"].Enable();
         triggers["Dialog_TaskExplanation"].Disable();
         triggers["Dialog_HavePig"].Enable();
@@ -249,7 +251,7 @@ public class Day1 : MonoBehaviour
     void PickupWater()
     {
         taskManager.SetActiveTask(TaskType.Mother);
-        taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother's pot.");
+        taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother.");
         triggers["Dropoff_Water"].Enable();
         triggers["Dialog_TaskExplanation"].Disable();
         triggers["Dialog_HaveWater"].Enable();
@@ -261,7 +263,7 @@ public class Day1 : MonoBehaviour
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
         triggers["Dialog_HaveWater"].Disable();
-        triggers["Dialog_HuntBegin"].Disable();
+        triggers["Dialog_HuntBegin"].Enable();
     }
 
     IEnumerator AllTasksProcess()
@@ -270,7 +272,7 @@ public class Day1 : MonoBehaviour
         dialogManager.NewDialog(dialogs["DayOver"]);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Head inside the maloca for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return to Maloca for siesta.", false);
         triggers["Walk_End"].Enable();
     }
 
@@ -281,6 +283,8 @@ public class Day1 : MonoBehaviour
         Destroy(GameObject.FindWithTag("MotherNPC"));
         Destroy(GameObject.FindWithTag("FatherNPC"));
         Destroy(GameObject.FindWithTag("SisterNPC"));
+        triggers["Dialog_HuntOver"].Disable();
+        triggers["Dialog_Sister"].Disable();
     }
 
     IEnumerator End()
@@ -306,15 +310,11 @@ public class Day1 : MonoBehaviour
         dialogs.Add("Day1Opening", new Dialog
         {
             character = Character.Mother,
-            skippable = false,
             lines = new string[] {
-                "Good morning, son.\nIt's a beautiful day.",
-                "You see the imprints and trails you left behind last night? This land has memory.",
-                "Every step has meaning, and deepens our connection to this place, and to our past.",
-                "Our ancestors laid paths for us, and you will tread your own!",
-                "If you walk a path over and over again, the grass bends under your feet, the forest learns who you are...",
-                "And it will keep a memory of you.",
-                "Just something to keep in mind as you pursue each task. Here is the list for today."
+                "Good morning, son. You slept well?",
+                "Look! Last night, you left a trail behind you. This land has memory.",
+                "If you walk a path over and over again, it remembers you. Keep that in mind.",
+                "Now, you are old enough to help with the work. Here is what we need today!"
             }
         });
 
@@ -322,11 +322,9 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Go to a task's area to get started. You will have everything you need for that task when you get there!",
-                "Once you begin a task, you must complete it before you can begin another.",
-                "Begin in any order you like.",
-                "And if you need to take a break, don't worry. Your progress is saved at the start of each day.",
-                "Talk to me again if you forget any of that. Off you go now, son!"
+                "Begin the work in any order you like. Once you have begun a task, finish it before pursuing another.",
+                "You already have everything you need for this work.",
+                "This is a great help to the family, son. I am proud of you!"
             }
         });
 
@@ -334,8 +332,8 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Oh, you brought fresh pig!",
-                "Just put it there over the fire. We will cook it later."
+                "You and father have caught a pig? It is beautiful.",
+                "Place it over the fire. We will cook it later."
             }
         });
 
@@ -351,11 +349,9 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Son! Good to see you're finally old enough to come to the hunt.",
-                "We didn't have enough men to hunt before. The women tried their hand at it, but only out of necessity.",
-                "They didn't grow up with it, so they couldn't catch anything! But you, you might make a great hunter one day.",
-                "Never as good as your father though, heh heh!",
-                "We're hunting wild pig. Aim the bow, use as many arrows as you need, and kill it for today's meat."
+                "Son! Finally you are old enough and we have enough men to hunt.",
+                "The women tried their hand at it, but only out of necessity, and had not the skill. But you will be great.",
+                "Today we hunt wild pig. Aim the bow carefully - do not scare it away. Go, my son."
             }
         });
 
@@ -363,12 +359,12 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Great start, son.",
-                "We're blessed to have wild animals here that we can eat. But we're relying on luck too.",
-                "There is a plain through that path to the north leaving the forest. I've seen cows there.",
-                "Oh I agree son, they would be nice to eat. But outside of the forest, it's not safe. So promise me one thing, boy.",
-                "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?",
-                "Good. Now, take the meat and bring it home to mother. I'll see you for siesta later."
+                "Well done, my son!",
+                "We are blessed to have wild animals here that we can eat.",
+                "There is a plain, through that path to the north, leaving the forest. I have seen cows there.",
+                "They would make good meat. But it not safe out of the forest. Make me a promise, boy.",
+                "I will teach you the hunt, but you must promise to never leave this forest. Ever. Understand?",
+                "Good. Now, take the meat home. I will see you for siesta."
             }
         });
 
@@ -376,7 +372,7 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Shouldn't you be taking that water back to your mother?"
+                "Funny boy! That water belongs with your mother, not here!"
             }
         });
 
@@ -384,7 +380,7 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "I will continue teaching you to hunt if you promise to never hunt outside the forest. Ever. Understand?"
+                "I will teach you the hunt, but you must promise to never leave this forest. Ever. Understand?",
             }
         });
 
@@ -392,8 +388,8 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Thank you, son. That's everything for today!",
-                "You've been hard at work, it's time for a siesta. Come on inside."
+                "Thank you, son. That's all the work today!",
+                "You have worked so hard, it's time for siesta. Come inside."
             }
         });
 
@@ -401,8 +397,7 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "Oh hey little bro. Mom and dad got you working hard today?",
-                "I mean, <b>finally!</b> Someone else should do some of the work around here...",
+                "Hello little brother! You are working hard today?",
                 "Come around tomorrow, I may need your help with something."
             }
         });

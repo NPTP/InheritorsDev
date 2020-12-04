@@ -285,7 +285,7 @@ public class Day0 : MonoBehaviour
         uiManager.SetUpTasksInventory();
         // yield return new WaitForSeconds(0.5f);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.IntroFirewood, "Fetch 3 logs.");
+        taskManager.AddTask(TaskType.IntroFirewood, "Fetch 3 logs for firewood.");
         taskManager.AddTask(TaskType.IntroMaloca, "Return to Maloca to sleep.");
         taskManager.SetActiveTask(TaskType.IntroFirewood);
 
@@ -303,7 +303,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         yield return new WaitForSeconds(.25f);
-        taskManager.SetActiveTask(TaskType.IntroFirewood, false);
+        taskManager.SetActiveTask(TaskType.IntroMaloca, false);
         triggers["Walk_End"].Enable();
 
         stateManager.SetState(State.Normal);
@@ -370,8 +370,8 @@ public class Day0 : MonoBehaviour
         maloca.character = Character.Mother;
         maloca.skippable = false;
         maloca.lines = new string[] {
-             "Well done, my son! I can see the shadows dancing on the inside of the maloca.",
-             "It is late now. Come join me inside to sleep. Tomorrow is an important day."
+             "Well done, son! I see the shadows dancing on the inside of the maloca.",
+             "It is late. Come join me inside. Tomorrow is an important day."
         };
 
         sisterSleep.character = Character.Sister;
@@ -380,7 +380,7 @@ public class Day0 : MonoBehaviour
             "...",
             "Hn... huh? Oh, you woke me up!",
             "Brother, what are you doing here so late? Go to sleep.",
-            "Mother must be so worried..."
+            "Always up to mischief. Mother must be so worried..."
         };
     }
 
