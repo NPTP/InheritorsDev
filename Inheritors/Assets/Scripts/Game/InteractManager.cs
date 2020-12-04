@@ -86,11 +86,6 @@ public class InteractManager : MonoBehaviour
                     StartDialog();
                 break;
 
-            // case InputManager.X:
-            //     if (dropoffInRange)
-            //         TryDropoff();
-            //     break;
-
             default:
                 break;
         }
@@ -277,8 +272,11 @@ public class InteractManager : MonoBehaviour
         }
         heldItem.transform.position = endPosition;
         var dropoffTarget = thisDropoff.target.gameObject.GetComponent<DropoffTarget>();
-        if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
         heldItem.Remove();
+        pickupManager.LoseTaskTool();
+        if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
+        yield return new WaitUntil(dropoffTarget.DoneReaction);
+
         stateManager.SetState(State.Normal);
 
         OnDropoff?.Invoke(this, new DropoffArgs { tag = thisDropoff.GetTag() });

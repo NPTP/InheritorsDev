@@ -22,8 +22,8 @@ public class Day1 : MonoBehaviour
     [Header("Day-specific Objects")]
     public Transform motherQuadrantTransform;
     public Transform firewoodTransform;
-    public Transform wateringHoleTransform;
-    public Transform fatherHuntingTransform; //
+    public Transform wateringHoleQuadrantTransform;
+    public Transform fatherQuadrantTransform; //
 
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -76,13 +76,13 @@ public class Day1 : MonoBehaviour
         yield return new WaitForSeconds(.5f);
 
         // Give us context for watering hole task.
-        cameraManager.SendCamTo(wateringHoleTransform);
+        cameraManager.SendCamTo(wateringHoleQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Mother, "Fetch water for mother.");
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.
-        cameraManager.SendCamTo(fatherHuntingTransform);
+        cameraManager.SendCamTo(fatherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
         yield return new WaitForSeconds(1f);

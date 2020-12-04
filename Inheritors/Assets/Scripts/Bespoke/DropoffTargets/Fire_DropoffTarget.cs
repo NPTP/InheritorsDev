@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using DG.Tweening;
 
 public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
 {
+    bool doneReaction = false;
     AudioManager audioManager;
     Transform fireParent;
     ParticleSystem sparks;
@@ -10,6 +12,11 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
     ParticleSystem smoke;
     ParticleSystem dark;
     LightFlicker lightFlicker;
+
+    public bool DoneReaction()
+    {
+        return doneReaction;
+    }
 
     void Awake()
     {
@@ -33,8 +40,11 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
 
     public void ReactToDropoff()
     {
-        // TODO: also play a sound here. e.g.:
-        // audioManager.PlayOneShot("fire-burst");
+        StartCoroutine(DropoffAnimation());
+    }
+
+    IEnumerator DropoffAnimation()
+    {
         float flareTime = 3f;
         fireParent.DOScale(new Vector3(3f, 3f, 3f), flareTime).SetEase(Ease.OutElastic);
         lightFlicker.light.DOIntensity(2f, flareTime).SetEase(Ease.OutElastic);
@@ -43,6 +53,10 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
         dark.Play();
         lightFlicker.minIntensity = 1f;
         lightFlicker.maxIntensity = 2f;
-        Destroy(this); // Eliminate this script, won't need this again!
+
+        doneReaction = true;
+
+        yield return null;
+        Destroy(this);
     }
 }

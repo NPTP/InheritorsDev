@@ -3,7 +3,13 @@ using DG.Tweening;
 
 public class Meat_DropoffTarget : MonoBehaviour, DropoffTarget
 {
+    bool doneReaction = false;
     Renderer meatRenderer;
+
+    public bool DoneReaction()
+    {
+        return doneReaction;
+    }
 
     void Start()
     {
@@ -20,5 +26,6 @@ public class Meat_DropoffTarget : MonoBehaviour, DropoffTarget
             Helper.ChangedAlpha(meatRenderer.material.color, 1f),
             .25f
         );
+        doneReaction = true;
     }
 }

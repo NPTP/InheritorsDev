@@ -4,6 +4,13 @@ using DG.Tweening;
 
 public class Papaya_DropoffTarget : MonoBehaviour, DropoffTarget
 {
+    bool doneReaction = false;
+
+    public bool DoneReaction()
+    {
+        return doneReaction;
+    }
+
     void Start()
     {
         foreach (Transform child in transform)
@@ -25,5 +32,7 @@ public class Papaya_DropoffTarget : MonoBehaviour, DropoffTarget
             child.DOScale(child.localScale, .25f).From(Vector3.zero);
             yield return new WaitForSeconds(.25f);
         }
+
+        doneReaction = true;
     }
 }
