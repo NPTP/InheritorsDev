@@ -251,7 +251,7 @@ public class Day3 : MonoBehaviour
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.SetActiveTask(TaskType.Father);
-        taskManager.ChangeTask(TaskType.Father, "Catch fish in the net.");
+        taskManager.ChangeTask(TaskType.Father, "Kill the tapir.");
 
         // PIG KILLING MINIGAME GOES ON HERE
         // stateManager.SetState(State.Hunting); ???
@@ -264,7 +264,7 @@ public class Day3 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseTaskTool();
-        triggers["Pickup_Pig"].Enable();
+        triggers["Pickup_Tapir"].Enable();
 
         taskManager.CompleteActiveTask();
     }
