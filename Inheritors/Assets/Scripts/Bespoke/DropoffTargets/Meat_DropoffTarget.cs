@@ -4,7 +4,9 @@ using DG.Tweening;
 public class Meat_DropoffTarget : MonoBehaviour, DropoffTarget
 {
     bool doneReaction = false;
+    GameObject roastingPig;
     Renderer meatRenderer;
+    Vector3 savedScale;
 
     public bool DoneReaction()
     {
@@ -13,19 +15,17 @@ public class Meat_DropoffTarget : MonoBehaviour, DropoffTarget
 
     void Start()
     {
-        meatRenderer = transform.GetChild(0).gameObject.GetComponent<Renderer>();
+        roastingPig = GameObject.Find("RoastingPig");
+        savedScale = roastingPig.transform.localScale;
+
+        meatRenderer = GameObject.Find("roastingPigRender").GetComponent<Renderer>();
         meatRenderer.enabled = false;
     }
 
     public void ReactToDropoff()
     {
         meatRenderer.enabled = true;
-        meatRenderer.material.color = Helper.ChangedAlpha(meatRenderer.material.color, 0f);
-        meatRenderer.transform.DOScale(meatRenderer.transform.localScale, .25f).From(Vector3.zero);
-        meatRenderer.material.DOColor(
-            Helper.ChangedAlpha(meatRenderer.material.color, 1f),
-            .25f
-        );
+        roastingPig.transform.DOScale(savedScale, .25f).From(Vector3.zero);
         doneReaction = true;
     }
 }
