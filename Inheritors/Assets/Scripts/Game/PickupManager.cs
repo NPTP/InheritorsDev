@@ -13,7 +13,8 @@ public enum ItemType
     Bow,
     Pig,
     Agoutis,
-    Papaya
+    Papaya,
+    Corn
 }
 
 public class PickupManager : MonoBehaviour

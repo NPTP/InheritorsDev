@@ -5,7 +5,7 @@ public class Day3DialogContent : MonoBehaviour
 {
     public Dictionary<string, Dialog> content = new Dictionary<string, Dialog>();
 
-    void Start()
+    void Awake()
     {
         PackContent();
     }
@@ -16,10 +16,9 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "It is so nice to see you running around, making your own path.",
-                "I could not have imagined it. When I was young, the Kanoe and the Akuntsu would never...",
-                "Well, maybe that is a story for when you are older.",
-                "Here is what I need you to do today."
+                "Father and grandfather worked very hard to put the bridge up over the river.",
+                "Your grandparents will want to see you today.",
+                "You have some work on this side of the river to finish, but be sure to visit them."
             }
         });
 
@@ -27,17 +26,21 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "You already know where to find your father, and the firewood.",
-                "But this will be your first time helping your sister - ask her what she needs."
+                "Our family is strong, by necessity. Kanoe and Akuntsu, once divided, now united.",
+                "And the work you are doing is helping us to grow once again, little one.",
+                "There is much to do, so be quick and return before sundown!",
             }
         });
+
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ MOTHER
+        // ████████████████████████████████████████████████████████████████████████
 
         content.Add("Mother_Start", new Dialog
         {
             character = Character.Mother,
             lines = new string[] {
-                "There are so few of us now, but we are together. That is what matters.",
-                "Son, you still have work to do!"
+                "Before, your father would have been other, enemy. But our common enemy was worse, so we came together."
             }
         });
 
@@ -45,7 +48,7 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Once you have all the wood, drop it onto the fire pit."
+                "Fresh water, into the grey pot, son."
             }
         });
 
@@ -53,16 +56,19 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "You are doing well, son. I am proud of you. Keep going!"
+                "How is grandmother doing? She is the keeper of this forest, and has always made her own way. You are headstrong like her."
             }
         });
+
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ FATHER
+        // ████████████████████████████████████████████████████████████████████████
 
         content.Add("Father_Start", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
-                "Hello Son! You did well yesterday. Today we are catching fish from the River Omere.",
-                "Extend your net and let them come naturally. Do not force them out of the water."
+                "Boy! No time, be quiet - the tapir will flee if startled. Ready your bow."
             }
         });
 
@@ -70,10 +76,9 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Well done.",
-                "You need not bring any fish home now. One fish is too few, so I will stay to catch more.",
-                "Your grandfather and I will be placing the bridge over the river right here, tomorrow.",
-                "Once we have done so, your grandfather would like to see you."
+                "Beautiful, my son. Our hunts have been bountiful and it has been a joy to teach you.",
+                "You will surely lead the hunt one day, but my scars are causing me too much pain to carry the <color=blue>meat</color>.",
+                "I trust you to return it to mother!"
             }
         });
 
@@ -81,18 +86,21 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Tomorrow we will have the bridge over the river again. Your grandfather has been waiting to see you."
+                "These scars seem never to heal...",
+                "Never mind that. You are quickly becoming a man of the tribe, son."
             }
         });
+
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ SISTER
+        // ████████████████████████████████████████████████████████████████████████
 
         content.Add("Sister_Start", new Dialog
         {
             character = Character.Sister,
             lines = new string[] {
-                "There is a tree on the other side of the river that is hundreds of years old. I wonder how deep are its roots...",
-                "But here, I have been growing fruit! We need to pick <color=blue>six papayas</color>, one for each of the family.",
-                "Gather from my garden to start. If you need more, check the <color=green>south entrance</color> to this forest.",
-                "Come back when you have <color=blue>six</color> and drop them in the bucket."
+                "I've gone to see the ancient tree, little brother. It is near grandfather's maloca. I have never seen one so tall.",
+                "Please gather <color=blue>four ears of corn</color> from the garden, and bring them back. They look delicious."
             }
         });
 
@@ -100,8 +108,7 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "Have you found all the papayas yet? We need <color=blue>six</color>!",
-                "There are 3 in my garden, and 3 near the <color=green>south entrance</color> to this forest."
+                "All of the corn we need is in my garden."
             }
         });
 
@@ -109,8 +116,8 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "Thank you little brother! That is all we need!",
-                "Come back tomorrow, and we will harvest again."
+                "More corn should grow here soon, as we work the soil to make it richer.",
+                "See you tomorrow, little brother!"
             }
         });
 
@@ -119,8 +126,44 @@ public class Day3DialogContent : MonoBehaviour
             character = Character.Mother,
             lines = new string[] {
                 "Thank you, son. That is all your work for today!",
-                "Let us take a siesta. Come inside with me."
+                "It is getting late, so come back for sleep as soon as you can."
             }
         });
+
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ GRANDFATHER
+        // ████████████████████████████████████████████████████████████████████████
+
+        content.Add("Grandfather_Start", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "G"
+            }
+        });
+
+        content.Add("Grandfather_Active", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+              "G"
+            }
+        });
+
+        content.Add("Grandfather_Completed", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+              "G"
+            }
+        });
+
+
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ GRANDMOTHER
+        // ████████████████████████████████████████████████████████████████████████
+
+
+
     }
 }

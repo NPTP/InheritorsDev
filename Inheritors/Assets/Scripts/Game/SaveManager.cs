@@ -44,13 +44,11 @@ public class SaveManager : MonoBehaviour
             PlayerPrefs.DeleteKey("continuing");
             PlayerPrefs.Save();
             LoadGame("All");
-            recordManager.PlayRecordings(); // TODO: remove later
         }
         else if (PlayerPrefs.GetInt("currentDayNumber", -1) > 0)
         {
             // LoadGame("Recordings");
             LoadGame("All");
-            recordManager.PlayRecordings(); // TODO: remove later
         }
         else
         {

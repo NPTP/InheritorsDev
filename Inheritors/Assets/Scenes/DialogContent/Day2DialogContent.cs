@@ -5,7 +5,7 @@ public class Day2DialogContent : MonoBehaviour
 {
     public Dictionary<string, Dialog> content = new Dictionary<string, Dialog>();
 
-    void Start()
+    void Awake()
     {
         PackContent();
     }

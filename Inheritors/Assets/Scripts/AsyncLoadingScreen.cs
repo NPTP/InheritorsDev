@@ -59,7 +59,7 @@ public class AsyncLoadingScreen : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        dayTextCG.DOFade(1f, dayTextFadeUpTime);
+        // dayTextCG.DOFade(1f, dayTextFadeUpTime);
 
         yield return new WaitForSeconds(timeBetweenDayAndLoading);
 

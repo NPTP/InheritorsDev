@@ -100,6 +100,11 @@ public class TaskManager : MonoBehaviour
         InitializeAreas();
     }
 
+    void Start()
+    {
+        UpdateTasks();
+    }
+
     void InitializeTaskList()
     {
         foreach (TaskType taskType in Enum.GetValues(typeof(TaskType)))

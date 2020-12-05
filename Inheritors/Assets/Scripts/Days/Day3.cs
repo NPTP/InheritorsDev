@@ -21,8 +21,9 @@ public class Day3 : MonoBehaviour
     /* Day-specific objects, transforms, etc. */
     /* -------------------------------------- */
     [Header("Day-specific Objects")]
-    public Transform motherQuadrantTransform;
-    public Transform sisterQuadrantTransform;
+    public Transform motherQuadrant;
+    public Transform grandfatherQuadrant;
+    public Transform grandmotherQuadrant;
 
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -69,27 +70,36 @@ public class Day3 : MonoBehaviour
 
         stateManager.SetState(State.Normal);
 
-        // Cue the opening dialog.
-        dialogManager.NewDialog(GetDialog("Day3Opening_1"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // // Cue the opening dialog.
+        // dialogManager.NewDialog(GetDialog("Day3Opening_1"), State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
-        // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
-        yield return new WaitForSeconds(1f);
+        // // Show the tasks, only cam send on the new one.
+        taskManager.AddTask(TaskType.Mother, "Fetch water.");
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunting with father.");
-        yield return new WaitForSeconds(1f);
-        cameraManager.SendCamTo(sisterQuadrantTransform);
-        yield return new WaitWhile(cameraManager.IsSwitching);
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Sister, "Talk to sister.");
-        yield return new WaitForSeconds(1f);
-        cameraManager.QuadrantCamActivate(motherQuadrantTransform);
-        yield return new WaitWhile(cameraManager.IsSwitching);
+        // yield return new WaitForSeconds(1f);
 
-        // Final dialog of opening.
-        dialogManager.NewDialog(GetDialog("Day3Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // cameraManager.SendCamTo(grandfatherQuadrant);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask(TaskType.Grandfather, "Visit grandfather.");
+        // yield return new WaitForSeconds(1f);
+
+        // cameraManager.SendCamTo(grandmotherQuadrant);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask(TaskType.Grandmother, "Visit grandmother.");
+        // yield return new WaitForSeconds(1f);
+
+        // cameraManager.QuadrantCamActivate(motherQuadrant);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+
+        // // Final dialog of opening.
+        // dialogManager.NewDialog(GetDialog("Day3Opening_2"));
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
         yield return new WaitForSeconds(1f);
@@ -118,12 +128,12 @@ public class Day3 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Wood:
-                PickupWood(inventory.itemQuantity);
+            case ItemType.Water:
+                PickupWater();
                 break;
 
-            case ItemType.Papaya:
-                PickupPapaya(inventory.itemQuantity);
+            case ItemType.Corn:
+                PickupCorn(inventory.itemQuantity);
                 break;
 
             case ItemType.Null:
@@ -140,8 +150,6 @@ public class Day3 : MonoBehaviour
     {
         Character character = args.dialog.character;
         dialogManager.NewDialog(dialogs[character]);
-
-        print(activeTask.type);
 
         if (activeTask.type != TaskType.Null)
             return;
@@ -173,10 +181,8 @@ public class Day3 : MonoBehaviour
                 taskManager.CompleteActiveTask();
                 break;
 
-            case "Dropoff_Papaya":
-                print("Completed papaya");
+            case "Dropoff_Corn":
                 taskManager.CompleteActiveTask();
-                print(activeTask.type);
                 break;
 
             case "Dropoff_Meat":
@@ -233,9 +239,9 @@ public class Day3 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Sister);
-        taskManager.ChangeTask(TaskType.Sister, "Gather 6 papayas.");
-        Transform papayaPickups = GameObject.Find("PapayaPickups").transform;
-        foreach (Transform child in papayaPickups)
+        taskManager.ChangeTask(TaskType.Sister, "Gather 3 ears of corn.");
+        Transform cornPickups = GameObject.Find("CornPickups").transform;
+        foreach (Transform child in cornPickups)
         {
             child.GetComponent<Trigger>().Enable();
         }
@@ -249,50 +255,41 @@ public class Day3 : MonoBehaviour
 
         // PIG KILLING MINIGAME GOES ON HERE
         // stateManager.SetState(State.Hunting); ???
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.25f);
         // END PIG KILLING
 
-        Destroy(GameObject.Find("Agoutis").GetComponent<Animator>());
+        Destroy(GameObject.Find("Tapir").GetComponent<Animator>());
         recordManager.StopRecording();
         dialogManager.NewDialog(GetDialog("Father_HuntEnd"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+
         pickupManager.LoseTaskTool();
+        triggers["Pickup_Pig"].Enable();
 
         taskManager.CompleteActiveTask();
     }
 
-    void PickupWood(int itemQuantity)
+    void PickupWater()
     {
-        if (itemQuantity == 1)
+        taskManager.SetActiveTask(TaskType.Mother);
+        taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother.");
+        triggers["Dropoff_Water"].Enable();
+    }
+
+    void PickupCorn(int itemQuantity)
+    {
+        if (itemQuantity > 0 && itemQuantity < 3)
         {
-            taskManager.ChangeTask(TaskType.Mother, "Collect 2 more logs.");
-            taskManager.SetActiveTask(TaskType.Mother);
-        }
-        else if (itemQuantity == 2)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Collect 1 more log.");
+            taskManager.ChangeTask(TaskType.Sister, "Gather " + (3 - itemQuantity).ToString() + " more ears of corn.");
         }
         else if (itemQuantity == 3)
         {
-            taskManager.ChangeTask(TaskType.Mother, "Bring logs to firepit.");
-            triggers["Dropoff_Wood"].Enable();
+            taskManager.ChangeTask(TaskType.Sister, "Gather 1 more ear of corn.");
         }
-    }
-
-    void PickupPapaya(int itemQuantity)
-    {
-        if (itemQuantity > 0 && itemQuantity < 5)
+        else if (itemQuantity == 4)
         {
-            taskManager.ChangeTask(TaskType.Sister, "Gather " + (6 - itemQuantity).ToString() + " more papayas.");
-        }
-        else if (itemQuantity == 5)
-        {
-            taskManager.ChangeTask(TaskType.Sister, "Gather 1 more papaya.");
-        }
-        else if (itemQuantity == 6)
-        {
-            taskManager.ChangeTask(TaskType.Sister, "Bring papayas back to sister.");
-            triggers["Dropoff_Papaya"].Enable();
+            taskManager.ChangeTask(TaskType.Sister, "Bring corn back to sister.");
+            triggers["Dropoff_Corn"].Enable();
         }
     }
 
@@ -300,8 +297,6 @@ public class Day3 : MonoBehaviour
     {
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
-        triggers["Dialog_HaveWater"].Disable();
-        triggers["Dialog_HuntBegin"].Disable();
     }
 
     IEnumerator AllTasksProcess()
@@ -450,6 +445,23 @@ public class Day3 : MonoBehaviour
         }
     }
 
+    void InitializeDialogs()
+    {
+        foreach (Character character in Enum.GetValues(typeof(Character)))
+        {
+            string startingKey = character.ToString() + "_Start";
+            if (day3DialogContent.content.ContainsKey(startingKey))
+            {
+                dialogs[character] = GetDialog(startingKey);
+            }
+        }
+    }
+
+    Dialog GetDialog(string dialogTag)
+    {
+        return day3DialogContent.content[dialogTag];
+    }
+
     void InitializeAreas()
     {
         AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
@@ -469,21 +481,6 @@ public class Day3 : MonoBehaviour
 
         taskManager.OnUpdateTasks += HandleUpdateTasks;
         taskManager.OnAllTasks += HandleAllTasksComplete;
-    }
-
-    void InitializeDialogs()
-    {
-        foreach (Character character in Enum.GetValues(typeof(Character)))
-        {
-            string startingKey = character.ToString() + "_Start";
-            if (day3DialogContent.content.ContainsKey(startingKey))
-                dialogs[character] = GetDialog(startingKey);
-        }
-    }
-
-    Dialog GetDialog(string dialogTag)
-    {
-        return day3DialogContent.content[dialogTag];
     }
 
     void OnDestroy()
