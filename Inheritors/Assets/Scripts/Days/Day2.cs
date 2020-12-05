@@ -5,9 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Cinemachine;
-using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(Day2DialogContent))]
 public class Day2 : MonoBehaviour
 {
     public bool enableDayScripts = true;
@@ -21,9 +20,6 @@ public class Day2 : MonoBehaviour
     /* -------------------------------------- */
     /* Day-specific objects, transforms, etc. */
     /* -------------------------------------- */
-    [Header("Dialog content for this day")]
-    public Day2DialogContent day2DialogContent;
-    [Space]
     [Header("Day-specific Objects")]
     public Transform motherQuadrantTransform;
     public Transform sisterQuadrantTransform;
@@ -80,7 +76,7 @@ public class Day2 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch 3 logs for firewood.");
+        taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
         yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunting with father.");
         yield return new WaitForSeconds(1f);
@@ -249,7 +245,7 @@ public class Day2 : MonoBehaviour
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.SetActiveTask(TaskType.Father);
-        taskManager.ChangeTask(TaskType.Father, "Kill the agoutis with the bow.");
+        taskManager.ChangeTask(TaskType.Father, "Catch fish in the net.");
 
         // PIG KILLING MINIGAME GOES ON HERE
         // stateManager.SetState(State.Hunting); ???
@@ -314,14 +310,16 @@ public class Day2 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Head inside the maloca for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
         triggers["Walk_End"].Enable();
     }
 
     IEnumerator SendNPCsHome()
     {
         yield return null;
-        // TODO: direct NPCs to walk inside their malocas if they have'em and disappear.
+
+        RemoveAllDialogTriggers();
+
         Destroy(GameObject.FindWithTag("MotherNPC"));
         Destroy(GameObject.FindWithTag("FatherNPC"));
         Destroy(GameObject.FindWithTag("SisterNPC"));
@@ -339,6 +337,9 @@ public class Day2 : MonoBehaviour
         Helper.LoadScene("Loading");
     }
 
+    Dialog motherLast;
+    Dialog fatherLast;
+    Dialog sisterLast;
 
     void SetTaskState(Task activeTask, Dictionary<TaskType, Task> taskList)
     {
@@ -365,7 +366,7 @@ public class Day2 : MonoBehaviour
         }
         else if (taskList[TaskType.Father].status == TaskStatus.Completed)
         {
-            dialogs[Character.Sister] = GetDialog("Father_Completed");
+            dialogs[Character.Father] = GetDialog("Father_Completed");
         }
 
         // Sister
@@ -380,9 +381,19 @@ public class Day2 : MonoBehaviour
         }
     }
 
+    void RemoveAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Remove();
+        }
+    }
+
     // ████████████████████████████████████████████████████████████████████████
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
+
+    Day2DialogContent day2DialogContent;
 
     SaveManager saveManager;
     StateManager stateManager;
@@ -398,6 +409,8 @@ public class Day2 : MonoBehaviour
     RecordManager recordManager;
     void InitializeReferences()
     {
+        day2DialogContent = GetComponent<Day2DialogContent>();
+
         saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
         taskManager = FindObjectOfType<TaskManager>();
