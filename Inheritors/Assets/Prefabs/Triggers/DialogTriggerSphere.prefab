@@ -112,17 +112,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52fbe12d49c28df498c477afac9ba06c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerEnabled: 1
+  startEnabled: 1
   triggerTag: Dialog_???
-  speakerName: ???
+  character: 0
   dialogPersists: 0
   dialogSkippable: 0
   lookAtMyTarget: 0
   myTarget: {fileID: 0}
-  dialogLines:
-  - Look at me!
-  - I'm a working dialog trigger. Isn't that cool?
-  dialogSpeed: 2
 --- !u!33 &7071254373025120167
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -237,7 +233,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7071254373341953000}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0

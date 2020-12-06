@@ -9,8 +9,9 @@ using DG.Tweening;
 [RequireComponent(typeof(Day3DialogContent))]
 public class Day3 : MonoBehaviour
 {
+    int dayNumber = 3;
+
     public bool enableDayScripts = true;
-    int dayNumber = 2;
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
     Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
     Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
@@ -70,35 +71,35 @@ public class Day3 : MonoBehaviour
         stateManager.SetState(State.Normal);
 
         // // Cue the opening dialog.
-        // dialogManager.NewDialog(GetDialog("Day3Opening_1"), State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogManager.NewDialog(GetDialog("Day3Opening_1"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
         // // Show the tasks, only cam send on the new one.
         taskManager.AddTask(TaskType.Mother, "Fetch water.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunting with father.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Sister, "Talk to sister.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
-        // cameraManager.SendCamTo(grandfatherQuadrant);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Grandfather, "Visit grandfather.");
-        // yield return new WaitForSeconds(1f);
-
-        // cameraManager.SendCamTo(grandmotherQuadrant);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
+        cameraManager.SendCamTo(grandmotherQuadrant);
+        yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandmother, "Visit grandmother.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
-        // cameraManager.QuadrantCamActivate(motherQuadrant);
-        // yield return new WaitWhile(cameraManager.IsSwitching);
+        cameraManager.SendCamTo(grandfatherQuadrant);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+        taskManager.AddTask(TaskType.Grandfather, "Visit grandfather.");
+        yield return new WaitForSeconds(1f);
 
-        // // Final dialog of opening.
-        // dialogManager.NewDialog(GetDialog("Day3Opening_2"));
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        cameraManager.QuadrantCamActivate(motherQuadrant);
+        yield return new WaitWhile(cameraManager.IsSwitching);
+
+        // Final dialog of opening.
+        dialogManager.NewDialog(GetDialog("Day3Opening_2"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
         yield return new WaitForSeconds(1f);

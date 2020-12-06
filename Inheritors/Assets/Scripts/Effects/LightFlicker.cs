@@ -21,7 +21,7 @@ public class LightFlicker : MonoBehaviour
     float lastSum = 0;
 
     Vector3 origPos;
-    bool changeHeight = true;
+    public bool changeHeight = true;
 
     /// <summary>
     /// Reset the randomness and start again. You usually don't need to call
@@ -43,7 +43,9 @@ public class LightFlicker : MonoBehaviour
             light = GetComponent<Light>();
         }
         origPos = transform.position;
-        StartCoroutine(ChangeHeight());
+
+        if (changeHeight)
+            StartCoroutine(ChangeHeight());
     }
 
     void Update()
@@ -70,13 +72,14 @@ public class LightFlicker : MonoBehaviour
 
     IEnumerator ChangeHeight()
     {
+        float timeSmoothing = 10f;
         while (changeHeight)
         {
             yield return new WaitForSeconds(Random.Range(0f, .25f));
-            transform.position = new Vector3(
-                origPos.x,
-                origPos.y + Random.Range(-0.15f, .15f),
-                origPos.z
+            transform.position = Vector3.Lerp(
+                transform.position,
+                new Vector3(origPos.x, origPos.y + Random.Range(-0.15f, .15f), origPos.z),
+                timeSmoothing * Time.deltaTime
             );
         }
     }
