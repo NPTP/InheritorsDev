@@ -40,7 +40,7 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Before, your father would have been other, enemy. But our common enemy was worse, so we came together."
+                "Before, your father would have been the other, the enemy. But our common enemy was worse, so we came together."
             }
         });
 
@@ -82,6 +82,15 @@ public class Day3DialogContent : MonoBehaviour
             }
         });
 
+        content.Add("father_Active", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "<UNUSED>"
+            }
+        });
+
+
         content.Add("Father_Completed", new Dialog
         {
             character = Character.Father,
@@ -112,6 +121,16 @@ public class Day3DialogContent : MonoBehaviour
             }
         });
 
+        content.Add("Sister_FinishTask", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "More corn should grow here soon, as we work the soil to make it richer.",
+                "See you tomorrow, little brother!"
+            }
+        });
+
+
         content.Add("Sister_Completed", new Dialog
         {
             character = Character.Sister,
@@ -138,7 +157,19 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "G"
+                "Ahh, my grandson. You have grown.",
+                "I am not just your grandfather. I am also the last shaman of the Akuntsu, and the chief of our tribe.",
+                "This flute is the <color=blue>matété</color>. We Akuntsu claim our matété once in youth, then never part with it until we die.",
+                "I have made a <color=blue>matété</color> for you from fresh wood. Retrieve it, and we will play together."
+            }
+        });
+
+        content.Add("Grandfather_StartTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "You play beautifully, so full of life. Playing with you eases the pain of the old scars I carry.",
+                "Please come back again another day to play the matété with me, grandson."
             }
         });
 
@@ -146,7 +177,7 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-              "G"
+                "<UNUSED>"
             }
         });
 
@@ -154,7 +185,8 @@ public class Day3DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-              "G"
+              "You play beautifully, so full of life. Playing with you eases the pain of the old scars I carry.",
+                "Please come back again another day to play the matété with me, grandson."
             }
         });
 
@@ -164,6 +196,48 @@ public class Day3DialogContent : MonoBehaviour
         // ████████████████████████████████████████████████████████████████████████
 
 
+        content.Add("Grandmother_Start", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "Hello, my youngest one. You have finally arrived.",
+              "I am the eldest of our tribe, older even than your grandfather. The time has come for me to pass on what I know.",
+              "As the youngest, you are the receiver of this wisdom.",
+              "I need you to find for me <color=blue>three beans of the yopo tree</color>.",
+              "They are colored red. You will find some in the meadow north of grandfather's maloca, and some to the south of here.",
+              "I will tell you soon what they are for. Please, bring them back to me now."
+            }
+        });
+
+        content.Add("Grandmother_Active", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "I need <color=blue>three beans of the yopo tree</color>.",
+              "Look north-east of Grandfather's maloca, south-west of my own, and near the river bridge."
+            }
+        });
+
+        content.Add("Grandmother_FinishTask", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "Well done, youngest one. The yopo bean is a powerful medicine that opens our minds and bodies to the spirit world.",
+              "I will grind the beans for the <color=red>festival of senses</color> and clear our tribe of bad blood.",
+              "To receive the full wisdom of the Akuntsu, I ask you return in the small hours of twilight for the <color=red>festival</color>.",
+              "The path to the south of here will be open - it leads up the hill. Meet me at the very top. And youngest one...",
+              "Do <i>not</i> tell your mother."
+            }
+        });
+
+        content.Add("Grandmother_Completed", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "Return in the small hours of twilight for the <color=red>festival of senses</color>.",
+              "The path to the south of here will be open - it leads up the hill. Meet me at the very top. Do <i>not</i> tell your mother."
+            }
+        });
 
     }
 }

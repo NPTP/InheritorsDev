@@ -14,7 +14,9 @@ public enum ItemType
     Pig,
     Agoutis,
     Papaya,
-    Corn
+    Corn,
+    Flute,
+    Yopo
 }
 
 public class PickupManager : MonoBehaviour
@@ -62,6 +64,19 @@ public class PickupManager : MonoBehaviour
         inventory.itemQuantity = 0;
         uiManager.UpdateInventory(inventory);
     }
+
+    // For just emptying stuff out/debug.
+    public void LoseItems()
+    {
+        inventory.heldItem.ResetParent();
+        inventory.heldItem.GetDroppedOff();
+        inventory.heldItem = null;
+        inventory.holdingItem = false;
+        inventory.itemType = ItemType.Null;
+        inventory.itemQuantity = 0;
+        uiManager.UpdateInventory(inventory);
+    }
+
 
     // ████████████████████████████████████████████████████████████████████████
     // ███ TASK TOOL

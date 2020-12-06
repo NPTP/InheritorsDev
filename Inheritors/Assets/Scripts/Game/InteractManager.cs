@@ -277,8 +277,12 @@ public class InteractManager : MonoBehaviour
         thisDropoff.Disable();
         heldItem.Remove();
         pickupManager.LoseTaskTool();
-        if (dropoffTarget != null) dropoffTarget.ReactToDropoff();
-        yield return new WaitUntil(dropoffTarget.DoneReaction);
+
+        if (dropoffTarget != null)
+        {
+            dropoffTarget.ReactToDropoff();
+            yield return new WaitUntil(dropoffTarget.DoneReaction);
+        }
 
         stateManager.SetState(State.Normal);
         OnDropoff?.Invoke(this, new DropoffArgs { tag = thisDropoff.GetTag() });
@@ -358,7 +362,7 @@ public class InteractManager : MonoBehaviour
 
     IEnumerator WaitToResetTrigger()
     {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitUntil(dialogManager.IsDialogAnimationFinished);
         dialogTrigger.Enable();
     }
 

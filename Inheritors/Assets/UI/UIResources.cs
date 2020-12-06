@@ -23,6 +23,9 @@ public class UIResources : ScriptableObject
     public Sprite WATER;
     public Sprite PIG;
     public Sprite PAPAYA;
+    public Sprite CORN;
+    public Sprite FLUTE;
+    public Sprite YOPO;
 
     public Sprite GetItemIcon(ItemType type)
     {
@@ -39,6 +42,15 @@ public class UIResources : ScriptableObject
 
             case ItemType.Papaya:
                 return PAPAYA;
+
+            case ItemType.Corn:
+                return CORN;
+
+            case ItemType.Flute:
+                return FLUTE;
+
+            case ItemType.Yopo:
+                return YOPO;
 
             default:
                 return null;

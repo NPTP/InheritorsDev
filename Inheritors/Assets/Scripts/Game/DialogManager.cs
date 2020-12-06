@@ -42,6 +42,7 @@ public class DialogManager : MonoBehaviour
 
     bool dialogNext = false;
     bool dialogFinished = true;
+    bool dialogAnimationFinished = false;
     int charsPerSecond = 60;
 
     public class Tools
@@ -110,6 +111,7 @@ public class DialogManager : MonoBehaviour
             cameraManager.FocusCamOn("Dialog", dialog.target);
             cameraManager.SwitchToCam("Dialog");
         }
+        dialogAnimationFinished = false;
         Tween setup = uiManager.dialogBox.SetUp(character);
         yield return setup.WaitForCompletion();
 
@@ -147,16 +149,24 @@ public class DialogManager : MonoBehaviour
         }
 
         // STEP 3 : Finish, tear down dialog box, set state to specified.
-        uiManager.dialogBox.TearDown();
+        Tween tearDown = uiManager.dialogBox.TearDown();
         dialogFinished = true;
         if (hasTarget)
             cameraManager.SwitchToLastCam();
         stateManager.SetState(finishState);
+
+        yield return tearDown.WaitForCompletion();
+        dialogAnimationFinished = true;
     }
 
     public bool IsDialogFinished()
     {
         return dialogFinished;
+    }
+
+    public bool IsDialogAnimationFinished()
+    {
+        return dialogAnimationFinished;
     }
 
     void InitializeReferences()
