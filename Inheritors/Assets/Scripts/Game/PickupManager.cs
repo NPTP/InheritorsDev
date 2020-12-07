@@ -16,7 +16,9 @@ public enum ItemType
     Papaya,
     Corn,
     Flute,
-    Yopo
+    Yopo,
+    Reed,
+    Uruku
 }
 
 public class PickupManager : MonoBehaviour

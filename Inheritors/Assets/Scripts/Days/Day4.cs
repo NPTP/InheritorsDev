@@ -85,39 +85,17 @@ public class Day4 : MonoBehaviour
     // ███ EVENT HANDLERS
     // ████████████████████████████████████████████████████████████████████████
 
-    // Currently unused.
-    // void HandleAreaEvent(object sender, InteractManager.AreaArgs args)
-    // {
-    //     string tag = args.tag;
-    //     bool inside = args.inside;
-
-    //     switch (tag)
-    //     {
-    //         default:
-    //             Debug.Log("Interact Manager gave unknown AREA tag to Day " + dayNumber);
-    //             break;
-    //     }
-    // }
+    bool haveReed = false;
+    bool done = false;
 
     void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
     {
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Water:
-                PickupWater();
-                break;
-
-            case ItemType.Corn:
-                PickupCorn(inventory.itemQuantity);
-                break;
-
-            case ItemType.Yopo:
-                PickupYopo(inventory.itemQuantity);
-                break;
-
-            case ItemType.Flute:
-                StartCoroutine(PickupFlute());
+            case ItemType.Reed:
+                haveReed = true;
+                taskManager.ChangeTask(TaskType.Grandmother, "Bring reed to grandmother.");
                 break;
 
             case ItemType.Null:
@@ -130,34 +108,27 @@ public class Day4 : MonoBehaviour
         }
     }
 
+
     void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
     {
         Character character = args.dialog.character;
-        dialogManager.NewDialog(dialogs[character]);
-
-        if (activeTask.type != TaskType.Null)
-            return;
 
         switch (character)
         {
-            case Character.Father:
-                if (taskList[TaskType.Father].status == TaskStatus.Waiting)
-                    StartCoroutine(HuntBegin());
-                break;
-
-            case Character.Sister:
-                if (taskList[TaskType.Sister].status == TaskStatus.Waiting)
-                    StartCoroutine(SisterStart());
-                break;
-
-            case Character.Grandfather:
-                if (taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
-                    StartCoroutine(GrandfatherStart());
-                break;
-
             case Character.Grandmother:
-                if (taskList[TaskType.Grandmother].status == TaskStatus.Waiting)
-                    StartCoroutine(GrandmotherStart());
+                if (done)
+                {
+                    dialogManager.NewDialog(dialogs[Character.Grandmother]);
+                }
+                else if (!haveReed)
+                {
+                    StartCoroutine(GetReed());
+                }
+                else if (haveReed)
+                {
+                    haveReed = false;
+                    StartCoroutine(Festival());
+                }
                 break;
 
             default:
@@ -171,27 +142,6 @@ public class Day4 : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Wood":
-                taskManager.CompleteActiveTask();
-                break;
-
-            case "Dropoff_Corn":
-                taskManager.CompleteActiveTask();
-                dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
-                break;
-
-            case "Dropoff_Meat":
-                taskManager.CompleteActiveTask();
-                break;
-
-            case "Dropoff_Water":
-                DropoffWater();
-                break;
-
-            case "Dropoff_Yopo":
-                DropoffYopo();
-                break;
-
             default:
                 Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
                 break;
@@ -230,7 +180,7 @@ public class Day4 : MonoBehaviour
 
     void HandleAllTasksComplete(object sender, EventArgs args)
     {
-        StartCoroutine(AllTasksProcess());
+        // Unused for day 4
     }
 
     IEnumerator WaitDialogEnd()
@@ -242,158 +192,63 @@ public class Day4 : MonoBehaviour
     // ███ HAPPENINGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
 
-    // ██████████████████████████ GRANDFATHER █████████████████████████████████
-
-    IEnumerator GrandfatherStart()
+    IEnumerator GetReed()
     {
+        dialogManager.NewDialog(GetDialog("Grandmother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        taskManager.SetActiveTask(TaskType.Grandfather);
-        taskManager.ChangeTask(TaskType.Grandfather, "Pick up the matété flute.");
-        triggers["Pickup_Flute"].Enable();
+        taskManager.ChangeTask(TaskType.Grandmother, "Retrieve the reed.");
+        triggers["Pickup_Reed"].Enable();
     }
 
-    IEnumerator PickupFlute()
+    IEnumerator Festival()
     {
-        taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
+        dialogTriggers[Character.Grandmother].Disable();
+        dialogManager.NewDialog(GetDialog("Grandmother_Festival1"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        uiManager.TearDownTasksInventory();
+        yield return new WaitForSeconds(1.5f);
+
+        ShockwaveProjector sp = FindObjectOfType<ShockwaveProjector>();
+        sp.Shockwave();
+        yield return new WaitUntil(sp.ShockwaveFinished);
+
+        dialogManager.NewDialog(GetDialog("Grandmother_Festival2"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        interactManager.DialogExitRange(dialogTriggers[Character.Grandmother]);
+        dialogTriggers[Character.Grandmother].Disable();
         yield return new WaitForSeconds(1f);
 
-        recordManager.StopRecording();
-        dialogManager.NewDialog(GetDialog("Grandfather_StartTask"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
+        float transitionTime = .5f;
+        transitionManager.ChangeColor(Color.white, 0f);
+        Tween t = transitionManager.Show(transitionTime);
+        yield return t.WaitForCompletion();
+        recordManager.PlayRecordings();
         pickupManager.LoseItems();
+        transitionManager.Hide(transitionTime);
+        yield return new WaitForSeconds(1);
+
+        dialogManager.NewDialog(GetDialog("Grandmother_Festival3"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        uiManager.SetUpTasksInventory();
         taskManager.CompleteActiveTask();
-    }
-
-    // ████████████████████████████ SISTER ████████████████████████████████████
-
-    IEnumerator SisterStart()
-    {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        taskManager.SetActiveTask(TaskType.Sister);
-        taskManager.ChangeTask(TaskType.Sister, "Gather 3 ears of corn.");
-        EnableChildTriggers("CornPickups");
-    }
-
-    void PickupCorn(int itemQuantity)
-    {
-        if (itemQuantity > 0 && itemQuantity < 3)
-        {
-            taskManager.ChangeTask(TaskType.Sister, "Gather " + (3 - itemQuantity).ToString() + " more ears of corn.");
-        }
-        else if (itemQuantity == 3)
-        {
-            taskManager.ChangeTask(TaskType.Sister, "Gather 1 more ear of corn.");
-        }
-        else if (itemQuantity == 4)
-        {
-            taskManager.ChangeTask(TaskType.Sister, "Bring corn back to sister.");
-            triggers["Dropoff_Corn"].Enable();
-        }
-    }
-
-    // ████████████████████████████ FATHER ████████████████████████████████████
-
-    IEnumerator HuntBegin()
-    {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.SetActiveTask(TaskType.Father, false);
-        taskManager.ChangeTask(TaskType.Father, "Kill the tapir.");
-
-        // PIG KILLING MINIGAME GOES ON HERE
-        yield return new WaitForSeconds(1.25f);
-        // END PIG KILLING
-
-        Destroy(GameObject.Find("Tapir").GetComponent<Animator>());
-        dialogManager.NewDialog(GetDialog("Father_HuntEnd"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        pickupManager.LoseTaskTool();
-        triggers["Pickup_Tapir"].Enable();
-        triggers["Dropoff_Meat"].Enable();
-
-        recordManager.StartNewRecording();
-    }
-
-    // ████████████████████████████ MOTHER ████████████████████████████████████
-
-    void PickupWater()
-    {
-        taskManager.SetActiveTask(TaskType.Mother);
-        taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother.");
-        triggers["Dropoff_Water"].Enable();
-    }
-
-    void DropoffWater()
-    {
-        pickupManager.LoseTaskTool();
-        taskManager.CompleteActiveTask();
-    }
-
-    // ██████████████████████████ GRANDMOTHER █████████████████████████████████
-
-    IEnumerator GrandmotherStart()
-    {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        taskManager.SetActiveTask(TaskType.Grandmother);
-        taskManager.ChangeTask(TaskType.Grandmother, "Gather 3 yopo beans.");
-        EnableChildTriggers("YopoPickups");
-    }
-
-    void PickupYopo(int itemQuantity)
-    {
-        if (itemQuantity == 1)
-        {
-            taskManager.ChangeTask(TaskType.Grandmother, "Gather 2 more yopo beans.");
-        }
-        else if (itemQuantity == 2)
-        {
-            taskManager.ChangeTask(TaskType.Grandmother, "Gather 1 more yopo bean.");
-        }
-        else if (itemQuantity == 3)
-        {
-            taskManager.ChangeTask(TaskType.Grandmother, "Bring beans to grandmother.");
-            triggers["Dropoff_Yopo"].Enable();
-        }
-    }
-
-    void DropoffYopo()
-    {
-        taskManager.CompleteActiveTask();
-        dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
+        dialogTriggers[Character.Grandmother].Enable();
+        dialogs[Character.Grandmother] = GetDialog("Grandmother_Completed");
+        triggers["Walk_End"].Enable();
+        done = true;
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████
-
-    IEnumerator AllTasksProcess()
-    {
-        yield return new WaitForSeconds(1f);
-        dialogManager.NewDialog(GetDialog("DayOver"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
-        triggers["Walk_End"].Enable();
-    }
-
-    IEnumerator SendNPCsHome()
-    {
-        yield return null;
-
-        RemoveAllDialogTriggers();
-
-        Destroy(GameObject.FindWithTag("MotherNPC"));
-        Destroy(GameObject.FindWithTag("FatherNPC"));
-        Destroy(GameObject.FindWithTag("SisterNPC"));
-    }
 
     IEnumerator End()
     {
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
-        Tween t = transitionManager.Show(2f);
+        transitionManager.ChangeColor(Color.black, 0f);
+        Tween t = transitionManager.Show(4f);
         audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return t.WaitForCompletion();
 
@@ -401,81 +256,12 @@ public class Day4 : MonoBehaviour
         Helper.LoadScene("Loading");
     }
 
-    Dialog motherLast;
-    Dialog fatherLast;
-    Dialog sisterLast;
-
     void SetTaskState(Task activeTask, Dictionary<TaskType, Task> taskList)
     {
         this.activeTask = activeTask;
         this.taskList = taskList;
 
-        // Mother
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Mother].status == TaskStatus.Active)
-        {
-            dialogs[Character.Mother] = GetDialog("Mother_Active");
-            dialogTriggers[Character.Mother].Enable();
-        }
-        else if (taskList[TaskType.Mother].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Mother] = GetDialog("Mother_Completed");
-        }
-
-        // Father
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Father].status == TaskStatus.Active)
-        {
-            // Nothing: handled in script
-        }
-        else if (taskList[TaskType.Father].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Father] = GetDialog("Father_Completed");
-        }
-
-        // Sister
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Sister].status == TaskStatus.Active)
-        {
-            dialogs[Character.Sister] = GetDialog("Sister_Active");
-        }
-        else if (taskList[TaskType.Sister].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Sister] = GetDialog("Sister_Completed");
-        }
-
-        // Sister
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Sister].status == TaskStatus.Active)
-        {
-            dialogs[Character.Sister] = GetDialog("Sister_Active");
-        }
-        else if (taskList[TaskType.Sister].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Sister] = GetDialog("Sister_Completed");
-        }
-
-        // Grandmother
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Grandmother].status == TaskStatus.Active)
-        {
-            dialogs[Character.Grandmother] = GetDialog("Grandmother_Active");
-        }
-        else if (taskList[TaskType.Grandmother].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Grandmother] = GetDialog("Grandmother_Completed");
-        }
-
-        // Grandfather
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Grandfather].status == TaskStatus.Active)
-        {
-            dialogs[Character.Grandfather] = GetDialog("Grandfather_Active");
-        }
-        else if (taskList[TaskType.Grandfather].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Grandfather] = GetDialog("Grandfather_Completed");
-        }
+        // Unused for Day 4
     }
 
     void RemoveAllDialogTriggers()

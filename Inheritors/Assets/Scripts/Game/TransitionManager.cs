@@ -43,15 +43,16 @@ public class TransitionManager : MonoBehaviour
         return canvasGroup.DOFade(1f, showTime);
     }
 
-    public void Hide(float hideTime = 0f)
-    {
-        StartCoroutine(Out(hideTime));
-    }
-
-    IEnumerator Out(float hideTime)
+    public Tween Hide(float hideTime = 0f)
     {
         Tween t = canvasGroup.DOFade(0f, hideTime);
-        yield return t.WaitForCompletion();
+        StartCoroutine(Out(t, hideTime));
+        return t;
+    }
+
+    IEnumerator Out(Tween fadeTween, float hideTime)
+    {
+        yield return fadeTween.WaitForCompletion();
         transition.enabled = false;
         canvasGroup.enabled = false;
     }

@@ -42,8 +42,11 @@ public class PickupTrigger : MonoBehaviour, Trigger
         l = transform.GetChild(1).gameObject.GetComponent<Light>();
         originalIntensity = l.intensity;
         ps = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
-        triggerProjector = transform.GetChild(3).GetComponent<TriggerProjector>();
+        triggerProjector = transform.GetChild(3).gameObject.GetComponent<TriggerProjector>();
+    }
 
+    void Start()
+    {
         if (startEnabled) Enable();
         else Disable();
     }

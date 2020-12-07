@@ -5,8 +5,9 @@ using DG.Tweening;
 public class ShockwaveProjector : MonoBehaviour
 {
     Projector projector;
-    float finalSize = 650f;
-    float duration = 12f;
+    float finalSize = 450;
+    float duration = 8.5f;
+    bool finished = false;
 
     void Awake()
     {
@@ -15,9 +16,14 @@ public class ShockwaveProjector : MonoBehaviour
         projector.enabled = false;
     }
 
-    void Shockwave()
+    public void Shockwave()
     {
         StartCoroutine(ShockwaveAnimation());
+    }
+
+    public bool ShockwaveFinished()
+    {
+        return finished;
     }
 
     IEnumerator ShockwaveAnimation()
@@ -38,6 +44,9 @@ public class ShockwaveProjector : MonoBehaviour
 
         yield return t.WaitForCompletion();
         projector.enabled = false;
+        finished = true;
+
+        yield return null;
         Destroy(this.gameObject);
     }
 }

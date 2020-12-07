@@ -15,7 +15,8 @@ public enum Character
     Sister,
     Grandfather,
     Grandmother,
-    Narrator
+    Narrator,
+    Manofhole
 }
 
 // Class for encapsulating dialogs sent from other classes to be played back.

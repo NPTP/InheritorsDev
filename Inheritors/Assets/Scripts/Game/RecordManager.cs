@@ -81,7 +81,10 @@ public class RecordManager : MonoBehaviour
     public void PlayRecordings()
     {
         if (hasRecordings)
+        {
+            print("PlayRecordings() called");
             StartCoroutine(Playback());
+        }
     }
 
     void FixedUpdate()

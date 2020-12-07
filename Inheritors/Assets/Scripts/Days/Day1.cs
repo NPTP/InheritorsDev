@@ -84,7 +84,7 @@ public class Day1 : MonoBehaviour
         // Give us context for hunting task.
         cameraManager.SendCamTo(fatherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Father, "Meet father to hunt.");
+        taskManager.AddTask(TaskType.Father, "Meet father in the woods.");
         yield return new WaitForSeconds(1f);
 
         // Return to player to debrief before letting them loose.
@@ -349,7 +349,7 @@ public class Day1 : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Son! Finally you are old enough and we have enough men to hunt.",
+                "Son! Finally you are old enough and we have enough men to hunt. I will teach you.",
                 "The women tried their hand at it, but only out of necessity, and had not the skill. But you will be great.",
                 "Today we hunt wild pig. Aim the bow carefully - do not scare it away. Go, my son."
             }

@@ -79,7 +79,7 @@ public class Day3 : MonoBehaviour
         // // Show the tasks, only cam send on the new one.
         taskManager.AddTask(TaskType.Mother, "Fetch water.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "Hunting with father.");
+        taskManager.AddTask(TaskType.Father, "Hunt with father.");
         yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Sister, "Talk to sister.");
         yield return new WaitForSeconds(1f);
