@@ -255,9 +255,8 @@ public class InteractManager : MonoBehaviour
     IEnumerator DropOffItem()
     {
         PickupTrigger heldItem = pickupManager.GetHeldItem();
-        pickupManager.DropOff();
-
         DropoffTrigger thisDropoff = dropoffTrigger;
+        pickupManager.DropOff(thisDropoff.takeFullInventory);
         player.GetComponent<PlayerMovement>().Halt();
         LookAtTarget(thisDropoff.target);
 

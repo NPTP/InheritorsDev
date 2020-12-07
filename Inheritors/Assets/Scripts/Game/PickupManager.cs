@@ -19,7 +19,8 @@ public enum ItemType
     Yopo,
     Reed,
     Uruku,
-    Herbs
+    Herbs,
+    Seeds
 }
 
 public class PickupManager : MonoBehaviour
@@ -44,7 +45,7 @@ public class PickupManager : MonoBehaviour
     // ███ ACTIONS
     // ████████████████████████████████████████████████████████████████████████
 
-    public void PickUp(PickupTrigger currentPickup)
+    public void PickUp(PickupTrigger currentPickup, int quantity = 1)
     {
         if (!IsHoldingItem())
         {
@@ -52,19 +53,22 @@ public class PickupManager : MonoBehaviour
             inventory.holdingItem = true;
             inventory.itemType = currentPickup.itemType;
         }
-        inventory.itemQuantity++;
+        inventory.itemQuantity += quantity;
         uiManager.UpdateInventory(inventory);
     }
 
     // A dropoff ALWAYS empties the inventory completely.
-    public void DropOff()
+    public void DropOff(bool takeFullInventory = true)
     {
         inventory.heldItem.ResetParent();
         inventory.heldItem.GetDroppedOff();
         inventory.heldItem = null;
         inventory.holdingItem = false;
         inventory.itemType = ItemType.Null;
-        inventory.itemQuantity = 0;
+        if (takeFullInventory)
+            inventory.itemQuantity = 0;
+        else
+            inventory.itemQuantity--;
         uiManager.UpdateInventory(inventory);
     }
 
@@ -149,7 +153,7 @@ public class PickupManager : MonoBehaviour
         inventory.toolIsAttached = false;
     }
 
-    Vector3 GetItemHoldPosition()
+    public Vector3 GetItemHoldPosition()
     {
         return player.transform.position + (.5f * player.transform.up) + (.5f * player.transform.forward);
     }

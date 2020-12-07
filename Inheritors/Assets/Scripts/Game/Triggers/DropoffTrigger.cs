@@ -18,6 +18,7 @@ public class DropoffTrigger : MonoBehaviour, Trigger
     public Transform target;
     public string promptText;
     bool dropoffDone = false;
+    public bool takeFullInventory = true;
 
     public bool StartedEnabled()
     {

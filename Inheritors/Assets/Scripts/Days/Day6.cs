@@ -23,12 +23,10 @@ public class Day6 : MonoBehaviour
     /* -------------------------------------- */
     [Header("Day-specific Objects")]
     public Material redheadMaterial;
+    public GameObject seedsPickup;
     // public Transform motherQuadrant;
     // public Transform grandfatherQuadrant;
     // public Transform grandmotherQuadrant;
-
-    GameObject manofholeChar;
-    bool spokeToManofhole = false;
 
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -103,6 +101,8 @@ public class Day6 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
+        stateManager.SetState(State.Normal);
+
         yield return new WaitForSeconds(1f);
     }
 
@@ -162,30 +162,31 @@ public class Day6 : MonoBehaviour
                     StartCoroutine(HuntBegin());
                 break;
 
+
             case Character.Sister:
-                if (taskList[TaskType.Sister].status == TaskStatus.Waiting && activeTask.type == TaskType.Null)
+                if (activeTask.type != TaskType.Null)
+                    return;
+
+                if (taskList[TaskType.Sister].status == TaskStatus.Waiting)
                     StartCoroutine(SisterStart());
-                else if (taskList[TaskType.Sister].status == TaskStatus.Active && spokeToManofhole)
-                    StartCoroutine(SisterFinish());
                 break;
 
-            case Character.Manofhole:
-                if (!spokeToManofhole)
-                    StartCoroutine(SisterManofholeTalk());
-                break;
 
             case Character.Grandfather:
                 if (taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
                     StartCoroutine(GrandfatherStart());
                 break;
 
+
             case Character.Grandmother:
                 if (activeTask.type != TaskType.Null)
                     return;
 
+
                 if (taskList[TaskType.Grandmother].status == TaskStatus.Waiting)
                     StartCoroutine(GrandmotherStart());
                 break;
+
 
             default:
                 break;
@@ -213,6 +214,10 @@ public class Day6 : MonoBehaviour
 
             case "Dropoff_Herbs":
                 DropoffHerbs();
+                break;
+
+            case "Dropoff_Seed":
+                DropoffSeed();
                 break;
 
             default:
@@ -281,20 +286,43 @@ public class Day6 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Sister);
-        taskManager.ChangeTask(TaskType.Sister, "Pick 3 papayas.");
-        dialogTriggers[Character.Manofhole].Enable();
-        dialogs[Character.Manofhole] = GetDialog("Manofhole_Start");
-        manofholeChar.SetActive(true);
+        taskManager.ChangeTask(TaskType.Sister, "Plant 4 manioc seeds.");
+
+        PickupTrigger seeds = GameObject.Instantiate(seedsPickup,
+            pickupManager.GetItemHoldPosition(),
+            Quaternion.identity,
+            GameObject.FindWithTag("Player").transform).GetComponent<PickupTrigger>();
+        seeds.GetPickedUp();
+        pickupManager.PickUp(seeds);
+
+        EnableChildTriggers("SeedDropoffTriggers");
     }
 
-    IEnumerator SisterManofholeTalk()
+    int numSeedsPlanted = 0;
+    void DropoffSeed()
     {
-        spokeToManofhole = true;
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        dialogs[Character.Manofhole] = GetDialog("Manofhole_Completed");
+        print("Made it to dropoffseed");
+        numSeedsPlanted++;
 
-        taskManager.ChangeTask(TaskType.Sister, "Go back to sister.");
-        dialogs[Character.Sister] = GetDialog("Sister_FinishTask");
+        if (numSeedsPlanted < 4)
+        {
+            PickupTrigger seeds = GameObject.Instantiate(seedsPickup,
+                pickupManager.GetItemHoldPosition(),
+                Quaternion.identity,
+                GameObject.FindWithTag("Player").transform).GetComponent<PickupTrigger>();
+            seeds.GetPickedUp();
+            pickupManager.PickUp(seeds);
+
+            if (numSeedsPlanted == 3)
+                taskManager.ChangeTask(TaskType.Sister, "Plant 1 more seed.");
+            else
+                taskManager.ChangeTask(TaskType.Sister, "Plant " + (4 - numSeedsPlanted).ToString() + " more seeds.");
+        }
+        else
+        {
+            taskManager.CompleteActiveTask();
+            dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+        }
     }
 
     IEnumerator SisterFinish()
@@ -310,19 +338,24 @@ public class Day6 : MonoBehaviour
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.SetActiveTask(TaskType.Father);
-        taskManager.ChangeTask(TaskType.Father, "Catch the fish.");
+        taskManager.ChangeTask(TaskType.Father, "Kill the pig.");
 
-        // PIG KILLING MINIGAME GOES ON HERE
-        yield return new WaitForSeconds(1.25f);
-        // END PIG KILLING
+        stateManager.SetState(State.Inert);
+
+        // Fireworks
+        yield return new WaitForSeconds(.5f);
+        Animation animation = GameObject.Find("HuntFireworks").GetComponent<Animation>();
+        animation.Play();
+        yield return new WaitWhile(() => animation.isPlaying);
 
         recordManager.StopRecording();
-        Destroy(GameObject.Find("Tapir").GetComponent<Animator>());
         dialogManager.NewDialog(GetDialog("Father_HuntEnd"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
+
+        stateManager.SetState(State.Normal);
     }
 
     // ████████████████████████████ MOTHER ████████████████████████████████████

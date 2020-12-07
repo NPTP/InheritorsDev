@@ -61,6 +61,11 @@ public class PickupTrigger : MonoBehaviour, Trigger
         return transform.position;
     }
 
+    public void SetOriginalParent(Transform parent)
+    {
+        originalParent = parent;
+    }
+
     public void ResetParent()
     {
         transform.parent = originalParent;

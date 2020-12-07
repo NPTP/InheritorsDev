@@ -65,7 +65,7 @@ public class Day6DialogContent : MonoBehaviour
             character = Character.Mother,
             lines = new string[] {
                 "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
-                "Since our union, I no longer understand the drive to dominance over the other. It never helped either of us."
+                "Since our union, I no longer understand the drive to dominance over the other. It never either of our people."
             }
         });
 
@@ -77,9 +77,9 @@ public class Day6DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Son, these scars are from a past life, before you, who made all life anew. Do not worry yourself about them!",
-                "The future is what belongs to you, not the past! And look, I see the ancestors now as well, just like you!",
-                "Their shadows are in the trees, waiting, watching over our hunt! We are sure to succeed! Let us catch the pig!"
+                "Son, these scars are from a past life, a life before you, who came and made all anew. Do not worry yourself about them!",
+                "I see the ancestors now as well, just like you! They are here now.",
+                "Their shadows are in the trees, waiting, watching over our hunt! We are sure to succeed! Kill us a pig, son."
             }
         });
 
@@ -87,10 +87,10 @@ public class Day6DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "I do not know... what that was.",
-                "Some kind of fire and smoke and noise thrown from the forest. Every animal in sight has fled.",
-                "We won't have another chance to kill anything for at least a day! Bad fortune...",
-                "We will have to live without meat today, son, but no matter. You are so skilled now, we will catch something tomorrow."
+                "I... I do not know... what that was.",
+                "The shadows threw their fire and smoke and noise toward the pig and... every animal has fled in fear!",
+                "We will not have another chance to kill anything for at least a day.",
+                "Son, we can live without meat for one day. You are quite skilled now, so we will surely catch something tomorrow.",
             }
         });
 
@@ -107,8 +107,9 @@ public class Day6DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Before I had these scars, we lived in a place where everything was plentiful. Now we rely on luck.",
-                "But do not fret, my boy. Come again tomorrow and we will surely catch enough meat for the tribe."
+                "I wish that I knew what happened here today.",
+                "Before I gained these scars, we lived in a place where everything was plentiful.\nNow, we rely on luck.",
+                "But do not fret, my boy. Come again tomorrow and we will surely catch enough meat for the whole tribe."
             }
         });
 
@@ -121,8 +122,8 @@ public class Day6DialogContent : MonoBehaviour
             character = Character.Sister,
             lines = new string[] {
                 "You changed your hair, little brother. The uruku dye?",
-                "So it is not so bad after all. The garden at home is flourishing, and even this blackened spot will be able to sprout anew.",
-                "Take and plant these manioc seeds in <color=blue>three spots</color> in the ash."
+                "Things are not so bad after all. The garden at home is flourishing, and even this blackened spot will sprout again.",
+                "Take and plant these manioc seeds in <color=blue>four spots</color> in the ash."
             }
         });
 
@@ -130,7 +131,7 @@ public class Day6DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "You only need plant the seeds in <color=blue>three spots</color> on the ash."
+                "You only need plant the seeds in <color=blue>four spots</color> on the ash."
             }
         });
 
@@ -139,8 +140,8 @@ public class Day6DialogContent : MonoBehaviour
             character = Character.Sister,
             lines = new string[] {
                 "Very good, little brother. Soon this spot will be green again, and will provide for us a rich harvest.",
-                "You see? Nothing to be worried about. To burn down and start again is the cycle of all things from the earth.",
-                "Come here again tomorrow - I will need your help."
+                "You see? Nothing to be worried about. Some things must burn down to allow greater growth from the ashes.",
+                "Come back to this spot again tomorrow - I will need your help."
             }
         });
 
@@ -202,7 +203,7 @@ public class Day6DialogContent : MonoBehaviour
               "Men from outside the forest came in the night and brought it with them.",
               "I have tried all the herbs and medicines we have, but for one which grows at the top of the hill.",
               "I am too old and tired to retrieve it myself. Please, go atop the hill, and bring the <color=blue>herbs</color> to me.",
-              "Then I will answer what you have been asking, what the man of the hole told you about, the crushed maloca."
+              "Then I will answer what you have been asking - what the man of the hole told you about."
             }
         });
 
