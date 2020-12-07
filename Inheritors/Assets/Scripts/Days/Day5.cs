@@ -73,26 +73,27 @@ public class Day5 : MonoBehaviour
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
         transitionManager.SetColor(Color.black);
+        yield return new WaitForSeconds(.5f);
         transitionManager.Hide(3f);
-        // yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
-        // dialogManager.NewDialog(GetDialog("Day5Opening_1"), State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogManager.NewDialog(GetDialog("Day5Opening_1"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
         taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Sister, "Help sister.");
-        // yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandmother, "Talk with grandmother.");
-        // yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandfather, "Meet with grandfather.");
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Grandfather, "Talk to grandfather.");
+        yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
         dialogManager.NewDialog(GetDialog("Day5Opening_2"));
@@ -411,8 +412,10 @@ public class Day5 : MonoBehaviour
         yield return new WaitForSeconds(1f);
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        StartCoroutine(SendNPCsHome());
+        // StartCoroutine(SendNPCsHome());
         taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
+        Destroy(GameObject.FindWithTag("MotherNPC"));
+        dialogTriggers[Character.Mother].Enable();
         triggers["Walk_End"].Enable();
     }
 

@@ -18,7 +18,8 @@ public enum ItemType
     Flute,
     Yopo,
     Reed,
-    Uruku
+    Uruku,
+    Herbs
 }
 
 public class PickupManager : MonoBehaviour

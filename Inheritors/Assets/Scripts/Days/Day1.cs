@@ -362,7 +362,7 @@ public class Day1 : MonoBehaviour
                 "Well done, my son!",
                 "We are blessed to have wild animals here that we can eat.",
                 "There is a plain, through that path to the north, leaving the forest. I have seen cows there.",
-                "They would make good meat. But it not safe out of the forest. Make me a promise, boy.",
+                "Yes, cows would make for good meat, and cows are not found in the forest. But it not safe out there, so make me a promise.",
                 "I will teach you the hunt, but you must promise to never leave this forest. Ever. Understand?",
                 "Good. Now, take the meat home. I will see you for siesta."
             }
