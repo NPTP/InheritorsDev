@@ -29,8 +29,8 @@ public class Day8DialogContent : MonoBehaviour
             character = Character.Mother,
             lines = new string[] {
                 "I am sorry I never told you about your other sister. We loved her very much. You would have loved her, too.",
-                "We need more water, but we are running out of meat, and the harvest is ruined. We are running out of food.",
-                "We cannot live on water alone. Something must be done."
+                "We need more water, but we have little meat, and our harvest was ruined. We are running out of food.",
+                "We cannot live on water alone. \nSomething must be done."
             }
         });
 
@@ -173,7 +173,7 @@ public class Day8DialogContent : MonoBehaviour
             character = Character.Grandfather,
             lines = new string[] {
                 "The ancestors have heard us, grandson. And they watch over this land still.",
-                "Remember, that I am your chief. As long as you and I are healthy, we will <i>never</i> leave this land.",
+                "Remember that I am your chief. \nAs long as you and I are healthy, we will <i>never</i> leave this land.",
                 "This is our home, it has always been, and always will be!"
             }
         });
@@ -183,7 +183,7 @@ public class Day8DialogContent : MonoBehaviour
             character = Character.Grandfather,
             lines = new string[] {
                 "Should you lose hope, child, know that as long as you and I are healthy, we will <i>never</i> leave this land.",
-                "Remember you can always lie in the hammock if you need a rest. Let the meadow restore you."
+                "Remember you can always lie in the hammock if you need a rest. \nLet the meadow restore you."
             }
         });
 
