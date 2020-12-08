@@ -116,15 +116,19 @@ public class UI_DialogBox
         nameColors["grandmother"] = Color.gray;
         nameColors["grandfather"] = Color.green;
         nameColors["strange man"] = Color.red;
+        nameColors[""] = Color.white;
     }
 
     public Tween SetUp(Character character)
     {
         string name = "";
-        if (character != Character.Manofhole)
-            name = character.ToString();
-        else
+        if (character == Character.Manofhole)
             name = "Strange man";
+        else if (character == Character.Narrator)
+            name = "";
+        else
+            name = character.ToString();
+
         nameText.text = name.ToUpper();
         nameText.faceColor = nameColors[name.ToLower()];
         tmpText.maxVisibleCharacters = 0;

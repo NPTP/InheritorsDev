@@ -45,7 +45,10 @@ public class WalkTrigger : MonoBehaviour, Trigger
         ps = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
         activateParticles = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
         triggerProjector = transform.GetChild(3).GetComponent<TriggerProjector>();
+    }
 
+    void Start()
+    {
         if (startEnabled) Enable();
         else Disable();
 

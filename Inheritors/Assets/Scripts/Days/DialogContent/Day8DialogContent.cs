@@ -17,11 +17,20 @@ public class Day8DialogContent : MonoBehaviour
             character = Character.Mother,
             lines = new string[] {
                 "It is a cold morning.",
-                "They have built... right across our land. Clearing whatever they choose.",
-                "Your sister... she is not well. I need you to talk to her. You always brighten her spirits.",
-                "Check on your father as well. He should be returning with fresh meat.",
-                "Don't forget your grandmother - I'm sure she is better by now, and can help with your sister.",
-                "I am sorry I never told you about your first sister. We loved her very much."
+                "They have built right across our land. The damage is irreparable.",
+                "Your sister... she is not well. I need you to talk to her. Perhaps you can brighten her spirits.",
+                "Check on your father, too. He should be returning with fresh meat soon.",
+                "Do not forget your grandmother - she must be better by now, please wake her.",
+            }
+        });
+
+        content.Add("Day8Opening_2", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "I am sorry I never told you about your other sister. We loved her very much. You would have loved her, too.",
+                "We need more water, but we are running out of meat, and the harvest is ruined. We are running out of food.",
+                "We cannot live on water alone. Something must be done."
             }
         });
 
@@ -33,6 +42,15 @@ public class Day8DialogContent : MonoBehaviour
             }
         });
 
+
+        content.Add("Player_Hammock", new Dialog
+        {
+            character = Character.Narrator,
+            lines = new string[] {
+                "I feel rested. Somehow at ease. The forest will reclaim all this, set it right."
+            }
+        });
+
         // ████████████████████████████████████████████████████████████████████████
         // ███ MOTHER
         // ████████████████████████████████████████████████████████████████████████
@@ -41,8 +59,8 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Things will get better. Things <i>are</i> getting better.",
-                "Our tribe is strong and united, and you and your sister are smart and capable."
+                "We need more water. But we are running out of meat. And our harvest is ruined.",
+                "We cannot live on water alone. Something must be done."
             }
         });
 
@@ -50,7 +68,7 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Firewood onto the fire pit..."
+                "As much water as you can bring, son, please."
             }
         });
 
@@ -58,7 +76,8 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Well, the fire is ready, but we still need meat to cook..."
+                "I hope your father comes back soon, and the garden can be regrown...",
+                "We need to feed our family."
             }
         });
 
@@ -68,13 +87,10 @@ public class Day8DialogContent : MonoBehaviour
 
         content.Add("Father_Start", new Dialog
         {
-            character = Character.Father,
+            character = Character.Narrator,
             lines = new string[] {
-                "I can't believe it...",
-                "We cannot hunt here anymore. It has all been razed. I do not see, hear or smell a single animal nearby.",
-                "I cannot let us down. I must clear the rocks, leave the forest and bring back meat from the pastures.",
-                "It will be alright, son. I will be back soon. I will be quick so they do not see me. Do not dare follow me. ",
-                "Tomorrow, we will be having a feast again, I promise you. Meet me here when I return, and help me carry the meat."
+                "Father is not here yet.",
+                "I should come back tomorrow. \nHe will return. \nHe always does."
             }
         });
 
@@ -90,8 +106,7 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "I promise to be quick, and inconspicuous. They will not see me take my prize.",
-                "You will need to be ready for my return tomorrow - we will have to move fast, but then, we will eat well!"
+                "<UNUSED>"
             }
         });
 
@@ -103,9 +118,12 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "It is amazing, brother! \nEverything grows so well here!",
-                "I removed the spears, planted new papaya trees in the pits, and tore down the hut.",
-                "Our seeds from yesterday are sprouting. \nThe soil is now ready for four more!"
+                "<i>GO AWAY!</i>",
+                ". . .    ",
+                "Oh, it is you, little brother? Sorry. I cannot do this anymore. I cannot take it.",
+                "Everything we worked towards, everything we grew, they just... built over it.",
+                "We were so close to a giant harvest, and now we have nothing.",
+                "Thank you for coming here, brother, but please leave me be for today... come back tomorrow."
             }
         });
 
@@ -113,16 +131,7 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "You only need plant the seeds in <color=blue>four spots</color>."
-            }
-        });
-
-        content.Add("Sister_FinishTask", new Dialog
-        {
-            character = Character.Sister,
-            lines = new string[] {
-                "In time, this spot will grow richer even than before it was burned, and we will have more than we can possibly eat.",
-                "Tomorrow, meet me at my home - we will have a grand harvest from all that has grown in my garden!"
+                "<UNUSED>"
             }
         });
 
@@ -130,8 +139,7 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "In time this spot will grow richer than before it burned, and we will have more than we can possibly eat.",
-                "Tomorrow, meet me at my home - we will have a grand harvest from all that has grown in my garden!"
+                "<UNUSED>"
             }
         });
 
@@ -144,10 +152,11 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "Grandson, there is no need to fear.",
-                "You have been working so hard. Your sister's gardens grow strong, and your grandmother is getting better.",
-                "Please, take a rest in my <color=blue>hammock</color>, in the meadow to the northeast of here.",
-                "Have a brief, but restorative sleep. The meadow will rejuvenate you."
+                "The events of this day fill me with sorrow. I weep for our land, and our people.",
+                "But know this, grandson. We have been through worse, and we survived.",
+                "Many Akuntsu gave up hope too early - \nand we miss them every day. \nBut our family never gave it up.",
+                "I am the shaman, I am your chief, I will protect this land from outsiders. \nAnd <i>you</i> will inherit it.",
+                "Come, take your matété, let us call the ancestors, and clear all bad blood from this place."
             }
         });
 
@@ -155,7 +164,7 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "Grandson, go to my <color=blue>hammock</color> in the meadow just northeast of here. The short rest will restore you!"
+                "Pick up your matété and play with me. The ancestors will hear us!"
             }
         });
 
@@ -163,9 +172,9 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "How do you feel?",
-                "When we are rested in mind and body, when we do not run from fear, but instead, we follow hope...",
-                "That is when the Akuntsu will thrive again. That time is now."
+                "The ancestors have heard us, grandson. And they watch over this land still.",
+                "Remember, that I am your chief. As long as you and I are healthy, we will <i>never</i> leave this land.",
+                "This is our home, it has always been, and always will be!"
             }
         });
 
@@ -173,9 +182,8 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "When we are rested in mind and body, when we do not run from fear, but instead, we follow hope...",
-                "That is when the Akuntsu will thrive again. That time is now.",
-                "Come rest in my hammock any time you wish, grandson."
+                "Should you lose hope, child, know that as long as you and I are healthy, we will <i>never</i> leave this land.",
+                "Remember you can always lie in the hammock if you need a rest. Let the meadow restore you."
             }
         });
 
@@ -185,12 +193,11 @@ public class Day8DialogContent : MonoBehaviour
 
         content.Add("Grandmother_Start", new Dialog
         {
-            character = Character.Grandmother,
+            character = Character.Narrator,
             lines = new string[] {
-              "Ahh, the youngest one is back again, always running back to help, eager to be of service.",
-              "The herbs you brought me yesterday helped immensely, but I am not through yet. I will need more.",
-              "There is a particular leaf that I have seen growing near your <i>other</i> sister's maloca.",
-              "Please bring me the <color=blue>herbs</color> from there as soon as you can."
+              ". . .       ",
+              "Grandmother won't wake up.",
+              "The outside illness has put her to sleep."
             }
         });
 
@@ -198,19 +205,7 @@ public class Day8DialogContent : MonoBehaviour
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "The <color=blue>herbs</color> I need today grow near your <i>other</i> sister's maloca.",
-              "When you have them, drop them in the bucket there."
-            }
-        });
-
-        content.Add("Grandmother_FinishTask", new Dialog
-        {
-            character = Character.Grandmother,
-            lines = new string[] {
-              "Thank you, brave little one. This should be all I need to recover fully.",
-              "I was afraid the remedies which have always served our tribe might fail against the outside illness.",
-              "But there is no obstacle we Akuntsu cannot overcome together.",
-              "I must go inside and rest now, collect my strength. Come see me tomorrow when I have awoken!"
+              "< UNUSED >"
             }
         });
 
