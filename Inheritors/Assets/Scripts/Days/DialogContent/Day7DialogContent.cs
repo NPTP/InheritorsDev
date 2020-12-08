@@ -12,22 +12,14 @@ public class Day7DialogContent : MonoBehaviour
 
     void PackContent()
     {
-        content.Add("Day6Opening_1", new Dialog
+        content.Add("Day7Opening_1", new Dialog
         {
             character = Character.Mother,
             lines = new string[] {
-                "Son, I have told you already. Your father and I had no choice but to come together.",
-                "The Kanoe and Akuntsu had been enemies, yes, but now we are together.",
-                "Forget what the strange man said. We are stronger together, all of us, the tribe, the family.",
-                "Now, what do you need to do today?"
-            }
-        });
-
-        content.Add("Day6Opening_2", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Keep your eyes to the future, my son. The past need not haunt us. Do well!"
+                "For decades I have watched the sun set over the Omere, over the forest.",
+                "For decades this beautiful land has been a part of all families who call it home.",
+                "If we never give up on it, I know that it will never give up on <i>us</i>.",
+                "Go with love today, son."
             }
         });
 
@@ -35,8 +27,7 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "It has been a hard day, but our tribe has survived a long time, and so we will continue to do.",
-                "Come inside now and rest. You have done all you can!"
+                "You have done well, son! Come home now and rest. Tomorrow will be another beautiful day."
             }
         });
 
@@ -48,7 +39,8 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Seeing ghosts and talking to strange men from the woods... my son is already a shaman!"
+                "Things will get better. Things <i>are</i> getting better.",
+                "Our tribe is strong and united, and you and your sister are smart and capable."
             }
         });
 
@@ -56,7 +48,7 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Water into the grey pot, as always."
+                "Firewood onto the fire pit..."
             }
         });
 
@@ -64,8 +56,7 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
-                "Since our union, I no longer understand the drive to dominance over the other. It never either of our people."
+                "Well, the fire is ready, but we still need meat to cook..."
             }
         });
 
@@ -77,20 +68,11 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Father,
             lines = new string[] {
-                "Son, these scars are from a past life, a life before you, who came and made all anew. Do not worry yourself about them!",
-                "I see the ancestors now as well, just like you! They are here now.",
-                "Their shadows are in the trees, waiting, watching over our hunt! We are sure to succeed! Kill us a pig, son."
-            }
-        });
-
-        content.Add("Father_HuntEnd", new Dialog
-        {
-            character = Character.Father,
-            lines = new string[] {
-                "I... I do not know... what that was.",
-                "The shadows threw their fire and smoke and noise toward the pig and... every animal has fled in fear!",
-                "We will not have another chance to kill anything for at least a day.",
-                "Son, we can live without meat for one day. You are quite skilled now, so we will surely catch something tomorrow.",
+                "I can't believe it...",
+                "We cannot hunt here anymore. It has all been razed. I do not see, hear or smell a single animal nearby.",
+                "I cannot let us down. I must clear the rocks, leave the forest and bring back meat from the pastures.",
+                "It will be alright, son. I will be back soon. I will be quick so they do not see me. Do not dare follow me. ",
+                "Tomorrow, we will be having a feast again, I promise you. Meet me here when I return, and help me carry the meat."
             }
         });
 
@@ -102,14 +84,12 @@ public class Day7DialogContent : MonoBehaviour
             }
         });
 
-
         content.Add("Father_Completed", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
-                "I wish that I knew what happened here today.",
-                "Before I gained these scars, we lived in a place where everything was plentiful.\nNow, we rely on luck.",
-                "But do not fret, my boy. Come again tomorrow and we will surely catch enough meat for the whole tribe."
+                "I promise to be quick, and inconspicuous. They will not see me take my prize.",
+                "You will need to be ready for my return tomorrow - we will have to move fast, but then, we will eat well!"
             }
         });
 
@@ -121,9 +101,9 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "You changed your hair, little brother. The uruku dye?",
-                "Things are not so bad after all. The garden at home is flourishing, and even this blackened spot will sprout again.",
-                "Take and plant these manioc seeds in <color=blue>four spots</color> in the ash."
+                "It is amazing, brother! \nEverything grows so well here!",
+                "I removed the spears, planted new papaya trees in the pits, and tore down the hut.",
+                "Our seeds from yesterday are sprouting. \nThe soil is now ready for four more!"
             }
         });
 
@@ -131,7 +111,7 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "You only need plant the seeds in <color=blue>four spots</color> on the ash."
+                "You only need plant the seeds in <color=blue>four spots</color>."
             }
         });
 
@@ -139,9 +119,8 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "Very good, little brother. Soon this spot will be green again, and will provide for us a rich harvest.",
-                "You see? Nothing to be worried about. Some things must burn down to allow greater growth from the ashes.",
-                "Come back to this spot again tomorrow - I will need your help."
+                "In time, this spot will grow richer even than before it was burned, and we will have more than we can possibly eat.",
+                "Tomorrow, meet me at my home - we will have a grand harvest from all that has grown in my garden!"
             }
         });
 
@@ -149,8 +128,8 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Sister,
             lines = new string[] {
-                "The garden at my home is flourishing, brother, it does not need any help now.",
-                "So come here to the ashen ground again tomorrow, where we will establish our second garden!",
+                "In time this spot will grow richer than before it burned, and we will have more than we can possibly eat.",
+                "Tomorrow, meet me at my home - we will have a grand harvest from all that has grown in my garden!"
             }
         });
 
@@ -163,13 +142,10 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "I knew it would come to such questions, but I did not expect them to come from encountering the man of the hole.",
-                "Grandson, you are lucky to have even seen him - for he is the last of his tribe.",
-                "Even I cannot say what happened to the rest of them. But his solitude <i>now</i> is his own choice, when we are here with open arms.",
-                "Fear does not serve us. My scars are the same as your father's. In our former lands, they came, and they shot, and we ran...",
-                "But they did not kill me. And I am your chief, always present, always leading our tribe and family toward hope.",
-                "Right now, your grandmother is sick. I have done every ritual that will help her. The next step is yours. Go to her.",
-                "With your help, she can only improve in health."
+                "Grandson, there is no need to fear.",
+                "You have been working so hard. Your sister's gardens grow strong, and your grandmother is getting better.",
+                "Please, take a rest in my <color=blue>hammock</color>, in the meadow to the northeast of here.",
+                "Have a brief, but restorative sleep. The meadow will rejuvenate you."
             }
         });
 
@@ -177,7 +153,17 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "<UNUSED>"
+                "Grandson, go to my <color=blue>hammock</color> in the meadow just northeast of here. The short rest will restore you!"
+            }
+        });
+
+        content.Add("Grandfather_FinishTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "How do you feel?",
+                "When we are rested in mind and body, when we do not run from fear, but instead, we follow hope...",
+                "That is when the Akuntsu will thrive again. That time is now."
             }
         });
 
@@ -185,9 +171,9 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "Do not fear, grandson. Loss is part of life. This land and the future is yours, and with hope, we will overcome any fear.",
-                "Right now, your grandmother is sick. I have done every ritual that will help her. The next step is yours. Go to her.",
-                "With your help, she can only improve in health."
+                "When we are rested in mind and body, when we do not run from fear, but instead, we follow hope...",
+                "That is when the Akuntsu will thrive again. That time is now.",
+                "Come rest in my hammock any time you wish, grandson."
             }
         });
 
@@ -199,11 +185,10 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "Ohh... I am so grateful for you. Youngest one, I have an illness I have never encountered before.",
-              "Men from outside the forest came in the night and brought it with them.",
-              "I have tried all the herbs and medicines we have, but for one which grows at the top of the hill.",
-              "I am too old and tired to retrieve it myself. Please, go atop the hill, and bring the <color=blue>herbs</color> to me.",
-              "Then I will answer what you have been asking - what the man of the hole told you about."
+              "Ahh, the youngest one is back again, always running back to help, eager to be of service.",
+              "The herbs you brought me yesterday helped immensely, but I am not through yet. I will need more.",
+              "There is a particular leaf that I have seen growing near your <i>other</i> sister's maloca.",
+              "Please bring me the <color=blue>herbs</color> from there as soon as you can."
             }
         });
 
@@ -211,7 +196,7 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "The <color=blue>herbs</color> I need only grow at the very top of the hill, where we performed the festival of senses.",
+              "The <color=blue>herbs</color> I need today grow near your <i>other</i> sister's maloca.",
               "When you have them, drop them in the bucket there."
             }
         });
@@ -220,11 +205,10 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "Ohh, thank you, youngest one. I am strong enough to prepare the herbs myself - you have done the difficult work.",
-              "Now, you asked about the crushed maloca, near the river crossing. Yes, a member of our tribe and family once lived there.",
-              "She was your sister. Not the one you know now, but <i>another</i> sister. So much like you, she was. But the forest... claimed her.",
-              "Not long after her passing, you were born to us. And so, our family grew again. As it will continue to.",
-              "Please come back again tomorrow, these herbs will only last a day."
+              "Thank you, brave little one. This should be all I need to recover fully.",
+              "I was afraid the remedies which have always served our tribe might fail against the outside illness.",
+              "But there is no obstacle we Akuntsu cannot overcome together.",
+              "I must go inside and rest now, collect my strength. Come see me tomorrow when I have awoken!"
             }
         });
 
@@ -232,8 +216,7 @@ public class Day7DialogContent : MonoBehaviour
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "You never met your other sister, but I see a part of her in you. Her spirit and yours are intertwined.",
-              "Please come back again tomorrow, these herbs will only last a day."
+              "< UNUSED >"
             }
         });
 

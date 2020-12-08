@@ -27,7 +27,11 @@ public class Day7 : MonoBehaviour
     // public Transform motherQuadrant;
     // public Transform grandfatherQuadrant;
     // public Transform grandmotherQuadrant;
-
+    [Space]
+    public GameObject grandfatherDialogTrigger1;
+    public GameObject grandfatherChar1;
+    public GameObject grandfatherDialogTrigger2;
+    public GameObject grandfatherChar2;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -70,40 +74,46 @@ public class Day7 : MonoBehaviour
         newMaterials[1] = redheadMaterial;
         headRenderer.materials = newMaterials;
 
+        // Deactivate grandfather duplicate
+        grandfatherDialogTrigger2.GetComponent<DialogTrigger>().Disable();
+        grandfatherDialogTrigger2.SetActive(false);
+        grandfatherChar2.SetActive(false);
+        dialogTriggers[Character.Grandfather] = grandfatherDialogTrigger1.GetComponent<DialogTrigger>();
+
         // Fade in from WHITE.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
         transitionManager.SetColor(Color.white);
-        yield return new WaitForSeconds(.5f);
+        // yield return new WaitForSeconds(.5f);
         transitionManager.Hide(3f);
-        yield return new WaitForSeconds(2f);
+        // yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
-        dialogManager.NewDialog(GetDialog("Day7Opening_1"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // dialogManager.NewDialog(GetDialog("Day7Opening_1"), State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch water.");
-        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Sister, "Help sister.");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Grandfather, "See grandfather.");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        dialogManager.NewDialog(GetDialog("Day7Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // dialogManager.NewDialog(GetDialog("Day7Opening_2"));
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);
 
-        yield return new WaitForSeconds(1f);
+        yield return null;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -129,8 +139,8 @@ public class Day7 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Water:
-                PickupWater();
+            case ItemType.Wood:
+                PickupWood(inventory.itemQuantity);
                 break;
 
             case ItemType.Herbs:
@@ -199,21 +209,12 @@ public class Day7 : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Water":
-                DropoffWater();
-                break;
-
-            case "Dropoff_Corn":
-                taskManager.CompleteActiveTask();
-                dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
-                break;
-
-            case "Dropoff_Meat":
+            case "Dropoff_Wood":
                 taskManager.CompleteActiveTask();
                 break;
 
             case "Dropoff_Herbs":
-                DropoffHerbs();
+                StartCoroutine(DropoffHerbs());
                 break;
 
             case "Dropoff_Seed":
@@ -232,6 +233,10 @@ public class Day7 : MonoBehaviour
 
         switch (tag)
         {
+            case "Walk_Hammock":
+                StartCoroutine(WalkHammock());
+                break;
+
             case "Walk_End":
                 StartCoroutine(End());
                 break;
@@ -274,8 +279,32 @@ public class Day7 : MonoBehaviour
 
     IEnumerator GrandfatherStart()
     {
-        taskManager.SetActiveTask(TaskType.Grandfather, false);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        taskManager.SetActiveTask(TaskType.Grandfather);
+        taskManager.ChangeTask(TaskType.Grandfather, "Rest in the hammock.");
+        triggers["Walk_Hammock"].Enable();
+    }
+
+    IEnumerator WalkHammock()
+    {
+        stateManager.SetState(State.Inert);
+        recordManager.StopRecording();
+        transitionManager.SetColor(Color.black);
+        transitionManager.Show(1f);
+        yield return new WaitForSeconds(4f);
+        grandfatherDialogTrigger1.SetActive(false);
+        grandfatherChar1.SetActive(false);
+        grandfatherDialogTrigger2.SetActive(true);
+        grandfatherChar2.SetActive(true);
+        dialogTriggers[Character.Grandfather] = grandfatherDialogTrigger2.GetComponent<DialogTrigger>();
+        dialogTriggers[Character.Grandfather].Enable();
+        transitionManager.Hide(2f);
+
+        yield return new WaitForSeconds(1.5f);
+        dialogManager.NewDialog(GetDialog("Grandfather_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
         taskManager.CompleteActiveTask();
     }
 
@@ -320,8 +349,9 @@ public class Day7 : MonoBehaviour
         }
         else
         {
-            taskManager.CompleteActiveTask();
+            recordManager.StopRecording();
             dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+            taskManager.CompleteActiveTask();
         }
     }
 
@@ -336,41 +366,38 @@ public class Day7 : MonoBehaviour
 
     IEnumerator HuntBegin()
     {
+        taskManager.SetActiveTask(TaskType.Father, false);
+        dialogTriggers[Character.Father].Remove();
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.SetActiveTask(TaskType.Father);
-        taskManager.ChangeTask(TaskType.Father, "Kill the pig.");
-
         stateManager.SetState(State.Inert);
+        pickupManager.LoseTaskTool();
 
-        // Fireworks
-        yield return new WaitForSeconds(.5f);
-        Animation animation = GameObject.Find("HuntFireworks").GetComponent<Animation>();
+        Animation animation = GameObject.Find("FatherLeaves").GetComponent<Animation>();
         animation.Play();
         yield return new WaitWhile(() => animation.isPlaying);
 
-        recordManager.StopRecording();
-        dialogManager.NewDialog(GetDialog("Father_HuntEnd"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
-
         stateManager.SetState(State.Normal);
     }
 
     // ████████████████████████████ MOTHER ████████████████████████████████████
 
-    void PickupWater()
+    void PickupWood(int itemQuantity)
     {
-        taskManager.SetActiveTask(TaskType.Mother);
-        taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother.");
-        triggers["Dropoff_Water"].Enable();
-    }
-
-    void DropoffWater()
-    {
-        pickupManager.LoseTaskTool();
-        taskManager.CompleteActiveTask();
+        if (itemQuantity == 1)
+        {
+            taskManager.ChangeTask(TaskType.Mother, "Collect 2 more logs.");
+            taskManager.SetActiveTask(TaskType.Mother);
+        }
+        else if (itemQuantity == 2)
+        {
+            taskManager.ChangeTask(TaskType.Mother, "Collect 1 more log.");
+        }
+        else if (itemQuantity == 3)
+        {
+            taskManager.ChangeTask(TaskType.Mother, "Bring logs to firepit.");
+            triggers["Dropoff_Wood"].Enable();
+        }
     }
 
     // ██████████████████████████ GRANDMOTHER █████████████████████████████████
@@ -380,7 +407,7 @@ public class Day7 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Grandmother);
-        taskManager.ChangeTask(TaskType.Grandmother, "Find herbs on hilltop.");
+        taskManager.ChangeTask(TaskType.Grandmother, "Find herbs near the river.");
         triggers["Pickup_Herbs"].Enable();
     }
 
@@ -390,10 +417,14 @@ public class Day7 : MonoBehaviour
         triggers["Dropoff_Herbs"].Enable();
     }
 
-    void DropoffHerbs()
+    IEnumerator DropoffHerbs()
     {
         taskManager.CompleteActiveTask();
         dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        Destroy(GameObject.FindWithTag("GrandmotherNPC"));
+        dialogTriggers[Character.Grandmother].Remove();
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████
@@ -406,7 +437,7 @@ public class Day7 : MonoBehaviour
         // StartCoroutine(SendNPCsHome());
         taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
         Destroy(GameObject.FindWithTag("MotherNPC"));
-        dialogTriggers[Character.Mother].Enable();
+        dialogTriggers[Character.Mother].Remove();
         triggers["Walk_End"].Enable();
     }
 
