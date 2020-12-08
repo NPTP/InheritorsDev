@@ -183,7 +183,7 @@ public class Day8DialogContent : MonoBehaviour
             character = Character.Grandfather,
             lines = new string[] {
                 "Should you lose hope, child, know that as long as you and I are healthy, we will <i>never</i> leave this land.",
-                "Remember you can always lie in the hammock if you need a rest. \nLet the meadow restore you."
+                "Please lie in the hammock if you need a rest. \nLet the meadow restore you."
             }
         });
 
