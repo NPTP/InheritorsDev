@@ -205,21 +205,11 @@ public class Day5 : MonoBehaviour
         switch (tag)
         {
             case "Dropoff_Wood":
-                taskManager.CompleteActiveTask();
-                dialogManager.NewDialog(GetDialog("Mother_FinishTask"));
-                break;
-
-            case "Dropoff_Corn":
-                taskManager.CompleteActiveTask();
-                dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+                StartCoroutine(DropoffWood());
                 break;
 
             case "Dropoff_Meat":
                 taskManager.CompleteActiveTask();
-                break;
-
-            case "Dropoff_Yopo":
-                DropoffYopo();
                 break;
 
             default:
@@ -367,6 +357,14 @@ public class Day5 : MonoBehaviour
         }
     }
 
+    IEnumerator DropoffWood()
+    {
+        recordManager.StopRecording();
+        dialogManager.NewDialog(GetDialog("Mother_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        taskManager.CompleteActiveTask();
+    }
+
     // ██████████████████████████ GRANDMOTHER █████████████████████████████████
 
     IEnumerator GrandmotherStart()
@@ -401,12 +399,6 @@ public class Day5 : MonoBehaviour
         taskManager.CompleteActiveTask();
     }
 
-    void DropoffYopo()
-    {
-        taskManager.CompleteActiveTask();
-        dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
-    }
-
     // ████████████████████████████ GENERAL ███████████████████████████████████
 
     IEnumerator AllTasksProcess()
@@ -415,9 +407,9 @@ public class Day5 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         // StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         Destroy(GameObject.FindWithTag("MotherNPC"));
-        dialogTriggers[Character.Mother].Enable();
+        dialogTriggers[Character.Mother].Remove();
         triggers["Walk_End"].Enable();
     }
 

@@ -238,6 +238,7 @@ public class Day9 : MonoBehaviour
 
     IEnumerator DropoffFlute()
     {
+        recordManager.StopRecording();
         dialogManager.NewDialog(GetDialog("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 

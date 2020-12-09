@@ -19,6 +19,13 @@ public class Day7DialogContent : MonoBehaviour
                 "For decades I have watched the sun set over the Omere, over the forest.",
                 "For decades this beautiful land has been a part of all families who call it home.",
                 "If we never give up on it, I know that it will never give up on <i>us</i>.",
+            }
+        });
+
+        content.Add("Day7Opening_2", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
                 "Go with love today, son."
             }
         });

@@ -22,10 +22,15 @@ public class UIResources : ScriptableObject
     public Sprite WOOD;
     public Sprite WATER;
     public Sprite PIG;
+    public Sprite AGOUTIS;  // This is actually fish!
     public Sprite PAPAYA;
     public Sprite CORN;
     public Sprite FLUTE;
     public Sprite YOPO;
+    public Sprite REED;
+    public Sprite URUKU;
+    public Sprite HERBS;
+    public Sprite SEEDS;
 
     public Sprite GetItemIcon(ItemType type)
     {
@@ -40,6 +45,9 @@ public class UIResources : ScriptableObject
             case ItemType.Pig:
                 return PIG;
 
+            case ItemType.Agoutis:
+                return AGOUTIS;
+
             case ItemType.Papaya:
                 return PAPAYA;
 
@@ -51,6 +59,18 @@ public class UIResources : ScriptableObject
 
             case ItemType.Yopo:
                 return YOPO;
+
+            case ItemType.Reed:
+                return REED;
+
+            case ItemType.Uruku:
+                return URUKU;
+
+            case ItemType.Herbs:
+                return HERBS;
+
+            case ItemType.Seeds:
+                return SEEDS;
 
             default:
                 return null;

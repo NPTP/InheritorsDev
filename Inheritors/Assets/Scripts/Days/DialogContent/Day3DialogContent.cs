@@ -225,7 +225,7 @@ public class Day3DialogContent : MonoBehaviour
               "Well done, youngest one. The yopo bean is a powerful medicine that opens our minds and bodies to the spirit world.",
               "I will grind the beans for the <color=red>festival of senses</color> and clear our tribe of bad blood.",
               "To receive the full wisdom of the Akuntsu, I ask you return in the small hours of twilight for the <color=red>festival</color>.",
-              "The path to the south of here will be open - it leads up the hill. Meet me at the very top. And youngest one...",
+              "The rocks blocking the path up the hill will be cleared. Meet me at the very top of the hill! And youngest one...",
               "Do <i>not</i> tell your mother."
             }
         });
@@ -235,7 +235,8 @@ public class Day3DialogContent : MonoBehaviour
             character = Character.Grandmother,
             lines = new string[] {
               "Return in the small hours of twilight for the <color=red>festival of senses</color>.",
-              "The path to the south of here will be open - it leads up the hill. Meet me at the very top. Do <i>not</i> tell your mother."
+              "The rocks blocking the path up the hill will be cleared. Meet me at the very top of the hill! Meet me at the very top.",
+              "Do <i>not</i> tell your mother."
             }
         });
 

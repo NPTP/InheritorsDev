@@ -227,7 +227,7 @@ public class Day10 : MonoBehaviour
 
     void HandleAllTasksComplete(object sender, EventArgs args)
     {
-        // StartCoroutine(AllTasksProcess());
+        // Unused on Day 10
     }
 
     IEnumerator WaitDialogEnd()
@@ -248,7 +248,7 @@ public class Day10 : MonoBehaviour
         taskManager.SetActiveTask(taskType, false);
         stateManager.SetState(State.Inert);
         FindObjectOfType<PlayerMovement>().Halt();
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
 
         dialogManager.NewDialog(GetDialog(name));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -304,8 +304,8 @@ public class Day10 : MonoBehaviour
         taskManager.SetActiveTask(lastRemainingTask, false);
         taskManager.ChangeTask(lastRemainingTask, "Talk to the strange man.");
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        dialogs[Character.Manofhole] = GetDialog("Manofhole_Repeat");
         taskManager.CompleteActiveTask();
+        dialogs[Character.Manofhole] = GetDialog("Manofhole_Repeat");
 
         taskManager.AddAndSetActive(TaskType.DayEnd, "Find mother on the hilltop.", false);
         hilltopBlockage.SetActive(false);

@@ -260,8 +260,9 @@ public class Day5DialogContent : MonoBehaviour
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "Look at you! The ancestors truly live on inside of you now! I am getting quite old, young one, so you must carry on this tradition.",
-              "Oh, <i>she</i> would have loved you so much, if <i>she</i> were still here.",
+              "Look at you! The ancestors truly live on in you now!",
+              "I am getting quite old, young one, so you must carry on this Akuntsu tradition. Can you do that for me?",
+              "Oh, <i>she</i> used to dye her hair every day... \n<i>she</i> would have loved you so much, if <i>she</i> were still here.",
             }
         });
 

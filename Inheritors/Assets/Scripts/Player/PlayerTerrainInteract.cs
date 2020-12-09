@@ -86,7 +86,7 @@ public class PlayerTerrainInteract : MonoBehaviour
                 {
                     walkedToday[z, x] = true;
                     changedTex = true;
-                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.1f;
+                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.2f;
                 }
             }
         }

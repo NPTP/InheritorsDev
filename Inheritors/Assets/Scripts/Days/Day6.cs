@@ -204,21 +204,16 @@ public class Day6 : MonoBehaviour
                 DropoffWater();
                 break;
 
-            case "Dropoff_Corn":
-                taskManager.CompleteActiveTask();
-                dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
-                break;
-
             case "Dropoff_Meat":
                 taskManager.CompleteActiveTask();
                 break;
 
             case "Dropoff_Herbs":
-                DropoffHerbs();
+                StartCoroutine(DropoffHerbs());
                 break;
 
             case "Dropoff_Seed":
-                DropoffSeed();
+                StartCoroutine(DropoffSeed());
                 break;
 
             default:
@@ -300,9 +295,8 @@ public class Day6 : MonoBehaviour
     }
 
     int numSeedsPlanted = 0;
-    void DropoffSeed()
+    IEnumerator DropoffSeed()
     {
-        print("Made it to dropoffseed");
         numSeedsPlanted++;
 
         if (numSeedsPlanted < 4)
@@ -321,8 +315,10 @@ public class Day6 : MonoBehaviour
         }
         else
         {
-            taskManager.CompleteActiveTask();
+            recordManager.StopRecording();
             dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+            yield return new WaitUntil(dialogManager.IsDialogFinished);
+            taskManager.CompleteActiveTask();
         }
     }
 
@@ -391,10 +387,12 @@ public class Day6 : MonoBehaviour
         triggers["Dropoff_Herbs"].Enable();
     }
 
-    void DropoffHerbs()
+    IEnumerator DropoffHerbs()
     {
-        taskManager.CompleteActiveTask();
+        recordManager.StopRecording();
         dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        taskManager.CompleteActiveTask();
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████
@@ -405,9 +403,9 @@ public class Day6 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         // StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         Destroy(GameObject.FindWithTag("MotherNPC"));
-        dialogTriggers[Character.Mother].Enable();
+        dialogTriggers[Character.Mother].Remove();
         triggers["Walk_End"].Enable();
     }
 

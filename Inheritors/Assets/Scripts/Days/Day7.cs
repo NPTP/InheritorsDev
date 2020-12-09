@@ -219,7 +219,7 @@ public class Day7 : MonoBehaviour
                 break;
 
             case "Dropoff_Seed":
-                DropoffSeed();
+                StartCoroutine(DropoffSeed());
                 break;
 
             default:
@@ -329,9 +329,8 @@ public class Day7 : MonoBehaviour
     }
 
     int numSeedsPlanted = 0;
-    void DropoffSeed()
+    IEnumerator DropoffSeed()
     {
-        print("Made it to dropoffseed");
         numSeedsPlanted++;
 
         if (numSeedsPlanted < 4)
@@ -352,6 +351,7 @@ public class Day7 : MonoBehaviour
         {
             recordManager.StopRecording();
             dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+            yield return new WaitUntil(dialogManager.IsDialogFinished);
             taskManager.CompleteActiveTask();
         }
     }
@@ -420,9 +420,10 @@ public class Day7 : MonoBehaviour
 
     IEnumerator DropoffHerbs()
     {
-        taskManager.CompleteActiveTask();
+        recordManager.StopRecording();
         dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+        taskManager.CompleteActiveTask();
 
         Destroy(GameObject.FindWithTag("GrandmotherNPC"));
         dialogTriggers[Character.Grandmother].Remove();
@@ -436,7 +437,7 @@ public class Day7 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         // StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         Destroy(GameObject.FindWithTag("MotherNPC"));
         dialogTriggers[Character.Mother].Remove();
         triggers["Walk_End"].Enable();

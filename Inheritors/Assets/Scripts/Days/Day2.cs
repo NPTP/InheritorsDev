@@ -310,7 +310,7 @@ public class Day2 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
     }
 

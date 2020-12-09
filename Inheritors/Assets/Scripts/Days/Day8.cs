@@ -174,7 +174,7 @@ public class Day8 : MonoBehaviour
                 break;
 
             case "Dropoff_Seed":
-                DropoffSeed();
+                StartCoroutine(DropoffSeed());
                 break;
 
             default:
@@ -291,9 +291,8 @@ public class Day8 : MonoBehaviour
     }
 
     int numSeedsPlanted = 0;
-    void DropoffSeed()
+    IEnumerator DropoffSeed()
     {
-        print("Made it to dropoffseed");
         numSeedsPlanted++;
 
         if (numSeedsPlanted < 4)
@@ -314,6 +313,7 @@ public class Day8 : MonoBehaviour
         {
             recordManager.StopRecording();
             dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+            yield return new WaitUntil(dialogManager.IsDialogFinished);
             taskManager.CompleteActiveTask();
         }
     }

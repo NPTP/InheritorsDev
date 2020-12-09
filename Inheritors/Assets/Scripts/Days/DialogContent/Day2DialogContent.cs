@@ -119,7 +119,7 @@ public class Day2DialogContent : MonoBehaviour
             character = Character.Mother,
             lines = new string[] {
                 "Thank you, son. That is all your work for today!",
-                "Let us take a siesta. Come inside with me."
+                "Come back home now."
             }
         });
     }

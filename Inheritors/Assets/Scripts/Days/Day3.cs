@@ -200,8 +200,7 @@ public class Day3 : MonoBehaviour
                 break;
 
             case "Dropoff_Corn":
-                taskManager.CompleteActiveTask();
-                dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+                StartCoroutine(DropoffCorn());
                 break;
 
             case "Dropoff_Meat":
@@ -213,7 +212,7 @@ public class Day3 : MonoBehaviour
                 break;
 
             case "Dropoff_Yopo":
-                DropoffYopo();
+                StartCoroutine(DropoffYopo());
                 break;
 
             default:
@@ -318,6 +317,14 @@ public class Day3 : MonoBehaviour
         }
     }
 
+    IEnumerator DropoffCorn()
+    {
+        recordManager.StopRecording();
+        dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogAnimationFinished);
+        taskManager.CompleteActiveTask();
+    }
+
     // ████████████████████████████ FATHER ████████████████████████████████████
 
     IEnumerator HuntBegin()
@@ -384,10 +391,12 @@ public class Day3 : MonoBehaviour
         }
     }
 
-    void DropoffYopo()
+    IEnumerator DropoffYopo()
     {
-        taskManager.CompleteActiveTask();
+        recordManager.StopRecording();
         dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogAnimationFinished);
+        taskManager.CompleteActiveTask();
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████
@@ -398,7 +407,7 @@ public class Day3 : MonoBehaviour
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go inside for siesta.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
     }
 
