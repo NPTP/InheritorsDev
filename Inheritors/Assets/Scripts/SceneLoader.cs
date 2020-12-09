@@ -97,7 +97,7 @@ public class SceneLoader : MonoBehaviour
             }
             yield return t.WaitForCompletion();
         }
-        print("name: " + name);
+
         if (name == "")
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         else

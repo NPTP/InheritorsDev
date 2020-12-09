@@ -7,7 +7,7 @@ using UnityEngine;
 using DG.Tweening;
 
 [RequireComponent(typeof(Day10DialogContent))]
-public class Day10  : MonoBehaviour
+public class Day10 : MonoBehaviour
 {
     int dayNumber = 10;
 
@@ -21,8 +21,20 @@ public class Day10  : MonoBehaviour
     /* -------------------------------------- */
     /* Day-specific objects, transforms, etc. */
     /* -------------------------------------- */
-    // [Header("Day-specific Objects")]
-    // public Material redheadMaterial;
+    [Header("Day-specific Objects")]
+    public GameObject ManofholeWateringHole;
+    public GameObject ManofholeSister;
+    public GameObject ManofholeFather;
+    public GameObject ManofholeGrandmother;
+    public GameObject ManofholeGrandfather;
+
+    [Space]
+    public GameObject hilltopBlockage;
+    public GameObject hilltopUnblocked;
+    public GameObject endingClosedBorders;
+    public GameObject endingOpenBorders;
+
+    TaskType lastRemainingTask;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -45,24 +57,26 @@ public class Day10  : MonoBehaviour
         StartCoroutine("Intro");
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(End());
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ INTRO
     // ████████████████████████████████████████████████████████████████████████
 
     IEnumerator Intro()
     {
+        yield return null;
+        ManofholeWateringHole.SetActive(false);
+        ManofholeSister.SetActive(false);
+        ManofholeFather.SetActive(false);
+        ManofholeGrandmother.SetActive(false);
+        ManofholeGrandfather.SetActive(false);
+
+        hilltopUnblocked.SetActive(false);
+        endingOpenBorders.SetActive(false);
+
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
-        transitionManager.SetColor(Color.black);
+        transitionManager.SetColor(Color.red);
         yield return new WaitForSeconds(.5f);
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(2f);
@@ -74,19 +88,23 @@ public class Day10  : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Father, "Find father.");
+        taskManager.AddTask(TaskType.Mother, "Check the water pond.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Sister, "Bring sister back.");
+        taskManager.AddTask(TaskType.Father, "Check hunting ground.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandfather, "Talk to grandfather.");
+        taskManager.AddTask(TaskType.Sister, "Check sister's.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Grandmother, "Check grandmother's.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Grandfather, "Check grandfather's.");
         yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
         dialogManager.NewDialog(GetDialog("Day10Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);
+        recordManager.PlayRecordings();
 
         yield return null;
     }
@@ -114,10 +132,6 @@ public class Day10  : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Flute:
-                PickupFlute();
-                break;
-
             case ItemType.Null:
                 Debug.Log("NULL pickup event: HandlePickupEvent in Day");
                 break;
@@ -135,6 +149,11 @@ public class Day10  : MonoBehaviour
 
         switch (character)
         {
+            case Character.Manofhole:
+                if (activeTask.type == TaskType.Null)
+                    StartCoroutine(ManofholeStart());
+                break;
+
             default:
                 break;
         }
@@ -146,10 +165,6 @@ public class Day10  : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Flute":
-                StartCoroutine(DropoffFlute());
-                break;
-
             default:
                 Debug.Log("Interact Manager gave unknown DROPOFF tag to Day " + dayNumber);
                 break;
@@ -162,20 +177,32 @@ public class Day10  : MonoBehaviour
 
         switch (tag)
         {
-            case "Walk_Grandfather":
-                StartCoroutine(GrandfatherStart());
+            case "Walk_WateringHole":
+                StartCoroutine(CheckedLocation(TaskType.Mother, "Mother"));
                 break;
 
             case "Walk_Father":
-                StartCoroutine(HuntBegin());
+                StartCoroutine(CheckedLocation(TaskType.Father, "Father"));
                 break;
 
             case "Walk_Sister":
-                StartCoroutine(SisterStart());
+                StartCoroutine(CheckedLocation(TaskType.Sister, "Sister"));
+                break;
+
+            case "Walk_Grandmother":
+                StartCoroutine(CheckedLocation(TaskType.Grandmother, "Grandmother"));
+                break;
+
+            case "Walk_Grandfather":
+                StartCoroutine(CheckedLocation(TaskType.Grandfather, "Grandfather"));
+                break;
+
+            case "Walk_Hilltop":
+                StartCoroutine(EndingStart());
                 break;
 
             case "Walk_End":
-                StartCoroutine(End());
+                StartCoroutine(LeaveForest());
                 break;
 
             default:
@@ -200,7 +227,7 @@ public class Day10  : MonoBehaviour
 
     void HandleAllTasksComplete(object sender, EventArgs args)
     {
-        StartCoroutine(AllTasksProcess());
+        // StartCoroutine(AllTasksProcess());
     }
 
     IEnumerator WaitDialogEnd()
@@ -212,99 +239,110 @@ public class Day10  : MonoBehaviour
     // ███ HAPPENINGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
 
-    // ██████████████████████████ GRANDFATHER █████████████████████████████████
+    int numLocationsChecked = 0;
 
-    IEnumerator GrandfatherStart()
+    // ████████████████████████████ LOCATION CHECKS ███████████████████████████
+
+    IEnumerator CheckedLocation(TaskType taskType, string name)
     {
-        taskManager.SetActiveTask(TaskType.Grandfather, false);
-        dialogManager.NewDialog(GetDialog("Grandfather_Start"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.ChangeTask(TaskType.Grandfather, "Get grandfather's matété.");
-        triggers["Pickup_Flute"].Enable();
-    }
+        taskManager.SetActiveTask(taskType, false);
+        stateManager.SetState(State.Inert);
+        FindObjectOfType<PlayerMovement>().Halt();
+        yield return new WaitForSeconds(2);
 
-    void PickupFlute()
-    {
-        taskManager.ChangeTask(TaskType.Grandfather, "Bring matété to grandfather.");
-        triggers["Dropoff_Flute"].Enable();
-    }
-
-    IEnumerator DropoffFlute()
-    {
-        dialogManager.NewDialog(GetDialog("Grandfather_FinishTask"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        yield return new WaitForSeconds(1f);
-        taskManager.CompleteActiveTask();
-    }
-
-    // ████████████████████████████ SISTER ████████████████████████████████████
-
-    IEnumerator SisterStart()
-    {
-        taskManager.SetActiveTask(TaskType.Sister, false);
-        dialogManager.NewDialog(GetDialog("Sister_Start"));
+        dialogManager.NewDialog(GetDialog(name));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.CompleteActiveTask();
+
+        numLocationsChecked++;
+        if (numLocationsChecked == 4)
+        {
+            // Spawn the man of the hole at the last remaining location.
+            SetUpManofhole();
+        }
     }
 
-    // ████████████████████████████ FATHER ████████████████████████████████████
-
-    IEnumerator HuntBegin()
+    void SetUpManofhole()
     {
-        taskManager.SetActiveTask(TaskType.Father, false);
-        dialogManager.NewDialog(GetDialog("Father_Start"));
+
+        WalkTrigger[] wt = FindObjectsOfType<WalkTrigger>();
+        foreach (WalkTrigger walkTrigger in wt)
+        {
+            lastRemainingTask = walkTrigger.gameObject.GetComponent<TaskTypeAddOn>().taskType;
+            if (walkTrigger != null && lastRemainingTask != TaskType.DayEnd)
+            {
+                switch (lastRemainingTask)
+                {
+                    case TaskType.Mother:
+                        ManofholeWateringHole.SetActive(true);
+                        break;
+
+                    case TaskType.Father:
+                        ManofholeFather.SetActive(true);
+                        break;
+
+                    case TaskType.Sister:
+                        ManofholeSister.SetActive(true);
+                        break;
+
+                    case TaskType.Grandmother:
+                        ManofholeGrandmother.SetActive(true);
+                        break;
+
+                    case TaskType.Grandfather:
+                        ManofholeGrandfather.SetActive(true);
+                        break;
+                }
+                walkTrigger.Remove();
+                break;
+            }
+        }
+    }
+
+    IEnumerator ManofholeStart()
+    {
+        taskManager.SetActiveTask(lastRemainingTask, false);
+        taskManager.ChangeTask(lastRemainingTask, "Talk to the strange man.");
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogs[Character.Manofhole] = GetDialog("Manofhole_Repeat");
         taskManager.CompleteActiveTask();
+
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Find mother on the hilltop.", false);
+        hilltopBlockage.SetActive(false);
+        hilltopUnblocked.SetActive(true);
     }
 
-    // ████████████████████████████ MOTHER ████████████████████████████████████
+    // ████████████████████████████ ENDING ████████████████████████████████████
 
-
-    // ██████████████████████████ GRANDMOTHER █████████████████████████████████
-
-
-    // ████████████████████████████ GENERAL ███████████████████████████████████
-
-    IEnumerator AllTasksProcess()
+    IEnumerator EndingStart()
     {
-        yield return new WaitForSeconds(1f);
-        dialogManager.NewDialog(GetDialog("DayOver"));
+        taskManager.CompleteActiveTask();
+        dialogManager.NewDialog(GetDialog("Mother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        // StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Go home.", false);
-        Destroy(GameObject.FindWithTag("MotherNPC"));
-        dialogTriggers[Character.Mother].Remove();
+
+        Animation animation = GameObject.Find("MotherLeaves").GetComponent<Animation>();
+        animation.Play();
+        yield return new WaitWhile(() => animation.isPlaying);
+
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Leave the forest.", false);
+
+        endingClosedBorders.SetActive(false);
+        endingOpenBorders.SetActive(true);
         triggers["Walk_End"].Enable();
     }
 
-    IEnumerator SendNPCsHome()
-    {
-        yield return null;
-
-        RemoveAllDialogTriggers();
-
-        Destroy(GameObject.FindWithTag("MotherNPC"));
-        Destroy(GameObject.FindWithTag("FatherNPC"));
-        Destroy(GameObject.FindWithTag("SisterNPC"));
-    }
-
-    IEnumerator End()
+    IEnumerator LeaveForest()
     {
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
-        transitionManager.SetColor(Color.black);
-        Tween t = transitionManager.Show(2f);
-        audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        transitionManager.SetColor(Color.white);
+        Tween t = transitionManager.Show(4f);
+        audioManager.FadeOtherSources("Down", 4f);
         yield return t.WaitForCompletion();
 
-        saveManager.SaveGame(dayNumber);
-        Helper.LoadScene("Loading");
+        // saveManager.SaveGame(dayNumber);
+        Helper.LoadScene("EndingText");
     }
-
-    Dialog motherLast;
-    Dialog fatherLast;
-    Dialog sisterLast;
 
     void SetTaskState(Task activeTask, Dictionary<TaskType, Task> taskList)
     {
@@ -316,7 +354,6 @@ public class Day10  : MonoBehaviour
         if (taskList[TaskType.Mother].status == TaskStatus.Active)
         {
             dialogs[Character.Mother] = GetDialog("Mother_Active");
-            dialogTriggers[Character.Mother].Enable();
         }
         else if (taskList[TaskType.Mother].status == TaskStatus.Completed)
         {

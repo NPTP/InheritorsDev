@@ -102,6 +102,7 @@ public class Day6 : MonoBehaviour
         dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);
+        recordManager.PlayRecordings();
 
         yield return new WaitForSeconds(1f);
     }

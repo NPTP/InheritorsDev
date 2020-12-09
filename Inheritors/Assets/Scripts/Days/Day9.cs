@@ -93,6 +93,7 @@ public class Day9 : MonoBehaviour
         dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);
+        recordManager.PlayRecordings();
 
         yield return null;
     }

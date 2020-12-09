@@ -19,22 +19,22 @@ public class Day10DialogContent : MonoBehaviour
                 "Mother?",
                 "Where are you?",
                 "The air is thick with smoke.",
-                "I have to find mother."
+                "I have to find mother.",
+                "Maybe she is looking for the others. \nI will check everyone's place."
             }
         });
 
         content.Add("Day10Opening_2", new Dialog
         {
-            character = Character.Mother,
+            character = Character.Narrator,
             lines = new string[] {
-                "She must be in the forest. She would never leave me.",
-                "I will check everywhere."
+                "She must be somewhere, here, in the forest. \nShe would never leave me.",
             }
         });
 
         // Check the watering hole
 
-        content.Add("WateringHole", new Dialog
+        content.Add("Mother", new Dialog
         {
             character = Character.Narrator,
             skippable = false,
@@ -51,7 +51,7 @@ public class Day10DialogContent : MonoBehaviour
             character = Character.Narrator,
             skippable = false,
             lines = new string[] {
-                "There is nothing beyond the fence. Everything is burning.",
+                "There is nothing beyond the fence. \nEverything is burning.",
                 "She is not here."
             }
         });
@@ -63,7 +63,7 @@ public class Day10DialogContent : MonoBehaviour
             character = Character.Narrator,
             skippable = false,
             lines = new string[] {
-                "I wondered if she came here to wait for father, but no.",
+                "Did she wait for father to return?",
                 "She is not here."
             }
         });
@@ -87,20 +87,20 @@ public class Day10DialogContent : MonoBehaviour
             character = Character.Narrator,
             skippable = false,
             lines = new string[] {
-                "Did she find what grandmother left behind? I see no trace.",
+                "Did she find what grandmother left behind? \nI see no trace.",
                 "She is not here..."
             }
         });
 
         // Talk to the man of the hole.
 
-        content.Add("Manofhole", new Dialog
+        content.Add("Manofhole_Start", new Dialog
         {
-            character = Character.Narrator,
+            character = Character.Manofhole,
             skippable = false,
             lines = new string[] {
                 "The boy... you still here!",
-                "Before you, before boy, I saw... this happen before.",
+                "Before you, before boy, I saw... \nthis happen before.",
                 "Many Akuntsu... had no hope. \nMany... end their own live.",
                 "Now, even hope Akuntsu gone. \nAll Akuntsu... all gone.",
                 "But...",
@@ -113,7 +113,7 @@ public class Day10DialogContent : MonoBehaviour
 
         content.Add("Manofhole_Repeat", new Dialog
         {
-            character = Character.Narrator,
+            character = Character.Manofhole,
             lines = new string[] {
                 "Kanoe... is like me. \nStill one survive.",
                 "A woman. \nA woman... on top of hill.",
@@ -138,10 +138,18 @@ public class Day10DialogContent : MonoBehaviour
         content.Add("Mother_Start", new Dialog
         {
             character = Character.Mother,
+            skippable = false,
             lines = new string[] {
-                "Our water is overflowing, yet we have no meat, no fruit, no vegetables.",
-                "Please, check on everyone as soon as you can. I don't want us all to have to leave our home...",
-                "Not again."
+                "My son! You're alive! \nYou have no idea how happy I am to see you...",
+                "I feared for you. They took me from our home and... I escaped, and lit the torch for you to see, but...",
+                "It does not matter. We are together now. \nThe rain washed the dye out of your hair...",
+                "What about your father? \nYour sister?",
+                ".  .  .        ",
+                "We cannot stay. \nIt is time to go.",
+                "Maybe we can make a home... somewhere else.",
+                "Maybe there is space for us somewhere new, a place we will belong again...",
+                "A place for hope.",
+                "Say your goodbyes to the Omere, then come with me out of the forest."
             }
         });
 
@@ -157,7 +165,7 @@ public class Day10DialogContent : MonoBehaviour
         {
             character = Character.Mother,
             lines = new string[] {
-                "<UNUSED>"
+                "The Akuntsu live on, in you."
             }
         });
 

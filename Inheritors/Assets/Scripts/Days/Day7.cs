@@ -112,6 +112,7 @@ public class Day7 : MonoBehaviour
         dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);
+        recordManager.PlayRecordings();
 
         yield return null;
     }

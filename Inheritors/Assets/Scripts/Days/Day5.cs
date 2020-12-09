@@ -100,6 +100,8 @@ public class Day5 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
+        recordManager.PlayRecordings();
+
         yield return new WaitForSeconds(1f);
     }
 
