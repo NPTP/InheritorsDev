@@ -16,6 +16,7 @@ TagManager:
   - SisterNPC
   - GrandmotherNPC
   - GrandfatherNPC
+  - ManofholeNPC
   layers:
   - Default
   - TransparentFX

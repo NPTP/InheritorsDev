@@ -66,7 +66,7 @@ public class Day5 : MonoBehaviour
 
     IEnumerator Intro()
     {
-        manofholeChar = GameObject.Find("CHAR-Manofhole");
+        manofholeChar = GameObject.FindWithTag("ManofholeNPC");
         manofholeChar.SetActive(false);
 
         // Fade in from BLACK.
