@@ -628,6 +628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8142532729519448890}
   - component: {fileID: 6806221903042638930}
+  - component: {fileID: 7237978900381835340}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -728,6 +729,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000070864335, y: 0.015199467, z: 0.0005646683}
     m_Extent: {x: 0.009178053, y: 0.015822178, z: 0.007114138}
   m_DirtyAABB: 0
+--- !u!65 &7237978900381835340
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4613052277633797480}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.018356113, y: 0.014228284, z: 0.031644348}
+  m_Center: {x: 0.000006026319, y: -0.0005634733, z: 0.015175322}
 --- !u!1 &4905643133308310609
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,8 +751,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5719440533900578539}
+  - component: {fileID: 1147881567863120797}
   m_Layer: 0
-  m_Name: Mother
+  m_Name: MotherNPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -760,6 +775,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1147881567863120797
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4905643133308310609}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e4dfab9f4c2fad2419c14b473c98b8dc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5238909112988711180
 GameObject:
   m_ObjectHideFlags: 0

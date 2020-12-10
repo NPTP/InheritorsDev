@@ -197,8 +197,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3168613248794535713}
+  - component: {fileID: 6510332899684874126}
   m_Layer: 0
-  m_Name: Grandmother
+  m_Name: GrandmotherNPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,6 +221,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &6510332899684874126
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2356223021469859227}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e4dfab9f4c2fad2419c14b473c98b8dc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2639811634281358498
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,6 +250,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1560130354228775664}
   - component: {fileID: 4238497376919428504}
+  - component: {fileID: 8823478743328076422}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -330,6 +351,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000070864335, y: 0.0152005525, z: 0.000013302779}
     m_Extent: {x: 0.009178053, y: 0.015823264, z: 0.0058335364}
   m_DirtyAABB: 0
+--- !u!65 &8823478743328076422
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2639811634281358498}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.025392618, y: 0.01558852, z: 0.03164652}
+  m_Center: {x: 0.000008316905, y: -0.000016220627, z: 0.015176378}
 --- !u!1 &3175878031539196102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1129,7 +1163,7 @@ Transform:
   m_GameObject: {fileID: 9038672519808953473}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 90, y: 90, z: 90}
+  m_LocalScale: {x: 124.5, y: 120.25, z: 90}
   m_Children:
   - {fileID: 184211443878851789}
   m_Father: {fileID: 3168613248794535713}

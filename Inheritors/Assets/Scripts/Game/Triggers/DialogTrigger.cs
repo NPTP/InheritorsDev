@@ -45,9 +45,13 @@ public class DialogTrigger : MonoBehaviour, Trigger
 
         if (myTarget != null)
         {
-            projectorTransform.position = myTarget.position;
+            projectorTransform.position = myTarget.position + new Vector3(0, 2f, 0);
             dialog.target = myTarget;
         }
+    }
+
+    void Start()
+    {
         triggerProjector.Disable();
 
         if (startEnabled) Enable();

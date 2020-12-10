@@ -414,8 +414,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3721605562368935809}
+  - component: {fileID: 390072601258809594}
   m_Layer: 0
-  m_Name: Sister
+  m_Name: SisterNPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -437,6 +438,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &390072601258809594
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102247260546276667}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e4dfab9f4c2fad2419c14b473c98b8dc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4395124891153089538
 GameObject:
   m_ObjectHideFlags: 0
@@ -447,6 +467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1007207859508521552}
   - component: {fileID: 2490150384532061496}
+  - component: {fileID: 8850265642749178250}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -547,6 +568,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000070864335, y: 0.015564813, z: 0.00018396974}
     m_Extent: {x: 0.010460033, y: 0.016249457, z: 0.0059042885}
   m_DirtyAABB: 0
+--- !u!65 &8850265642749178250
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4395124891153089538}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.020920072, y: 0.011808589, z: 0.032498907}
+  m_Center: {x: 0.0000060265006, y: -0.00018289401, z: 0.015540669}
 --- !u!1 &5044947169415000451
 GameObject:
   m_ObjectHideFlags: 0

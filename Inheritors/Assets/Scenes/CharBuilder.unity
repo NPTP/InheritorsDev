@@ -481,6 +481,75 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb9b24fbe3f32aa478ce3f8007487e51, type: 3}
+--- !u!1001 &1861510251731238455
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 163.49802
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 25.62391
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 129.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2591665897764745607, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2935400052156443453, guid: 13464463a06ab44428b3269fddafc3fb,
+        type: 3}
+      propertyPath: m_Name
+      value: Manofhole
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 13464463a06ab44428b3269fddafc3fb, type: 3}
 --- !u!1001 &3203068185980482865
 PrefabInstance:
   m_ObjectHideFlags: 0

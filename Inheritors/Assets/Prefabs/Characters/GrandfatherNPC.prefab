@@ -658,8 +658,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4725903037288908676}
+  - component: {fileID: 5718555563557798101}
   m_Layer: 0
-  m_Name: Grandfather
+  m_Name: GrandfatherNPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -681,6 +682,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &5718555563557798101
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5394775150325128510}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e4dfab9f4c2fad2419c14b473c98b8dc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5678640565189444615
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,6 +711,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9208270771844639317}
   - component: {fileID: 5818300903488240957}
+  - component: {fileID: 2156135966698342591}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -790,6 +811,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000070878305, y: 0.014903823, z: 0.00010729022}
     m_Extent: {x: 0.009345278, y: 0.01554106, z: 0.00543152}
   m_DirtyAABB: 0
+--- !u!65 &2156135966698342591
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5678640565189444615}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.018690562, y: 0.010863051, z: 0.03108211}
+  m_Center: {x: 0.00000602514, y: -0.00010609542, z: 0.014879678}
 --- !u!1 &5889140465026306050
 GameObject:
   m_ObjectHideFlags: 0
