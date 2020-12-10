@@ -69,6 +69,14 @@ public class Day6DialogContent : MonoBehaviour
             }
         });
 
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "You are busy - finish your work and we can talk, son!"
+            }
+        });
+
         // ████████████████████████████████████████████████████████████████████████
         // ███ FATHER
         // ████████████████████████████████████████████████████████████████████████

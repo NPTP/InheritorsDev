@@ -443,14 +443,27 @@ public class Day6 : MonoBehaviour
 
         // Mother
         // --------------------------------------------------------------------
+
+        // I'm doing this task now.
         if (taskList[TaskType.Mother].status == TaskStatus.Active)
         {
             dialogs[Character.Mother] = GetDialog("Mother_Active");
             dialogTriggers[Character.Mother].Enable();
         }
+        // I've finished this task.
         else if (taskList[TaskType.Mother].status == TaskStatus.Completed)
         {
             dialogs[Character.Mother] = GetDialog("Mother_Completed");
+        }
+        // I'm in the middle of someone else's task.
+        else if (activeTask.type != TaskType.Null && activeTask.type != TaskType.Mother)
+        {
+            dialogs[Character.Mother] = GetDialog("Mother_Other");
+        }
+        // I haven't done this task yet, and it's available.
+        else if (activeTask.type == TaskType.Null && taskList[TaskType.Mother].status == TaskStatus.Waiting)
+        {
+            dialogs[Character.Mother] = GetDialog("Mother_Start");
         }
 
         // Father
