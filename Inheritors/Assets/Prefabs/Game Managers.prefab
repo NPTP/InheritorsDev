@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1ecbc4a960dd584d8088da651434907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableSavingLoading: 1
+  enableSavingLoading: 0
 --- !u!1 &3872553747642206352
 GameObject:
   m_ObjectHideFlags: 0

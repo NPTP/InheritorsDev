@@ -39,7 +39,7 @@ public class Day10DialogContent : MonoBehaviour
             character = Character.Narrator,
             skippable = false,
             lines = new string[] {
-                "The water is thick and muddy now. We cannot drink this.",
+                "The water is thick and muddy now. \nWe cannot drink this.",
                 "She is not here."
             }
         });
@@ -75,7 +75,7 @@ public class Day10DialogContent : MonoBehaviour
             character = Character.Narrator,
             skippable = false,
             lines = new string[] {
-                "The heat is unbearable, and I can hardly breathe in the smoke.",
+                "The heat is unbearable. \nI can hardly breathe in the smoke.",
                 "She is nowhere to be seen."
             }
         });
@@ -142,7 +142,7 @@ public class Day10DialogContent : MonoBehaviour
             lines = new string[] {
                 "My son! You're alive! \nYou have no idea how happy I am to see you...",
                 "I feared for you. They took me from our home and... I escaped, and lit the torch for you to see, but...",
-                "It does not matter. We are together now. \nThe rain washed the dye out of your hair...",
+                "It does not matter. We are together now. \nIt looks as though the rain washed the dye out of your hair...",
                 "What about your father? \nYour sister?",
                 ".  .  .        ",
                 "We cannot stay. \nIt is time to go.",

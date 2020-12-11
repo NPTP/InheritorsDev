@@ -317,6 +317,7 @@ public class Day10 : MonoBehaviour
     IEnumerator EndingStart()
     {
         taskManager.CompleteActiveTask();
+
         dialogManager.NewDialog(GetDialog("Mother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
