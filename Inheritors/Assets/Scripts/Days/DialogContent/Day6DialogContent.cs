@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Day6DialogContent : MonoBehaviour
+public class Day6DialogContent : MonoBehaviour, DialogContent
 {
     public Dictionary<string, Dialog> content = new Dictionary<string, Dialog>();
 
@@ -10,8 +10,32 @@ public class Day6DialogContent : MonoBehaviour
         PackContent();
     }
 
+    public Dialog Get(string key)
+    {
+        if (content.ContainsKey(key))
+            return content[key];
+        else
+        {
+            print("Don't have dialog key: " + key);
+            return content["NULL"];
+        }
+    }
+
+    public bool ContainsKey(string key)
+    {
+        return content.ContainsKey(key);
+    }
+
     void PackContent()
     {
+        content.Add("NULL", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "< NULL > "
+            }
+        });
+
         content.Add("Day6Opening_1", new Dialog
         {
             character = Character.Mother,
@@ -52,6 +76,14 @@ public class Day6DialogContent : MonoBehaviour
             }
         });
 
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Finish what you are doing first, then we will talk. I am proud of your hard work!"
+            }
+        });
+
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
@@ -69,14 +101,6 @@ public class Day6DialogContent : MonoBehaviour
             }
         });
 
-        content.Add("Mother_Other", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "You are busy - finish your work and we can talk, son!"
-            }
-        });
-
         // ████████████████████████████████████████████████████████████████████████
         // ███ FATHER
         // ████████████████████████████████████████████████████████████████████████
@@ -91,14 +115,11 @@ public class Day6DialogContent : MonoBehaviour
             }
         });
 
-        content.Add("Father_HuntEnd", new Dialog
+        content.Add("Father_Other", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
-                "I... I do not know... what that was.",
-                "The shadows threw their fire and smoke and noise toward the pig and... every animal has fled in fear!",
-                "We will not have another chance to kill anything for at least a day.",
-                "Son, we can live without meat for one day. You are quite skilled now, so we will surely catch something tomorrow.",
+                "It looks as though you are busy right now, son. Come back after you have finished what you are doing."
             }
         });
 
@@ -110,6 +131,17 @@ public class Day6DialogContent : MonoBehaviour
             }
         });
 
+
+        content.Add("Father_HuntEnd", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "I... I do not know... what that was.",
+                "The shadows threw their fire and smoke and noise toward the pig and... every animal has fled in fear!",
+                "We will not have another chance to kill anything for at least a day.",
+                "Son, we can live without meat for one day. You are quite skilled now, so we will surely catch something tomorrow.",
+            }
+        });
 
         content.Add("Father_Completed", new Dialog
         {
@@ -132,6 +164,14 @@ public class Day6DialogContent : MonoBehaviour
                 "You changed your hair, little brother. The uruku dye?",
                 "Things are not so bad after all. The garden at home is flourishing, and even this blackened spot will sprout again.",
                 "Take and plant these manioc seeds in <color=blue>four spots</color> in the ash."
+            }
+        });
+
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "Come back when you have finished what you are working on. I am working the ashen soil."
             }
         });
 
@@ -181,6 +221,15 @@ public class Day6DialogContent : MonoBehaviour
             }
         });
 
+
+        content.Add("Grandfather_Other", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Such a busy boy you are, my grandson. Return when you are finished your present work, and I will answer your questions."
+            }
+        });
+
         content.Add("Grandfather_Active", new Dialog
         {
             character = Character.Grandfather,
@@ -212,6 +261,15 @@ public class Day6DialogContent : MonoBehaviour
               "I have tried all the herbs and medicines we have, but for one which grows at the top of the hill.",
               "I am too old and tired to retrieve it myself. Please, go atop the hill, and bring the <color=blue>herbs</color> to me.",
               "Then I will answer what you have been asking - what the man of the hole told you about."
+            }
+        });
+
+
+        content.Add("Grandmother_Other", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+                "I see you are working on something, young one, but come back quickly when you are done. I need your help."
             }
         });
 

@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-[RequireComponent(typeof(Day6DialogContent))]
+[RequireComponent(typeof(DialogContent))]
+[RequireComponent(typeof(DialogTaskState))]
 public class Day6 : MonoBehaviour
 {
     int dayNumber = 6;
@@ -50,14 +51,6 @@ public class Day6 : MonoBehaviour
         StartCoroutine("Intro");
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(End());
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ INTRO
     // ████████████████████████████████████████████████████████████████████████
@@ -79,7 +72,7 @@ public class Day6 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
-        dialogManager.NewDialog(GetDialog("Day6Opening_1"), State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Day6Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(1f);
@@ -97,7 +90,7 @@ public class Day6 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        dialogManager.NewDialog(GetDialog("Day6Opening_2"));
+        dialogManager.NewDialog(dialogContent.Get("Day6Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
@@ -249,7 +242,12 @@ public class Day6 : MonoBehaviour
 
     void HandleUpdateTasks(object sender, TaskManager.TaskArgs args)
     {
-        SetTaskState(args.activeTask, args.taskList);
+        this.activeTask = args.activeTask;
+        this.taskList = args.taskList;
+        dialogTaskState.SetDialogs(ref activeTask,
+                                    ref taskList,
+                                    ref dialogs,
+                                    ref dialogTriggers);
     }
 
     void HandleAllTasksComplete(object sender, EventArgs args)
@@ -316,7 +314,7 @@ public class Day6 : MonoBehaviour
         else
         {
             recordManager.StopRecording();
-            dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+            dialogManager.NewDialog(dialogContent.Get("Sister_FinishTask"));
             yield return new WaitUntil(dialogManager.IsDialogFinished);
             taskManager.CompleteActiveTask();
         }
@@ -346,7 +344,7 @@ public class Day6 : MonoBehaviour
         yield return new WaitWhile(() => animation.isPlaying);
 
         recordManager.StopRecording();
-        dialogManager.NewDialog(GetDialog("Father_HuntEnd"));
+        dialogManager.NewDialog(dialogContent.Get("Father_HuntEnd"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseTaskTool();
@@ -390,7 +388,7 @@ public class Day6 : MonoBehaviour
     IEnumerator DropoffHerbs()
     {
         recordManager.StopRecording();
-        dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.CompleteActiveTask();
     }
@@ -400,7 +398,7 @@ public class Day6 : MonoBehaviour
     IEnumerator AllTasksProcess()
     {
         yield return new WaitForSeconds(1f);
-        dialogManager.NewDialog(GetDialog("DayOver"));
+        dialogManager.NewDialog(dialogContent.Get("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         // StartCoroutine(SendNPCsHome());
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
@@ -432,85 +430,6 @@ public class Day6 : MonoBehaviour
         Helper.LoadScene("Loading");
     }
 
-    Dialog motherLast;
-    Dialog fatherLast;
-    Dialog sisterLast;
-
-    void SetTaskState(Task activeTask, Dictionary<TaskType, Task> taskList)
-    {
-        this.activeTask = activeTask;
-        this.taskList = taskList;
-
-        // Mother
-        // --------------------------------------------------------------------
-
-        // I'm doing this task now.
-        if (taskList[TaskType.Mother].status == TaskStatus.Active)
-        {
-            dialogs[Character.Mother] = GetDialog("Mother_Active");
-            dialogTriggers[Character.Mother].Enable();
-        }
-        // I've finished this task.
-        else if (taskList[TaskType.Mother].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Mother] = GetDialog("Mother_Completed");
-        }
-        // I'm in the middle of someone else's task.
-        else if (activeTask.type != TaskType.Null && activeTask.type != TaskType.Mother)
-        {
-            dialogs[Character.Mother] = GetDialog("Mother_Other");
-        }
-        // I haven't done this task yet, and it's available.
-        else if (activeTask.type == TaskType.Null && taskList[TaskType.Mother].status == TaskStatus.Waiting)
-        {
-            dialogs[Character.Mother] = GetDialog("Mother_Start");
-        }
-
-        // Father
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Father].status == TaskStatus.Active)
-        {
-            // Nothing: handled in script
-        }
-        else if (taskList[TaskType.Father].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Father] = GetDialog("Father_Completed");
-        }
-
-        // Sister
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Sister].status == TaskStatus.Active)
-        {
-            dialogs[Character.Sister] = GetDialog("Sister_Active");
-        }
-        else if (taskList[TaskType.Sister].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Sister] = GetDialog("Sister_Completed");
-        }
-
-        // Grandmother
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Grandmother].status == TaskStatus.Active)
-        {
-            dialogs[Character.Grandmother] = GetDialog("Grandmother_Active");
-        }
-        else if (taskList[TaskType.Grandmother].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Grandmother] = GetDialog("Grandmother_Completed");
-        }
-
-        // Grandfather
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Grandfather].status == TaskStatus.Active)
-        {
-            dialogs[Character.Grandfather] = GetDialog("Grandfather_Active");
-        }
-        else if (taskList[TaskType.Grandfather].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Grandfather] = GetDialog("Grandfather_Completed");
-        }
-    }
-
     void RemoveAllDialogTriggers()
     {
         foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
@@ -523,7 +442,9 @@ public class Day6 : MonoBehaviour
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
 
-    Day6DialogContent day6DialogContent;
+    DialogContent dialogContent;
+
+    DialogTaskState dialogTaskState;
 
     SaveManager saveManager;
     StateManager stateManager;
@@ -539,7 +460,9 @@ public class Day6 : MonoBehaviour
     RecordManager recordManager;
     void InitializeReferences()
     {
-        day6DialogContent = GetComponent<Day6DialogContent>();
+        dialogContent = GetComponent<DialogContent>();
+
+        dialogTaskState = GetComponent<DialogTaskState>();
 
         saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
@@ -557,7 +480,6 @@ public class Day6 : MonoBehaviour
     }
 
     Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
-    Dictionary<string, Dialog> dialogContent = new Dictionary<string, Dialog>();
 
     // ALL types of triggers
     void InitializeTriggers()
@@ -585,16 +507,11 @@ public class Day6 : MonoBehaviour
         foreach (Character character in Enum.GetValues(typeof(Character)))
         {
             string startingKey = character.ToString() + "_Start";
-            if (day6DialogContent.content.ContainsKey(startingKey))
+            if (dialogContent.ContainsKey(startingKey))
             {
-                dialogs[character] = GetDialog(startingKey);
+                dialogs[character] = dialogContent.Get(startingKey);
             }
         }
-    }
-
-    Dialog GetDialog(string dialogTag)
-    {
-        return day6DialogContent.content[dialogTag];
     }
 
     void InitializeAreas()

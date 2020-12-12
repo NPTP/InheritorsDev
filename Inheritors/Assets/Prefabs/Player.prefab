@@ -1018,12 +1018,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1792097377ec7f54bb4f380a82bca32d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_moveSpeed: 6
+  m_moveSpeed: 8
   m_turnSpeed: 200
   m_jumpForce: 0
   m_animator: {fileID: 95665039525092722}
   m_rigidBody: {fileID: 54084939265967506}
   direction: {x: 0, y: 0, z: 0}
+  m_isGrounded: 0
 --- !u!114 &707464870492088975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1040,7 +1041,8 @@ MonoBehaviour:
   leavePaths: 1
   cutGrass: 1
   trailSize: 1
-  grassCutSize: 2
+  trailAmount: 0.25
+  grassCutSize: 3
 --- !u!114 &5841925440949279421
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private float m_minJumpInterval = 0.25f;
     private bool m_jumpInput = false;
 
-    private bool m_isGrounded;
+    public bool m_isGrounded;
     private bool mobile = true;
 
     private List<Collider> m_collisions = new List<Collider>();

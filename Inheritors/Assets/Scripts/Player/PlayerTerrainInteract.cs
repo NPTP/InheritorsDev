@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 
-/*---- LAYER REFERENCE ----
-
--------------------------*/
-
 public class PlayerTerrainInteract : MonoBehaviour
 {
+    PlayerMovement playerMovement;
+
     public Terrain t;
     public bool leavePaths = true;
     public bool cutGrass = true;
     public int trailSize = 1;
+    public float trailAmount = .25f;
     public int grassCutSize = 2;
 
     Transform playerTransform;
@@ -18,6 +17,8 @@ public class PlayerTerrainInteract : MonoBehaviour
     int texturePosX;
     int detailPosZ;
     int detailPosX;
+    int heightPosY;
+    int heightPosX;
 
     float[] texturesUnderfoot;
     float[,,] alphaMap;
@@ -36,6 +37,8 @@ public class PlayerTerrainInteract : MonoBehaviour
             cutGrass = true;
         }
 
+        playerMovement = GetComponent<PlayerMovement>();
+
         playerTransform = GetComponent<Transform>();
         numLayers = t.terrainData.alphamapLayers;
         playerSplatmapSize = (int)trailSize / 2;
@@ -51,14 +54,17 @@ public class PlayerTerrainInteract : MonoBehaviour
 
     void Update()
     {
-        ConvertPosition(playerTransform.position);
-        GetTexturesUnderfoot();
+        if (playerMovement.m_isGrounded)
+        {
+            ConvertPosition(playerTransform.position);
+            GetTexturesUnderfoot();
 
-        if (leavePaths)
-            ChangeTexture(trailSize);
+            if (leavePaths)
+                ChangeTexture(trailSize);
 
-        if (cutGrass)
-            RemoveDetails(grassCutSize);
+            if (cutGrass)
+                RemoveDetails(grassCutSize);
+        }
 
         // TakeDebugInputs();
     }
@@ -86,7 +92,12 @@ public class PlayerTerrainInteract : MonoBehaviour
                 {
                     walkedToday[z, x] = true;
                     changedTex = true;
-                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + 0.2f;
+                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + trailAmount;
+
+                    // float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
+                    // float[,] newHeights = new float[1, 1];
+                    // newHeights[0, 0] = heights[0, 0] - 0.00075f;
+                    // t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
                 }
             }
         }
@@ -117,6 +128,9 @@ public class PlayerTerrainInteract : MonoBehaviour
 
         detailPosX = (int)(mapPosition.x * t.terrainData.detailWidth);
         detailPosZ = (int)(mapPosition.z * t.terrainData.detailHeight);
+
+        heightPosX = (int)(mapPosition.x * t.terrainData.heightmapResolution);
+        heightPosY = (int)(mapPosition.z * t.terrainData.heightmapResolution);
     }
 
     // Stores the underfoot texture mix per layer in texturesUnderfoot.
