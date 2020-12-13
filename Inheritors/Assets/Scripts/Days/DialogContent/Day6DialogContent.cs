@@ -97,7 +97,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
-                "Since our union, I no longer understand the drive to dominance over the other. It never either of our people."
+                "Since our union, I no longer understand the drive to dominance over the other. It never helped either of our people."
             }
         });
 

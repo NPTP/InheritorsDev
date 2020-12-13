@@ -59,7 +59,7 @@ public class Day4 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(3.5f);
 
-        dialogManager.NewDialog(day4DialogContent.Get("Day4Opening"));
+        dialogManager.NewDialog(day4DialogContent.Get("Day4Opening"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(hillPathTransform);
@@ -71,9 +71,10 @@ public class Day4 : MonoBehaviour
         cameraManager.QuadrantCamActivate(motherQuadrant);
         yield return new WaitWhile(cameraManager.IsSwitching);
 
-        // Activate all necessary triggers HERE
-
         stateManager.SetState(State.Normal);
+
+        // TODO: delete this line
+        recordManager.PlayRecordings();
     }
 
     // ████████████████████████████████████████████████████████████████████████

@@ -1,13 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using DG.Tweening;
 
 public class Ghost : MonoBehaviour
 {
+    Renderer rend;
     SampleBuffer sampleBuffer;
     [SerializeField] Animator animator;
+    [SerializeField] Texture dissolveMap;
+
+    bool playing = false;
     int frame = 0;
 
     void FixedUpdate()
     {
+        if (!playing) return;
+
         if (frame < sampleBuffer.length)
         {
             Playback();
@@ -15,7 +23,8 @@ public class Ghost : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            playing = false;
+            StartCoroutine(GhostExit());
         }
     }
 
@@ -36,5 +45,60 @@ public class Ghost : MonoBehaviour
     public void PassBuffer(SampleBuffer buffer)
     {
         sampleBuffer = buffer;
+        rend = transform.GetChild(1).gameObject.GetComponent<Renderer>();
+        StartCoroutine(GhostEnter());
+    }
+
+    IEnumerator GhostEnter()
+    {
+        Tween t = null;
+
+        for (int i = 0; i < rend.materials.Length; i++)
+        {
+            rend.materials[i].shader = Shader.Find("Custom/ForcefieldDissolve");
+            rend.materials[i].SetTexture("Dissolve Map", dissolveMap);
+            rend.materials[i].SetFloat("_DissolveAmount", 1);
+
+            int mat = i;
+            t = DOTween.To(
+                () => rend.materials[mat].GetFloat("_DissolveAmount"),
+                x => rend.materials[mat].SetFloat("_DissolveAmount", x),
+                0,
+                2
+            ).From(1);
+        }
+
+        yield return t.WaitForCompletion();
+
+        for (int i = 0; i < rend.materials.Length; i++)
+        {
+            rend.materials[i].shader = Shader.Find("Custom/Forcefield");
+        }
+
+        playing = true;
+    }
+
+    IEnumerator GhostExit()
+    {
+        Tween t = null;
+
+        for (int i = 0; i < rend.materials.Length; i++)
+        {
+            rend.materials[i].shader = Shader.Find("Custom/ForcefieldDissolve");
+            rend.materials[i].SetTexture("Dissolve Map", dissolveMap);
+            rend.materials[i].SetFloat("_DissolveAmount", 0);
+
+            int mat = i;
+            t = DOTween.To(
+                () => rend.materials[mat].GetFloat("_DissolveAmount"),
+                x => rend.materials[mat].SetFloat("_DissolveAmount", x),
+                1,
+                2
+            ).From(0);
+        }
+
+        yield return t.WaitForCompletion();
+
+        Destroy(this.gameObject);
     }
 }
