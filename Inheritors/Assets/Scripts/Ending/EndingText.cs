@@ -64,7 +64,7 @@ public class EndingText : MonoBehaviour
             "in the Rio Omerê Indigenous Territory of Rondônia, Brazil. \n\n" +
 
             "The details of this game are based on research on the Akuntsu and \n" +
-            "other indigenous groups in the Rio Omerê.",
+            "other indigenous groups like the Kanoe, living in the Rio Omerê.",
 
             "Illegal logging, farming and mining encroached on former Akuntsu territory \n" +
             "and their people were killed en masse. The survivors hold tenuously to their \n" +

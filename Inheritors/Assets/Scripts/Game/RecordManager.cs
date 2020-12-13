@@ -134,7 +134,7 @@ public class RecordManager : MonoBehaviour
             {
                 // print("Starting playback with " + loadedRecordings.Count + " loadedRecordings saved");
                 GameObject newGhost = Instantiate(ghostPrefab, sb.Get(0).position, sb.Get(0).rotation);
-                newGhost.GetComponent<Ghost>().PassBuffer(sb);
+                newGhost.GetComponent<Ghost>().InitializeGhost(sb);
                 yield return new WaitForSeconds(Random.Range(5, 25));
             }
         }

@@ -59,17 +59,17 @@ public class Day4 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(3.5f);
 
-        dialogManager.NewDialog(day4DialogContent.Get("Day4Opening"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // dialogManager.NewDialog(day4DialogContent.Get("Day4Opening"), State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        cameraManager.SendCamTo(hillPathTransform);
-        uiManager.SetUpTasksInventory();
-        yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddAndSetActive(TaskType.Grandmother, "Go to the hilltop.", false);
-        yield return new WaitForSeconds(2f);
+        // cameraManager.SendCamTo(hillPathTransform);
+        // uiManager.SetUpTasksInventory();
+        // yield return new WaitWhile(cameraManager.IsSwitching);
+        // taskManager.AddAndSetActive(TaskType.Grandmother, "Go to the hilltop.", false);
+        // yield return new WaitForSeconds(2f);
 
-        cameraManager.QuadrantCamActivate(motherQuadrant);
-        yield return new WaitWhile(cameraManager.IsSwitching);
+        // cameraManager.QuadrantCamActivate(motherQuadrant);
+        // yield return new WaitWhile(cameraManager.IsSwitching);
 
         stateManager.SetState(State.Normal);
 
