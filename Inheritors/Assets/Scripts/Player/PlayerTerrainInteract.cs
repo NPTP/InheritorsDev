@@ -1,8 +1,13 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(PlayerMovement))]
+[RequireComponent(typeof(PlayerFootstepFX))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerTerrainInteract : MonoBehaviour
 {
     PlayerMovement playerMovement;
+    Animator animator;
+    PlayerFootstepFX playerFootstepFX;
 
     public Terrain t;
     public bool leavePaths = true;
@@ -29,6 +34,10 @@ public class PlayerTerrainInteract : MonoBehaviour
     bool[,] walkedToday;
     float[,] pastTrail;
 
+    float moveSpeed;
+    float stepPrev = -1;
+    float step = -1;
+
     void Start()
     {
         if (!Application.isEditor)
@@ -38,6 +47,8 @@ public class PlayerTerrainInteract : MonoBehaviour
         }
 
         playerMovement = GetComponent<PlayerMovement>();
+        animator = GetComponent<Animator>();
+        playerFootstepFX = GetComponent<PlayerFootstepFX>();
 
         playerTransform = GetComponent<Transform>();
         numLayers = t.terrainData.alphamapLayers;
@@ -57,7 +68,7 @@ public class PlayerTerrainInteract : MonoBehaviour
         if (playerMovement.m_isGrounded)
         {
             ConvertPosition(playerTransform.position);
-            GetTexturesUnderfoot();
+            FootstepFX();
 
             if (leavePaths)
                 ChangeTexture(trailSize);
@@ -133,12 +144,25 @@ public class PlayerTerrainInteract : MonoBehaviour
         heightPosY = (int)(mapPosition.z * t.terrainData.heightmapResolution);
     }
 
-    // Stores the underfoot texture mix per layer in texturesUnderfoot.
-    void GetTexturesUnderfoot()
+    // Stores the underfoot texture mix per layer in texturesUnderfoot and return it.
+    float[] GetTexturesUnderfoot()
     {
         alphaMap = t.terrainData.GetAlphamaps(texturePosX, texturePosZ, 1, 1);
         for (int k = 0; k < numLayers; k++)
             texturesUnderfoot[k] = alphaMap[0, 0, k];
+        return texturesUnderfoot;
+    }
+
+    void FootstepFX()
+    {
+        moveSpeed = animator.GetFloat("MoveSpeed");
+        stepPrev = step;
+        step = animator.GetFloat("Footstep");
+
+        if (moveSpeed > 0 && stepPrev < 0 && 0 <= step)
+        {
+            playerFootstepFX.PlayFX(GetTexturesUnderfoot());
+        }
     }
 
     void InitializeWalkedToday()

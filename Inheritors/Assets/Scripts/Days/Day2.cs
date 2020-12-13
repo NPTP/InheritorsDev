@@ -46,14 +46,6 @@ public class Day2 : MonoBehaviour
         StartCoroutine("Intro");
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(End());
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ INTRO
     // ████████████████████████████████████████████████████████████████████████

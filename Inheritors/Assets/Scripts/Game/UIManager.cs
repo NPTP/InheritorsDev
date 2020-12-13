@@ -315,6 +315,7 @@ public class UIManager : MonoBehaviour
         GameObject db = GameObject.FindGameObjectWithTag("DialogBox");
         dialogBox.canvasGroup = db.GetComponent<CanvasGroup>();
         dialogBox.rectTransform = db.GetComponent<RectTransform>();
+        dialogBox.nameBox = GameObject.Find("DialogBoxNameImage");
         dialogBox.nameText = GameObject.Find("DialogBoxNameText").GetComponent<TMP_Text>();
         dialogBox.tmpText = GameObject.Find("DialogBoxText").GetComponent<TMP_Text>();
         GameObject dbp = GameObject.Find("DialogBoxPrompt");

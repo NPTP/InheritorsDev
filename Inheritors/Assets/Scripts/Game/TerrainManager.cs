@@ -20,6 +20,8 @@ public class TerrainManager : MonoBehaviour
         AshDark,
         Cliffside,
         Farm,
+        Wood,
+        Water,
         Trail,
     }
 

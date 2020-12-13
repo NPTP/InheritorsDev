@@ -1,5 +1,6 @@
 ﻿/* INHERITORS by Nick Perrin (c) 2020 */
 // UI elements for use inside UIManager only.
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -96,45 +97,36 @@ public class UI_DialogBox
 {
     public CanvasGroup canvasGroup;
     public RectTransform rectTransform;
+    public GameObject nameBox;
     public TMP_Text nameText;
     public TMP_Text tmpText;
     public Image prompt;
-    public Animator animator; // TODO: polish stage: animate the waiting dialog prompt
+    public Animator animator;
     float moveUpTime = 0.5f;
     float fadeUpTime = 0.4f;
     float moveDownTime = 1f;
     float fadeDownTime = 0.8f;
     float yPosUp = 145f;
     float yPosDown = -315.11f;
-    Dictionary<string, Color> nameColors = new Dictionary<string, Color>();
+    Dictionary<Character, Color> nameColors = new Dictionary<Character, Color>();
+    Dictionary<Character, string> nameStrings = new Dictionary<Character, string>();
 
     public UI_DialogBox()
     {
-        nameColors["mother"] = Color.white;
-        nameColors["father"] = Color.blue;
-        nameColors["sister"] = Color.yellow;
-        nameColors["grandmother"] = Color.gray;
-        nameColors["grandfather"] = Color.green;
-        nameColors["strange man"] = Color.red;
-        nameColors[""] = Color.white;
+        ApplyNameColors();
+        ApplyNameStrings();
     }
 
     public Tween SetUp(Character character)
     {
-        string name = "";
-        if (character == Character.Manofhole)
-            name = "Strange man";
-        else if (character == Character.Narrator)
-            name = "";
-        else
-            name = character.ToString();
+        nameText.text = nameStrings[character].ToUpper();
+        nameText.faceColor = nameColors[character];
 
-        nameText.text = name.ToUpper();
-        nameText.faceColor = nameColors[name.ToLower()];
+        nameBox.SetActive(character == Character.Narrator ? false : true);
         tmpText.maxVisibleCharacters = 0;
         prompt.enabled = true;
-        // prompt.gameObject.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 1);
         prompt.color = Helper.ChangedAlpha(prompt.color, 0);
+
         Tween t = BringUpDown("Up", moveUpTime);
         canvasGroup.DOFade(1f, fadeUpTime).From(0f);
         return t;
@@ -174,6 +166,35 @@ public class UI_DialogBox
     {
         animator.SetBool("animate", false);
         // prompt.enabled = false;
+    }
+
+    void ApplyNameColors()
+    {
+        nameColors[Character.Null] = Color.white;
+        nameColors[Character.Mother] = Color.white;
+        nameColors[Character.Father] = Color.blue;
+        nameColors[Character.Sister] = Color.yellow;
+        nameColors[Character.Grandfather] = Color.green;
+        nameColors[Character.Grandmother] = Color.gray;
+        nameColors[Character.Narrator] = Color.gray;
+        nameColors[Character.Manofhole] = Color.red;
+    }
+
+    void ApplyNameStrings()
+    {
+        foreach (Character character in Enum.GetValues(typeof(Character)))
+        {
+            string name = "";
+
+            if (character == Character.Manofhole)
+                name = "Strange man";
+            else if (character == Character.Narrator)
+                name = "";
+            else
+                name = character.ToString();
+
+            nameStrings[character] = name.ToUpper();
+        }
     }
 }
 

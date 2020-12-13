@@ -48,26 +48,6 @@ public class Day0 : MonoBehaviour
         Debug.Log("Press Backspace to kill the intro.");
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            StopCoroutine("Intro");
-            cameraManager.SwitchToCam("Player");
-            transitionManager.Hide();
-            dialogManager.EndDialog();
-            uiManager.controls.Hide();
-            triggers["Walk_Firepit"].Enable();
-            stateManager.SetState(State.Normal);
-            cameraManager.ResetZoom();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine("End");
-        }
-    }
-
     IEnumerator Intro()
     {
         stateManager.SetState(State.Inert);
@@ -333,7 +313,7 @@ public class Day0 : MonoBehaviour
     {
         string delay = DialogManager.Tools.DELAY;
 
-        opening.character = Character.Mother;
+        opening.character = Character.Narrator;
         opening.skippable = false;
         opening.lines = new string[] {
             "The Omerê is our home." + delay,
@@ -343,24 +323,24 @@ public class Day0 : MonoBehaviour
             "You will bring us hope." + delay + delay
         };
 
-        firepit.character = Character.Mother;
+        firepit.character = Character.Narrator;
         firepit.skippable = false;
         firepit.lines = new string[] {
             "This fire is dying.",
             "Fetch <color=blue>3 logs</color> from our pile of dried wood, so that it might find new life."
         };
 
-        wood1.character = Character.Mother;
+        wood1.character = Character.Narrator;
         wood1.skippable = false;
         wood1.lines = new string[] {
             "The Cumaru wood. Tough, ancient, everlasting."
         };
-        wood2.character = Character.Mother;
+        wood2.character = Character.Narrator;
         wood2.skippable = false;
         wood2.lines = new string[] {
             "Massaranduba tree. Hard-won, deep, rich, and beautiful."
         };
-        wood3.character = Character.Mother;
+        wood3.character = Character.Narrator;
         wood3.skippable = false;
         wood3.lines = new string[] {
             "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",

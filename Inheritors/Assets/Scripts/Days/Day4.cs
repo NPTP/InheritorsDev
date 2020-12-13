@@ -46,14 +46,6 @@ public class Day4 : MonoBehaviour
         StartCoroutine("Intro");
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(End());
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ INTRO
     // ████████████████████████████████████████████████████████████████████████
@@ -66,6 +58,9 @@ public class Day4 : MonoBehaviour
         transitionManager.SetColor(Color.black);
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(3.5f);
+
+        dialogManager.NewDialog(day4DialogContent.Get("Day4Opening"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(hillPathTransform);
         uiManager.SetUpTasksInventory();

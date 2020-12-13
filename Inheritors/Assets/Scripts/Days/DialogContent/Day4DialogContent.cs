@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Day4DialogContent : MonoBehaviour
+public class Day4DialogContent : MonoBehaviour, DialogContent
 {
     public Dictionary<string, Dialog> content = new Dictionary<string, Dialog>();
 
@@ -10,15 +10,30 @@ public class Day4DialogContent : MonoBehaviour
         PackContent();
     }
 
+    public Dialog Get(string key)
+    {
+        if (content.ContainsKey(key))
+            return content[key];
+        else
+        {
+            print("Don't have dialog key: " + key);
+            return content["NULL"];
+        }
+    }
+
+    public bool ContainsKey(string key)
+    {
+        return content.ContainsKey(key);
+    }
+
+
     void PackContent()
     {
-
-        // TODO
         content.Add("Day4Opening", new Dialog
         {
             character = Character.Narrator,
             lines = new string[] {
-                "Grandmother is waiting at the top of the hill to perform the festival of senses."
+                "Grandmother is waiting for me at the top of the hill, ready to perform the festival of senses."
             }
         });
 
@@ -52,7 +67,7 @@ public class Day4DialogContent : MonoBehaviour
             skippable = false,
             lines = new string[] {
                 "Before you were born, we were so many, our roots grew so deep.",
-                "Now, grandson, see those roots... see how deep they truly are.",
+                "Now, grandson, see those roots... \nsee how deep they truly are.",
             }
         });
 
