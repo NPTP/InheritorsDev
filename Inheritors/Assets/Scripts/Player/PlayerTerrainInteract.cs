@@ -109,14 +109,14 @@ public class PlayerTerrainInteract : MonoBehaviour
                     changedTex = true;
                     remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + trailAmount;
 
-                    if (steppedThisFrame)
-                    {
-                        float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
-                        float[,] newHeights = new float[1, 1];
-                        newHeights[0, 0] = heights[0, 0] - 0.0002f;
-                        t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
-                        steppedThisFrame = false;
-                    }
+                    // if (steppedThisFrame)
+                    // {
+                    //     float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
+                    //     float[,] newHeights = new float[1, 1];
+                    //     newHeights[0, 0] = heights[0, 0] - 0.0002f;
+                    //     t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
+                    //     steppedThisFrame = false;
+                    // }
                 }
             }
         }

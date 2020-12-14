@@ -30,7 +30,7 @@ public class Day4 : MonoBehaviour
     void Awake()
     {
         PlayerPrefs.SetInt("currentDayNumber", dayNumber);
-        if (!enableDayScripts && !Application.isEditor)
+        if (!enableDayScripts && Application.isEditor)
             Destroy(this);
         else
             InitializeReferences();
@@ -73,7 +73,6 @@ public class Day4 : MonoBehaviour
 
         stateManager.SetState(State.Normal);
 
-        // TODO: delete this line
         recordManager.PlayRecordings();
     }
 

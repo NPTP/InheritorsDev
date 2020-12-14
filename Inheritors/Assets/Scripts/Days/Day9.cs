@@ -29,7 +29,7 @@ public class Day9 : MonoBehaviour
     void Awake()
     {
         PlayerPrefs.SetInt("currentDayNumber", dayNumber);
-        if (!enableDayScripts && !Application.isEditor)
+        if (!enableDayScripts && Application.isEditor)
             Destroy(this);
         else
             InitializeReferences();

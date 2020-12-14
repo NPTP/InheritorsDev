@@ -7,7 +7,7 @@ TerrainLayer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Wood
-  m_DiffuseTexture: {fileID: 2800000, guid: f1b0d43e695b1114a9d328dbcd74df51, type: 3}
+  m_DiffuseTexture: {fileID: 2800000, guid: 66b3ad7f810f0bc47b9855117e89aba1, type: 3}
   m_NormalMapTexture: {fileID: 0}
   m_MaskMapTexture: {fileID: 0}
   m_TileSize: {x: 5, y: 5}

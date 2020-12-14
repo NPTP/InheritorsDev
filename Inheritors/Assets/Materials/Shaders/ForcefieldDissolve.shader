@@ -197,7 +197,11 @@ Shader "Custom/ForcefieldDissolve"
 			float simplePerlin3D153 = snoise( ( ( _Noisespeed * _Time.y ) + ( _Noisescale * ase_vertex3Pos ) ) );
 			float temp_output_157_0 = ( ( ( simplePerlin3D153 + _Enablenoise ) * _Enablenoise ) + ( 1.0 - _Enablenoise ) );
 			float temp_output_3_0_g1 = ( 1.0 - temp_output_157_0 );
-			float Noise160 = ( ( temp_output_157_0 * ( 1.0 - _Sharpennoise ) ) + ( _Sharpennoise * ( 1.0 - saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) ) ) );
+
+			// float Noise160 = ( ( temp_output_157_0 * ( 1.0 - _Sharpennoise ) ) + ( _Sharpennoise * ( 1.0 - saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) ) ) );
+			// Changing this to ensure no div/0 seems to fix things...
+			float Noise160 = ( ( temp_output_157_0 * ( 1.0 - _Sharpennoise ) ) + ( _Sharpennoise * ( 1.0 - saturate( ( temp_output_3_0_g1 / (fwidth( temp_output_3_0_g1 ) + 0.01 ) ) ) ) ) );
+			
 			float4 FresnelOut66 = ( FresnelMask68 * _Edgecolor * Noise160 );
 			float2 uv_Secondarytexture = i.uv_texcoord * _Secondarytexture_ST.xy + _Secondarytexture_ST.zw;
 			float2 panner37 = ( _Time.y * _Secondarypanningspeed + uv_Secondarytexture);

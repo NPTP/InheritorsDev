@@ -235,7 +235,7 @@ public class Day3DialogContent : MonoBehaviour
             character = Character.Grandmother,
             lines = new string[] {
               "Return in the small hours of twilight for the <color=red>festival of senses</color>.",
-              "The rocks blocking the path up the hill will be cleared. Meet me at the very top of the hill! Meet me at the very top.",
+              "The rocks blocking the path up the hill will be cleared. Meet me at the very top of the hill! And youngest one...",
               "Do <i>not</i> tell your mother."
             }
         });
