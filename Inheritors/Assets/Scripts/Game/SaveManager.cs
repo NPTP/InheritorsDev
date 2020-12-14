@@ -81,7 +81,9 @@ public class SaveManager : MonoBehaviour
 
         // Terrain
         if (!Application.isEditor)
+        {
             SaveTerrain();
+        }
 
         save.dayNumber = dayNumber + 1;
 
@@ -140,6 +142,7 @@ public class SaveManager : MonoBehaviour
 
     private void SaveTerrain()
     {
+        todayTerrainData.SyncHeightmap();
         save.heights = todayTerrainData.GetHeights(0, 0, todayTerrainData.heightmapResolution, todayTerrainData.heightmapResolution);
         save.alphaMaps = todayTerrainData.GetAlphamaps(0, 0, todayTerrainData.alphamapWidth, todayTerrainData.alphamapHeight);
         save.detailPrototypesLength = todayTerrainData.detailPrototypes.Length;

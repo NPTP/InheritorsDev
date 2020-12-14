@@ -34,7 +34,7 @@ public class Day0 : MonoBehaviour
 
     void Awake()
     {
-        if (!enableDayScripts)
+        if (!enableDayScripts && !Application.isEditor)
             Destroy(this);
         InitializeReferences();
     }

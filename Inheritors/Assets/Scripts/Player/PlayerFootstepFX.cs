@@ -6,23 +6,29 @@ public class PlayerFootstepFX : MonoBehaviour
 {
     AudioSource aSource;
     PlayerTerrainInteract playerTerrainInteract;
-    ParticleSystem footStepParticles;
     Animator animator;
 
+    ParticleSystem dirtParticles;
+    ParticleSystem grassParticles;
+
     [SerializeField] FootstepData footstepData;
+    float[] textures;
     int RRIndex = 0;
 
     void Awake()
     {
         aSource = GetComponent<AudioSource>();
-        footStepParticles = GameObject.Find("FootstepParticles").GetComponent<ParticleSystem>();
         animator = GetComponent<Animator>();
+
+        dirtParticles = GameObject.Find("FootstepParticles_Dirt").GetComponent<ParticleSystem>();
+        grassParticles = GameObject.Find("FootstepParticles_Grass").GetComponent<ParticleSystem>();
     }
 
     public void PlayFX(float[] textures)
     {
-        footStepParticles.Play();
-
+        this.textures = textures;
+        float max = 0;
+        int maxIndex = 0;
         for (int i = 0; i < textures.Length; i++)
         {
             if (i != (int)TerrainManager.Layers.Trail)
@@ -31,13 +37,47 @@ public class PlayerFootstepFX : MonoBehaviour
                     GetFootstepSoundByLayer(i),
                     textures[i]
                 );
+
+                if (textures[i] > max)
+                {
+                    max = textures[i];
+                    maxIndex = i;
+                }
             }
         }
+
+        SpawnParticles(maxIndex);
     }
 
-    public void TestFootstep()
+    void SpawnParticles(int layer)
     {
-        aSource.PlayOneShot(footstepData.tester);
+        switch (layer)
+        {
+            case (int)TerrainManager.Layers.GrassLight:
+            case (int)TerrainManager.Layers.GrassDark:
+                grassParticles.Play();
+                break;
+
+            case (int)TerrainManager.Layers.DirtLight:
+            case (int)TerrainManager.Layers.Dust:
+            case (int)TerrainManager.Layers.Farm:
+            case (int)TerrainManager.Layers.DirtDark:
+            case (int)TerrainManager.Layers.LeavesBrown:
+            case (int)TerrainManager.Layers.LeavesGreen:
+            case (int)TerrainManager.Layers.LeavesYellow:
+            case (int)TerrainManager.Layers.Water:
+            case (int)TerrainManager.Layers.AshDark:
+            case (int)TerrainManager.Layers.Trail:
+                dirtParticles.Play();
+                break;
+
+            case (int)TerrainManager.Layers.Wood:
+                break;
+
+            default:
+                dirtParticles.Play();
+                break;
+        }
     }
 
     AudioClip GetFootstepSoundByLayer(int layer)

@@ -14,7 +14,8 @@ public class PlayerTerrainInteract : MonoBehaviour
     public bool cutGrass = true;
     public int trailSize = 1;
     public float trailAmount = .25f;
-    public int grassCutSize = 2;
+    public int grassCutSize = 3;
+    public float stepDeformDepth = 0.0002f;
 
     Transform playerTransform;
 
@@ -29,6 +30,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     float[,,] alphaMap;
     int numLayers;
     int playerSplatmapSize;
+    int playerDetailMapSize;
     int trailLayer = (int)TerrainManager.Layers.Trail;
 
     bool[,] walkedToday;
@@ -37,6 +39,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     float moveSpeed;
     float stepPrev = -1;
     float step = -1;
+    bool steppedThisFrame = false;
 
     void Start()
     {
@@ -52,7 +55,8 @@ public class PlayerTerrainInteract : MonoBehaviour
 
         playerTransform = GetComponent<Transform>();
         numLayers = t.terrainData.alphamapLayers;
-        playerSplatmapSize = (int)trailSize / 2;
+        playerSplatmapSize = trailSize / 2;
+        playerDetailMapSize = grassCutSize / 2;
         texturesUnderfoot = new float[numLayers];
 
         // Splat map is always a square so width = height. Irrelevant distinction
@@ -105,10 +109,14 @@ public class PlayerTerrainInteract : MonoBehaviour
                     changedTex = true;
                     remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + trailAmount;
 
-                    // float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
-                    // float[,] newHeights = new float[1, 1];
-                    // newHeights[0, 0] = heights[0, 0] - 0.00075f;
-                    // t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
+                    if (steppedThisFrame)
+                    {
+                        float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
+                        float[,] newHeights = new float[1, 1];
+                        newHeights[0, 0] = heights[0, 0] - 0.0002f;
+                        t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
+                        steppedThisFrame = false;
+                    }
                 }
             }
         }
@@ -122,7 +130,9 @@ public class PlayerTerrainInteract : MonoBehaviour
         for (int i = 0; i < areaSize; i++)
             for (int j = 0; j < areaSize; j++)
                 details[i, j] = 0;
-        t.terrainData.SetDetailLayer(detailPosX, detailPosZ, 0, details);
+
+        for (int k = 0; k < t.terrainData.detailPrototypes.Length; k++)
+            t.terrainData.SetDetailLayer(detailPosX - playerDetailMapSize, detailPosZ - playerDetailMapSize, k, details);
     }
 
     void ConvertPosition(Vector3 playerPosition)
@@ -153,6 +163,12 @@ public class PlayerTerrainInteract : MonoBehaviour
         return texturesUnderfoot;
     }
 
+    void LandingFX()
+    {
+        playerFootstepFX.PlayFX(GetTexturesUnderfoot());
+        steppedThisFrame = true;
+    }
+
     void FootstepFX()
     {
         moveSpeed = animator.GetFloat("MoveSpeed");
@@ -162,6 +178,7 @@ public class PlayerTerrainInteract : MonoBehaviour
         if (moveSpeed > 0 && stepPrev < 0 && 0 <= step)
         {
             playerFootstepFX.PlayFX(GetTexturesUnderfoot());
+            steppedThisFrame = true;
         }
     }
 
