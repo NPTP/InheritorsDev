@@ -103,7 +103,6 @@ public class RecordManager : MonoBehaviour
         {
             foreach (SampleBuffer sb in loadedRecordings)
             {
-                print("Start: " + sb.start + "|| Length: " + sb.Length);
                 GameObject newGhost = Instantiate(ghostPrefab, sb[0].position, sb[0].rotation);
                 newGhost.GetComponent<Ghost>().InitializeGhost(sb);
                 if (!simultaneous) { yield return new WaitForSeconds(Random.Range(minTime, maxTime)); }
