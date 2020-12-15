@@ -23,6 +23,9 @@ public class Day0 : MonoBehaviour
     public Transform firewoodTransform;
     public Transform malocaMotherTransform;
 
+    public AudioSource fireAudio2D;
+    public GameObject firepitAudio;
+
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -50,14 +53,19 @@ public class Day0 : MonoBehaviour
 
     IEnumerator Intro()
     {
+        firepitAudio.SetActive(false);
+
         stateManager.SetState(State.Inert);
         cameraManager.SwitchToCam("IntroCam");
 
         /* 01. Darken screen, wait. */
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
-        transitionManager.Hide(8f);
-        yield return new WaitForSeconds(6f);
+        Tween transition = transitionManager.Hide(8f);
+        yield return transition.WaitForCompletion();
+
+        // Extra 2 seconds for flavour.
+        yield return new WaitForSeconds(2);
 
         /* 02. Kick off the intro narration dialog. */
         dialogManager.NewDialog(opening, State.Inert);
@@ -71,9 +79,13 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         /* 04. Change view from fire to player. */
+        fireAudio2D.DOFade(0f, 2f);
         cameraManager.SwitchToCam("Player");
         cameraManager.ResetZoom(2f);
         yield return new WaitWhile(cameraManager.IsSwitching);
+
+        Destroy(fireAudio2D.gameObject);
+        firepitAudio.SetActive(true);
 
         /* 05. Display tutorial controls. */
         uiManager.controls.Show();
