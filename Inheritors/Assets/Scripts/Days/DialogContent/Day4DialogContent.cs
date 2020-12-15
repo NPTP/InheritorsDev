@@ -54,10 +54,12 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "Good, grandson. Now, hold the reed up to my nose, and slide the ground yopo through it... that's it.",
+              "Good. Now, hold the reed up to my nose, and slide the ground yopo through it... that's it.",
               "<i>Sniff</i>... <i>Sniff</i>... Aahh...",
-              "Much bad blood to clear... The ancestors speak... Hear them, see them...",
-              "Now!"
+              "Imagine this land when there was more than just our family, grandson.",
+              "Imagine when there were thousands of Akuntsu here.",
+              "We clear the bad blood of we who remain... The ancestors speak... Hear them, see them...",
+              "<i>NOW</i>!"
             }
         });
 
