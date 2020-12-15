@@ -79,7 +79,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Ohhh...",
                 "We have shared a special moment. Thank you, child. The festival is complete. You should go home now.",
-                "But keep your eyes open - you will see how deep the roots go..."
+                "But look around yourself, now, and see how deep the roots go..."
             }
         });
 
@@ -88,7 +88,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandmother,
             lines = new string[] {
                 "We have shared a special moment. Thank you, child. The festival is complete. You should go home now.",
-                "But keep your eyes open... You will see."
+                "But look around yourself, now, and see how deep the roots go..."
             }
         });
 
