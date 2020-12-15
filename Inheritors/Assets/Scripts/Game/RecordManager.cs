@@ -7,7 +7,7 @@ public class RecordManager : MonoBehaviour
 {
     StateManager stateManager;
     PlayerMovement playerMovement;
-    int maxRecLength = 1024;
+    int maxRecLength = 2048;
     List<SampleBuffer> loadedRecordings = new List<SampleBuffer>();
     List<SampleBuffer> newRecordings = new List<SampleBuffer>();
     SampleBuffer sb;
@@ -103,7 +103,8 @@ public class RecordManager : MonoBehaviour
         {
             foreach (SampleBuffer sb in loadedRecordings)
             {
-                GameObject newGhost = Instantiate(ghostPrefab, sb.Get(0).position, sb.Get(0).rotation);
+                print("Start: " + sb.start + "|| Length: " + sb.Length);
+                GameObject newGhost = Instantiate(ghostPrefab, sb[0].position, sb[0].rotation);
                 newGhost.GetComponent<Ghost>().InitializeGhost(sb);
                 if (!simultaneous) { yield return new WaitForSeconds(Random.Range(minTime, maxTime)); }
             }

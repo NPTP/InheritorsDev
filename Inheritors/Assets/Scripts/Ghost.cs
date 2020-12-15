@@ -48,7 +48,7 @@ public class Ghost : MonoBehaviour
 
     void Playback()
     {
-        Sample sample = sampleBuffer.Get(frame);
+        Sample sample = sampleBuffer[frame];
 
         animator.SetBool("Grounded", sample.isGrounded);
         transform.position = sample.position;
@@ -98,6 +98,7 @@ public class Ghost : MonoBehaviour
 
     IEnumerator GhostEnter()
     {
+        animator.speed = 0;
         thisLight.intensity = 0;
         audioSource.volume = 0;
 
@@ -128,6 +129,7 @@ public class Ghost : MonoBehaviour
         poofParticles.Play();
         PoofLight();
 
+        animator.speed = 1;
         activeParticles.Play();
         playing = true;
     }
@@ -138,6 +140,7 @@ public class Ghost : MonoBehaviour
         poofParticles.Play();
         exitParticles.Play();
         PoofLight();
+        animator.speed = 0;
 
         yield return new WaitForSeconds(0.2f);
 

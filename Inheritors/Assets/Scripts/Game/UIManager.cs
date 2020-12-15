@@ -38,9 +38,9 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        Cursor.visible = false;
         player = GameObject.FindWithTag("Player");
         playerHeight = new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f);
+        Cursor.visible = false;
     }
 
     void UIPop(ref RectTransform rectTransform)

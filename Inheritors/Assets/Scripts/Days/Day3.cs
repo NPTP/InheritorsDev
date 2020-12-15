@@ -397,9 +397,11 @@ public class Day3 : MonoBehaviour
 
     IEnumerator AllTasksProcess()
     {
+        DisableAllDialogTriggers();
         yield return new WaitForSeconds(1f);
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+        EnableAllDialogTriggers();
 
         dialogTriggers[Character.Mother].Remove();
         Destroy(motherNPC);
@@ -495,6 +497,22 @@ public class Day3 : MonoBehaviour
         else if (taskList[TaskType.Grandfather].status == TaskStatus.Completed)
         {
             dialogs[Character.Grandfather] = GetDialog("Grandfather_Completed");
+        }
+    }
+
+    void DisableAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Disable();
+        }
+    }
+
+    void EnableAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Enable();
         }
     }
 

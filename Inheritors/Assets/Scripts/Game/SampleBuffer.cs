@@ -16,43 +16,124 @@ public class Sample
     public Quaternion rotation;
 }
 
-// TODO: Make this a Ring Buffer WITH A MAX SIZE OF 2000 SAMPLES
+// We expect no SampleBuffer of size < 3
+// (and realistically none less than 1024)
 [System.Serializable]
 public class SampleBuffer
 {
-    public List<Sample> buf; // public Sample[] buf;
+    public Sample[] buf;
     bool full = false;
 
+    int size;
     int length;
-    int start;
-    int end;
+    public int start;
+    int insert;
 
     public SampleBuffer(int size)
     {
-        buf = new List<Sample>(); // buf = new Sample[size];
+        buf = new Sample[size];
+        this.size = size;
         length = 0;
         start = 0;
-        end = 0;
+        insert = 0;
     }
 
     public void Add(Sample sample)
     {
-        buf.Add(sample);
-        length = buf.Count;
+        if (!full)
+        {
+            buf[insert] = sample;
+            insert++;
+            length++;
+
+            if (length == size)
+            {
+                full = true;
+                insert = 0;
+            }
+        }
+        else
+        {
+            buf[insert] = sample;
+            start = insert + 1;
+            insert++;
+
+            if (start == size)
+            {
+                start = 0;
+                insert = 0;
+            }
+        }
     }
 
-    public Sample Get(int index)
+    // Behaves like indexing into a normal array, but GET only!
+    public Sample this[int index]
     {
-        return buf[index];
+        get
+        {
+            if (index >= size)
+            {
+                throw new ArgumentOutOfRangeException("index", "index >= size for SampleBuffer");
+            }
+            else
+            {
+                return buf[(index + start) % size];
+            }
+        }
+    }
+
+    public Sample Head
+    {
+        get => buf[start];
     }
 
     public int Length
     {
-        get
-        {
-            return this.length;
-        }
-        set
-        { }
+        get => this.length;
     }
 }
+
+
+
+
+// LIST IMPLEMENTATION
+//
+// [System.Serializable]
+// public class SampleBuffer
+// {
+//     public List<Sample> buf; // public Sample[] buf;
+//     bool full = false;
+
+//     int length;
+//     int start;
+//     int end;
+
+//     public SampleBuffer(int size)
+//     {
+//         buf = new List<Sample>(); // buf = new Sample[size];
+//         length = 0;
+//         start = 0;
+//         end = 0;
+//     }
+
+//     public void Add(Sample sample)
+//     {
+//         buf.Add(sample);
+//         length = buf.Count;
+//     }
+
+//     public Sample Get(int index)
+//     {
+//         return buf[index];
+//     }
+
+//     public int Length
+//     {
+//         get
+//         {
+//             return this.length;
+//         }
+//         set
+//         { }
+//     }
+// }

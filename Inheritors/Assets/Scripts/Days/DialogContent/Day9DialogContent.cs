@@ -143,7 +143,7 @@ public class Day9DialogContent : MonoBehaviour
             character = Character.Narrator,
             lines = new string[] {
                 "Grandfather is asleep.",
-                "He does not hold his matété. \nMaybe it will wake him."
+                "He does not hold his matété. \nMaybe he will wake, if I bring it to him."
             }
         });
 

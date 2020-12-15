@@ -214,7 +214,7 @@ public class Day3DialogContent : MonoBehaviour
             character = Character.Grandmother,
             lines = new string[] {
               "I need <color=blue>three beans of the yopo tree</color>.",
-              "Look north-east of Grandfather's maloca, south-west of my own, and near the river bridge."
+              "Look north-east of Grandfather's maloca, south-west of my own, and just on the other side of the river bridge."
             }
         });
 
