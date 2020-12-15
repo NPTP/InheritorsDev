@@ -142,8 +142,9 @@ public class InputManager : MonoBehaviour
         leftStickHorizontal = Input.GetAxis("LeftStickHorizontal");
         leftStickVertical = Input.GetAxis("LeftStickVertical");
 
-        rightStickHorizontal = Input.GetAxis("RightStickHorizontal");
-        rightStickVertical = Input.GetAxis("RightStickVertical");
+        // Currently unused.
+        // rightStickHorizontal = Input.GetAxis("RightStickHorizontal");
+        // rightStickVertical = Input.GetAxis("RightStickVertical");
     }
 
     public void ZeroAxes()

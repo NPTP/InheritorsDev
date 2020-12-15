@@ -171,24 +171,19 @@ public class CameraManager : MonoBehaviour
         switch (camName)
         {
             case "Player":
-                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmPlayerCam;
 
             case "Dialog":
-                cmBrain.m_DefaultBlend.m_Time = 1f;
                 return cmDialogCam;
 
             case "Other":
             case "Other1":
-                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmOtherCam1;
 
             case "Other2":
-                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmOtherCam2;
 
             case "Quadrant":
-                cmBrain.m_DefaultBlend.m_Time = defaultBlendSpeed;
                 return cmQuadrantCam;
 
             default:

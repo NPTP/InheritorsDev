@@ -25,8 +25,6 @@ public class Day3 : MonoBehaviour
     public Transform motherQuadrant;
     public Transform grandfatherQuadrant;
     public Transform grandmotherQuadrant;
-
-    public GameObject motherNPC;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -404,10 +402,26 @@ public class Day3 : MonoBehaviour
         EnableAllDialogTriggers();
 
         dialogTriggers[Character.Mother].Remove();
-        Destroy(motherNPC);
+        Destroy(GameObject.FindWithTag("MotherNPC"));
 
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
+    }
+
+    void DisableAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Disable();
+        }
+    }
+
+    void EnableAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Enable();
+        }
     }
 
     IEnumerator End()
@@ -497,22 +511,6 @@ public class Day3 : MonoBehaviour
         else if (taskList[TaskType.Grandfather].status == TaskStatus.Completed)
         {
             dialogs[Character.Grandfather] = GetDialog("Grandfather_Completed");
-        }
-    }
-
-    void DisableAllDialogTriggers()
-    {
-        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
-        {
-            dialogTrigger.Disable();
-        }
-    }
-
-    void EnableAllDialogTriggers()
-    {
-        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
-        {
-            dialogTrigger.Enable();
         }
     }
 

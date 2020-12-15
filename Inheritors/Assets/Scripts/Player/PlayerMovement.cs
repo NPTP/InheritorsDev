@@ -87,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
         direction = camera.forward * m_currentV + camera.right * m_currentH;
 
         float directionLength = direction.magnitude;
+        if (directionLength > 1.0f) { directionLength = 1.0f; }
         direction.y = 0;
         direction = direction.normalized * directionLength;
 

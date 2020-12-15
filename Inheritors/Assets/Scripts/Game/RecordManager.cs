@@ -101,12 +101,25 @@ public class RecordManager : MonoBehaviour
 
         if (hasRecordings && loadedRecordings.Count > 0)
         {
+            ShuffleLoadedRecordings();
             foreach (SampleBuffer sb in loadedRecordings)
             {
                 GameObject newGhost = Instantiate(ghostPrefab, sb[0].position, sb[0].rotation);
                 newGhost.GetComponent<Ghost>().InitializeGhost(sb);
                 if (!simultaneous) { yield return new WaitForSeconds(Random.Range(minTime, maxTime)); }
             }
+        }
+    }
+
+    public void ShuffleLoadedRecordings()
+    {
+        int count = loadedRecordings.Count;
+        for (int i = 0; i < count - 1; ++i)
+        {
+            int pos = UnityEngine.Random.Range(i, count);
+            SampleBuffer temp = loadedRecordings[i];
+            loadedRecordings[i] = loadedRecordings[pos];
+            loadedRecordings[pos] = temp;
         }
     }
 

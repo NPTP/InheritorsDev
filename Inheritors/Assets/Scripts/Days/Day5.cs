@@ -393,25 +393,33 @@ public class Day5 : MonoBehaviour
 
     IEnumerator AllTasksProcess()
     {
+        DisableAllDialogTriggers();
         yield return new WaitForSeconds(1f);
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        // StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
-        Destroy(GameObject.FindWithTag("MotherNPC"));
+        EnableAllDialogTriggers();
+
         dialogTriggers[Character.Mother].Remove();
+        Destroy(GameObject.FindWithTag("MotherNPC"));
+
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
     }
 
-    IEnumerator SendNPCsHome()
+    void DisableAllDialogTriggers()
     {
-        yield return null;
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Disable();
+        }
+    }
 
-        RemoveAllDialogTriggers();
-
-        Destroy(GameObject.FindWithTag("MotherNPC"));
-        Destroy(GameObject.FindWithTag("FatherNPC"));
-        Destroy(GameObject.FindWithTag("SisterNPC"));
+    void EnableAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Enable();
+        }
     }
 
     IEnumerator End()

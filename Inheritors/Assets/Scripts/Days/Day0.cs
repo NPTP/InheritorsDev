@@ -336,38 +336,32 @@ public class Day0 : MonoBehaviour
         };
 
         firepit.character = Character.Narrator;
-        firepit.skippable = false;
         firepit.lines = new string[] {
             "This fire is dying.",
             "Fetch <color=blue>3 logs</color> from our pile of dried wood, so that it might find new life."
         };
 
         wood1.character = Character.Narrator;
-        wood1.skippable = false;
         wood1.lines = new string[] {
             "The Cumaru wood. Tough, ancient, everlasting."
         };
         wood2.character = Character.Narrator;
-        wood2.skippable = false;
         wood2.lines = new string[] {
             "Massaranduba tree. Hard-won, deep, rich, and beautiful."
         };
         wood3.character = Character.Narrator;
-        wood3.skippable = false;
         wood3.lines = new string[] {
             "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
             "That is enough wood for now. Return to the fire."
         };
 
         maloca.character = Character.Mother;
-        maloca.skippable = false;
         maloca.lines = new string[] {
              "Well done, son! I see the shadows dancing on the inside of the maloca.",
              "It is late. Come join me inside. Tomorrow is an important day."
         };
 
         sisterSleep.character = Character.Sister;
-        sisterSleep.skippable = false;
         sisterSleep.lines = new string[] {
             "...",
             "Hn... huh? Oh, you woke me up!",
