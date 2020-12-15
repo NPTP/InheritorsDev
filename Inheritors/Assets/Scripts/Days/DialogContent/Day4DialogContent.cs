@@ -33,7 +33,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Narrator,
             lines = new string[] {
-                "Grandmother is waiting for me at the top of the hill, ready to perform the festival of senses."
+                "Grandmother is waiting for me at the top of the hill, ready to perform the \n<color=red>festival of senses</color>."
             }
         });
 

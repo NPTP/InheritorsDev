@@ -25,6 +25,8 @@ public class Day3 : MonoBehaviour
     public Transform motherQuadrant;
     public Transform grandfatherQuadrant;
     public Transform grandmotherQuadrant;
+
+    public GameObject motherNPC;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -398,28 +400,21 @@ public class Day3 : MonoBehaviour
         yield return new WaitForSeconds(1f);
         dialogManager.NewDialog(GetDialog("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        StartCoroutine(SendNPCsHome());
+
+        dialogTriggers[Character.Mother].Remove();
+        Destroy(motherNPC);
+
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
-    }
-
-    IEnumerator SendNPCsHome()
-    {
-        yield return null;
-
-        RemoveAllDialogTriggers();
-
-        Destroy(GameObject.FindWithTag("MotherNPC"));
-        Destroy(GameObject.FindWithTag("FatherNPC"));
-        Destroy(GameObject.FindWithTag("SisterNPC"));
     }
 
     IEnumerator End()
     {
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
-        Tween t = transitionManager.Show(2f);
-        audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
+        transitionManager.SetColor(Color.black);
+        Tween t = transitionManager.Show(3f);
+        audioManager.FadeOtherSources("Down", 3f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return t.WaitForCompletion();
 
         saveManager.SaveGame(dayNumber);

@@ -40,12 +40,12 @@ public class TransitionManager : MonoBehaviour
     {
         transition.enabled = true;
         canvasGroup.enabled = true;
-        return canvasGroup.DOFade(1f, showTime);
+        return canvasGroup.DOFade(1f, showTime).SetEase(Ease.OutCubic);
     }
 
     public Tween Hide(float hideTime = 0f)
     {
-        Tween t = canvasGroup.DOFade(0f, hideTime);
+        Tween t = canvasGroup.DOFade(0f, hideTime).SetEase(Ease.InCubic);
         StartCoroutine(Out(t, hideTime));
         return t;
     }
