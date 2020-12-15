@@ -3,48 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// The container class for every detail that goes into one frame or "sample"
-// of a recording. We can increase sample rate or lower it and interpolate
-// between them.
-[System.Serializable]
-public class Sample
-{
-    public bool isGrounded;
-    public Vector3 direction;
-    public Vector3 position;
-    public Quaternion rotation;
-}
-
-// TODO: use a ring buffer instead of a List
-[System.Serializable]
-public class SampleBuffer
-{
-    public List<Sample> buf; // public Sample[] buf;
-    bool full = false;
-    public int length;
-    int start;
-    int end;
-
-    public SampleBuffer(int size)
-    {
-        buf = new List<Sample>(); // buf = new Sample[size];
-        length = 0;
-        start = 0;
-        end = 0;
-    }
-
-    public void Add(Sample sample)
-    {
-        buf.Add(sample);
-        length = buf.Count;
-    }
-
-    public Sample Get(int index)
-    {
-        return buf[index];
-    }
-}
-
 public class RecordManager : MonoBehaviour
 {
     StateManager stateManager;
@@ -87,6 +45,15 @@ public class RecordManager : MonoBehaviour
         }
     }
 
+    public void PlayRecordingsSimultaneous()
+    {
+        if (hasRecordings)
+        {
+            print("PlayRecordingsSimultaneous() called");
+            StartCoroutine(Playback(true));
+        }
+    }
+
     void FixedUpdate()
     {
         if (recording)
@@ -125,37 +92,22 @@ public class RecordManager : MonoBehaviour
         }
     }
 
-    IEnumerator Playback()
+    IEnumerator Playback(bool simultaneous = false)
     {
         yield return null;
-        while (hasRecordings && loadedRecordings.Count > 0)
+
+        float minTime = 1.0f;
+        float maxTime = 10.0f;
+
+        if (hasRecordings && loadedRecordings.Count > 0)
         {
             foreach (SampleBuffer sb in loadedRecordings)
             {
-                // print("Starting playback with " + loadedRecordings.Count + " loadedRecordings saved");
                 GameObject newGhost = Instantiate(ghostPrefab, sb.Get(0).position, sb.Get(0).rotation);
                 newGhost.GetComponent<Ghost>().InitializeGhost(sb);
-                yield return new WaitForSeconds(Random.Range(5, 25));
+                if (!simultaneous) { yield return new WaitForSeconds(Random.Range(minTime, maxTime)); }
             }
         }
     }
-
-    // void Update()
-    // {
-    //     if (debugMode)
-    //     {
-    //         if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("B"))
-    //         {
-    //             if (!recording)
-    //             {
-    //                 StartNewRecording();
-    //             }
-    //             else
-    //             {
-    //                 StopRecording();
-    //             }
-    //         }
-    //     }
-    // }
 
 }

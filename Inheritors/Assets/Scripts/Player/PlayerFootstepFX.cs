@@ -8,8 +8,11 @@ public class PlayerFootstepFX : MonoBehaviour
     PlayerTerrainInteract playerTerrainInteract;
     Animator animator;
 
-    ParticleSystem dirtParticles;
     ParticleSystem grassParticles;
+    ParticleSystem dirtParticles;
+    ParticleSystem gravelParticles;
+    ParticleSystem leavesParticles;
+    ParticleSystem ashParticles;
 
     [SerializeField] FootstepData footstepData;
     float[] textures;
@@ -20,8 +23,11 @@ public class PlayerFootstepFX : MonoBehaviour
         aSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
 
-        dirtParticles = GameObject.Find("FootstepParticles_Dirt").GetComponent<ParticleSystem>();
         grassParticles = GameObject.Find("FootstepParticles_Grass").GetComponent<ParticleSystem>();
+        dirtParticles = GameObject.Find("FootstepParticles_Dirt").GetComponent<ParticleSystem>();
+        gravelParticles = GameObject.Find("FootstepParticles_Gravel").GetComponent<ParticleSystem>();
+        leavesParticles = GameObject.Find("FootstepParticles_Leaves").GetComponent<ParticleSystem>();
+        ashParticles = GameObject.Find("FootstepParticles_Ash").GetComponent<ParticleSystem>();
     }
 
     public void PlayFX(float[] textures)
@@ -38,7 +44,7 @@ public class PlayerFootstepFX : MonoBehaviour
                     textures[i]
                 );
 
-                if (textures[i] > max)
+                if (textures[i] >= max)
                 {
                     max = textures[i];
                     maxIndex = i;
@@ -58,17 +64,26 @@ public class PlayerFootstepFX : MonoBehaviour
                 grassParticles.Play();
                 break;
 
-            case (int)TerrainManager.Layers.DirtLight:
             case (int)TerrainManager.Layers.Dust:
             case (int)TerrainManager.Layers.Farm:
+                gravelParticles.Play();
+                break;
+
+            case (int)TerrainManager.Layers.DirtLight:
             case (int)TerrainManager.Layers.DirtDark:
+            case (int)TerrainManager.Layers.Water:
+            case (int)TerrainManager.Layers.Trail:
+                dirtParticles.Play();
+                break;
+
             case (int)TerrainManager.Layers.LeavesBrown:
             case (int)TerrainManager.Layers.LeavesGreen:
             case (int)TerrainManager.Layers.LeavesYellow:
-            case (int)TerrainManager.Layers.Water:
+                leavesParticles.Play();
+                break;
+
             case (int)TerrainManager.Layers.AshDark:
-            case (int)TerrainManager.Layers.Trail:
-                dirtParticles.Play();
+                ashParticles.Play();
                 break;
 
             case (int)TerrainManager.Layers.Wood:
@@ -93,12 +108,13 @@ public class PlayerFootstepFX : MonoBehaviour
                 clip = footstepData.grass[RRIndex];
                 break;
 
-            case (int)TerrainManager.Layers.DirtLight:
             case (int)TerrainManager.Layers.Dust:
             case (int)TerrainManager.Layers.Farm:
+            case (int)TerrainManager.Layers.Trail:
                 clip = footstepData.gravel[RRIndex];
                 break;
 
+            case (int)TerrainManager.Layers.DirtLight:
             case (int)TerrainManager.Layers.DirtDark:
                 clip = footstepData.mud[RRIndex];
                 break;
@@ -118,7 +134,6 @@ public class PlayerFootstepFX : MonoBehaviour
                 break;
 
             case (int)TerrainManager.Layers.AshDark:
-            case (int)TerrainManager.Layers.Trail:
                 clip = footstepData.sand[RRIndex];
                 break;
 

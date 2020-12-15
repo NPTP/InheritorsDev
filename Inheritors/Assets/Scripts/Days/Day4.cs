@@ -72,8 +72,6 @@ public class Day4 : MonoBehaviour
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         stateManager.SetState(State.Normal);
-
-        recordManager.PlayRecordings();
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -219,7 +217,7 @@ public class Day4 : MonoBehaviour
         transitionManager.ChangeColor(Color.white, 0f);
         Tween t = transitionManager.Show(transitionTime);
         yield return t.WaitForCompletion();
-        recordManager.PlayRecordings();
+        recordManager.PlayRecordingsSimultaneous();
         pickupManager.LoseItems();
         transitionManager.Hide(transitionTime);
         yield return new WaitForSeconds(1);

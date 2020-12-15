@@ -6,15 +6,19 @@ public class Ghost : MonoBehaviour
 {
     Renderer rend;
     SampleBuffer sampleBuffer;
+    [Header("Animator controller")]
     [SerializeField] Animator animator;
-    [SerializeField] Shader dissolveShader;
-    [SerializeField] Shader mainShader;
-    [SerializeField] Texture dissolveMap;
+    [Header("Materials")]
+    [SerializeField] Material mainMaterial;
+    [SerializeField] Material dissolveMaterial;
+    [Header("Particles")]
     [SerializeField] ParticleSystem enterParticles;
     [SerializeField] ParticleSystem activeParticles;
     [SerializeField] ParticleSystem exitParticles;
     [SerializeField] ParticleSystem poofParticles;
+    [Header("Light")]
     [SerializeField] Light thisLight;
+    [Header("Audio")]
     [SerializeField] AudioSource audioSource;
 
     float fadeInTime = 3f;
@@ -30,7 +34,7 @@ public class Ghost : MonoBehaviour
     {
         if (!playing) return;
 
-        if (frame < sampleBuffer.length)
+        if (frame < sampleBuffer.Length)
         {
             Playback();
             frame++;
@@ -64,14 +68,32 @@ public class Ghost : MonoBehaviour
         savedVolume = audioSource.volume;
 
         // Set up first frame
-        if (frame < sampleBuffer.length)
+        if (frame < sampleBuffer.Length)
         {
             Playback();
             frame++;
         }
 
         rend = transform.GetChild(1).gameObject.GetComponent<Renderer>();
-        StartCoroutine(GhostEnter());
+        StartCoroutine("GhostEnter");
+    }
+
+    public void EndGhost()
+    {
+        if (playing) { playing = false; }
+        StopCoroutine("GhostEnter");
+        StartCoroutine(GhostExit(true));
+    }
+
+    void RestartSelf()
+    {
+        frame = 0;
+        if (frame < sampleBuffer.Length)
+        {
+            Playback();
+            frame++;
+        }
+        StartCoroutine("GhostEnter");
     }
 
     IEnumerator GhostEnter()
@@ -81,12 +103,12 @@ public class Ghost : MonoBehaviour
 
         enterParticles.Play();
 
+        rend.enabled = true;
+        rend.materials = new Material[2] { dissolveMaterial, dissolveMaterial };
+
         for (int i = 0; i < rend.materials.Length; i++)
         {
-            rend.materials[i].shader = dissolveShader;
-            rend.materials[i].SetTexture("Dissolve Map", dissolveMap);
             rend.materials[i].SetFloat("_DissolveAmount", 1);
-
             int mat = i;
             DOTween.To(
                 () => rend.materials[mat].GetFloat("_DissolveAmount"),
@@ -101,8 +123,7 @@ public class Ghost : MonoBehaviour
         yield return t.WaitForCompletion();
 
         // Reset shader to better-looking fresnel effect
-        for (int i = 0; i < rend.materials.Length; i++)
-            rend.materials[i].shader = mainShader;
+        rend.materials = new Material[2] { mainMaterial, mainMaterial };
 
         poofParticles.Play();
         PoofLight();
@@ -111,7 +132,7 @@ public class Ghost : MonoBehaviour
         playing = true;
     }
 
-    IEnumerator GhostExit()
+    IEnumerator GhostExit(bool destroyOnFinish = false)
     {
         activeParticles.Stop();
         poofParticles.Play();
@@ -120,12 +141,11 @@ public class Ghost : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
 
+        rend.materials = new Material[2] { dissolveMaterial, dissolveMaterial };
+
         for (int i = 0; i < rend.materials.Length; i++)
         {
-            rend.materials[i].shader = dissolveShader;
-            rend.materials[i].SetTexture("Dissolve Map", dissolveMap);
             rend.materials[i].SetFloat("_DissolveAmount", 0);
-
             int mat = i;
             DOTween.To(
                 () => rend.materials[mat].GetFloat("_DissolveAmount"),
@@ -141,8 +161,16 @@ public class Ghost : MonoBehaviour
 
         // Ensure all particles have finished
         yield return new WaitForSeconds(1);
+        rend.enabled = false;
 
-        Destroy(this.gameObject);
+        // Destroy this ghost after exiting, if we've been told to stop.
+        if (destroyOnFinish) { Destroy(this.gameObject); }
+
+        // Otherwise, wait an interval before restarting.
+        float minResetTime = 5.0f;
+        float maxResetTime = 15.0f;
+        yield return new WaitForSeconds(Random.Range(minResetTime, maxResetTime));
+        RestartSelf();
     }
 
     void FadeLight(bool fadeIn)

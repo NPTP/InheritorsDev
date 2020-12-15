@@ -23,11 +23,8 @@ public class Day5 : MonoBehaviour
     /* -------------------------------------- */
     [Header("Day-specific Objects")]
     public Material redheadMaterial;
-    // public Transform motherQuadrant;
-    // public Transform grandfatherQuadrant;
-    // public Transform grandmotherQuadrant;
-
-    GameObject manofholeChar;
+    public GameObject manofholeNPC;
+    public GameObject papayaTreeFire;
     bool spokeToManofhole = false;
 
     /* -------------------------------------- */
@@ -58,8 +55,7 @@ public class Day5 : MonoBehaviour
 
     IEnumerator Intro()
     {
-        manofholeChar = GameObject.FindWithTag("ManofholeNPC");
-        manofholeChar.SetActive(false);
+        manofholeNPC.SetActive(false);
 
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
@@ -288,7 +284,7 @@ public class Day5 : MonoBehaviour
         taskManager.ChangeTask(TaskType.Sister, "Pick 3 papayas.");
         dialogTriggers[Character.Manofhole].Enable();
         dialogs[Character.Manofhole] = GetDialog("Manofhole_Start");
-        manofholeChar.SetActive(true);
+        manofholeNPC.SetActive(true);
     }
 
     IEnumerator SisterManofholeTalk()
@@ -306,6 +302,8 @@ public class Day5 : MonoBehaviour
         recordManager.StopRecording();
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.CompleteActiveTask();
+        manofholeNPC.SetActive(false);
+        papayaTreeFire.SetActive(false);
     }
 
     // ████████████████████████████ FATHER ████████████████████████████████████
