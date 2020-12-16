@@ -136,8 +136,6 @@ public class Day2 : MonoBehaviour
         Character character = args.dialog.character;
         dialogManager.NewDialog(dialogs[character]);
 
-        print(activeTask.type);
-
         if (activeTask.type != TaskType.Null)
             return;
 
@@ -340,50 +338,6 @@ public class Day2 : MonoBehaviour
 
         saveManager.SaveGame(dayNumber);
         Helper.LoadScene("Loading");
-    }
-
-    Dialog motherLast;
-    Dialog fatherLast;
-    Dialog sisterLast;
-
-    void SetTaskState(Task activeTask, Dictionary<TaskType, Task> taskList)
-    {
-        this.activeTask = activeTask;
-        this.taskList = taskList;
-
-        // Mother
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Mother].status == TaskStatus.Active)
-        {
-            dialogs[Character.Mother] = dialogContent.Get("Mother_Active");
-            dialogTriggers[Character.Mother].Enable();
-        }
-        else if (taskList[TaskType.Mother].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Mother] = dialogContent.Get("Mother_Completed");
-        }
-
-        // Father
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Father].status == TaskStatus.Active)
-        {
-            // Nothing: handled in script
-        }
-        else if (taskList[TaskType.Father].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Father] = dialogContent.Get("Father_Completed");
-        }
-
-        // Sister
-        // --------------------------------------------------------------------
-        if (taskList[TaskType.Sister].status == TaskStatus.Active)
-        {
-            dialogs[Character.Sister] = dialogContent.Get("Sister_Active");
-        }
-        else if (taskList[TaskType.Sister].status == TaskStatus.Completed)
-        {
-            dialogs[Character.Sister] = dialogContent.Get("Sister_Completed");
-        }
     }
 
     // ████████████████████████████████████████████████████████████████████████

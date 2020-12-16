@@ -48,12 +48,33 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("DayOver", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Thank you, son. That is all your work for today!",
+                "Come back home now."
+            }
+        });
+
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ MOTHER
+        // ████████████████████████████████████████████████████████████████████████    
+
         content.Add("Mother_Start", new Dialog
         {
             character = Character.Mother,
             lines = new string[] {
                 "There are so few of us now, but we are together. That is what matters.",
                 "Son, you still have work to do!"
+            }
+        });
+
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Look at you, my boy, running around so busy. \nDo not forget to get wood for us when you are done!"
             }
         });
 
@@ -73,12 +94,24 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ FATHER
+        // ████████████████████████████████████████████████████████████████████████    
+
         content.Add("Father_Start", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
                 "Hello Son! You did well yesterday. Today we are catching fish from the River Omere.",
                 "Extend your net and let them come naturally. Do not force them out of the water."
+            }
+        });
+
+        content.Add("Father_Other", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "Hello, my boy. You are working on something else now, but when you are done, we will go fishing."
             }
         });
 
@@ -101,6 +134,10 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        // ████████████████████████████████████████████████████████████████████████
+        // ███ SISTER
+        // ████████████████████████████████████████████████████████████████████████    
+
         content.Add("Sister_Start", new Dialog
         {
             character = Character.Sister,
@@ -109,6 +146,14 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
                 "But here, I have been growing fruit! We need to pick <color=blue>six papayas</color>, one for each of the family.",
                 "Gather from my garden to start. If you need more, check the <color=green>south entrance</color> to this forest.",
                 "Come back when you have <color=blue>six</color> and drop them in the bucket."
+            }
+        });
+
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "Oh, little brother. Finish your work for mother and father first, then come back!"
             }
         });
 
@@ -127,15 +172,6 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Thank you little brother! That is all we need!",
                 "Come back tomorrow, and we will harvest again."
-            }
-        });
-
-        content.Add("DayOver", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Thank you, son. That is all your work for today!",
-                "Come back home now."
             }
         });
     }

@@ -72,7 +72,8 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Seeing ghosts and talking to strange men from the woods... my son is already a shaman!"
+                "Seeing ghosts and talking to strange men from the woods... my son is already a shaman!",
+                "Let us talk after the water has been filled."
             }
         });
 
@@ -80,7 +81,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Finish what you are doing first, then we will talk. I am proud of your hard work!"
+                "I will not interrupt your hard work, my son. Let us talk after the water has been filled."
             }
         });
 
@@ -96,8 +97,9 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
+                "What the strange man said is mostly true. But there is nothing wrong it.",
                 "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
-                "Since our union, I no longer understand the drive to dominance over the other. It never helped either of our people."
+                "Since our union, I no longer understand the drive to dominance over the other. \nIt never helped either of our people."
             }
         });
 
@@ -119,7 +121,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "It looks as though you are busy right now, son. Come back after you have finished what you are doing."
+                "That strange man is not to be trusted, son. Come back after you have finished your task."
             }
         });
 
@@ -211,7 +213,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "I knew it would come to such questions, but I did not expect them to come from encountering the man of the hole.",
+                "I knew it would come to such questions, but I did not expect them to come from encountering the Man of the Hole.",
                 "Grandson, you are lucky to have even seen him - for he is the last of his tribe.",
                 "Even I cannot say what happened to the rest of them. But his solitude <i>now</i> is his own choice, when we are here with open arms.",
                 "Fear does not serve us. My scars are the same as your father's. In our former lands, they came, and they shot, and we ran...",
@@ -221,12 +223,11 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             }
         });
 
-
         content.Add("Grandfather_Other", new Dialog
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "Such a busy boy you are, my grandson. Return when you are finished your present work, and I will answer your questions."
+                "Return when you are finished your present work, and I promise to answer your questions."
             }
         });
 
@@ -260,10 +261,9 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
               "Men from outside the forest came in the night and brought it with them.",
               "I have tried all the herbs and medicines we have, but for one which grows at the top of the hill.",
               "I am too old and tired to retrieve it myself. Please, go atop the hill, and bring the <color=blue>herbs</color> to me.",
-              "Then I will answer what you have been asking - what the man of the hole told you about."
+              "Then I will answer what you have been asking - what the Man of the Hole told you about."
             }
         });
-
 
         content.Add("Grandmother_Other", new Dialog
         {

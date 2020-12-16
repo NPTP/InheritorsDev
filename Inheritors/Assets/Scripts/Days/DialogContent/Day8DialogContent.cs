@@ -80,6 +80,15 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "You work so hard. You help us so much.",
+                "I wish that your oldest sister hadn't left us so early, and could help you in times like these."
+            }
+        });
+
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
@@ -107,6 +116,14 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Father is not here yet.",
                 "I should come back tomorrow. \nHe will return. \nHe always does."
+            }
+        });
+
+        content.Add("Father_Other", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "<UNUSED>"
             }
         });
 
@@ -139,7 +156,15 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
                 "Oh, it is you, little brother? Sorry. I cannot do this anymore. I cannot take it.",
                 "Everything we worked towards, everything we grew, they just... built over it.",
                 "We were so close to a giant harvest, and now we have nothing.",
-                "Thank you for coming here, brother, but please leave me be for today... come back tomorrow."
+                "Thank you for coming here, brother, but please leave me be alone inside for today... \ncome back tomorrow."
+            }
+        });
+
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "<UNUSED>"
             }
         });
 
@@ -173,6 +198,14 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
                 "Many Akuntsu gave up hope too early - \nand we miss them every day. \nBut our family never gave it up.",
                 "I am the shaman, I am your chief, I will protect this land from outsiders. \nAnd <i>you</i> will inherit it.",
                 "Come, take your matété, let us call the ancestors, and clear all bad blood from this place."
+            }
+        });
+
+        content.Add("Grandfather_Other", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "You always bring me hope, grandson. Come back to play your matété when you have a chance."
             }
         });
 
@@ -214,6 +247,14 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
               ". . .       ",
               "Grandmother won't wake up.",
               "The outside illness has put her to sleep."
+            }
+        });
+
+        content.Add("Grandmother_Other", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "< UNUSED >"
             }
         });
 

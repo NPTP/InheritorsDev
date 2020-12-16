@@ -67,6 +67,14 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "If we keep working, if we keep building, we will keep the forest. Keep at it, my son."
+            }
+        });
+
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
@@ -95,7 +103,15 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
                 "We cannot hunt here anymore. It has all been razed. I do not see, hear or smell a single animal nearby.",
                 "I cannot let us down. I must clear the rocks, leave the forest and bring back meat from the pastures.",
                 "It will be alright, son. I will be back soon. I will be quick so they do not see me. Do not dare follow me. ",
-                "Tomorrow, we will be having a feast again, I promise you. Meet me here when I return, and help me carry the meat."
+                "We will be having a feast again, I promise you. Meet me here, tomorrow, when I return, and help me carry the meat."
+            }
+        });
+
+        content.Add("Father_Other", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "Finish what you are doing and come back to me, my boy. I must tell you where I am going."
             }
         });
 
@@ -127,6 +143,14 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
                 "It is amazing, brother! \nEverything grows so well here!",
                 "I removed the spears, planted new papaya trees in the pits, and tore down the hut.",
                 "Our seeds from yesterday are sprouting. \nThe soil is now ready for four more!"
+            }
+        });
+
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "Oh, I'm so excited, little brother! Come back when you are done the task at hand, and I will show you!"
             }
         });
 
@@ -172,6 +196,14 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Grandfather_Other", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Always working so hard, grandson. When you are finished your present task, come see me, I will help you rest."
+            }
+        });
+
         content.Add("Grandfather_Active", new Dialog
         {
             character = Character.Grandfather,
@@ -212,6 +244,14 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
               "The herbs you brought me yesterday helped immensely, but I am not through yet. I will need more.",
               "There is a particular leaf that I have seen growing near your <i>other</i> sister's maloca.",
               "Please bring me the <color=blue>herbs</color> from there as soon as you can."
+            }
+        });
+
+        content.Add("Grandmother_Other", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "Busy helping another member of the tribe now? I hope to see you back here soon after."
             }
         });
 

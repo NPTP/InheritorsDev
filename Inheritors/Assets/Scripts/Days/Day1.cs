@@ -48,6 +48,8 @@ public class Day1 : MonoBehaviour
         InitializeTriggers();
         InitializeAreas();
         SubscribeToEvents();
+        InitializeCharDialogTriggers();
+        InitializeDialogs();
         StartCoroutine("Intro");
     }
 
@@ -91,7 +93,7 @@ public class Day1 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Player is now loose, and can repeat the task dialog with mother.
-        triggers["Dialog_TaskExplanation"].Enable();
+        dialogTriggers[Character.Mother].Enable();
 
         yield return new WaitForSeconds(3f);
     }
@@ -139,18 +141,17 @@ public class Day1 : MonoBehaviour
 
     void HandleDialogEvent(object sender, InteractManager.DialogArgs args)
     {
-        string tag = args.tag;
+        Character character = args.dialog.character;
+        dialogManager.NewDialog(dialogs[character]);
 
-        // Day dialog takes priority over the one stored in the trigger.
-        if (dialogContent.ContainsKey(tag))
-            dialogManager.NewDialog(dialogContent.Get(tag));
-        else
-            dialogManager.NewDialog(args.dialog);
+        if (activeTask.type != TaskType.Null)
+            return;
 
-        switch (tag)
+        switch (character)
         {
-            case "Dialog_HuntBegin":
-                StartCoroutine(HuntBegin());
+            case Character.Father:
+                if (taskList[TaskType.Father].status == TaskStatus.Waiting)
+                    StartCoroutine(HuntBegin());
                 break;
 
             default:
@@ -215,39 +216,39 @@ public class Day1 : MonoBehaviour
 
     IEnumerator HuntBegin()
     {
-        triggers["Dialog_HuntBegin"].Remove();
+        dialogTriggers[Character.Father].Disable();
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.SetActiveTask(TaskType.Father, false);
         taskManager.ChangeTask(TaskType.Father, "Kill pig with the bow.");
 
         // PIG KILLING MINIGAME GOES ON HERE
         // stateManager.SetState(State.Hunting); ???
+        stateManager.SetState(State.Inert);
         yield return new WaitForSeconds(2f);
         // END PIG KILLING
 
         Destroy(GameObject.Find("Pig").GetComponent<Animator>());
-        dialogManager.NewDialog(dialogContent.Get("Dialog_HuntEnd"));
+        dialogManager.NewDialog(dialogContent.Get("Father_AfterKill"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseTaskTool();
         taskManager.ChangeTask(TaskType.Father, "Collect the meat.");
         triggers["Pickup_Pig"].Enable();
-        triggers["Dialog_HuntOver"].Enable();
+        dialogTriggers[Character.Father].Enable();
+
+        stateManager.SetState(State.Normal);
     }
 
     void PickupPig()
     {
         taskManager.ChangeTask(TaskType.Father, "Bring the meat home.");
         triggers["Dropoff_Meat"].Enable();
-        triggers["Dialog_TaskExplanation"].Disable();
-        triggers["Dialog_HavePig"].Enable();
         recordManager.StartNewRecording();
     }
 
     void DropoffMeat()
     {
         taskManager.CompleteActiveTask();
-        triggers["Dialog_HavePig"].Disable();
     }
 
     void PickupWater()
@@ -255,17 +256,12 @@ public class Day1 : MonoBehaviour
         taskManager.SetActiveTask(TaskType.Mother);
         taskManager.ChangeTask(TaskType.Mother, "Bring the water to mother.");
         triggers["Dropoff_Water"].Enable();
-        triggers["Dialog_TaskExplanation"].Disable();
-        triggers["Dialog_HaveWater"].Enable();
-        triggers["Dialog_HuntBegin"].Disable();
     }
 
     void DropoffWater()
     {
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
-        triggers["Dialog_HaveWater"].Disable();
-        triggers["Dialog_HuntBegin"].Enable();
     }
 
     IEnumerator AllTasksProcess()

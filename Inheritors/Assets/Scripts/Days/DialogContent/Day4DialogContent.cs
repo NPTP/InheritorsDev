@@ -49,6 +49,14 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Grandmother_Active", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "I cannot begin the festival without your help. \nPlease bring me the <color=blue>reed</color> just behind you, grandson."
+            }
+        });
+
         content.Add("Grandmother_Festival1", new Dialog
         {
             character = Character.Grandmother,
@@ -77,7 +85,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandmother,
             lines = new string[] {
                 "Ohhh...",
-                "We have shared a special moment. Thank you, child. The festival is complete. You should go home now.",
+                "We have shared a special moment. \nThank you, child. The festival is complete. You should go home now.",
                 "But look around yourself, now, and see how deep the roots go..."
             }
         });
@@ -86,7 +94,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-                "We have shared a special moment. Thank you, child. The festival is complete. You should go home now.",
+                "We have shared a special moment. \nThank you, child. The festival is complete. You should go home now.",
                 "But look around yourself, now, and see how deep the roots go..."
             }
         });

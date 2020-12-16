@@ -8,6 +8,8 @@ public class Meat_DropoffTarget : MonoBehaviour, DropoffTarget
     Renderer meatRenderer;
     Vector3 savedScale;
 
+    [SerializeField] ParticleSystem fireParticlesParent;
+
     public bool DoneReaction()
     {
         return doneReaction;
@@ -26,6 +28,7 @@ public class Meat_DropoffTarget : MonoBehaviour, DropoffTarget
     {
         meatRenderer.enabled = true;
         roastingPig.transform.DOScale(savedScale, .25f).From(Vector3.zero);
+        fireParticlesParent.Stop();
         doneReaction = true;
     }
 }

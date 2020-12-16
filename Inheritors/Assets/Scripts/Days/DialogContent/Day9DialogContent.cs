@@ -34,9 +34,10 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Grandmother's passing has not been easy to take. I know you cared for her, son.",
                 "She was not my mother, but she was family all the same.",
-                "Do not be sad. She was very old, and it was her time.",
-                "Now, the sky pours down, giving us all the water we could ever need. \nBut we have nothing to eat, nothing to grow.",
-                "I need you to check on everyone today. \nTime is running out."
+                "Do not be sad. \nShe was very old, and it was her time.",
+                "Now, the sky pours down, giving us all the water we could ever need. But we have nothing to eat, nothing to grow.",
+                "I need you to check on everyone today.",
+                "Time is running out."
             }
         });
 
@@ -44,8 +45,8 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "You <i>must</i> find your father today. \nAnd I want your sister back with us again.",
-                "Your grandfather is our chief. He has lead the tribe through so much. He can help us, so see him as soon as you can.",
+                "You <i>must</i> find your father today. \nAnd I want your sister out with us again.",
+                "Your grandfather is our chief. He has lead the tribe for a long time. He can help us, \nso see him as soon as you can.",
                 "I am counting on you, my son."
             }
         });
@@ -70,6 +71,16 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
                 "Our water is overflowing, yet we have no meat, no fruit, no vegetables.",
                 "Please, check on everyone as soon as you can. I don't want us all to have to leave our home...",
                 "Not again."
+            }
+        });
+
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Why do you have your grandfather's matété? Why have you brought it here? \nHe would never let it go...",
+                "What are you saying? \nThe chief of the Akuntsu... why is he not here, holding it himself?",
+                "Son, take it to him, and ask for his help! \nThe two of you will save us from this misfortune..."
             }
         });
 
@@ -103,6 +114,14 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Father_Other", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "<UNUSED>"
+            }
+        });
+
         content.Add("Father_Active", new Dialog
         {
             character = Character.Father,
@@ -133,6 +152,14 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "<UNUSED>"
+            }
+        });
+
         content.Add("Sister_Active", new Dialog
         {
             character = Character.Sister,
@@ -160,6 +187,14 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Grandfather is asleep.",
                 "He does not hold his matété. \nMaybe he will wake, if I bring it to him."
+            }
+        });
+
+        content.Add("Grandfather_Other", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "<UNUSED>"
             }
         });
 
@@ -196,6 +231,14 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
         content.Add("Grandmother_Start", new Dialog
         {
             character = Character.Narrator,
+            lines = new string[] {
+              "< UNUSED >"
+            }
+        });
+
+        content.Add("Grandmother_Other", new Dialog
+        {
+            character = Character.Grandmother,
             lines = new string[] {
               "< UNUSED >"
             }

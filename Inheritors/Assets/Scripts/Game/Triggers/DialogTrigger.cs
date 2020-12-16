@@ -7,6 +7,7 @@ public class DialogTrigger : MonoBehaviour, Trigger
     public bool startEnabled = true;
     public string triggerTag;
     bool destroyed = false;
+    bool disabled = false;
 
     Collider triggerCollider;
     Light l;
@@ -68,12 +69,25 @@ public class DialogTrigger : MonoBehaviour, Trigger
         return transform.position;
     }
 
+    public void InteractAppear()
+    {
+        if (!disabled)
+            EnableSteps();
+    }
+
+    public void InteractDisappear()
+    {
+        if (!disabled)
+            DisableSteps();
+    }
+
+
     public void Enable()
     {
         if (!destroyed)
         {
-            triggerCollider.enabled = true;
-            l.enabled = true;
+            EnableSteps();
+            disabled = false;
         }
     }
 
@@ -81,10 +95,24 @@ public class DialogTrigger : MonoBehaviour, Trigger
     {
         if (!destroyed)
         {
-            triggerCollider.enabled = false;
-            l.enabled = false;
-            triggerProjector.Disable();
+            DisableSteps();
+            disabled = true;
         }
+    }
+
+    // As in, the steps taken to enable
+    void EnableSteps()
+    {
+        triggerCollider.enabled = true;
+        l.enabled = true;
+    }
+
+    // As in, the steps taken to disable
+    void DisableSteps()
+    {
+        triggerCollider.enabled = false;
+        l.enabled = false;
+        triggerProjector.Disable();
     }
 
     public void Remove()

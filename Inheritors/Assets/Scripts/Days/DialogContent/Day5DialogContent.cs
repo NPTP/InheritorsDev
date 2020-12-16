@@ -67,6 +67,15 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Tell me, son, what do these ghosts look like?",
+                "Like you? And there are how many? \nI can hardly handle one boy with so much energy already!"
+            }
+        });
+
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
@@ -87,7 +96,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "The southern entrance to the forest has changed... did some of the trees burn down?"
+                "The southern entrance to the forest has changed... did some trees burn down there?"
             }
         });
 
@@ -104,13 +113,21 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Father_Other", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "Oh my boy, come back quickly when you are finished your work, I sense a big catch coming today!"
+            }
+        });
+
         content.Add("Father_HuntEnd", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
                 "What a catch! We are blessed by the ancestors today, my boy. They smile on us.",
                 "You have seen their shadows? Well, there are many on this land. We were once thousands...",
-                "I would not be surprised to hear that some are still with us."
+                "I would not be surprised to hear that some of my elders are still with us."
             }
         });
 
@@ -175,6 +192,14 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "Come back when you are free, brother. I will need your help again!"
+            }
+        });
+
         content.Add("Sister_Active", new Dialog
         {
             character = Character.Sister,
@@ -220,6 +245,14 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Grandfather_Other", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Grandson, return when you are able, and not burdened by the task you presently pursue."
+            }
+        });
+
         content.Add("Grandfather_FinishTask", new Dialog
         {
             character = Character.Grandfather,
@@ -257,10 +290,20 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "how are you feeling, youngest one? You see more clearly now, do you not?",
+              "How are you feeling, youngest one? You see more clearly now, do you not?",
               "It is one thing to see one's roots, another to carry them out. Today you will grind uruku seeds, like our ancestors.",
               "These seeds are what gives my hair its bright red color.",
               "I have some ready in that bag - go on, make the dye from them."
+            }
+        });
+
+        content.Add("Grandmother_Other", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "With every step you take, all the work you do, they seem to shadow your every move, don't they?",
+              "The ancestors push and pull at the forest itself to help you expand into the fullness of an Akuntsu future...",
+              "I will connect you even closer to them when you are finished what you are doing right now."
             }
         });
 

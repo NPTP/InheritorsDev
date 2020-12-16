@@ -318,7 +318,7 @@ public class InteractManager : MonoBehaviour
     void StartDialog()
     {
         stateManager.SetState(State.Dialog);
-        dialogTrigger.Disable();
+        dialogTrigger.InteractDisappear();
         dialogInRange = false;
         uiManager.dialogPrompt.Hide();
         if (dialogTrigger.lookAtMyTarget && dialogTrigger.myTarget != null)
@@ -362,7 +362,7 @@ public class InteractManager : MonoBehaviour
     IEnumerator WaitToResetTrigger()
     {
         yield return new WaitUntil(dialogManager.IsDialogAnimationFinished);
-        dialogTrigger.Enable();
+        dialogTrigger.InteractAppear();
     }
 
     // ████████████████████████████████████████████████████████████████████████

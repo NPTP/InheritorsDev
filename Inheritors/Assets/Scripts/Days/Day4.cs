@@ -79,6 +79,7 @@ public class Day4 : MonoBehaviour
     // ████████████████████████████████████████████████████████████████████████
 
     bool haveReed = false;
+    bool started = false;
     bool done = false;
 
     void HandlePickupEvent(object sender, InteractManager.PickupArgs args)
@@ -113,9 +114,13 @@ public class Day4 : MonoBehaviour
                 {
                     dialogManager.NewDialog(dialogs[Character.Grandmother]);
                 }
-                else if (!haveReed)
+                else if (!haveReed && !started)
                 {
                     StartCoroutine(GetReed());
+                }
+                else if (!haveReed && started)
+                {
+                    dialogManager.NewDialog(dialogContent.Get("Grandmother_Active"));
                 }
                 else if (haveReed)
                 {
@@ -182,6 +187,8 @@ public class Day4 : MonoBehaviour
 
     IEnumerator GetReed()
     {
+        started = true;
+
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
@@ -203,9 +210,8 @@ public class Day4 : MonoBehaviour
         yield return new WaitUntil(sp.ShockwaveFinished);
 
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival2"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        interactManager.DialogExitRange(dialogTriggers[Character.Grandmother]);
         dialogTriggers[Character.Grandmother].Disable();
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
         yield return new WaitForSeconds(1f);
 
         float transitionTime = .5f;
@@ -215,7 +221,7 @@ public class Day4 : MonoBehaviour
         recordManager.PlayRecordingsSimultaneous();
         pickupManager.LoseItems();
         transitionManager.Hide(transitionTime);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(3f);
 
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival3"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -242,14 +248,6 @@ public class Day4 : MonoBehaviour
 
         saveManager.SaveGame(dayNumber);
         Helper.LoadScene("Loading");
-    }
-
-    void SetTaskState(Task activeTask, Dictionary<TaskType, Task> taskList)
-    {
-        this.activeTask = activeTask;
-        this.taskList = taskList;
-
-        // Unused for Day 4
     }
 
     // ████████████████████████████████████████████████████████████████████████

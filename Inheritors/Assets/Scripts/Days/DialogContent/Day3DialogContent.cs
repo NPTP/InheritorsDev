@@ -60,6 +60,14 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Mother_Other", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "I am so proud of you, the way you help everyone in our family. Your grandparents must be grateful."
+            }
+        });
+
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
@@ -76,6 +84,15 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("DayOver", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Thank you, son. That is all your work for today!",
+                "It is getting late, so come back for sleep as soon as you can."
+            }
+        });
+
         // ████████████████████████████████████████████████████████████████████████
         // ███ FATHER
         // ████████████████████████████████████████████████████████████████████████
@@ -85,6 +102,14 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             character = Character.Father,
             lines = new string[] {
                 "Boy! No time, be quiet - the tapir will flee if startled. Ready your bow."
+            }
+        });
+
+        content.Add("Father_Other", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "You are not finished your other work yet. Shh! Do not scare the animals."
             }
         });
 
@@ -112,7 +137,8 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             character = Character.Father,
             lines = new string[] {
                 "These scars seem never to heal...",
-                "Never mind that. You are quickly becoming a man of the tribe, son."
+                "Never mind that. You are quickly becoming a man of the tribe, son.",
+                "My mother and father - <i>your</i> grandparents - are so happy to see you grow up.",
             }
         });
 
@@ -126,6 +152,14 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "I've gone to see the ancient tree, little brother. It is near grandfather's maloca. I have never seen one so tall.",
                 "Please gather <color=blue>four ears of corn</color> from the garden, and bring them back. They look delicious."
+            }
+        });
+
+        content.Add("Sister_Other", new Dialog
+        {
+            character = Character.Sister,
+            lines = new string[] {
+                "Well, little brother, you are doing it all today! \nCome back when you are less occupied, we have new growth!"
             }
         });
 
@@ -156,15 +190,6 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             }
         });
 
-        content.Add("DayOver", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Thank you, son. That is all your work for today!",
-                "It is getting late, so come back for sleep as soon as you can."
-            }
-        });
-
         // ████████████████████████████████████████████████████████████████████████
         // ███ GRANDFATHER
         // ████████████████████████████████████████████████████████████████████████
@@ -177,6 +202,14 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
                 "I am not just your grandfather. I am also the last shaman of the Akuntsu, and the chief of our tribe.",
                 "This flute is the <color=blue>matété</color>. We Akuntsu claim our matété once in youth, then never part with it until we die.",
                 "I have made a <color=blue>matété</color> for you from fresh wood. Retrieve it, and we will play together."
+            }
+        });
+
+        content.Add("Grandfather_Other", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Oh, my grandson. So nice to see you helping our tribe. Please return when you are finished your current work."
             }
         });
 
@@ -222,6 +255,14 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
               "I need you to find for me <color=blue>three beans of the yopo tree</color>.",
               "They are colored red. You will find some in the meadow north of grandfather's maloca, and some to the south of here.",
               "I will tell you soon what they are for. Please, bring them back to me now."
+            }
+        });
+
+        content.Add("Grandmother_Other", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "The youngest Akuntsu - and the most active. I have something important for you to do when you are available."
             }
         });
 
