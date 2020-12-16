@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-[RequireComponent(typeof(Day7DialogContent))]
+[RequireComponent(typeof(DialogContent))]
+[RequireComponent(typeof(DialogTaskState))]
 public class Day7 : MonoBehaviour
 {
     int dayNumber = 7;
-
     public bool enableDayScripts = true;
+
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
-    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
     Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
+
     Task activeTask;
     Dictionary<TaskType, Task> taskList;
 
@@ -81,7 +82,7 @@ public class Day7 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
-        dialogManager.NewDialog(GetDialog("Day7Opening_1"), State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Day7Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(1f);
@@ -99,7 +100,7 @@ public class Day7 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        dialogManager.NewDialog(GetDialog("Day7Opening_2"));
+        dialogManager.NewDialog(dialogContent.Get("Day7Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
@@ -251,17 +252,17 @@ public class Day7 : MonoBehaviour
 
     void HandleUpdateTasks(object sender, TaskManager.TaskArgs args)
     {
-        SetTaskState(args.activeTask, args.taskList);
+        this.activeTask = args.activeTask;
+        this.taskList = args.taskList;
+        dialogTaskState.SetDialogs(ref activeTask,
+                                    ref taskList,
+                                    ref dialogs,
+                                    ref dialogTriggers);
     }
 
     void HandleAllTasksComplete(object sender, EventArgs args)
     {
         StartCoroutine(AllTasksProcess());
-    }
-
-    IEnumerator WaitDialogEnd()
-    {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -295,7 +296,7 @@ public class Day7 : MonoBehaviour
         transitionManager.Hide(2f);
 
         yield return new WaitForSeconds(1.5f);
-        dialogManager.NewDialog(GetDialog("Grandfather_FinishTask"));
+        dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.CompleteActiveTask();
@@ -342,7 +343,7 @@ public class Day7 : MonoBehaviour
         else
         {
             recordManager.StopRecording();
-            dialogManager.NewDialog(GetDialog("Sister_FinishTask"));
+            dialogManager.NewDialog(dialogContent.Get("Sister_FinishTask"));
             yield return new WaitUntil(dialogManager.IsDialogFinished);
             taskManager.CompleteActiveTask();
         }
@@ -413,7 +414,7 @@ public class Day7 : MonoBehaviour
     IEnumerator DropoffHerbs()
     {
         recordManager.StopRecording();
-        dialogManager.NewDialog(GetDialog("Grandmother_FinishTask"));
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.CompleteActiveTask();
 
@@ -428,7 +429,7 @@ public class Day7 : MonoBehaviour
     {
         DisableAllDialogTriggers();
         yield return new WaitForSeconds(1f);
-        dialogManager.NewDialog(GetDialog("DayOver"));
+        dialogManager.NewDialog(dialogContent.Get("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         EnableAllDialogTriggers();
 
@@ -480,12 +481,12 @@ public class Day7 : MonoBehaviour
         // --------------------------------------------------------------------
         if (taskList[TaskType.Mother].status == TaskStatus.Active)
         {
-            dialogs[Character.Mother] = GetDialog("Mother_Active");
+            dialogs[Character.Mother] = dialogContent.Get("Mother_Active");
             dialogTriggers[Character.Mother].Enable();
         }
         else if (taskList[TaskType.Mother].status == TaskStatus.Completed)
         {
-            dialogs[Character.Mother] = GetDialog("Mother_Completed");
+            dialogs[Character.Mother] = dialogContent.Get("Mother_Completed");
         }
 
         // Father
@@ -496,48 +497,40 @@ public class Day7 : MonoBehaviour
         }
         else if (taskList[TaskType.Father].status == TaskStatus.Completed)
         {
-            dialogs[Character.Father] = GetDialog("Father_Completed");
+            dialogs[Character.Father] = dialogContent.Get("Father_Completed");
         }
 
         // Sister
         // --------------------------------------------------------------------
         if (taskList[TaskType.Sister].status == TaskStatus.Active)
         {
-            dialogs[Character.Sister] = GetDialog("Sister_Active");
+            dialogs[Character.Sister] = dialogContent.Get("Sister_Active");
         }
         else if (taskList[TaskType.Sister].status == TaskStatus.Completed)
         {
-            dialogs[Character.Sister] = GetDialog("Sister_Completed");
+            dialogs[Character.Sister] = dialogContent.Get("Sister_Completed");
         }
 
         // Grandmother
         // --------------------------------------------------------------------
         if (taskList[TaskType.Grandmother].status == TaskStatus.Active)
         {
-            dialogs[Character.Grandmother] = GetDialog("Grandmother_Active");
+            dialogs[Character.Grandmother] = dialogContent.Get("Grandmother_Active");
         }
         else if (taskList[TaskType.Grandmother].status == TaskStatus.Completed)
         {
-            dialogs[Character.Grandmother] = GetDialog("Grandmother_Completed");
+            dialogs[Character.Grandmother] = dialogContent.Get("Grandmother_Completed");
         }
 
         // Grandfather
         // --------------------------------------------------------------------
         if (taskList[TaskType.Grandfather].status == TaskStatus.Active)
         {
-            dialogs[Character.Grandfather] = GetDialog("Grandfather_Active");
+            dialogs[Character.Grandfather] = dialogContent.Get("Grandfather_Active");
         }
         else if (taskList[TaskType.Grandfather].status == TaskStatus.Completed)
         {
-            dialogs[Character.Grandfather] = GetDialog("Grandfather_Completed");
-        }
-    }
-
-    void RemoveAllDialogTriggers()
-    {
-        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
-        {
-            dialogTrigger.Remove();
+            dialogs[Character.Grandfather] = dialogContent.Get("Grandfather_Completed");
         }
     }
 
@@ -545,7 +538,8 @@ public class Day7 : MonoBehaviour
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
 
-    Day7DialogContent day7DialogContent;
+    DialogContent dialogContent;
+    DialogTaskState dialogTaskState;
 
     SaveManager saveManager;
     StateManager stateManager;
@@ -561,7 +555,8 @@ public class Day7 : MonoBehaviour
     RecordManager recordManager;
     void InitializeReferences()
     {
-        day7DialogContent = GetComponent<Day7DialogContent>();
+        dialogContent = GetComponent<DialogContent>();
+        dialogTaskState = GetComponent<DialogTaskState>();
 
         saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
@@ -578,9 +573,6 @@ public class Day7 : MonoBehaviour
         recordManager = FindObjectOfType<RecordManager>();
     }
 
-    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
-    Dictionary<string, Dialog> dialogContent = new Dictionary<string, Dialog>();
-
     // ALL types of triggers
     void InitializeTriggers()
     {
@@ -590,6 +582,9 @@ public class Day7 : MonoBehaviour
             triggers[trigger.GetTag()] = trigger;
         }
     }
+
+    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
+    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
 
     // Dialog triggers only, referenced by Character key.
     void InitializeCharDialogTriggers()
@@ -607,16 +602,9 @@ public class Day7 : MonoBehaviour
         foreach (Character character in Enum.GetValues(typeof(Character)))
         {
             string startingKey = character.ToString() + "_Start";
-            if (day7DialogContent.content.ContainsKey(startingKey))
-            {
-                dialogs[character] = GetDialog(startingKey);
-            }
+            if (dialogContent.ContainsKey(startingKey))
+                dialogs[character] = dialogContent.Get(startingKey);
         }
-    }
-
-    Dialog GetDialog(string dialogTag)
-    {
-        return day7DialogContent.content[dialogTag];
     }
 
     void InitializeAreas()

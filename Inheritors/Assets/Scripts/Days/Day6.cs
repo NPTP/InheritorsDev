@@ -11,11 +11,11 @@ using DG.Tweening;
 public class Day6 : MonoBehaviour
 {
     int dayNumber = 6;
-
     public bool enableDayScripts = true;
+
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
-    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
     Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
+
     Task activeTask;
     Dictionary<TaskType, Task> taskList;
 
@@ -255,11 +255,6 @@ public class Day6 : MonoBehaviour
         StartCoroutine(AllTasksProcess());
     }
 
-    IEnumerator WaitDialogEnd()
-    {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ HAPPENINGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
@@ -438,20 +433,11 @@ public class Day6 : MonoBehaviour
         Helper.LoadScene("Loading");
     }
 
-    void RemoveAllDialogTriggers()
-    {
-        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
-        {
-            dialogTrigger.Remove();
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
 
     DialogContent dialogContent;
-
     DialogTaskState dialogTaskState;
 
     SaveManager saveManager;
@@ -469,7 +455,6 @@ public class Day6 : MonoBehaviour
     void InitializeReferences()
     {
         dialogContent = GetComponent<DialogContent>();
-
         dialogTaskState = GetComponent<DialogTaskState>();
 
         saveManager = FindObjectOfType<SaveManager>();
@@ -487,8 +472,6 @@ public class Day6 : MonoBehaviour
         recordManager = FindObjectOfType<RecordManager>();
     }
 
-    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
-
     // ALL types of triggers
     void InitializeTriggers()
     {
@@ -498,6 +481,9 @@ public class Day6 : MonoBehaviour
             triggers[trigger.GetTag()] = trigger;
         }
     }
+
+    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
+    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
 
     // Dialog triggers only, referenced by Character key.
     void InitializeCharDialogTriggers()
@@ -516,9 +502,7 @@ public class Day6 : MonoBehaviour
         {
             string startingKey = character.ToString() + "_Start";
             if (dialogContent.ContainsKey(startingKey))
-            {
                 dialogs[character] = dialogContent.Get(startingKey);
-            }
         }
     }
 

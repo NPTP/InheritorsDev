@@ -6,14 +6,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-[RequireComponent(typeof(Day4DialogContent))]
+[RequireComponent(typeof(DialogContent))]
+// NO TASK STATE NEEDED FOR THIS DAY
 public class Day4 : MonoBehaviour
 {
     int dayNumber = 4;
-
     public bool enableDayScripts = true;
+
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
-    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
     Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
     Task activeTask;
     Dictionary<TaskType, Task> taskList;
@@ -25,7 +25,7 @@ public class Day4 : MonoBehaviour
     public Transform motherQuadrant;
     public Transform hillPathTransform;
     /* -------------------------------------- */
-    /* -------------------------------------- */
+    /* -------------------------------------f- */
 
     void Awake()
     {
@@ -59,7 +59,7 @@ public class Day4 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(3.5f);
 
-        dialogManager.NewDialog(day4DialogContent.Get("Day4Opening"), State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Day4Opening"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(hillPathTransform);
@@ -166,11 +166,6 @@ public class Day4 : MonoBehaviour
         }
     }
 
-    void HandleUpdateTasks(object sender, TaskManager.TaskArgs args)
-    {
-        SetTaskState(args.activeTask, args.taskList);
-    }
-
     void HandleAllTasksComplete(object sender, EventArgs args)
     {
         // Unused for day 4
@@ -187,7 +182,7 @@ public class Day4 : MonoBehaviour
 
     IEnumerator GetReed()
     {
-        dialogManager.NewDialog(GetDialog("Grandmother_Start"));
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.ChangeTask(TaskType.Grandmother, "Retrieve the reed.");
@@ -197,7 +192,7 @@ public class Day4 : MonoBehaviour
     IEnumerator Festival()
     {
         dialogTriggers[Character.Grandmother].Disable();
-        dialogManager.NewDialog(GetDialog("Grandmother_Festival1"), State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         uiManager.TearDownTasksInventory();
@@ -207,7 +202,7 @@ public class Day4 : MonoBehaviour
         sp.Shockwave();
         yield return new WaitUntil(sp.ShockwaveFinished);
 
-        dialogManager.NewDialog(GetDialog("Grandmother_Festival2"), State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival2"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         interactManager.DialogExitRange(dialogTriggers[Character.Grandmother]);
         dialogTriggers[Character.Grandmother].Disable();
@@ -222,14 +217,14 @@ public class Day4 : MonoBehaviour
         transitionManager.Hide(transitionTime);
         yield return new WaitForSeconds(1);
 
-        dialogManager.NewDialog(GetDialog("Grandmother_Festival3"));
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival3"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         uiManager.SetUpTasksInventory();
         taskManager.CompleteActiveTask();
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         dialogTriggers[Character.Grandmother].Enable();
-        dialogs[Character.Grandmother] = GetDialog("Grandmother_Completed");
+        dialogs[Character.Grandmother] = dialogContent.Get("Grandmother_Completed");
         triggers["Walk_End"].Enable();
         done = true;
     }
@@ -257,19 +252,12 @@ public class Day4 : MonoBehaviour
         // Unused for Day 4
     }
 
-    void RemoveAllDialogTriggers()
-    {
-        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
-        {
-            dialogTrigger.Remove();
-        }
-    }
-
     // ████████████████████████████████████████████████████████████████████████
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
 
-    Day4DialogContent day4DialogContent;
+    DialogContent dialogContent;
+    // NO TASK STATE ON DAY 4
 
     SaveManager saveManager;
     StateManager stateManager;
@@ -285,7 +273,7 @@ public class Day4 : MonoBehaviour
     RecordManager recordManager;
     void InitializeReferences()
     {
-        day4DialogContent = GetComponent<Day4DialogContent>();
+        dialogContent = GetComponent<DialogContent>();
 
         saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
@@ -302,9 +290,6 @@ public class Day4 : MonoBehaviour
         recordManager = FindObjectOfType<RecordManager>();
     }
 
-    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
-    Dictionary<string, Dialog> dialogContent = new Dictionary<string, Dialog>();
-
     // ALL types of triggers
     void InitializeTriggers()
     {
@@ -315,6 +300,9 @@ public class Day4 : MonoBehaviour
         }
     }
 
+    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
+    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
+
     // Dialog triggers only, referenced by Character key.
     void InitializeCharDialogTriggers()
     {
@@ -322,7 +310,6 @@ public class Day4 : MonoBehaviour
         foreach (DialogTrigger dialogTrigger in dt)
         {
             dialogTriggers[dialogTrigger.character] = dialogTrigger;
-            // dialogTriggers[dialogTrigger.character].dialog = dialogs[dialogTrigger.character.ToString() + "_Start"];
         }
     }
 
@@ -331,16 +318,9 @@ public class Day4 : MonoBehaviour
         foreach (Character character in Enum.GetValues(typeof(Character)))
         {
             string startingKey = character.ToString() + "_Start";
-            if (day4DialogContent.content.ContainsKey(startingKey))
-            {
-                dialogs[character] = GetDialog(startingKey);
-            }
+            if (dialogContent.ContainsKey(startingKey))
+                dialogs[character] = dialogContent.Get(startingKey);
         }
-    }
-
-    Dialog GetDialog(string dialogTag)
-    {
-        return day4DialogContent.content[dialogTag];
     }
 
     void InitializeAreas()
@@ -359,9 +339,6 @@ public class Day4 : MonoBehaviour
         interactManager.OnDropoff += HandleDropoffEvent;
         interactManager.OnDialog += HandleDialogEvent;
         interactManager.OnWalk += HandleWalkEvent;
-
-        taskManager.OnUpdateTasks += HandleUpdateTasks;
-        taskManager.OnAllTasks += HandleAllTasksComplete;
     }
 
     void OnDestroy()
@@ -373,9 +350,6 @@ public class Day4 : MonoBehaviour
             interactManager.OnDropoff -= HandleDropoffEvent;
             interactManager.OnDialog -= HandleDialogEvent;
             interactManager.OnWalk -= HandleWalkEvent;
-
-            taskManager.OnUpdateTasks -= HandleUpdateTasks;
-            taskManager.OnAllTasks -= HandleAllTasksComplete;
         }
     }
 

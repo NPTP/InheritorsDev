@@ -8,12 +8,18 @@ using DG.Tweening;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(Day1DialogContent))]
+[RequireComponent(typeof(DialogTaskState))]
 public class Day1 : MonoBehaviour
 {
-    public bool enableDayScripts = true;
     int dayNumber = 1;
+    public bool enableDayScripts = true;
+
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
     Dictionary<string, AreaTrigger> areas = new Dictionary<string, AreaTrigger>();
+
+    Task activeTask;
+    Dictionary<TaskType, Task> taskList;
 
     /* -------------------------------------- */
     /* Day-specific objects, transforms, etc. */
@@ -42,7 +48,6 @@ public class Day1 : MonoBehaviour
         InitializeTriggers();
         InitializeAreas();
         SubscribeToEvents();
-        InitializeDialogs();
         StartCoroutine("Intro");
     }
 
@@ -62,7 +67,7 @@ public class Day1 : MonoBehaviour
         stateManager.SetState(State.Normal);
 
         // Zoom up and queue the opening dialog, leave inert after dialog.
-        dialogManager.NewDialog(dialogs["Day1Opening"], State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Day1Opening"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(.5f);
@@ -82,7 +87,7 @@ public class Day1 : MonoBehaviour
         // Return to player to debrief before letting them loose.
         cameraManager.QuadrantCamActivate(motherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        dialogManager.NewDialog(dialogs["Dialog_TaskExplanation"]);
+        dialogManager.NewDialog(dialogContent.Get("Dialog_TaskExplanation"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Player is now loose, and can repeat the task dialog with mother.
@@ -137,8 +142,8 @@ public class Day1 : MonoBehaviour
         string tag = args.tag;
 
         // Day dialog takes priority over the one stored in the trigger.
-        if (dialogs.ContainsKey(tag))
-            dialogManager.NewDialog(dialogs[tag]);
+        if (dialogContent.ContainsKey(tag))
+            dialogManager.NewDialog(dialogContent.Get(tag));
         else
             dialogManager.NewDialog(args.dialog);
 
@@ -189,9 +194,14 @@ public class Day1 : MonoBehaviour
         }
     }
 
-    IEnumerator WaitDialogEnd()
+    void HandleUpdateTasks(object sender, TaskManager.TaskArgs args)
     {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        this.activeTask = args.activeTask;
+        this.taskList = args.taskList;
+        dialogTaskState.SetDialogs(ref activeTask,
+                                    ref taskList,
+                                    ref dialogs,
+                                    ref dialogTriggers);
     }
 
     void HandleAllTasksComplete(object sender, EventArgs args)
@@ -216,7 +226,7 @@ public class Day1 : MonoBehaviour
         // END PIG KILLING
 
         Destroy(GameObject.Find("Pig").GetComponent<Animator>());
-        dialogManager.NewDialog(dialogs["Dialog_HuntEnd"]);
+        dialogManager.NewDialog(dialogContent.Get("Dialog_HuntEnd"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseTaskTool();
@@ -260,23 +270,33 @@ public class Day1 : MonoBehaviour
 
     IEnumerator AllTasksProcess()
     {
+        DisableAllDialogTriggers();
         yield return new WaitForSeconds(1f);
-        dialogManager.NewDialog(dialogs["DayOver"]);
+        dialogManager.NewDialog(dialogContent.Get("DayOver"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        StartCoroutine(SendNPCsHome());
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home for siesta.", false);
+        EnableAllDialogTriggers();
+
+        dialogTriggers[Character.Mother].Remove();
+        Destroy(GameObject.FindWithTag("MotherNPC"));
+
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
     }
 
-    IEnumerator SendNPCsHome()
+    void DisableAllDialogTriggers()
     {
-        yield return null;
-        // TODO: direct NPCs to walk inside their malocas if they have'em and disappear.
-        Destroy(GameObject.FindWithTag("MotherNPC"));
-        Destroy(GameObject.FindWithTag("FatherNPC"));
-        Destroy(GameObject.FindWithTag("SisterNPC"));
-        triggers["Dialog_HuntOver"].Disable();
-        triggers["Dialog_Sister"].Disable();
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Disable();
+        }
+    }
+
+    void EnableAllDialogTriggers()
+    {
+        foreach (DialogTrigger dialogTrigger in dialogTriggers.Values)
+        {
+            dialogTrigger.Enable();
+        }
     }
 
     IEnumerator End()
@@ -295,109 +315,14 @@ public class Day1 : MonoBehaviour
     // ███ DIALOGS OF THE DAY
     // ████████████████████████████████████████████████████████████████████████
 
-    Dictionary<string, Dialog> dialogs = new Dictionary<string, Dialog>();
 
-    void InitializeDialogs()
-    {
-        dialogs.Add("Day1Opening", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Good morning, son. You slept well?",
-                "Look! Last night, you left a trail behind you. This land has memory.",
-                "If you walk a path over and over again, it remembers you. Keep that in mind.",
-                "Now, you are old enough to help with the work. Here is what we need today!"
-            }
-        });
-
-        dialogs.Add("Dialog_TaskExplanation", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Begin the work in any order you like. Once you have begun a task, finish it before pursuing another.",
-                "You already have everything you need for this work.",
-                "This is a great help to the family, son. I am proud of you!"
-            }
-        });
-
-        dialogs.Add("Dialog_HavePig", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "You and father have caught a pig? It is beautiful.",
-                "Place it over the fire. We will cook it later."
-            }
-        });
-
-        dialogs.Add("Dialog_HaveWater", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Just pour the water into the big grey pot."
-            }
-        });
-
-        dialogs.Add("Dialog_HuntBegin", new Dialog
-        {
-            character = Character.Father,
-            lines = new string[] {
-                "Son! Finally you are old enough and we have enough men to hunt. I will teach you.",
-                "The women tried their hand at it, but only out of necessity, and had not the skill. But you will be great.",
-                "Today we hunt wild pig. Aim the bow carefully - do not scare it away. Go, my son."
-            }
-        });
-
-        dialogs.Add("Dialog_HuntEnd", new Dialog
-        {
-            character = Character.Father,
-            lines = new string[] {
-                "Well done, my son!",
-                "We are blessed to have wild animals here that we can eat.",
-                "There is a plain, through that path to the north, leaving the forest. I have seen cows there.",
-                "Yes, cows would make for good meat, and cows are not found in the forest. But it not safe out there, so make me a promise.",
-                "I will teach you the hunt, but you must promise to never leave this forest. Ever. Understand?",
-                "Good. Now, take the meat home. I will see you for siesta."
-            }
-        });
-
-        dialogs.Add("Dialog_NoHunt", new Dialog
-        {
-            character = Character.Father,
-            lines = new string[] {
-                "Funny boy! That water belongs with your mother, not here!"
-            }
-        });
-
-        dialogs.Add("Dialog_HuntOver", new Dialog
-        {
-            character = Character.Father,
-            lines = new string[] {
-                "I will teach you the hunt, but you must promise to never leave this forest. Ever. Understand?",
-            }
-        });
-
-        dialogs.Add("DayOver", new Dialog
-        {
-            character = Character.Mother,
-            lines = new string[] {
-                "Thank you, son. That's all the work today!",
-                "You have worked so hard, it's time for siesta. Come inside."
-            }
-        });
-
-        dialogs.Add("Dialog_Sister", new Dialog
-        {
-            character = Character.Sister,
-            lines = new string[] {
-                "Hello little brother! You are working hard today?",
-                "Come around tomorrow, I may need your help with something."
-            }
-        });
-    }
 
     // ████████████████████████████████████████████████████████████████████████
     // ███ INITIALIZERS & DESTROYERS
     // ████████████████████████████████████████████████████████████████████████
+
+    DialogContent dialogContent;
+    DialogTaskState dialogTaskState;
 
     SaveManager saveManager;
     StateManager stateManager;
@@ -413,6 +338,9 @@ public class Day1 : MonoBehaviour
     RecordManager recordManager;
     void InitializeReferences()
     {
+        dialogContent = GetComponent<DialogContent>();
+        dialogTaskState = GetComponent<DialogTaskState>();
+
         saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
         taskManager = FindObjectOfType<TaskManager>();
@@ -437,6 +365,30 @@ public class Day1 : MonoBehaviour
         }
     }
 
+    Dictionary<Character, Dialog> dialogs = new Dictionary<Character, Dialog>();
+    Dictionary<Character, DialogTrigger> dialogTriggers = new Dictionary<Character, DialogTrigger>();
+
+    // Dialog triggers only, referenced by Character key.
+    void InitializeCharDialogTriggers()
+    {
+        DialogTrigger[] dt = FindObjectsOfType<DialogTrigger>();
+        foreach (DialogTrigger dialogTrigger in dt)
+        {
+            dialogTriggers[dialogTrigger.character] = dialogTrigger;
+            // dialogTriggers[dialogTrigger.character].dialog = dialogs[dialogTrigger.character.ToString() + "_Start"];
+        }
+    }
+
+    void InitializeDialogs()
+    {
+        foreach (Character character in Enum.GetValues(typeof(Character)))
+        {
+            string startingKey = character.ToString() + "_Start";
+            if (dialogContent.ContainsKey(startingKey))
+                dialogs[character] = dialogContent.Get(startingKey);
+        }
+    }
+
     void InitializeAreas()
     {
         AreaTrigger[] worldAreas = FindObjectsOfType<AreaTrigger>();
@@ -454,6 +406,7 @@ public class Day1 : MonoBehaviour
         interactManager.OnDialog += HandleDialogEvent;
         interactManager.OnWalk += HandleWalkEvent;
 
+        taskManager.OnUpdateTasks += HandleUpdateTasks;
         taskManager.OnAllTasks += HandleAllTasksComplete;
     }
 
@@ -468,6 +421,7 @@ public class Day1 : MonoBehaviour
             interactManager.OnDialog -= HandleDialogEvent;
             interactManager.OnWalk -= HandleWalkEvent;
 
+            taskManager.OnUpdateTasks -= HandleUpdateTasks;
             taskManager.OnAllTasks -= HandleAllTasksComplete;
         }
     }

@@ -26,7 +26,6 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
         return content.ContainsKey(key);
     }
 
-
     void PackContent()
     {
         content.Add("Day4Opening", new Dialog
@@ -56,9 +55,9 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
               "Good. Now, hold the reed up to my nose, and slide the ground yopo through it... that's it.",
               "<i>Sniff</i>... <i>Sniff</i>... Aahh...",
-              "Imagine this land when there was more than just our family, grandson.",
+              "Imagine this land when it was more than just our family, grandson.",
               "Imagine when there were thousands of Akuntsu here.",
-              "We clear the bad blood of we who remain... The ancestors speak... Hear them, see them...",
+              "We clear the bad blood of we who remain... \nThe ancestors speak... \nHear them, see them...",
               "<i>NOW</i>!"
             }
         });

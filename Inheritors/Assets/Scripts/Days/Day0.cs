@@ -7,11 +7,12 @@ using DG.Tweening;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
-// TODO: make every day's tasks & dialogs their own classes so we never mis-label something.
+[RequireComponent(typeof(DialogContent))]
 public class Day0 : MonoBehaviour
 {
-    public bool enableDayScripts = true;
     int dayNumber = 0;
+    public bool enableDayScripts = true;
+
     Dictionary<string, Trigger> triggers = new Dictionary<string, Trigger>();
 
     /* -------------------------------------- */
@@ -46,7 +47,6 @@ public class Day0 : MonoBehaviour
     {
         InitializeTriggers();
         SubscribeToEvents();
-        InitializeDialogs();
         StartCoroutine("Intro");
         Debug.Log("Press Backspace to kill the intro.");
     }
@@ -68,7 +68,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(2);
 
         /* 02. Kick off the intro narration dialog. */
-        dialogManager.NewDialog(opening, State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Opening"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         /* 03. Fade away the blackness. */
@@ -111,8 +111,13 @@ public class Day0 : MonoBehaviour
     InteractManager interactManager;
     PickupManager pickupManager;
     RecordManager recordManager;
+
+    DialogContent dialogContent;
+
     void InitializeReferences()
     {
+        dialogContent = GetComponent<DialogContent>();
+
         saveManager = FindObjectOfType<SaveManager>();
         audioManager = FindObjectOfType<AudioManager>();
         taskManager = FindObjectOfType<TaskManager>();
@@ -162,11 +167,11 @@ public class Day0 : MonoBehaviour
                 if (inventory.itemQuantity == 1)
                 {
                     taskManager.SetActiveTask(TaskType.IntroFirewood);
-                    dialogManager.NewDialog(wood1);
+                    dialogManager.NewDialog(dialogContent.Get("Wood1"));
                 }
                 else if (inventory.itemQuantity == 2)
                 {
-                    dialogManager.NewDialog(wood2);
+                    dialogManager.NewDialog(dialogContent.Get("Wood2"));
                 }
                 else if (inventory.itemQuantity == 3)
                 {
@@ -186,7 +191,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator AllWoodCollected()
     {
-        dialogManager.NewDialog(wood3, State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Wood3"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.ChangeTask(TaskType.IntroFirewood, "Drop wood on fire.");
@@ -248,7 +253,7 @@ public class Day0 : MonoBehaviour
                 break;
 
             case "Walk_SisterSleep":
-                dialogManager.NewDialog(sisterSleep);
+                dialogManager.NewDialog(dialogContent.Get("SisterSleep"));
                 break;
 
             default:
@@ -259,7 +264,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator Walk_Firepit()
     {
-        dialogManager.NewDialog(firepit, State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Firepit"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(firewoodTransform);
@@ -291,7 +296,7 @@ public class Day0 : MonoBehaviour
         stateManager.SetState(State.Inert);
         yield return new WaitForSeconds(1f);
 
-        dialogManager.NewDialog(maloca, State.Inert);
+        dialogManager.NewDialog(dialogContent.Get("Maloca"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         yield return new WaitForSeconds(.25f);
@@ -313,61 +318,4 @@ public class Day0 : MonoBehaviour
         saveManager.SaveGame(dayNumber);
         Helper.LoadScene("Loading");
     }
-
-    Dialog opening = new Dialog();
-    Dialog firepit = new Dialog();
-    Dialog wood1 = new Dialog();
-    Dialog wood2 = new Dialog();
-    Dialog wood3 = new Dialog();
-    Dialog maloca = new Dialog();
-    Dialog sisterSleep = new Dialog();
-    void InitializeDialogs()
-    {
-        string delay = DialogManager.Tools.DELAY;
-
-        opening.character = Character.Narrator;
-        opening.skippable = false;
-        opening.lines = new string[] {
-            "The Omerê is our home." + delay,
-            "Our people have lived here for hundreds of years." + delay,
-            "Your mother is of <b>Kanoê</b>." + delay + "\nYour father, of <b>Akuntsu</b>." + delay,
-            "You are young, <b>son</b>." + delay + "\nYou are the inheritor of this land." + delay + "\nThe inheritor of our tradition." + delay,
-            "You will bring us hope." + delay + delay
-        };
-
-        firepit.character = Character.Narrator;
-        firepit.lines = new string[] {
-            "This fire is dying.",
-            "Fetch <color=blue>3 logs</color> from our pile of dried wood, so that it might find new life."
-        };
-
-        wood1.character = Character.Narrator;
-        wood1.lines = new string[] {
-            "The Cumaru wood. Tough, ancient, everlasting."
-        };
-        wood2.character = Character.Narrator;
-        wood2.lines = new string[] {
-            "Massaranduba tree. Hard-won, deep, rich, and beautiful."
-        };
-        wood3.character = Character.Narrator;
-        wood3.lines = new string[] {
-            "The wood of the Ipê. Life-giving, sturdy, ever-present... and coveted.",
-            "That is enough wood for now. Return to the fire."
-        };
-
-        maloca.character = Character.Mother;
-        maloca.lines = new string[] {
-             "Well done, son! I see the shadows dancing on the inside of the maloca.",
-             "It is late. Come join me inside. Tomorrow is an important day."
-        };
-
-        sisterSleep.character = Character.Sister;
-        sisterSleep.lines = new string[] {
-            "...",
-            "Hn... huh? Oh, you woke me up!",
-            "Brother, what are you doing here so late? Go to sleep.",
-            "Always up to mischief. Mother must be so worried..."
-        };
-    }
-
 }

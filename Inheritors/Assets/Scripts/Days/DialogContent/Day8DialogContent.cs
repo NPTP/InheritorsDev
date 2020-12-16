@@ -1,13 +1,29 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Day8DialogContent : MonoBehaviour
+public class Day8DialogContent : MonoBehaviour, DialogContent
 {
     public Dictionary<string, Dialog> content = new Dictionary<string, Dialog>();
 
     void Awake()
     {
         PackContent();
+    }
+
+    public Dialog Get(string key)
+    {
+        if (content.ContainsKey(key))
+            return content[key];
+        else
+        {
+            print("Don't have dialog key: " + key);
+            return content["NULL"];
+        }
+    }
+
+    public bool ContainsKey(string key)
+    {
+        return content.ContainsKey(key);
     }
 
     void PackContent()
