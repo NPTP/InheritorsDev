@@ -37,6 +37,10 @@ public class DialogTaskState : MonoBehaviour
             // I haven't done this task yet, and it's ready to be started.
             else if (activeTask.type == TaskType.Null && taskList[type].status == TaskStatus.Waiting)
                 SetDialogTo(ref dialogs, character, "_Start");
+
+            // For all other cases (e.g. having no task today at all but being talkable)...
+            else
+                SetDialogTo(ref dialogs, character, "_Default");
         }
     }
 

@@ -199,6 +199,19 @@ public class TaskManager : MonoBehaviour
         UpdateTasks();
     }
 
+    /// <summary>
+    /// Used for days 8 and 9, where walk triggers alone complete a task,
+    /// and would otherwise interrupt other active tasks that actually require fetching something.
+    /// </summary>
+    public void CompleteWaitingTask(TaskType taskType)
+    {
+        // recordManager.StopRecording();
+
+        taskList[taskType].status = TaskStatus.Completed;
+        CheckAllTasksCompleted();
+        UpdateTasks();
+    }
+
     // Just checks if any Waiting or Active tasks remain.
     // If not, then it's only Completed and Disabled tasks, so we must be all done.
     private void CheckAllTasksCompleted()

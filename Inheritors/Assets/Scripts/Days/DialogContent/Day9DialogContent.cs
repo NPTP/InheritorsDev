@@ -74,6 +74,16 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Mother_Default", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Our water is overflowing, yet we have no meat, no fruit, no vegetables.",
+                "Please, check on everyone as soon as you can. I don't want us all to have to leave our home...",
+                "Not again."
+            }
+        });
+
         content.Add("Mother_Other", new Dialog
         {
             character = Character.Mother,

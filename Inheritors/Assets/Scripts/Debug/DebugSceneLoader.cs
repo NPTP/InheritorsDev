@@ -64,6 +64,10 @@ public class DebugSceneLoader : MonoBehaviour
         {
             Go("Day10");
         }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            Go(SceneManager.GetActiveScene().name);
+        }
     }
 
     void Go(string name)

@@ -147,7 +147,7 @@ public class Day8 : MonoBehaviour
         switch (character)
         {
             case Character.Grandfather:
-                if (taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
+                if (activeTask.type == TaskType.Null && taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
                     StartCoroutine(GrandfatherStart());
                 break;
 
@@ -164,10 +164,6 @@ public class Day8 : MonoBehaviour
         {
             case "Dropoff_Water":
                 DropoffWater();
-                break;
-
-            case "Dropoff_Seed":
-                StartCoroutine(DropoffSeed());
                 break;
 
             default:
@@ -275,57 +271,21 @@ public class Day8 : MonoBehaviour
 
     // ████████████████████████████ SISTER ████████████████████████████████████
 
+    // Sister in her maloca, distraught and won't come out.
     IEnumerator SisterStart()
     {
-        taskManager.SetActiveTask(TaskType.Sister, false);
         dialogManager.NewDialog(dialogContent.Get("Sister_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
-    }
-
-    int numSeedsPlanted = 0;
-    IEnumerator DropoffSeed()
-    {
-        numSeedsPlanted++;
-
-        if (numSeedsPlanted < 4)
-        {
-            PickupTrigger seeds = GameObject.Instantiate(seedsPickup,
-                pickupManager.GetItemHoldPosition(),
-                Quaternion.identity,
-                GameObject.FindWithTag("Player").transform).GetComponent<PickupTrigger>();
-            seeds.GetPickedUp();
-            pickupManager.PickUp(seeds);
-
-            if (numSeedsPlanted == 3)
-                taskManager.ChangeTask(TaskType.Sister, "Plant 1 more seed.");
-            else
-                taskManager.ChangeTask(TaskType.Sister, "Plant " + (4 - numSeedsPlanted).ToString() + " more seeds.");
-        }
-        else
-        {
-            recordManager.StopRecording();
-            dialogManager.NewDialog(dialogContent.Get("Sister_FinishTask"));
-            yield return new WaitUntil(dialogManager.IsDialogFinished);
-            taskManager.CompleteActiveTask();
-        }
-    }
-
-    IEnumerator SisterFinish()
-    {
-        recordManager.StopRecording();
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
+        taskManager.CompleteWaitingTask(TaskType.Sister);
     }
 
     // ████████████████████████████ FATHER ████████████████████████████████████
 
     IEnumerator HuntBegin()
     {
-        taskManager.SetActiveTask(TaskType.Father, false);
         dialogManager.NewDialog(dialogContent.Get("Father_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
+        taskManager.CompleteWaitingTask(TaskType.Father);
     }
 
     // ████████████████████████████ MOTHER ████████████████████████████████████
@@ -346,10 +306,9 @@ public class Day8 : MonoBehaviour
 
     IEnumerator GrandmotherStart()
     {
-        taskManager.SetActiveTask(TaskType.Grandmother, false);
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
+        taskManager.CompleteWaitingTask(TaskType.Grandmother);
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████

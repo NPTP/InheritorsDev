@@ -74,7 +74,6 @@ public class WalkTrigger : MonoBehaviour, Trigger
     {
         if (!triggered)
         {
-            // startEnabled = true;
             triggerCollider.enabled = true;
             l.enabled = true;
             l.DOIntensity(originalIntensity, .25f).From(0f);
@@ -86,10 +85,8 @@ public class WalkTrigger : MonoBehaviour, Trigger
     // Disables collider and visual fx but keeps script alive so we can refer to it elsewhere.
     public void Disable()
     {
-        // startEnabled = false;
         triggerCollider.enabled = false;
         l.DOIntensity(0f, .25f);
-        // l.enabled = false;
         ps.Stop();
         triggerProjector.Disable();
     }

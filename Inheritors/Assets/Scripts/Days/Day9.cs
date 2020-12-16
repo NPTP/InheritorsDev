@@ -24,6 +24,8 @@ public class Day9 : MonoBehaviour
     /* -------------------------------------- */
     [Header("Day-specific Objects")]
     public Material redheadMaterial;
+    public Animation toucanContainerAnimation;
+    public Animation toucanAnimation;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -114,7 +116,7 @@ public class Day9 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Flute:
+            case ItemType.DarkFlute:
                 PickupFlute();
                 break;
 
@@ -237,26 +239,27 @@ public class Day9 : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         taskManager.CompleteActiveTask();
+        toucanContainerAnimation.Play();
+        toucanAnimation.CrossFade("toucan_takeoff");
+        toucanAnimation.PlayQueued("toucan_fly");
     }
 
     // ████████████████████████████ SISTER ████████████████████████████████████
 
     IEnumerator SisterStart()
     {
-        taskManager.SetActiveTask(TaskType.Sister, false);
         dialogManager.NewDialog(dialogContent.Get("Sister_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
+        taskManager.CompleteWaitingTask(TaskType.Sister);
     }
 
     // ████████████████████████████ FATHER ████████████████████████████████████
 
     IEnumerator HuntBegin()
     {
-        taskManager.SetActiveTask(TaskType.Father, false);
         dialogManager.NewDialog(dialogContent.Get("Father_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
+        taskManager.CompleteWaitingTask(TaskType.Father);
     }
 
     // ████████████████████████████ MOTHER ████████████████████████████████████

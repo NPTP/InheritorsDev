@@ -17,7 +17,7 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     Transform originalParent;
     Collider triggerCollider;
-    Transform itemTransform;
+    [HideInInspector] public Transform itemTransform;
     Vector3 itemLocalScale;
     Light l;
     float originalIntensity;

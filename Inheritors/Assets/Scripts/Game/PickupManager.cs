@@ -20,7 +20,8 @@ public enum ItemType
     Reed,
     Uruku,
     Herbs,
-    Seeds
+    Seeds,
+    DarkFlute
 }
 
 public class PickupManager : MonoBehaviour

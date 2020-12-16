@@ -66,7 +66,10 @@ public class AreaTrigger : MonoBehaviour
         foreach (Trigger trigger in triggersInside)
         {
             if (trigger != null && trigger.GetType() != typeof(DialogTrigger))
+            {
+                print(trigger);
                 trigger.Disable();
+            }
         }
     }
 

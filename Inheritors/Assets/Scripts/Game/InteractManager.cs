@@ -172,24 +172,28 @@ public class InteractManager : MonoBehaviour
     IEnumerator PickUpItem(PickupTrigger currentPickup)
     {
         bool alreadyHolding = pickupManager.IsHoldingItem();
-        Vector3 startPosition = currentPickup.transform.position;
-        Quaternion startRotation = currentPickup.transform.localRotation;
+        Vector3 startPosition = currentPickup.itemTransform.position;
+        Vector3 startForwardHeading = currentPickup.itemTransform.forward;
         float elapsed = 0f;
         float time = 0.25f;
 
         while (elapsed < time)
         {
-            currentPickup.transform.position = Vector3.Lerp(
-                startPosition, GetItemHoldPosition(), Helper.SmoothStep(elapsed / time));
-            currentPickup.transform.localRotation = Quaternion.Slerp(
-                startRotation, Quaternion.Euler(player.transform.forward), Helper.SmoothStep(elapsed / time));
-            if (alreadyHolding)
-                currentPickup.transform.localScale *= 1 - (elapsed / time);
+            float t = elapsed / time;
+
+            currentPickup.itemTransform.position = Vector3.Lerp(
+                startPosition, GetItemHoldPosition(), Helper.SmoothStep(t));
+            currentPickup.itemTransform.forward = Vector3.Lerp(
+                startForwardHeading, player.transform.forward, t);
+
+            if (alreadyHolding) // Shrink the item (ease in) if we're already holding
+                currentPickup.transform.localScale *= 1 - (t * t);
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-        currentPickup.transform.position = GetItemHoldPosition();
-        currentPickup.transform.rotation = Quaternion.Euler(player.transform.forward);
+        currentPickup.itemTransform.position = GetItemHoldPosition();
+        currentPickup.itemTransform.forward = player.transform.forward;
         stateManager.SetState(State.Holding);
 
         // Hand it off here to the PickupManager, updates the inventory.

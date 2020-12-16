@@ -29,8 +29,9 @@ public class Day1 : MonoBehaviour
     public Transform motherQuadrantTransform;
     public Transform firewoodTransform;
     public Transform wateringHoleQuadrantTransform;
-    public Transform fatherQuadrantTransform; //
-
+    public Transform fatherQuadrantTransform;
+    [Space]
+    public Animation pigAnimation;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -228,6 +229,7 @@ public class Day1 : MonoBehaviour
         // END PIG KILLING
 
         Destroy(GameObject.Find("Pig").GetComponent<Animator>());
+        pigAnimation.Stop(); // The actual pig movements like walking, eating, etc
         dialogManager.NewDialog(dialogContent.Get("Father_AfterKill"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
