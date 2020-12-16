@@ -80,12 +80,12 @@ public class Day3 : MonoBehaviour
         cameraManager.SendCamTo(grandmotherQuadrant);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandmother, "Visit grandmother.");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         cameraManager.SendCamTo(grandfatherQuadrant);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandfather, "Visit grandfather.");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         cameraManager.QuadrantCamActivate(motherQuadrant);
         yield return new WaitWhile(cameraManager.IsSwitching);
@@ -127,6 +127,10 @@ public class Day3 : MonoBehaviour
 
             case ItemType.Corn:
                 PickupCorn(inventory.itemQuantity);
+                break;
+
+            case ItemType.Agoutis: // Tapir, actually
+                PickupTapir();
                 break;
 
             case ItemType.Yopo:
@@ -337,8 +341,12 @@ public class Day3 : MonoBehaviour
         pickupManager.LoseTaskTool();
         triggers["Pickup_Tapir"].Enable();
         triggers["Dropoff_Meat"].Enable();
+    }
 
+    void PickupTapir()
+    {
         recordManager.StartNewRecording();
+        taskManager.ChangeTask(TaskType.Father, "Bring the meat home.");
     }
 
     // ████████████████████████████ MOTHER ████████████████████████████████████

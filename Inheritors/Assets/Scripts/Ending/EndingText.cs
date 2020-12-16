@@ -78,7 +78,7 @@ public class EndingText : MonoBehaviour
             "their protected land is likely to be developed.",
 
             "Their language, their customs, and their traditions will all be lost to time. \n\n" +
-            "A human way of being will go extinct. We will never know their whole story.",
+            "An entire way of being will go extinct. We will never know their whole story.",
 
             "It is too late to save the Akuntsu. But there are many other tribes like them. \n" +
             "Many for whom the struggle to preserve their way of life continues. \n\n" +

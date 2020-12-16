@@ -121,9 +121,9 @@ public class Day10DialogContent : MonoBehaviour, DialogContent
                 "Now, even hope Akuntsu gone. \nAll Akuntsu... all gone.",
                 "But...",
                 "Kanoe... is like me. \nStill one survive.",
-                "A woman. \nA woman... on top of hill.",
+                "A woman. \nShe run from outside man. \nShe go... on top of hill.",
                 "She run, but I... \nI not run anymore. \nThis, mine... my home.",
-                "I stay here. Even if... die."
+                "I stay here. \nEven if... die."
             }
         });
 

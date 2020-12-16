@@ -33,10 +33,10 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "It is a cold morning.",
-                "They have built right across our land. The damage is irreparable.",
+                "They have built across our land. \nThe damage is irreparable.",
                 "Your sister... she is not well. I need you to talk to her. Perhaps you can brighten her spirits.",
                 "Check on your father, too. He should be returning with fresh meat soon.",
-                "Do not forget your grandmother - she must be better by now, please wake her.",
+                "Do not forget your grandmother - she must be better by now, so please wake her.",
             }
         });
 

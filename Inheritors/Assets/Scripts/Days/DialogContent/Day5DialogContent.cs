@@ -61,7 +61,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Ghosts, you say? Oh my son, you imagine so much. We are the only people on this land.",
+                "Ghosts, you say? No, I do not see them! \nOh my son, you imagine so much. We are the only people on this land.",
                 "If I did not know better, I would have thought maybe other Kanoe found this place.",
                 "But there are none... oh, that is, none who would come this way.",
             }
@@ -158,15 +158,15 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Manofhole,
             lines = new string[] {
-                "I not do this... they do this... they, from outside.",
-                "Your people... few. Mine... gone. Me... last one.",
-                "Akuntsu... talk 'hope.' Not real. Akuntsu not learn.",
-                "Instead... be fear. Not safe. Always they... hunting us, the outside. Want... our forest.",
+                "I not do this... \n<i>they</i> do this... they, from outside.",
+                "Your people... few. \nMine... gone. \nMe... last one.",
+                "Akuntsu... talk 'hope.' \nNot real. \nAkuntsu not learn.",
+                "Instead... be fear. Not safe. \nAlways they... hunting us, the outside. \nWant... our forest.",
                 "No believe?",
                 "Ask mother... why Kanoe not enemy Akuntsu, now.",
                 "Ask elder... what happen at crush maloca.",
                 "Ask father, grandfather... how get scars on back. What running from?",
-                "My home, burned. Again... I run. Find new place. While can."
+                "My home, burned. Again... I run. \nFind new place. \nWhile can."
             }
         });
 
@@ -321,7 +321,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
               "Look at you! The ancestors truly live on in you now!",
               "I am getting quite old, young one, so you must carry on this Akuntsu tradition. Can you do that for me?",
-              "Oh, <i>she</i> used to dye her hair every day... \n<i>she</i> would have loved you so much, if <i>she</i> were still here.",
+              "Oh, <i>she</i> used to dye her hair every day... \n<i>she</i> would have loved you so much. \nIf she were still here.",
             }
         });
 

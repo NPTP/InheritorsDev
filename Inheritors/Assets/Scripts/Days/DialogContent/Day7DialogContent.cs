@@ -100,9 +100,9 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
             character = Character.Father,
             lines = new string[] {
                 "I can't believe it...",
-                "We cannot hunt here anymore. It has all been razed. I do not see, hear or smell a single animal nearby.",
-                "I cannot let us down. I must clear the rocks, leave the forest and bring back meat from the pastures.",
-                "It will be alright, son. I will be back soon. I will be quick so they do not see me. Do not dare follow me. ",
+                "It has all been razed. \nWe cannot hunt here anymore. I do not see, hear or smell a single animal.",
+                "I will not let us down. I must clear the rocks, leave the forest and bring back meat from the pastures.",
+                "It will be alright, son. I will be back soon. \nI will be quick so they do not see me. \nDo not dare follow me. ",
                 "We will be having a feast again, I promise you. Meet me here, tomorrow, when I return, and help me carry the meat."
             }
         });

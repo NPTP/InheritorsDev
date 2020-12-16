@@ -93,7 +93,7 @@ public class Day1DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "I can see already that it will be a beautiful day. \nHow fine it is that you should grow together with our tribe, son."
+                "It will be a beautiful day. \nHow fine it is to see you grow up, and our tribe grow with you."
             }
         });
 
@@ -106,7 +106,7 @@ public class Day1DialogContent : MonoBehaviour, DialogContent
             character = Character.Father,
             lines = new string[] {
                 "Son! Finally you are old enough and we have enough men to hunt. I will teach you.",
-                "The women tried their hand at it, but only out of necessity, and had not the skill. But you will be great.",
+                "The women tried their hand at it, but only out of necessity, and had not the skill. \nBut you will be great.",
                 "Today we hunt wild pig. Aim the bow carefully - do not scare it away. Go, my son."
             }
         });
@@ -117,10 +117,10 @@ public class Day1DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Well done, my son!",
                 "We are blessed to have wild animals here that we can eat.",
-                "There is a plain, through that path just there to the north, leaving the forest. I have seen cows there.",
+                "There is a plain, through that path just there to the north, leaving the forest. \nI have seen cows there.",
                 "Yes, cows make for good meat, and cows are never found in the forest. But it is not safe out there, so promise me this:",
                 "I will teach you the hunt, but you must never leave this forest. Ever. \nUnderstand?",
-                "Good. Now, take the meat home. I will see you for siesta."
+                "Good. Now, take the meat home. \nI will see you for siesta."
             }
         });
 
@@ -128,7 +128,7 @@ public class Day1DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Funny boy! That water belongs with your mother, not here! \n Come back after you have brought it to her!"
+                "Funny boy! That water belongs with your mother, not here! \nCome back after you have brought it to her!"
             }
         });
 

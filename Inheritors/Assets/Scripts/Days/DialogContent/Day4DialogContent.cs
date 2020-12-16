@@ -28,11 +28,19 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
 
     void PackContent()
     {
-        content.Add("Day4Opening", new Dialog
+        content.Add("Day4Opening_1", new Dialog
         {
             character = Character.Narrator,
             lines = new string[] {
                 "Grandmother is waiting for me at the top of the hill, ready to perform the \n<color=red>festival of senses</color>."
+            }
+        });
+     
+        content.Add("Day4Opening_2", new Dialog
+        {
+            character = Character.Narrator,
+            lines = new string[] {
+                "The rocks have been cleared. I must use the path to ascend to the top."
             }
         });
 

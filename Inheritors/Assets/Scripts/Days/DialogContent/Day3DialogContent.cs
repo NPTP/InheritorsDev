@@ -56,7 +56,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Before, your father would have been the other, the enemy. But our common enemy was worse, so we came together."
+                "I cannot imagine how things would be now if your father and I had not come together between tribes."
             }
         });
 
@@ -282,7 +282,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
               "Well done, youngest one. The yopo bean is a powerful medicine that opens our minds and bodies to the spirit world.",
               "I will grind the beans for the <color=red>festival of senses</color> and clear our tribe of bad blood.",
               "To receive the full wisdom of the Akuntsu, I ask you return in the small hours of twilight for the <color=red>festival</color>.",
-              "The rocks blocking the path up the hill will be cleared. Meet me at the very top of the hill! And youngest one...",
+              "Meet me at the very top of the hill just south of here! The rocks will be cleared to let you ascend the path. And youngest one...",
               "Do <i>not</i> tell your mother."
             }
         });

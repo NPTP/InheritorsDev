@@ -75,7 +75,7 @@ public class Day10 : MonoBehaviour
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
-        transitionManager.SetColor(Color.red);
+        transitionManager.SetColor(new Color(.125f, 0, 0, 1));
         yield return new WaitForSeconds(.5f);
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(2f);
@@ -219,10 +219,18 @@ public class Day10 : MonoBehaviour
         }
     }
 
-    IEnumerator WaitDialogEnd()
+    void HandleUpdateTasks(object sender, TaskManager.TaskArgs args)
     {
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        this.activeTask = args.activeTask;
+        this.taskList = args.taskList;
+
+        // Not used on Day 10
+        // dialogTaskState.SetDialogs(ref activeTask,
+        //                             ref taskList,
+        //                             ref dialogs,
+        //                             ref dialogTriggers);
     }
+
 
     // ████████████████████████████████████████████████████████████████████████
     // ███ HAPPENINGS OF THE DAY
@@ -423,6 +431,8 @@ public class Day10 : MonoBehaviour
         interactManager.OnDropoff += HandleDropoffEvent;
         interactManager.OnDialog += HandleDialogEvent;
         interactManager.OnWalk += HandleWalkEvent;
+
+        taskManager.OnUpdateTasks += HandleUpdateTasks;
     }
 
     void OnDestroy()
@@ -434,6 +444,8 @@ public class Day10 : MonoBehaviour
             interactManager.OnDropoff -= HandleDropoffEvent;
             interactManager.OnDialog -= HandleDialogEvent;
             interactManager.OnWalk -= HandleWalkEvent;
+
+            taskManager.OnUpdateTasks -= HandleUpdateTasks;
         }
     }
 

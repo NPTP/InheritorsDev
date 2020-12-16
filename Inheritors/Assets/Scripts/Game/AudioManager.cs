@@ -20,7 +20,6 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        otherSources = FindObjectsOfType<AudioSource>();
         if (fadeOnSceneStart) { FadeOtherSources("Up", fadeInTime); }
         audioSources = new AudioSource[0];
         NumChannels = setNumberOfChannels;
@@ -29,6 +28,8 @@ public class AudioManager : MonoBehaviour
 
     public void FadeOtherSources(string upDown, float fadeTime)
     {
+        otherSources = FindObjectsOfType<AudioSource>();
+
         foreach (AudioSource otherSource in otherSources)
         {
             if (upDown.ToLower() == "up")

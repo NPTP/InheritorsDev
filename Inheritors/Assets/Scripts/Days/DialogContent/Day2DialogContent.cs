@@ -143,7 +143,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             character = Character.Sister,
             lines = new string[] {
                 "There is a tree on the other side of the river that is hundreds of years old. I wonder how deep are its roots...",
-                "But here, I have been growing fruit! We need to pick <color=blue>six papayas</color>, one for each of the family.",
+                "But here, I have been growing fruit! \nWe need to pick <color=blue>six papayas</color>, one for each of the family.",
                 "Gather from my garden to start. If you need more, check the <color=green>south entrance</color> to this forest.",
                 "Come back when you have <color=blue>six</color> and drop them in the bucket."
             }

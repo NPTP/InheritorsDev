@@ -59,8 +59,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "It has been a hard day, but our tribe has survived a long time, and so we will continue to do.",
-                "Come inside now and rest. You have done all you can!"
+                "It has been a hard day. Come inside now and rest. You have done all you can!"
             }
         });
 
@@ -111,9 +110,9 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Son, these scars are from a past life, a life before you, who came and made all anew. Do not worry yourself about them!",
-                "I see the ancestors now as well, just like you! They are here now.",
-                "Their shadows are in the trees, waiting, watching over our hunt! We are sure to succeed! Kill us a pig, son."
+                "Son, these scars are from a life before you. <i>You</i>, who came and made all anew! Do not worry yourself about them.",
+                "I see the ancestors now, just as you do! See them in the trees - they are here now.",
+                "They must be watching over our hunt. We are sure to succeed! Kill the pig now, son."
             }
         });
 

@@ -103,16 +103,22 @@ public class DialogTrigger : MonoBehaviour, Trigger
     // As in, the steps taken to enable
     void EnableSteps()
     {
-        triggerCollider.enabled = true;
-        l.enabled = true;
+        if (!destroyed)
+        {
+            triggerCollider.enabled = true;
+            l.enabled = true;
+        }
     }
 
     // As in, the steps taken to disable
     void DisableSteps()
     {
-        triggerCollider.enabled = false;
-        l.enabled = false;
-        triggerProjector.Disable();
+        if (!destroyed)
+        {
+            triggerCollider.enabled = false;
+            l.enabled = false;
+            triggerProjector.Disable();
+        }
     }
 
     public void Remove()

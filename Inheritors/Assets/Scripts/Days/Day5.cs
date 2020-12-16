@@ -304,6 +304,7 @@ public class Day5 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.CompleteActiveTask();
         manofholeNPC.SetActive(false);
+        dialogTriggers[Character.Manofhole].Remove();
         papayaTreeFire.SetActive(false);
     }
 
