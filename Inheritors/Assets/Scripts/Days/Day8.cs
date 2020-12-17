@@ -25,9 +25,8 @@ public class Day8 : MonoBehaviour
     [Header("Day-specific Objects")]
     public Material redheadMaterial;
     public GameObject seedsPickup;
-    // public Transform motherQuadrant;
-    // public Transform grandfatherQuadrant;
-    // public Transform grandmotherQuadrant;
+    [Space]
+    public AudioClip mateteDuet;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -248,6 +247,9 @@ public class Day8 : MonoBehaviour
         stateManager.SetState(State.Inert);
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
         yield return new WaitForSeconds(1f);
+
+        audioManager.Play(mateteDuet);
+        yield return new WaitForSeconds(mateteDuet.length);
 
         recordManager.StopRecording();
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));

@@ -217,7 +217,23 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "You play beautifully, so full of life. Playing with you eases the pain of the old scars I carry.",
+                "I will play an old melody for you. \nListen carefully."
+            }
+        });
+
+        content.Add("Grandfather_ContinueTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Now you try, grandson. Control your breath, it is the most valuable thing you possess."
+            }
+        });
+
+        content.Add("Grandfather_FinishTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "You play beautifully, so full of life. Playing with you eases the pain of these old scars.",
                 "Please come back again another day to play the matété with me, grandson."
             }
         });
@@ -226,7 +242,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "<UNUSED>"
+                "Go ahead, pick up the matete flute leaning against the rock there. \nI made it for you, and only you."
             }
         });
 

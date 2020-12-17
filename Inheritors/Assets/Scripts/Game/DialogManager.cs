@@ -38,6 +38,7 @@ public class DialogManager : MonoBehaviour
     InteractManager interactManager;
     UIManager uiManager;
     PlayerMovement playerMovement;
+    AudioManager audioManager;
 
     Dictionary<Character, string> charNames = new Dictionary<Character, string>();
 
@@ -143,10 +144,12 @@ public class DialogManager : MonoBehaviour
                 yield return null;
             }
             uiManager.dialogBox.ShowPrompt();
+            audioManager.PlayOneShot(uiManager.uiResources.dialogReadySound, .4f);
             dialogNext = false;
             yield return new WaitUntil(() => dialogNext);
             // yield return null; // Must put a frame between inputs
             uiManager.dialogBox.HidePrompt();
+            audioManager.PlayOneShot(uiManager.uiResources.dialogNextSound, .4f);
         }
 
         // STEP 3 : Finish, tear down dialog box, set state to specified.
@@ -178,6 +181,7 @@ public class DialogManager : MonoBehaviour
         inputManager = FindObjectOfType<InputManager>();
         interactManager = FindObjectOfType<InteractManager>();
         playerMovement = FindObjectOfType<PlayerMovement>();
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     void SubscribeToEvents()

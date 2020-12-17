@@ -14,6 +14,7 @@ public class InteractManager : MonoBehaviour
     UIManager uiManager;
     DialogManager dialogManager;
     PickupManager pickupManager;
+    AudioManager audioManager;
 
     AreaTrigger areaTrigger = null;
     string areaTag = null;
@@ -177,6 +178,9 @@ public class InteractManager : MonoBehaviour
         float elapsed = 0f;
         float time = 0.25f;
 
+        // TODO: pickup sound here
+        // audioManager.PlayOneShot(pickupSound, ??);
+
         while (elapsed < time)
         {
             float t = elapsed / time;
@@ -261,8 +265,10 @@ public class InteractManager : MonoBehaviour
         PickupTrigger heldItem = pickupManager.GetHeldItem();
         DropoffTrigger thisDropoff = dropoffTrigger;
         pickupManager.DropOff(thisDropoff.takeFullInventory);
-        player.GetComponent<PlayerMovement>().Halt();
-        LookAtTarget(thisDropoff.target);
+
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        playerMovement.Halt();
+        playerMovement.LookAtTarget(thisDropoff.target);
 
         Vector3 startPosition = heldItem.transform.position;
         Vector3 endPosition = thisDropoff.target.position;
@@ -328,8 +334,9 @@ public class InteractManager : MonoBehaviour
         if (dialogTrigger.lookAtMyTarget && dialogTrigger.myTarget != null)
         {
             // Halt and face the subject of the dialog!
-            player.GetComponent<PlayerMovement>().Halt();
-            LookAtTarget(dialogTrigger.myTarget);
+            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+            playerMovement.Halt();
+            playerMovement.LookAtTarget(dialogTrigger.myTarget);
         }
 
         // See if anyone is subscribed to OnDialog.
@@ -351,17 +358,6 @@ public class InteractManager : MonoBehaviour
         if (dialogTrigger.dialogPersists)
             StartCoroutine(WaitToResetTrigger());
     }
-
-    void LookAtTarget(Transform target)
-    {
-        Vector3 lookRotation = Quaternion.LookRotation(
-                target.position - player.transform.position,
-                Vector3.up).eulerAngles;
-        lookRotation.x = 0f;
-        lookRotation.z = 0f;
-        player.GetComponent<Rigidbody>().DORotate(lookRotation, .4f);
-    }
-
 
     IEnumerator WaitToResetTrigger()
     {
@@ -393,6 +389,7 @@ public class InteractManager : MonoBehaviour
         uiManager = FindObjectOfType<UIManager>();
         dialogManager = FindObjectOfType<DialogManager>();
         pickupManager = FindObjectOfType<PickupManager>();
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     void SubscribeToEvents()

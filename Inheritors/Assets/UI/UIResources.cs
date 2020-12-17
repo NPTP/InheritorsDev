@@ -32,6 +32,10 @@ public class UIResources : ScriptableObject
     public Sprite HERBS;
     public Sprite SEEDS;
 
+    [Header("Sounds")]
+    public AudioClip dialogReadySound;
+    public AudioClip dialogNextSound;
+
     public Sprite GetItemIcon(ItemType type)
     {
         switch (type)

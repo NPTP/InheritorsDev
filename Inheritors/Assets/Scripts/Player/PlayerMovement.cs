@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
     public bool m_isGrounded;
     private bool mobile = true;
 
+    private float rotateFacingTime = 0.4f;
+
     private List<Collider> m_collisions = new List<Collider>();
 
     private void Awake()
@@ -53,6 +56,16 @@ public class PlayerMovement : MonoBehaviour
         sample.position = transform.position;
         sample.rotation = transform.rotation;
         return sample;
+    }
+
+    public void LookAtTarget(Transform target)
+    {
+        Vector3 lookRotation = Quaternion.LookRotation(
+                target.position - transform.position,
+                Vector3.up).eulerAngles;
+        lookRotation.x = 0f;
+        lookRotation.z = 0f;
+        m_rigidBody.DORotate(lookRotation, rotateFacingTime);
     }
 
     private void FixedUpdate()

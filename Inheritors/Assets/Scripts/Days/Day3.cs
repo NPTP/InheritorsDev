@@ -26,6 +26,8 @@ public class Day3 : MonoBehaviour
     public Transform motherQuadrant;
     public Transform grandfatherQuadrant;
     public Transform grandmotherQuadrant;
+    [Space]
+    public AudioClip[] mateteSounds;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -275,13 +277,34 @@ public class Day3 : MonoBehaviour
 
     IEnumerator PickupFlute()
     {
+        stateManager.SetState(State.Inert);
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
-        yield return new WaitForSeconds(1f);
+        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
+        yield return new WaitForSeconds(.5f);
+
+        float delay = 0.5f;
+
+        dialogManager.NewDialog(dialogContent.Get("Grandfather_StartTask"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitForSeconds(delay);
+
+        audioManager.Play(mateteSounds[0]);
+        yield return new WaitForSeconds(mateteSounds[0].length);
+        yield return new WaitForSeconds(delay);
+
+        dialogManager.NewDialog(dialogContent.Get("Grandfather_ContinueTask"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitForSeconds(delay);
+
+        audioManager.Play(mateteSounds[1]);
+        yield return new WaitForSeconds(mateteSounds[1].length);
+        yield return new WaitForSeconds(delay);
 
         recordManager.StopRecording();
-        dialogManager.NewDialog(dialogContent.Get("Grandfather_StartTask"));
+        dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        stateManager.SetState(State.Normal);
         pickupManager.LoseItems();
         taskManager.CompleteActiveTask();
     }
