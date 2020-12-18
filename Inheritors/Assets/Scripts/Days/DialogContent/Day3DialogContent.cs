@@ -200,8 +200,8 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "Ahh, my grandson. You have grown.",
                 "I am not just your grandfather. I am also the last shaman of the Akuntsu, and the chief of our tribe.",
-                "This flute is the <color=blue>matété</color>. We Akuntsu claim our matété once in youth, then never part with it until we die.",
-                "I have made a <color=blue>matété</color> for you from fresh wood. Retrieve it, and we will play together."
+                "This flute is the <color=blue>matété</color>. We Akuntsu have played this instrument for as long as I can remember.",
+                "I have made a <color=blue>matété</color> for you. Retrieve it, and we will play together."
             }
         });
 
@@ -210,6 +210,14 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandfather,
             lines = new string[] {
                 "Oh, my grandson. So nice to see you helping our tribe. Please return when you are finished your current work."
+            }
+        });
+
+        content.Add("Grandfather_Active", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Go ahead, pick up the matete flute leaning against the rock there. \nI made it for you, and only you."
             }
         });
 
@@ -233,16 +241,9 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "You play beautifully, so full of life. Playing with you eases the pain of these old scars.",
-                "Please come back again another day to play the matété with me, grandson."
-            }
-        });
-
-        content.Add("Grandfather_Active", new Dialog
-        {
-            character = Character.Grandfather,
-            lines = new string[] {
-                "Go ahead, pick up the matete flute leaning against the rock there. \nI made it for you, and only you."
+                "You are a fast learner. It is a joy to be able to teach you, as my old scars prevent me from playing as often as I used to.",
+                "We Akuntsu each have our own matété, and we keep it all our lives. Treat it well!",
+                "Please come back again another day to play with me, grandson."
             }
         });
 
@@ -250,8 +251,8 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-              "You play beautifully, so full of life. Playing with you eases the pain of the old scars I carry.",
-                "Please come back again another day to play the matété with me, grandson."
+                "We Akuntsu each have our own matété, and we keep it all our lives. Treat it well!",
+                "Please come back again another day to play with me, grandson."
             }
         });
 

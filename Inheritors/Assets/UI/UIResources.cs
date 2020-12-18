@@ -33,8 +33,7 @@ public class UIResources : ScriptableObject
     public Sprite SEEDS;
 
     [Header("Sounds")]
-    public AudioClip dialogReadySound;
-    public AudioClip dialogNextSound;
+    public AudioClip sound_taskUpdate;
 
     public Sprite GetItemIcon(ItemType type)
     {

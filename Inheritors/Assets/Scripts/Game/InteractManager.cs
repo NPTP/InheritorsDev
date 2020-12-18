@@ -16,6 +16,12 @@ public class InteractManager : MonoBehaviour
     PickupManager pickupManager;
     AudioManager audioManager;
 
+    [SerializeField] AudioClip pickupSound;
+    [SerializeField] float pickupSoundVolumeScale = 0.2f;
+    // TODO
+    // AudioClip dropoffSound;
+    // AudioClip dialogSound;
+
     AreaTrigger areaTrigger = null;
     string areaTag = null;
     bool insideArea = false;
@@ -178,8 +184,7 @@ public class InteractManager : MonoBehaviour
         float elapsed = 0f;
         float time = 0.25f;
 
-        // TODO: pickup sound here
-        // audioManager.PlayOneShot(pickupSound, ??);
+        audioManager.PlayOneShot(pickupSound, pickupSoundVolumeScale);
 
         while (elapsed < time)
         {

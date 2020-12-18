@@ -4,9 +4,14 @@ using DG.Tweening;
 
 public class Water_DropoffTarget : MonoBehaviour, DropoffTarget
 {
+    AudioManager audioManager;
+
     Renderer waterRenderer;
     GameObject jug;
     ParticleSystem ps;
+
+    [SerializeField] AudioClip pourSound;
+    float volumeScale = 0.5f;
 
     bool doneReaction = false;
     public bool DoneReaction()
@@ -16,6 +21,8 @@ public class Water_DropoffTarget : MonoBehaviour, DropoffTarget
 
     void Start()
     {
+        audioManager = FindObjectOfType<AudioManager>();
+
         waterRenderer = transform.GetChild(0).gameObject.GetComponent<Renderer>();
         waterRenderer.enabled = false;
         jug = transform.GetChild(1).gameObject;
@@ -38,6 +45,7 @@ public class Water_DropoffTarget : MonoBehaviour, DropoffTarget
         yield return t.WaitForCompletion();
 
         ps.Play();
+        audioManager.PlayOneShot(pourSound, volumeScale);
         t = waterRenderer.material.DOColor(Helper.ChangedAlpha(waterRenderer.material.color, 1f), 1f);
         yield return t.WaitForCompletion();
         ps.Stop();

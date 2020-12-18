@@ -92,6 +92,17 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Mother_FinishTask", new Dialog
+        {
+            character = Character.Mother,
+            lines = new string[] {
+                "Thank you for the water, son.",
+                "What the strange man said yesterday is mostly true. But there is nothing wrong it.",
+                "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
+                "Since our union, I no longer understand the drive to dominance over the other. \nIt never helped either of our people."
+            }
+        });
+
         content.Add("Mother_Completed", new Dialog
         {
             character = Character.Mother,
@@ -258,8 +269,8 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
               "Ohh... I am so grateful for you. Youngest one, I have an illness I have never encountered before.",
               "Men from outside the forest came in the night and brought it with them.",
-              "I have tried all the herbs and medicines we have, but for one which grows at the top of the hill.",
-              "I am too old and tired to retrieve it myself. Please, go atop the hill, and bring the <color=blue>herbs</color> to me.",
+              "I have tried all the herbs and medicines we have, but for one which grows up the hill.",
+              "I am too old and tired to retrieve it myself. Please, go up the hill, and bring the <color=blue>herbs</color> to me.",
               "Then I will answer what you have been asking - what the Man of the Hole told you about."
             }
         });
@@ -276,7 +287,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "The <color=blue>herbs</color> I need only grow at the very top of the hill, where we performed the festival of senses.",
+              "The <color=blue>herbs</color> I need only grow on the hill, on the path to where we performed the festival of senses.",
               "When you have them, drop them in the bucket there."
             }
         });

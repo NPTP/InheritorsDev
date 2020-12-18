@@ -71,7 +71,7 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void SaveGame(int dayNumber)
     {
-        if (!enableSavingLoading) return;
+        if (!enableSavingLoading && Application.isEditor) return;
 
         save = new Save();
         print("Saving day: " + dayNumber);
@@ -102,7 +102,7 @@ public class SaveManager : MonoBehaviour
 
     public void LoadGame(string parameters)
     {
-        if (!enableSavingLoading) return;
+        if (!enableSavingLoading && Application.isEditor) return;
 
         if (File.Exists(filePath))
         {

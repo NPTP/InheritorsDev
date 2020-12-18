@@ -31,7 +31,6 @@ public class Day10 : MonoBehaviour
     public GameObject hilltopBlockage;
     public GameObject hilltopUnblocked;
     public GameObject endingClosedBorders;
-    public GameObject endingOpenBorders;
 
     TaskType lastRemainingTask;
     /* -------------------------------------- */
@@ -70,7 +69,6 @@ public class Day10 : MonoBehaviour
         ManofholeGrandfather.SetActive(false);
 
         hilltopUnblocked.SetActive(false);
-        endingOpenBorders.SetActive(false);
 
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
@@ -325,7 +323,6 @@ public class Day10 : MonoBehaviour
         taskManager.AddAndSetActive(TaskType.DayEnd, "Leave the forest.", false);
 
         endingClosedBorders.SetActive(false);
-        endingOpenBorders.SetActive(true);
         triggers["Walk_End"].Enable();
     }
 

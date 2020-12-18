@@ -246,10 +246,12 @@ public class Day8 : MonoBehaviour
     {
         stateManager.SetState(State.Inert);
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
+        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
         yield return new WaitForSeconds(1f);
 
         audioManager.Play(mateteDuet);
         yield return new WaitForSeconds(mateteDuet.length);
+        yield return new WaitForSeconds(1f);
 
         recordManager.StopRecording();
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));

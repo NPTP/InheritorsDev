@@ -158,7 +158,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Manofhole,
             lines = new string[] {
-                "I not do this... \n<i>they</i> do this... they, from outside.",
+                "I not do this... \n<i>they</i> do this... \nthey, from outside.",
                 "Your people... few. \nMine... gone. \nMe... last one.",
                 "Akuntsu... talk 'hope.' \nNot real. \nAkuntsu not learn.",
                 "Instead... be fear. Not safe. \nAlways they... hunting us, the outside. \nWant... our forest.",
@@ -166,7 +166,8 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
                 "Ask mother... why Kanoe not enemy Akuntsu, now.",
                 "Ask elder... what happen at crush maloca.",
                 "Ask father, grandfather... how get scars on back. What running from?",
-                "My home, burned. Again... I run. \nFind new place. \nWhile can."
+                "My home, burned. Again... I run. \nFind new place. \nWhile can.",
+                "Go tell sister. \nFruit is gone. \nNot grow back."
             }
         });
 
@@ -177,7 +178,8 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
                 "Ask mother... why Kanoe close to Akuntsu now.",
                 "Ask elder... what happen at crush maloca.",
                 "Ask father, grandfather... how get scars on back. What running from?",
-                "My home, burned. Again... I run. Find new place. While can."
+                "My home, burned. Again... I run. Find new place. While can.",
+                "Go tell sister. \nFruit is gone. \nNot grow back."
             }
         });
 
@@ -241,7 +243,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
                 "Ahh, my sweet grandson. I see it in you, in your aura. You have participated in the <color=red>festival</color>.",
                 "Now now, don't try to hide it. I will not tell your mother. But now you are seeing the ghosts of the past.",
                 "Be not alarmed. To see the past clearly is important. But still you miss the full picture.",
-                "Play the matété again with me, grandson, and soothe the ghosts in anguish."
+                "Play the matété again with me, grandson, and soothe the ghosts of the past."
             }
         });
 
@@ -253,21 +255,37 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             }
         });
 
-        content.Add("Grandfather_FinishTask", new Dialog
-        {
-            character = Character.Grandfather,
-            lines = new string[] {
-                "No history, no scar is too painful to be unsoothed by the magic duet of our matétés.",
-                "This is why we Akuntsu never let it go while we still hold breath.",
-                "Farewell for now, grandson!"
-            }
-        });
-
         content.Add("Grandfather_Active", new Dialog
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "<UNUSED>"
+                "Please, pick up your matété, and I will teach you another traditional melody."
+            }
+        });
+
+        content.Add("Grandfather_StartTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Just as before, grandson. Listen carefully, then you will try."
+            }
+        });
+
+        content.Add("Grandfather_ContinueTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "Feel the forest through the wood of the matété. Let the ancestors speak through you."
+            }
+        });
+
+        content.Add("Grandfather_FinishTask", new Dialog
+        {
+            character = Character.Grandfather,
+            lines = new string[] {
+                "You play beautifully, so full of life. It is a gift that soothes old pains and scars.",
+                "Soon you will be ready for us to play together, in a full duet that shall rouse the ancestors.",
+                "Farewell for now, grandson!"
             }
         });
 
@@ -275,11 +293,10 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "No history, no scar is too painful to be unsoothed by the magic duet of our matétés.",
-                "This is why we Akuntsu never let it go while we still hold breath."
+                "Soon you will be ready for us to play together, in a full duet that shall rouse the ancestors.",
+                "Farewell for now, grandson!"
             }
         });
-
 
         // ████████████████████████████████████████████████████████████████████████
         // ███ GRANDMOTHER

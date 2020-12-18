@@ -42,6 +42,9 @@ public class DialogManager : MonoBehaviour
 
     Dictionary<Character, string> charNames = new Dictionary<Character, string>();
 
+    [SerializeField] AudioClip dialogNextSound;
+    [SerializeField] float dialogNextVolumeScale = .5f;
+
     bool dialogNext = false;
     bool dialogFinished = true;
     bool dialogAnimationFinished = false;
@@ -144,12 +147,11 @@ public class DialogManager : MonoBehaviour
                 yield return null;
             }
             uiManager.dialogBox.ShowPrompt();
-            audioManager.PlayOneShot(uiManager.uiResources.dialogReadySound, .4f);
             dialogNext = false;
             yield return new WaitUntil(() => dialogNext);
             // yield return null; // Must put a frame between inputs
             uiManager.dialogBox.HidePrompt();
-            audioManager.PlayOneShot(uiManager.uiResources.dialogNextSound, .4f);
+            audioManager.PlayOneShot(dialogNextSound, dialogNextVolumeScale);
         }
 
         // STEP 3 : Finish, tear down dialog box, set state to specified.

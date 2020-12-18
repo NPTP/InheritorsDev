@@ -76,7 +76,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "We need more water. But we are running out of meat. And our harvest is ruined.",
-                "We cannot live on water alone. Something must be done."
+                "We cannot live on water alone. \nSomething must be done."
             }
         });
 
@@ -197,7 +197,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
                 "But know this, grandson. We have been through worse, and we survived.",
                 "Many Akuntsu gave up hope too early - \nand we miss them every day. \nBut our family never gave it up.",
                 "I am the shaman, I am your chief, I will protect this land from outsiders. \nAnd <i>you</i> will inherit it.",
-                "Come, take your matété, let us call the ancestors, and clear all bad blood from this place."
+                "Come, take your matété, let us call the ancestors with a rousing duet, and clear all bad blood from this place."
             }
         });
 
@@ -221,7 +221,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "The ancestors have heard us, grandson. And they watch over this land still.",
+                "The ancestors have heard our duet, grandson. And they watch over this land still.",
                 "Remember that I am your chief. \nAs long as you and I are healthy, we will <i>never</i> leave this land.",
                 "This is our home, it has always been, and always will be!"
             }

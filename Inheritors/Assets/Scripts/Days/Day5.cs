@@ -26,8 +26,10 @@ public class Day5 : MonoBehaviour
     public Material redheadMaterial;
     public GameObject manofholeNPC;
     public GameObject papayaTreeFire;
-    bool spokeToManofhole = false;
+    [Space]
+    public AudioClip[] mateteSounds;
 
+    bool spokeToManofhole = false;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -265,12 +267,32 @@ public class Day5 : MonoBehaviour
     IEnumerator PickupFlute()
     {
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
-        yield return new WaitForSeconds(1f);
+        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
+        yield return new WaitForSeconds(.5f);
+
+        float delay = 1f;
+
+        dialogManager.NewDialog(dialogContent.Get("Grandfather_StartTask"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitForSeconds(delay);
+
+        audioManager.Play(mateteSounds[0]);
+        yield return new WaitForSeconds(mateteSounds[0].length);
+        yield return new WaitForSeconds(delay);
+
+        dialogManager.NewDialog(dialogContent.Get("Grandfather_ContinueTask"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitForSeconds(delay);
+
+        audioManager.Play(mateteSounds[1]);
+        yield return new WaitForSeconds(mateteSounds[1].length);
+        yield return new WaitForSeconds(delay);
 
         recordManager.StopRecording();
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        stateManager.SetState(State.Normal);
         pickupManager.LoseItems();
         taskManager.CompleteActiveTask();
     }

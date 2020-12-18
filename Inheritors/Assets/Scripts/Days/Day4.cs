@@ -72,8 +72,7 @@ public class Day4 : MonoBehaviour
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         dialogManager.NewDialog(dialogContent.Get("Day4Opening_2"));
-
-        stateManager.SetState(State.Normal);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
     }
 
     // ████████████████████████████████████████████████████████████████████████

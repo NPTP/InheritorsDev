@@ -177,6 +177,9 @@ public class Day7 : MonoBehaviour
 
 
             case Character.Grandfather:
+                if (activeTask.type != TaskType.Null)
+                    return;
+
                 if (taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
                     StartCoroutine(GrandfatherStart());
                 break;
@@ -185,7 +188,6 @@ public class Day7 : MonoBehaviour
             case Character.Grandmother:
                 if (activeTask.type != TaskType.Null)
                     return;
-
 
                 if (taskList[TaskType.Grandmother].status == TaskStatus.Waiting)
                     StartCoroutine(GrandmotherStart());

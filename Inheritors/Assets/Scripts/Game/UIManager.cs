@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     StateManager stateManager;
     InteractManager interactManager;
     PickupManager pickupManager;
+    AudioManager audioManager;
 
     GameObject player;
     Vector3 playerHeight;
@@ -308,6 +309,7 @@ public class UIManager : MonoBehaviour
         stateManager = FindObjectOfType<StateManager>();
         interactManager = FindObjectOfType<InteractManager>();
         pickupManager = FindObjectOfType<PickupManager>();
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     void InitializeDialogBox()

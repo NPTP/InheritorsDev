@@ -24,8 +24,15 @@ public class Day0 : MonoBehaviour
     public Transform firewoodTransform;
     public Transform malocaMotherTransform;
 
+    [Space]
+    [Header("Audio sources")]
     public AudioSource fireAudio2D;
     public GameObject firepitAudio;
+
+    [Space]
+    [Header("Audio clips")]
+    public float tutSoundVolumeScale = .5f;
+    public AudioClip[] tutorialSounds;
 
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -272,10 +279,13 @@ public class Day0 : MonoBehaviour
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         triggers["Pickup_Wood1"].Enable();
+        audioManager.PlayOneShot(tutorialSounds[0], tutSoundVolumeScale);
         yield return new WaitForSeconds(1f);
         triggers["Pickup_Wood2"].Enable();
+        audioManager.PlayOneShot(tutorialSounds[1], tutSoundVolumeScale);
         yield return new WaitForSeconds(1f);
         triggers["Pickup_Wood3"].Enable();
+        audioManager.PlayOneShot(tutorialSounds[2], tutSoundVolumeScale);
         yield return new WaitForSeconds(1f);
 
         cameraManager.SwitchToLastCam();
@@ -302,6 +312,7 @@ public class Day0 : MonoBehaviour
         yield return new WaitForSeconds(.25f);
         taskManager.SetActiveTask(TaskType.IntroMaloca, false);
         triggers["Walk_End"].Enable();
+        audioManager.PlayOneShot(tutorialSounds[3], tutSoundVolumeScale);
 
         stateManager.SetState(State.Normal);
     }

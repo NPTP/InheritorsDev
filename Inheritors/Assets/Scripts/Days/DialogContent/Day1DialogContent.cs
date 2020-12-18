@@ -85,7 +85,8 @@ public class Day1DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Just pour the water into the big grey pot."
+                "The source where you will get the water is to the south-west of here.",
+                "Fill up there, and bring it to the big grey pot.",
             }
         });
 

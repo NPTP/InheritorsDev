@@ -309,6 +309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e14b141381977c4c8ac4a1986360774, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogNextVolumeScale: 0.3
+  dialogNextSound: {fileID: 8300000, guid: 6985b9eebc0030d4988d3e7a186e61bb, type: 3}
 --- !u!1 &3872553747925638481
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,6 +556,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b215b752fe4e749b06b2246df72ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickupSound: {fileID: 8300000, guid: e369bcde936235847b7f88713451f5b0, type: 3}
+  pickupSoundVolumeScale: 0.2
 --- !u!1 &3872553748631699576
 GameObject:
   m_ObjectHideFlags: 0

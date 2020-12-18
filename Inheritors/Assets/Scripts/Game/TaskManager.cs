@@ -77,6 +77,7 @@ public class TaskManager : MonoBehaviour
 {
     UIManager uiManager;
     RecordManager recordManager;
+    AudioManager audioManager;
     Task activeTask;
     bool allTasksCompleted = false;
     Dictionary<TaskType, AreaTrigger> areas = new Dictionary<TaskType, AreaTrigger>();
@@ -94,6 +95,7 @@ public class TaskManager : MonoBehaviour
     {
         uiManager = FindObjectOfType<UIManager>();
         recordManager = FindObjectOfType<RecordManager>();
+        audioManager = FindObjectOfType<AudioManager>();
         taskList = new Dictionary<TaskType, Task>();
         activeTask = new Task();
         InitializeTaskList();
@@ -142,6 +144,7 @@ public class TaskManager : MonoBehaviour
         else
             thisTask.area = null;
 
+        audioManager.PlayOneShot(uiManager.uiResources.sound_taskUpdate, 0.25f);
         UpdateTasks();
     }
 

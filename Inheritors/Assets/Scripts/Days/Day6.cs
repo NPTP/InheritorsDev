@@ -194,7 +194,7 @@ public class Day6 : MonoBehaviour
         switch (tag)
         {
             case "Dropoff_Water":
-                DropoffWater();
+                StartCoroutine(DropoffWater());
                 break;
 
             case "Dropoff_Meat":
@@ -357,8 +357,12 @@ public class Day6 : MonoBehaviour
         triggers["Dropoff_Water"].Enable();
     }
 
-    void DropoffWater()
+    IEnumerator DropoffWater()
     {
+        recordManager.StopRecording();
+        dialogManager.NewDialog(dialogContent.Get("Mother_FinishTask"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
     }

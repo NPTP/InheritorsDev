@@ -67,7 +67,6 @@ public class AreaTrigger : MonoBehaviour
         {
             if (trigger != null && trigger.GetType() != typeof(DialogTrigger))
             {
-                print(trigger);
                 trigger.Disable();
             }
         }

@@ -26,6 +26,7 @@ public class Day9 : MonoBehaviour
     public Material redheadMaterial;
     public Animation toucanContainerAnimation;
     public Animation toucanAnimation;
+    public AudioClip toucanFlySound;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -237,10 +238,12 @@ public class Day9 : MonoBehaviour
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         taskManager.CompleteActiveTask();
         toucanContainerAnimation.Play();
-        toucanAnimation.CrossFade("toucan_takeoff");
+        toucanAnimation.CrossFade("toucan_takeoff_Day9");
+        float toucanFlyVolumeScale = 0.5f;
+        audioManager.PlayOneShot(toucanFlySound, toucanFlyVolumeScale);
         toucanAnimation.PlayQueued("toucan_fly");
     }
 

@@ -428,10 +428,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 291317397037020239}
+  - component: {fileID: 8872514361524459654}
   - component: {fileID: 349868965049711099}
   - component: {fileID: 432219146980147551}
   - component: {fileID: 380836570418913563}
-  - component: {fileID: 8872514361524459654}
   m_Layer: 18
   m_Name: Ghost
   m_TagString: Untagged
@@ -460,6 +460,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8872514361524459654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296293323412328651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2877accfaf3a8645a6a264969a5b38e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 380836570418913563}
+  mainMaterial: {fileID: 2100000, guid: b97201d0a1d033645840b6eb872da9ba, type: 2}
+  dissolveMaterial: {fileID: 2100000, guid: cd9ca63404058484092568918c8ecbf9, type: 2}
+  enterParticles: {fileID: 4698527683829238675}
+  activeParticles: {fileID: 6284545536092158641}
+  exitParticles: {fileID: 4803714889490041954}
+  poofParticles: {fileID: 8795368340058494163}
+  thisLight: {fileID: 5001391062843885227}
+  audioSource: {fileID: 1261746700762201542}
+  enterSound: {fileID: 8300000, guid: 85ce3a8ccf2a7fe4ea506360fa260734, type: 3}
+  loopSound: {fileID: 8300000, guid: 59edce91fd2600541bb042c42fcf03c5, type: 3}
+  exitSounds:
+  - {fileID: 8300000, guid: 0a2bd211b6d3e37479854fa1d8c1e8fe, type: 3}
+  - {fileID: 8300000, guid: 927d8855c0ecffb44b8eea86855561ac, type: 3}
+  - {fileID: 8300000, guid: fedaf16d9f75ae347816b5127ce8c3b8, type: 3}
+  - {fileID: 8300000, guid: ef2c369d5b58dd443a96e7d7af7a7900, type: 3}
 --- !u!54 &349868965049711099
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -509,27 +537,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8872514361524459654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 296293323412328651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2877accfaf3a8645a6a264969a5b38e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 380836570418913563}
-  mainMaterial: {fileID: 2100000, guid: b97201d0a1d033645840b6eb872da9ba, type: 2}
-  dissolveMaterial: {fileID: 2100000, guid: cd9ca63404058484092568918c8ecbf9, type: 2}
-  enterParticles: {fileID: 4698527683829238675}
-  activeParticles: {fileID: 6284545536092158641}
-  exitParticles: {fileID: 4803714889490041954}
-  poofParticles: {fileID: 8795368340058494163}
-  thisLight: {fileID: 5001391062843885227}
-  audioSource: {fileID: 1261746700762201542}
 --- !u!1 &296311499592475459
 GameObject:
   m_ObjectHideFlags: 0

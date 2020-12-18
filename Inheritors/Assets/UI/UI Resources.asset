@@ -32,5 +32,4 @@ MonoBehaviour:
   URUKU: {fileID: 21300000, guid: 5651ff63108406f44a9a5f176bc1749d, type: 3}
   HERBS: {fileID: 21300000, guid: c55b41114c4c3de49ab8dfe54f5e6462, type: 3}
   SEEDS: {fileID: 21300000, guid: 645ab14c6999ecc4bb9cca2e4868de69, type: 3}
-  dialogReadySound: {fileID: 8300000, guid: 6985b9eebc0030d4988d3e7a186e61bb, type: 3}
-  dialogNextSound: {fileID: 8300000, guid: 28ff48648f8372e47904c58fcaac743f, type: 3}
+  sound_taskUpdate: {fileID: 8300000, guid: 97a894db6f482f143bb927cf5bf0dc49, type: 3}

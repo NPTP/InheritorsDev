@@ -282,7 +282,7 @@ public class Day3 : MonoBehaviour
         FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
         yield return new WaitForSeconds(.5f);
 
-        float delay = 0.5f;
+        float delay = 1f;
 
         dialogManager.NewDialog(dialogContent.Get("Grandfather_StartTask"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);

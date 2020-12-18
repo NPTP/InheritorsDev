@@ -21,6 +21,11 @@ public class Ghost : MonoBehaviour
     [Header("Audio")]
     [SerializeField] AudioSource audioSource;
 
+    float volumeScale = 1f;
+    [SerializeField] AudioClip enterSound;
+    [SerializeField] AudioClip loopSound;
+    [SerializeField] AudioClip[] exitSounds;
+
     float fadeInTime = 3f;
     float fadeOutTime = 4f;
 
@@ -103,6 +108,7 @@ public class Ghost : MonoBehaviour
         audioSource.volume = 0;
 
         enterParticles.Play();
+        audioSource.PlayOneShot(enterSound, volumeScale);
 
         rend.enabled = true;
         rend.materials = new Material[2] { dissolveMaterial, dissolveMaterial };
@@ -140,6 +146,7 @@ public class Ghost : MonoBehaviour
         poofParticles.Play();
         exitParticles.Play();
         PoofLight();
+        audioSource.PlayOneShot(exitSounds[Random.Range(0, exitSounds.Length)], volumeScale);
         animator.speed = 0;
 
         yield return new WaitForSeconds(0.2f);
