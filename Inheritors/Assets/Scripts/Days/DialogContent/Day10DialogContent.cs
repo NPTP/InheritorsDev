@@ -165,7 +165,7 @@ public class Day10DialogContent : MonoBehaviour, DialogContent
                 "Maybe we can make a home... somewhere else.",
                 "Maybe there is space for us somewhere new, a place we will belong again...",
                 "A place for hope.",
-                "Say your goodbyes to the Omere, then come with me out of the forest."
+                "Take your last look at home. \nSay goodbye. \nThen come with me."
             }
         });
 

@@ -123,11 +123,11 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             }
         });
 
-        content.Add("father_Active", new Dialog
+        content.Add("Father_Active", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
-                "<UNUSED>"
+                "Take that tapir home, son."
             }
         });
 
@@ -270,7 +270,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
               "I am the eldest of our tribe, older even than your grandfather. The time has come for me to pass on what I know.",
               "As the youngest, you are the receiver of this wisdom.",
               "I need you to find for me <color=blue>three beans of the yopo tree</color>.",
-              "They are colored red. You will find some in the meadow north of grandfather's maloca, and some to the south of here.",
+              "They are colored red. Check the meadow north of grandfather's maloca. Check just south of here. And check the other side of the bridge.",
               "I will tell you soon what they are for. Please, bring them back to me now."
             }
         });
@@ -288,7 +288,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandmother,
             lines = new string[] {
               "I need <color=blue>three beans of the yopo tree</color>.",
-              "Look north-east of Grandfather's maloca, south-west of my own, and just on the other side of the river bridge."
+              "Check the meadow north of grandfather's maloca. Check just south of here. And check the other side of the bridge."
             }
         });
 

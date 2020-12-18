@@ -171,11 +171,11 @@ public class UI_DialogBox
     void ApplyNameColors()
     {
         nameColors[Character.Null] = Color.white;
-        nameColors[Character.Mother] = Color.white;
-        nameColors[Character.Father] = Color.blue;
-        nameColors[Character.Sister] = Color.yellow;
-        nameColors[Character.Grandfather] = Color.green;
-        nameColors[Character.Grandmother] = Color.gray;
+        nameColors[Character.Mother] = Helper.RGBToColor(117, 36, 36);  // Maroon
+        nameColors[Character.Father] = Helper.RGBToColor(0, 7, 135);    // Dark blue
+        nameColors[Character.Sister] = Helper.RGBToColor(252, 186, 3);  // Orange
+        nameColors[Character.Grandfather] = Helper.RGBToColor(50, 168, 82); // Mild green
+        nameColors[Character.Grandmother] = Helper.RGBToColor(110, 0, 95);  // Dark purple
         nameColors[Character.Narrator] = Color.gray;
         nameColors[Character.Manofhole] = Color.red;
     }

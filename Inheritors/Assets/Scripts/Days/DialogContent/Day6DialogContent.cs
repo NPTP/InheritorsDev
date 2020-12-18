@@ -269,8 +269,8 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
               "Ohh... I am so grateful for you. Youngest one, I have an illness I have never encountered before.",
               "Men from outside the forest came in the night and brought it with them.",
-              "I have tried all the herbs and medicines we have, but for one which grows up the hill.",
-              "I am too old and tired to retrieve it myself. Please, go up the hill, and bring the <color=blue>herbs</color> to me.",
+              "I have tried all the herbs and medicines we have, but for one which grows on the side of the hill.",
+              "I am too old and tired to retrieve it myself. Please, go up the hill path, and you will see the <color=blue>herbs</color>.",
               "Then I will answer what you have been asking - what the Man of the Hole told you about."
             }
         });

@@ -43,8 +43,8 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "You already know where to find your father, and the firewood.",
-                "But this will be your first time helping your sister - ask her what she needs."
+                "Your father is fishing today - he will be beside the river, waiting for you to come help.",
+                "And this will be your first time helping your sister - ask her what she needs."
             }
         });
 
@@ -143,8 +143,8 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             character = Character.Sister,
             lines = new string[] {
                 "There is a tree on the other side of the river that is hundreds of years old. I wonder how deep are its roots...",
-                "But here, I have been growing fruit! \nWe need to pick <color=blue>six papayas</color>, one for each of the family.",
-                "Gather from my garden to start. If you need more, check the <color=green>south entrance</color> to this forest.",
+                "But here, I have been growing fruit! \nWe need to pick <color=blue>3 papayas</color>.",
+                "I saw them growing on the trees south of mother's maloca.",
                 "Come back when you have <color=blue>six</color> and drop them in the bucket."
             }
         });
@@ -161,8 +161,8 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Sister,
             lines = new string[] {
-                "Have you found all the papayas yet? We need <color=blue>six</color>!",
-                "There are 3 in my garden, and 3 near the <color=green>south entrance</color> to this forest."
+                "Have you found all the papayas yet? We need <color=blue>3</color>!",
+                "You should be able to find them to the south of mother's maloca."
             }
         });
 

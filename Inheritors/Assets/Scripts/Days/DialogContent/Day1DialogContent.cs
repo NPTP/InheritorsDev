@@ -67,7 +67,7 @@ public class Day1DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Begin the work in any order you like. Once you have begun a task, finish it before pursuing another.",
-                "You already have everything you need for this work.",
+                "While are you are pursuing the task, you can always talk to the person who gave it to you for some help!",
                 "This is a great help to the family, son. I am proud of you!"
             }
         });

@@ -13,6 +13,14 @@ public class Helper : ScriptableObject
         return c;
     }
 
+    /// <summary>
+    /// Returns a new RGB Color object from values in the 0-255 range (optional alpha in 0.0-1.0 range).
+    /// </summary>
+    public static Color RGBToColor(float r, float g, float b, float a = 1.0f)
+    {
+        return new Color(r / 255f, g / 255f, b / 255f, a);
+    }
+
     /// <summary> 
     /// Takes an input in the interval [0, 1] and returns the smooth-stepped output.
     /// </summary>

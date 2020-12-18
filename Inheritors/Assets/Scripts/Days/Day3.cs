@@ -316,7 +316,7 @@ public class Day3 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Sister);
-        taskManager.ChangeTask(TaskType.Sister, "Gather 3 ears of corn.");
+        taskManager.ChangeTask(TaskType.Sister, "Gather 4 ears of corn.");
         EnableChildTriggers("CornPickups");
     }
 
@@ -324,7 +324,7 @@ public class Day3 : MonoBehaviour
     {
         if (itemQuantity > 0 && itemQuantity < 3)
         {
-            taskManager.ChangeTask(TaskType.Sister, "Gather " + (3 - itemQuantity).ToString() + " more ears of corn.");
+            taskManager.ChangeTask(TaskType.Sister, "Gather " + (4 - itemQuantity).ToString() + " more ears of corn.");
         }
         else if (itemQuantity == 3)
         {

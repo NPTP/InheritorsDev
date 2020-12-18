@@ -403,7 +403,7 @@ public class Day7 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Grandmother);
-        taskManager.ChangeTask(TaskType.Grandmother, "Find herbs near the river.");
+        taskManager.ChangeTask(TaskType.Grandmother, "Find herbs near crushed maloca.");
         triggers["Pickup_Herbs"].Enable();
     }
 

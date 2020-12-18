@@ -96,7 +96,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "The southern entrance to the forest has changed... did some trees burn down there?"
+                "The south of our forest has changed... did some trees burn down?"
             }
         });
 
@@ -190,7 +190,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             character = Character.Sister,
             lines = new string[] {
                 "Have you seen the garden? It is growing more full every day. We will have so much for our family.",
-                "Please find <color=blue>three papayas</color> for me at the southern entrance to this forest, brother."
+                "Please find <color=blue>3 papayas</color> for me at the trees south of mother's maloca."
             }
         });
 
@@ -206,7 +206,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Sister,
             lines = new string[] {
-                "Soon the garden will have plentiful manioc and corn. But I need <color=blue>three papayas</color>, which only grow in the wild, south of the garden."
+                "Soon the garden will have plentiful manioc and corn. But first we need <color=blue>3 papayas</color>, which only grow south of mother's maloca."
             }
         });
 
@@ -241,9 +241,9 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandfather,
             lines = new string[] {
                 "Ahh, my sweet grandson. I see it in you, in your aura. You have participated in the <color=red>festival</color>.",
-                "Now now, don't try to hide it. I will not tell your mother. But now you are seeing the ghosts of the past.",
+                "Now now, don't try to hide it. I will not tell your mother. But now you are seeing the ghosts of your past.",
                 "Be not alarmed. To see the past clearly is important. But still you miss the full picture.",
-                "Play the matété again with me, grandson, and soothe the ghosts of the past."
+                "Play the matété again with me, grandson, and serenade the spirits."
             }
         });
 
@@ -307,7 +307,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "How are you feeling, youngest one? You see more clearly now, do you not?",
+              "How are you feeling, youngest one? The yopo should be fading... but you see more clearly now, do you not?",
               "It is one thing to see one's roots, another to carry them out. Today you will grind uruku seeds, like our ancestors.",
               "These seeds are what gives my hair its bright red color.",
               "I have some ready in that bag - go on, make the dye from them."

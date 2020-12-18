@@ -73,7 +73,7 @@ public class Day2 : MonoBehaviour
         // Show the tasks, only cam send on the new one.
         taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "Hunt with father.");
+        taskManager.AddTask(TaskType.Father, "Fish with father.");
         yield return new WaitForSeconds(1f);
         cameraManager.SendCamTo(sisterQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);

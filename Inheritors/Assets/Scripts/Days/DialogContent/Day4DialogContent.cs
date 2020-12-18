@@ -35,7 +35,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
                 "Grandmother is waiting for me at the top of the hill, ready to perform the \n<color=red>festival of senses</color>."
             }
         });
-     
+
         content.Add("Day4Opening_2", new Dialog
         {
             character = Character.Narrator,

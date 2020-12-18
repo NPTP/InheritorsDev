@@ -65,7 +65,7 @@ public class Day4 : MonoBehaviour
         cameraManager.SendCamTo(hillPathTransform);
         uiManager.SetUpTasksInventory();
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddAndSetActive(TaskType.Grandmother, "Go to the hilltop.", false);
+        taskManager.AddAndSetActive(TaskType.Grandmother, "Ascend up the hill.", false);
         yield return new WaitForSeconds(2f);
 
         cameraManager.QuadrantCamActivate(motherQuadrant);
