@@ -266,6 +266,7 @@ public class Day5 : MonoBehaviour
 
     IEnumerator PickupFlute()
     {
+        stateManager.SetState(State.Inert);
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
         FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
         yield return new WaitForSeconds(.5f);

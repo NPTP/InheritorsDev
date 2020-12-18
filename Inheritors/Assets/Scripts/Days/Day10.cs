@@ -313,6 +313,9 @@ public class Day10 : MonoBehaviour
     {
         taskManager.CompleteActiveTask();
 
+        stateManager.SetState(State.Inert);
+        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
+
         dialogManager.NewDialog(dialogContent.Get("Mother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
@@ -320,7 +323,7 @@ public class Day10 : MonoBehaviour
         animation.Play();
         yield return new WaitWhile(() => animation.isPlaying);
 
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Leave the forest.", false);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
 
         endingClosedBorders.SetActive(false);
         triggers["Walk_End"].Enable();

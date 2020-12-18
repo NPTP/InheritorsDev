@@ -97,7 +97,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Thank you for the water, son.",
-                "What the strange man said yesterday is mostly true. But there is nothing wrong it.",
+                "What the strange man said yesterday is mostly true. But there is nothing wrong with it.",
                 "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
                 "Since our union, I no longer understand the drive to dominance over the other. \nIt never helped either of our people."
             }
@@ -107,7 +107,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "What the strange man said is mostly true. But there is nothing wrong it.",
+                "What the strange man said is mostly true. But there is nothing wrong with it.",
                 "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
                 "Since our union, I no longer understand the drive to dominance over the other. \nIt never helped either of our people."
             }
