@@ -31,6 +31,7 @@ public class UIResources : ScriptableObject
     public Sprite URUKU;
     public Sprite HERBS;
     public Sprite SEEDS;
+    public Sprite DARKFLUTE;
 
     [Header("Sounds")]
     public AudioClip sound_taskUpdate;
@@ -74,6 +75,9 @@ public class UIResources : ScriptableObject
 
             case ItemType.Seeds:
                 return SEEDS;
+
+            case ItemType.DarkFlute:
+                return DARKFLUTE;
 
             default:
                 return null;

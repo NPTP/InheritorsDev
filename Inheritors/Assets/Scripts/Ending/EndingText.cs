@@ -30,6 +30,7 @@ public class EndingText : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = true;
         InitializeEndingText();
         StartCoroutine("Ending");
     }

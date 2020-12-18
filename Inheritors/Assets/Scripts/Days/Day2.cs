@@ -73,7 +73,7 @@ public class Day2 : MonoBehaviour
         // Show the tasks, only cam send on the new one.
         taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "Fish with father.");
+        taskManager.AddTask(TaskType.Father, "Fishing with father.");
         yield return new WaitForSeconds(1f);
         cameraManager.SendCamTo(sisterQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
@@ -167,9 +167,7 @@ public class Day2 : MonoBehaviour
                 break;
 
             case "Dropoff_Papaya":
-                print("Completed papaya");
-                taskManager.CompleteActiveTask();
-                print(activeTask.type);
+                DropoffPapaya();
                 break;
 
             case "Dropoff_Meat":
@@ -226,7 +224,7 @@ public class Day2 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Sister);
-        taskManager.ChangeTask(TaskType.Sister, "Gather 6 papayas.");
+        taskManager.ChangeTask(TaskType.Sister, "Gather 3 papayas.");
         Transform papayaPickups = GameObject.Find("PapayaPickups").transform;
         foreach (Transform child in papayaPickups)
         {
@@ -274,19 +272,27 @@ public class Day2 : MonoBehaviour
 
     void PickupPapaya(int itemQuantity)
     {
-        if (itemQuantity > 0 && itemQuantity < 5)
+        if (itemQuantity == 1)
         {
-            taskManager.ChangeTask(TaskType.Sister, "Gather " + (6 - itemQuantity).ToString() + " more papayas.");
+            taskManager.ChangeTask(TaskType.Sister, "Gather 2 more papayas.");
         }
-        else if (itemQuantity == 5)
+        else if (itemQuantity == 2)
         {
             taskManager.ChangeTask(TaskType.Sister, "Gather 1 more papaya.");
         }
-        else if (itemQuantity == 6)
+        else if (itemQuantity == 3)
         {
             taskManager.ChangeTask(TaskType.Sister, "Bring papayas back to sister.");
             triggers["Dropoff_Papaya"].Enable();
         }
+    }
+
+    IEnumerator DropoffPapaya()
+    {
+        recordManager.StopRecording();
+        dialogManager.NewDialog(dialogContent.Get("Sister_Completed"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        taskManager.CompleteActiveTask();
     }
 
     void DropoffWater()

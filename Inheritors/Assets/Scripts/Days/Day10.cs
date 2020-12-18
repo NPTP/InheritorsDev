@@ -31,6 +31,10 @@ public class Day10 : MonoBehaviour
     public GameObject hilltopBlockage;
     public GameObject hilltopUnblocked;
     public GameObject endingClosedBorders;
+    public GameObject endingGhostsParent;
+    public Animation motherLeavingAnimation;
+    public Transform playerEndingTranslateTarget;
+    public Animator motherNPCAnimator;
 
     TaskType lastRemainingTask;
     /* -------------------------------------- */
@@ -69,6 +73,7 @@ public class Day10 : MonoBehaviour
         ManofholeGrandfather.SetActive(false);
 
         hilltopUnblocked.SetActive(false);
+        endingGhostsParent.SetActive(false);
 
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
@@ -319,13 +324,15 @@ public class Day10 : MonoBehaviour
         dialogManager.NewDialog(dialogContent.Get("Mother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        Animation animation = GameObject.Find("MotherLeaves").GetComponent<Animation>();
-        animation.Play();
-        yield return new WaitWhile(() => animation.isPlaying);
+        motherLeavingAnimation.Play();
+        motherNPCAnimator.SetBool("Walking", true);
+        yield return new WaitWhile(() => motherLeavingAnimation.isPlaying);
+        motherNPCAnimator.SetBool("Walking", false);
 
         taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
 
         endingClosedBorders.SetActive(false);
+        endingGhostsParent.SetActive(true);
         triggers["Walk_End"].Enable();
     }
 
@@ -333,6 +340,11 @@ public class Day10 : MonoBehaviour
     {
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
+        Rigidbody playerRB = GameObject.FindWithTag("Player").GetComponent<Rigidbody>();
+        playerRB.DOMove(playerEndingTranslateTarget.position, 2f).SetEase(Ease.OutCubic);
+        motherLeavingAnimation.Play("MotherLeavesWithSon");
+        motherNPCAnimator.SetBool("Walking", true);
+        yield return new WaitForSeconds(2f);
         transitionManager.SetColor(Color.white);
         Tween t = transitionManager.Show(4f);
         audioManager.FadeOtherSources("Down", 4f);
