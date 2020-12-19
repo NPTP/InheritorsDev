@@ -269,9 +269,9 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-                "Look at you! The ancestors truly live on in you now! What a joy to see.",
                 "I am getting quite old, young one, so you must carry on this Akuntsu tradition. Can you do that for me?",
                 "I must rest now to overcome this outside sickness. You give me so much strength, little one.",
+                "Oh, how <i>she</i> would have loved you... Your sister, who passed, she used to dye her hair just like that...",
                 "Come back to see me tomorrow when I have awoken!"
             }
         });
@@ -281,6 +281,7 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandmother,
             lines = new string[] {
               "Oh, how <i>she</i> would have loved you... Your sister, who passed, she used to dye her hair just like that...",
+              "Come back to see me tomorrow when I have awoken!"
             }
         });
 
