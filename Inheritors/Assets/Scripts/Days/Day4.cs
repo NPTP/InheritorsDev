@@ -24,6 +24,7 @@ public class Day4 : MonoBehaviour
     [Header("Day-specific Objects")]
     public Transform motherQuadrant;
     public Transform hillPathTransform;
+    public GameObject festivalBlock;
     /* -------------------------------------- */
     /* -------------------------------------f- */
 
@@ -52,6 +53,8 @@ public class Day4 : MonoBehaviour
 
     IEnumerator Intro()
     {
+        festivalBlock.SetActive(false);
+
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
@@ -189,6 +192,7 @@ public class Day4 : MonoBehaviour
     IEnumerator GetReed()
     {
         started = true;
+        festivalBlock.SetActive(true);
 
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Start"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -227,6 +231,7 @@ public class Day4 : MonoBehaviour
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival3"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        festivalBlock.SetActive(false);
         uiManager.SetUpTasksInventory();
         taskManager.CompleteActiveTask();
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
@@ -234,6 +239,10 @@ public class Day4 : MonoBehaviour
         dialogs[Character.Grandmother] = dialogContent.Get("Grandmother_Completed");
         triggers["Walk_End"].Enable();
         done = true;
+
+        // Extra ghosts just for fun
+        yield return new WaitForSeconds(20f);
+        recordManager.PlayRecordings();
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████

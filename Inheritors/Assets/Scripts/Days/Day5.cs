@@ -69,24 +69,21 @@ public class Day5 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
+        PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        pm.LookAtTarget(GameObject.FindWithTag("FatherNPC").transform);
         dialogManager.NewDialog(dialogContent.Get("Day5Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "Hunt with father.");
-        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Sister, "Help sister.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
         yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Grandfather, "Talk to grandfather.");
         yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
+        pm.LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
         dialogManager.NewDialog(dialogContent.Get("Day5Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
@@ -148,13 +145,13 @@ public class Day5 : MonoBehaviour
 
         switch (character)
         {
-            case Character.Father:
-                if (activeTask.type != TaskType.Null)
-                    return;
+            // case Character.Father:
+            //     if (activeTask.type != TaskType.Null)
+            //         return;
 
-                if (taskList[TaskType.Father].status == TaskStatus.Waiting)
-                    StartCoroutine(HuntBegin());
-                break;
+            //     if (taskList[TaskType.Father].status == TaskStatus.Waiting)
+            //         StartCoroutine(HuntBegin());
+            //     break;
 
             case Character.Sister:
                 if (taskList[TaskType.Sister].status == TaskStatus.Waiting && activeTask.type == TaskType.Null)
@@ -176,13 +173,13 @@ public class Day5 : MonoBehaviour
                     StartCoroutine(GrandfatherStart());
                 break;
 
-            case Character.Grandmother:
-                if (activeTask.type != TaskType.Null)
-                    return;
+            // case Character.Grandmother:
+            //     if (activeTask.type != TaskType.Null)
+            //         return;
 
-                if (taskList[TaskType.Grandmother].status == TaskStatus.Waiting)
-                    StartCoroutine(GrandmotherStart());
-                break;
+            //     if (taskList[TaskType.Grandmother].status == TaskStatus.Waiting)
+            //         StartCoroutine(GrandmotherStart());
+            //     break;
 
             default:
                 break;
@@ -426,6 +423,8 @@ public class Day5 : MonoBehaviour
 
         dialogTriggers[Character.Mother].Remove();
         Destroy(GameObject.FindWithTag("MotherNPC"));
+        dialogTriggers[Character.Father].Remove();
+        Destroy(GameObject.FindWithTag("FatherNPC"));
 
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();

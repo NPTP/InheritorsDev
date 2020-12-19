@@ -44,7 +44,8 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Your father is fishing today - he will be beside the river, waiting for you to come help.",
-                "And this will be your first time helping your sister - ask her what she needs."
+                "And this will be your first time helping your sister - ask her what she needs.",
+                "Off you go now, son!"
             }
         });
 
@@ -74,7 +75,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Look at you, my boy, running around so busy. \nDo not forget to get wood for us when you are done!"
+                "Look at you, my boy, running to help everyone. \nI am so proud of you."
             }
         });
 
@@ -82,7 +83,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Once you have all the wood, drop it onto the fire pit."
+                "<UNUSED>"
             }
         });
 
@@ -90,7 +91,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "You are doing well, son. I am proud of you. Keep going!"
+                "<UNUSED>"
             }
         });
 

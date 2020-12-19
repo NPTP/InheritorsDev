@@ -65,6 +65,14 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             }
         });
 
+        content.Add("Grandmother_FestivalBlock", new Dialog
+        {
+            character = Character.Grandmother,
+            lines = new string[] {
+              "Do not leave before we have completed the festival, grandson. What am I going to show you is important."
+            }
+        });
+
         content.Add("Grandmother_Festival1", new Dialog
         {
             character = Character.Grandmother,

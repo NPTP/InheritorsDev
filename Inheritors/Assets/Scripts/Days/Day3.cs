@@ -65,17 +65,15 @@ public class Day3 : MonoBehaviour
 
         stateManager.SetState(State.Normal);
 
-        // // Cue the opening dialog.
+        // Cue the opening dialog.
+        PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        pm.LookAtTarget(GameObject.FindWithTag("FatherNPC").transform);
         dialogManager.NewDialog(dialogContent.Get("Day3Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(1f);
 
-        // // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch water.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "Hunt with father.");
-        yield return new WaitForSeconds(1f);
+        // Show the tasks.
         taskManager.AddTask(TaskType.Sister, "Talk to sister.");
         yield return new WaitForSeconds(1f);
 
@@ -93,6 +91,7 @@ public class Day3 : MonoBehaviour
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         // Final dialog of opening.
+        pm.LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
         dialogManager.NewDialog(dialogContent.Get("Day3Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
@@ -163,10 +162,10 @@ public class Day3 : MonoBehaviour
 
         switch (character)
         {
-            case Character.Father:
-                if (taskList[TaskType.Father].status == TaskStatus.Waiting)
-                    StartCoroutine(HuntBegin());
-                break;
+            // case Character.Father:
+            //     if (taskList[TaskType.Father].status == TaskStatus.Waiting)
+            //         StartCoroutine(HuntBegin());
+            //     break;
 
             case Character.Sister:
                 if (taskList[TaskType.Sister].status == TaskStatus.Waiting)
@@ -435,6 +434,8 @@ public class Day3 : MonoBehaviour
 
         dialogTriggers[Character.Mother].Remove();
         Destroy(GameObject.FindWithTag("MotherNPC"));
+        dialogTriggers[Character.Father].Remove();
+        Destroy(GameObject.FindWithTag("FatherNPC"));
 
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();

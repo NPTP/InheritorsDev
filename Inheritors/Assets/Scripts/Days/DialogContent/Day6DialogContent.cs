@@ -41,7 +41,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Son, I have told you already. Your father and I had no choice but to come together.",
-                "The Kanoe and Akuntsu had been enemies, yes, but now we are together.",
+                "The Kanoe and Akuntsu had been opposed, yes, but if not for a common enemy, <i>you</i> would never have known life.",
                 "Forget what the strange man said. We are stronger together, all of us, the tribe, the family.",
                 "Now, what do you need to do today?"
             }
@@ -49,9 +49,11 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
 
         content.Add("Day6Opening_2", new Dialog
         {
-            character = Character.Mother,
+            character = Character.Sister,
             lines = new string[] {
-                "Keep your eyes to the future, my son. The past need not haunt us. Do well!"
+                "Things are not so bad. My garden at home is flourishing, and even the burned spot will sprout again.",
+                "I am taking care to tend it, so that by tomorrow, you can come help me plant new vegetables!",
+                "Keep your eyes to the future, little brother."
             }
         });
 
@@ -59,7 +61,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "It has been a hard day. Come inside now and rest. You have done all you can!"
+                "Come inside now and rest, son. You have done all you can!"
             }
         });
 
@@ -72,23 +74,20 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Seeing ghosts and talking to strange men from the woods... my son is already a shaman!",
-                "Let us talk after the water has been filled."
             }
         });
 
         content.Add("Mother_Other", new Dialog
         {
             character = Character.Mother,
-            lines = new string[] {
-                "I will not interrupt your hard work, my son. Let us talk after the water has been filled."
-            }
+            lines = Get("Mother_Start").lines
         });
 
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
             lines = new string[] {
-                "Water into the grey pot, as always."
+                "<UNUSED>"
             }
         });
 
@@ -96,10 +95,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Thank you for the water, son.",
-                "What the strange man said yesterday is mostly true. But there is nothing wrong with it.",
-                "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
-                "Since our union, I no longer understand the drive to dominance over the other. \nIt never helped either of our people."
+                "<UNUSED>"
             }
         });
 
@@ -107,9 +103,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "What the strange man said is mostly true. But there is nothing wrong with it.",
-                "Imagine if we had still been enemies, your father and I? Then you would never have known life.",
-                "Since our union, I no longer understand the drive to dominance over the other. \nIt never helped either of our people."
+                "<UNUSED>"
             }
         });
 
@@ -173,46 +167,62 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Sister,
             lines = new string[] {
-                "You changed your hair, little brother. The uruku dye?",
-                "Things are not so bad after all. The garden at home is flourishing, and even this blackened spot will sprout again.",
-                "Take and plant these manioc seeds in <color=blue>four spots</color> in the ash."
+                "Soon all that burned will be green again, and we will have a rich harvest.",
+                "You see? Nothing to be worried about. Some things must burn down to allow greater growth from the ashes.",
+                "Meet me there, where the fire was, tomorrow. I will need your help."
             }
         });
 
         content.Add("Sister_Other", new Dialog
         {
             character = Character.Sister,
-            lines = new string[] {
-                "Come back when you have finished what you are working on. I am working the ashen soil."
-            }
+            lines = Get("Sister_Start").lines
         });
 
-        content.Add("Sister_Active", new Dialog
-        {
-            character = Character.Sister,
-            lines = new string[] {
-                "You only need plant the seeds in <color=blue>four spots</color> on the ash."
-            }
-        });
+        // content.Add("Sister_Start", new Dialog
+        // {
+        //     character = Character.Sister,
+        //     lines = new string[] {
+        //         "You changed your hair, little brother. The uruku dye?",
+        //         "Things are not so bad after all. The garden at home is flourishing, and even this blackened spot will sprout again.",
+        //         "Take and plant these manioc seeds in <color=blue>four spots</color> in the ash."
+        //     }
+        // });
 
-        content.Add("Sister_FinishTask", new Dialog
-        {
-            character = Character.Sister,
-            lines = new string[] {
-                "Very good, little brother. Soon this spot will be green again, and will provide for us a rich harvest.",
-                "You see? Nothing to be worried about. Some things must burn down to allow greater growth from the ashes.",
-                "Come back to this spot again tomorrow - I will need your help."
-            }
-        });
+        // content.Add("Sister_Other", new Dialog
+        // {
+        //     character = Character.Sister,
+        //     lines = new string[] {
+        //         "Come back when you have finished what you are working on. I am working the ashen soil."
+        //     }
+        // });
 
-        content.Add("Sister_Completed", new Dialog
-        {
-            character = Character.Sister,
-            lines = new string[] {
-                "The garden at my home is flourishing, brother, it does not need any help now.",
-                "So come here to the ashen ground again tomorrow, where we will establish our second garden!",
-            }
-        });
+        // content.Add("Sister_Active", new Dialog
+        // {
+        //     character = Character.Sister,
+        //     lines = new string[] {
+        //         "You only need plant the seeds in <color=blue>four spots</color> on the ash."
+        //     }
+        // });
+
+        // content.Add("Sister_FinishTask", new Dialog
+        // {
+        //     character = Character.Sister,
+        //     lines = new string[] {
+        //         "Very good, little brother. Soon this spot will be green again, and will provide for us a rich harvest.",
+        //         "You see? Nothing to be worried about. Some things must burn down to allow greater growth from the ashes.",
+        //         "Come back to this spot again tomorrow - I will need your help."
+        //     }
+        // });
+
+        // content.Add("Sister_Completed", new Dialog
+        // {
+        //     character = Character.Sister,
+        //     lines = new string[] {
+        //         "The garden at my home is flourishing, brother, it does not need any help now.",
+        //         "So come here to the ashen ground again tomorrow, where we will establish our second garden!",
+        //     }
+        // });
 
 
         // ████████████████████████████████████████████████████████████████████████
@@ -267,10 +277,10 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandmother,
             lines = new string[] {
-              "Ohh... I am so grateful for you. Youngest one, I have an illness I have never encountered before.",
-              "Men from outside the forest came in the night and brought it with them.",
+              "Ohh... youngest one, I am so grateful you came. Have the effects of the festival worn off by now?",
+              "I have an illness I have never encountered before. Men from outside the forest came in the night and brought it with them.",
               "I have tried all the herbs and medicines we have, but for one which grows on the side of the hill.",
-              "I am too old and tired to retrieve it myself. Please, go up the hill path, and you will see the <color=blue>herbs</color>.",
+              "I am too sick and tired to retrieve it myself. Please, ascend the path, and you will see the <color=blue>herbs</color>.",
               "Then I will answer what you have been asking - what the Man of the Hole told you about."
             }
         });
@@ -300,7 +310,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
               "Now, you asked about the crushed maloca, near the river crossing. Yes, a member of our tribe and family once lived there.",
               "She was your sister. Not the one you know now, but <i>another</i> sister. So much like you, she was. But the forest... claimed her.",
               "Not long after her passing, you were born to us. And so, our family grew again. As it will continue to.",
-              "Please come back again tomorrow, these herbs will only last a day."
+              "Please come back again tomorrow, these herbs will only last a day. \nUntil then, sweet boy."
             }
         });
 
@@ -309,7 +319,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandmother,
             lines = new string[] {
               "You never met your other sister, but I see a part of her in you. Her spirit and yours are intertwined.",
-              "Please come back again tomorrow, these herbs will only last a day."
+              "Please come back again tomorrow."
             }
         });
 
