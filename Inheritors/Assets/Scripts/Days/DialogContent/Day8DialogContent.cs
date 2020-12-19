@@ -45,8 +45,8 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "I am sorry I never told you about your other sister. We loved her very much. You would have loved her, too.",
-                "We need more water, but we have little meat, and our harvest was ruined. We are running out of food.",
-                "We cannot live on water alone. \nSomething must be done."
+                "We have little meat, and our harvest was ruined. We are running out of food.",
+                "We cannot live on water alone, but it will have to do for now. Please bring some."
             }
         });
 
@@ -55,15 +55,6 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "It has been a difficult day for the tribe, son. Come back immediately."
-            }
-        });
-
-
-        content.Add("Player_Hammock", new Dialog
-        {
-            character = Character.Narrator,
-            lines = new string[] {
-                "I feel rested. Somehow at ease. The forest will reclaim all this, set it right."
             }
         });
 
@@ -222,7 +213,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandfather,
             lines = new string[] {
                 "The ancestors have heard our duet, grandson. And they watch over this land still.",
-                "Remember that I am your chief. \nAs long as you and I are healthy, we will <i>never</i> leave this land.",
+                "Remember that I am your chief. \nAs long as you and I are here, we will <i>never</i> leave this land.",
                 "This is our home, it has always been, and always will be!"
             }
         });
@@ -231,8 +222,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "Should you lose hope, child, know that as long as you and I are healthy, we will <i>never</i> leave this land.",
-                "Please lie in the hammock if you need a rest. \nLet the meadow restore you."
+                "Should you lose hope, child, know that as long as you and I are here, we will <i>never</i> leave this land.",
             }
         });
 

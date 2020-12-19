@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Cinemachine;
 
 [RequireComponent(typeof(DialogContent))]
 [RequireComponent(typeof(DialogTaskState))]
@@ -23,8 +24,11 @@ public class Day7 : MonoBehaviour
     /* Day-specific objects, transforms, etc. */
     /* -------------------------------------- */
     [Header("Day-specific Objects")]
+    public Transform motherQuadrant;
     public Material redheadMaterial;
     public GameObject seedsPickup;
+    public AudioClip urukuSound;
+    public AudioSource ambientSound;
     // public Transform motherQuadrant;
     // public Transform grandfatherQuadrant;
     // public Transform grandmotherQuadrant;
@@ -33,6 +37,11 @@ public class Day7 : MonoBehaviour
     public GameObject grandfatherChar1;
     public GameObject grandfatherDialogTrigger2;
     public GameObject grandfatherChar2;
+    [Space]
+    public CinemachineVirtualCamera day7StartCam;
+    public CinemachineVirtualCamera day7HammockCam;
+    public AudioClip hammockStinger;
+    // public GameObject bigTree;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -61,11 +70,17 @@ public class Day7 : MonoBehaviour
 
     IEnumerator Intro()
     {
+        // Set start cam.
+        day7StartCam.Priority = 100;
+
         // Change player's hair to red
-        Renderer headRenderer = GameObject.Find("C_man_1_FBX2013").GetComponent<Renderer>();
-        var newMaterials = headRenderer.materials;
-        newMaterials[1] = redheadMaterial;
-        headRenderer.materials = newMaterials;
+        // Renderer headRenderer = GameObject.Find("C_man_1_FBX2013").GetComponent<Renderer>();
+        // var newMaterials = headRenderer.materials;
+        // newMaterials[1] = redheadMaterial;
+        // headRenderer.materials = newMaterials;
+
+        // Make grandma sit.
+        GameObject.FindWithTag("GrandmotherNPC").GetComponent<Animator>().SetBool("Sitting", true);
 
         // Deactivate grandfather duplicate
         grandfatherDialogTrigger2.GetComponent<DialogTrigger>().Disable();
@@ -85,15 +100,22 @@ public class Day7 : MonoBehaviour
         dialogManager.NewDialog(dialogContent.Get("Day7Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        yield return new WaitForSeconds(1f);
+
+        // Switch to normal cam
+        day7StartCam.Priority = 0;
+        yield return new WaitForSeconds(2f);
 
         // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
-        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
         yield return new WaitForSeconds(1f);
+
+        cameraManager.SendCamTo(GameObject.FindWithTag("SisterNPC").transform);
+        yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Sister, "Help sister.");
         yield return new WaitForSeconds(1f);
+
+        cameraManager.QuadrantCamActivate(motherQuadrant);
+        yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
         yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Grandfather, "See grandfather.");
@@ -131,12 +153,16 @@ public class Day7 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Wood:
-                PickupWood(inventory.itemQuantity);
-                break;
+            // case ItemType.Wood:
+            //     PickupWood(inventory.itemQuantity);
+            //     break;
 
-            case ItemType.Herbs:
-                PickupHerbs();
+            // case ItemType.Herbs:
+            //     PickupHerbs();
+            //     break;
+
+            case ItemType.Uruku:
+                StartCoroutine(PickupUruku());
                 break;
 
             case ItemType.Null:
@@ -203,13 +229,13 @@ public class Day7 : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Wood":
-                taskManager.CompleteActiveTask();
-                break;
+            // case "Dropoff_Wood":
+            //     taskManager.CompleteActiveTask();
+            //     break;
 
-            case "Dropoff_Herbs":
-                StartCoroutine(DropoffHerbs());
-                break;
+            // case "Dropoff_Herbs":
+            //     StartCoroutine(DropoffHerbs());
+            //     break;
 
             case "Dropoff_Seed":
                 StartCoroutine(DropoffSeed());
@@ -286,14 +312,36 @@ public class Day7 : MonoBehaviour
         recordManager.StopRecording();
         transitionManager.SetColor(Color.black);
         transitionManager.Show(1f);
-        yield return new WaitForSeconds(4f);
+
+        float savedVolume = ambientSound.volume;
+        ambientSound.DOFade(0f, 2f);
+
+        uiManager.TearDownTasksInventory();
+
+        yield return new WaitForSeconds(2f);
         grandfatherDialogTrigger1.SetActive(false);
         grandfatherChar1.SetActive(false);
+
+        day7HammockCam.Priority = 100;
+
+        yield return transitionManager.Hide(2f).WaitForCompletion();
+        float stingerVolume = 0.15f;
+        audioManager.PlayOneShot(hammockStinger, stingerVolume);
+        yield return new WaitForSeconds(4f);
+        yield return transitionManager.Show(2f).WaitForCompletion();
+
+        day7HammockCam.Priority = 0;
+        yield return new WaitForSeconds(2f);
         grandfatherDialogTrigger2.SetActive(true);
         grandfatherChar2.SetActive(true);
         dialogTriggers[Character.Grandfather] = grandfatherDialogTrigger2.GetComponent<DialogTrigger>();
         dialogTriggers[Character.Grandfather].Enable();
+        GameObject.FindWithTag("Player").GetComponent<PlayerMovement>().LookAtTarget(grandfatherChar2.transform);
+
         transitionManager.Hide(2f);
+        ambientSound.DOFade(savedVolume, 2f);
+
+        uiManager.SetUpTasksInventory();
 
         yield return new WaitForSeconds(1.5f);
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
@@ -376,23 +424,23 @@ public class Day7 : MonoBehaviour
 
     // ████████████████████████████ MOTHER ████████████████████████████████████
 
-    void PickupWood(int itemQuantity)
-    {
-        if (itemQuantity == 1)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Collect 2 more logs.");
-            taskManager.SetActiveTask(TaskType.Mother);
-        }
-        else if (itemQuantity == 2)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Collect 1 more log.");
-        }
-        else if (itemQuantity == 3)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Bring logs to firepit.");
-            triggers["Dropoff_Wood"].Enable();
-        }
-    }
+    // void PickupWood(int itemQuantity)
+    // {
+    //     if (itemQuantity == 1)
+    //     {
+    //         taskManager.ChangeTask(TaskType.Mother, "Collect 2 more logs.");
+    //         taskManager.SetActiveTask(TaskType.Mother);
+    //     }
+    //     else if (itemQuantity == 2)
+    //     {
+    //         taskManager.ChangeTask(TaskType.Mother, "Collect 1 more log.");
+    //     }
+    //     else if (itemQuantity == 3)
+    //     {
+    //         taskManager.ChangeTask(TaskType.Mother, "Bring logs to firepit.");
+    //         triggers["Dropoff_Wood"].Enable();
+    //     }
+    // }
 
     // ██████████████████████████ GRANDMOTHER █████████████████████████████████
 
@@ -401,25 +449,31 @@ public class Day7 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.SetActiveTask(TaskType.Grandmother);
-        taskManager.ChangeTask(TaskType.Grandmother, "Find herbs near crushed maloca.");
-        triggers["Pickup_Herbs"].Enable();
+        taskManager.ChangeTask(TaskType.Grandmother, "Grind and apply uruku dye.");
+        triggers["Pickup_Uruku"].Enable();
     }
 
-    void PickupHerbs()
+    IEnumerator PickupUruku()
     {
-        taskManager.ChangeTask(TaskType.Grandmother, "Return herbs to grandmother.");
-        triggers["Dropoff_Herbs"].Enable();
-    }
+        stateManager.SetState(State.Inert);
 
-    IEnumerator DropoffHerbs()
-    {
+        audioManager.PlayOneShot(urukuSound);
+        GameObject.Find("UrukuExplosion").GetComponent<ParticleSystem>().Play();
+        yield return new WaitForSeconds(.25f);
+
+        Renderer headRenderer = GameObject.Find("C_man_1_FBX2013").GetComponent<Renderer>();
+        var newMaterials = headRenderer.materials;
+        newMaterials[1] = redheadMaterial;
+        headRenderer.materials = newMaterials;
+
+        yield return new WaitForSeconds(2f);
+        pickupManager.LoseItems();
         recordManager.StopRecording();
-        dialogManager.NewDialog(dialogContent.Get("Grandmother_FinishTask"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.CompleteActiveTask();
 
-        Destroy(GameObject.FindWithTag("GrandmotherNPC"));
-        dialogTriggers[Character.Grandmother].Remove();
+        dialogManager.NewDialog(dialogContent.Get("Grandmother_FinishTask"), State.Normal);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        taskManager.CompleteActiveTask();
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████
