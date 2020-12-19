@@ -57,11 +57,21 @@ public class Day6 : MonoBehaviour
 
     IEnumerator Intro()
     {
-        // Change player's hair to red
-        Renderer headRenderer = GameObject.Find("C_man_1_FBX2013").GetComponent<Renderer>();
-        var newMaterials = headRenderer.materials;
-        newMaterials[1] = redheadMaterial;
-        headRenderer.materials = newMaterials;
+        // // Change player's hair to red
+        // Renderer headRenderer = GameObject.Find("C_man_1_FBX2013").GetComponent<Renderer>();
+        // var newMaterials = headRenderer.materials;
+        // newMaterials[1] = redheadMaterial;
+        // headRenderer.materials = newMaterials;
+
+        // Make grandma sit.
+        GameObject.FindWithTag("GrandmotherNPC").GetComponent<Animator>().SetBool("Sitting", true);
+
+        // Set up facings.
+        PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        GameObject mother = GameObject.FindWithTag("MotherNPC");
+        GameObject sister = GameObject.FindWithTag("SisterNPC");
+        LookAtPlayer motherLook = mother.GetComponent<LookAtPlayer>();
+        LookAtPlayer sisterLook = sister.GetComponent<LookAtPlayer>();
 
         // Fade in from WHITE.
         stateManager.SetState(State.Inert);
@@ -72,32 +82,29 @@ public class Day6 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
+        pm.LookAtTarget(mother.transform);
+        sisterLook.ChangeTarget(mother.transform);
         dialogManager.NewDialog(dialogContent.Get("Day6Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch water.");
-        yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Sister, "Help sister.");
         yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
         yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandfather, "See grandfather.");
-        yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
+        pm.LookAtTarget(sister.transform);
+        sisterLook.ResetTarget();
+        motherLook.ChangeTarget(sister.transform);
         dialogManager.NewDialog(dialogContent.Get("Day6Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
+        motherLook.ResetTarget();
         stateManager.SetState(State.Normal);
-        recordManager.PlayRecordings();
-
-        yield return new WaitForSeconds(1f);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -157,25 +164,24 @@ public class Day6 : MonoBehaviour
                 break;
 
 
-            case Character.Sister:
-                if (activeTask.type != TaskType.Null)
-                    return;
+            // case Character.Sister:
+            //     if (activeTask.type != TaskType.Null)
+            //         return;
 
-                if (taskList[TaskType.Sister].status == TaskStatus.Waiting)
-                    StartCoroutine(SisterStart());
-                break;
+            //     if (taskList[TaskType.Sister].status == TaskStatus.Waiting)
+            //         StartCoroutine(SisterStart());
+            //     break;
 
 
-            case Character.Grandfather:
-                if (taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
-                    StartCoroutine(GrandfatherStart());
-                break;
+            // case Character.Grandfather:
+            //     if (taskList[TaskType.Grandfather].status == TaskStatus.Waiting)
+            //         StartCoroutine(GrandfatherStart());
+            //     break;
 
 
             case Character.Grandmother:
                 if (activeTask.type != TaskType.Null)
                     return;
-
 
                 if (taskList[TaskType.Grandmother].status == TaskStatus.Waiting)
                     StartCoroutine(GrandmotherStart());

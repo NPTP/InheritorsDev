@@ -93,8 +93,6 @@ public class Day8 : MonoBehaviour
         dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);
-        recordManager.PlayRecordings();
-
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -177,9 +175,9 @@ public class Day8 : MonoBehaviour
 
         switch (tag)
         {
-            case "Walk_Hammock":
-                StartCoroutine(WalkHammock());
-                break;
+            // case "Walk_Hammock":
+            //     StartCoroutine(WalkHammock());
+            //     break;
 
             case "Walk_Father":
                 StartCoroutine(HuntBegin());
@@ -246,10 +244,13 @@ public class Day8 : MonoBehaviour
     {
         stateManager.SetState(State.Inert);
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
-        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
+        PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        pm.LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
         yield return new WaitForSeconds(1f);
+        pm.Halt();
 
         audioManager.Play(mateteDuet);
+        recordManager.PlayRecordings();
         yield return new WaitForSeconds(mateteDuet.length);
         yield return new WaitForSeconds(1f);
 
@@ -261,17 +262,17 @@ public class Day8 : MonoBehaviour
         taskManager.CompleteActiveTask();
     }
 
-    IEnumerator WalkHammock()
-    {
-        stateManager.SetState(State.Inert);
-        transitionManager.SetColor(Color.black);
-        transitionManager.Show(1f);
-        yield return new WaitForSeconds(4f);
-        transitionManager.Hide(2f);
-        yield return new WaitForSeconds(1.5f);
+    // IEnumerator WalkHammock()
+    // {
+    //     stateManager.SetState(State.Inert);
+    //     transitionManager.SetColor(Color.black);
+    //     transitionManager.Show(1f);
+    //     yield return new WaitForSeconds(4f);
+    //     transitionManager.Hide(2f);
+    //     yield return new WaitForSeconds(1.5f);
 
-        dialogManager.NewDialog(dialogContent.Get("Player_Hammock"));
-    }
+    //     dialogManager.NewDialog(dialogContent.Get("Player_Hammock"));
+    // }
 
     // ████████████████████████████ SISTER ████████████████████████████████████
 

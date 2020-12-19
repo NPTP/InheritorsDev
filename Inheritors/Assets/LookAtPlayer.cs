@@ -2,17 +2,19 @@
 
 public class LookAtPlayer : MonoBehaviour
 {
-    Transform player;
-    float speed = 40f;
+    Transform playerTransform;
+    Transform target;
+    public float speed = 80f;
 
     void Start()
     {
-        player = GameObject.FindWithTag("Player").transform;
+        playerTransform = GameObject.FindWithTag("Player").transform;
+        target = playerTransform;
     }
 
     void Update()
     {
-        LookAtTarget(player);
+        LookAtTarget(target);
     }
 
     void LookAtTarget(Transform target)
@@ -26,5 +28,15 @@ public class LookAtPlayer : MonoBehaviour
         Quaternion startRot = transform.rotation;
         Quaternion endRot = Quaternion.Euler(lookRotation);
         transform.rotation = Quaternion.RotateTowards(startRot, endRot, Time.deltaTime * speed);
+    }
+
+    public void ChangeTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
+
+    public void ResetTarget()
+    {
+        target = playerTransform;
     }
 }

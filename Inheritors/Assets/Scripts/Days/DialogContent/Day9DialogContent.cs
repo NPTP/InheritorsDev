@@ -45,7 +45,7 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "You <i>must</i> find your father today. \nAnd I want your sister out with us again.",
+                "You <i>must</i> go and find your father today. \nWhen you do, bring him back. \nAnd I want your sister with us again.",
                 "Your grandfather is our chief. He has lead the tribe for a long time. He can help us, \nso see him as soon as you can.",
                 "I am counting on you, my son."
             }
@@ -118,9 +118,10 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Narrator,
             lines = new string[] {
+                "These logs have all been cut from our forest.",
                 "I cannot reach father.",
                 "It has been two days since he left the forest.",
-                "I don't think he is ever coming back."
+                "I do not think he is ever coming back."
             }
         });
 

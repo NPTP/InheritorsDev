@@ -26,6 +26,7 @@ public class Day2 : MonoBehaviour
     [Header("Day-specific Objects")]
     public Transform motherQuadrantTransform;
     public Transform sisterQuadrantTransform;
+    public Transform fatherNPCTransform;
 
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -70,9 +71,9 @@ public class Day2 : MonoBehaviour
         uiManager.SetUpTasksInventory();
         yield return new WaitForSeconds(1f);
 
-        // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Fetch firewood.");
-        yield return new WaitForSeconds(1f);
+        // Show the tasks.
+        cameraManager.SendCamTo(fatherNPCTransform);
+        yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Father, "Fishing with father.");
         yield return new WaitForSeconds(1f);
         cameraManager.SendCamTo(sisterQuadrantTransform);
@@ -167,7 +168,7 @@ public class Day2 : MonoBehaviour
                 break;
 
             case "Dropoff_Papaya":
-                DropoffPapaya();
+                StartCoroutine(DropoffPapaya());
                 break;
 
             case "Dropoff_Meat":

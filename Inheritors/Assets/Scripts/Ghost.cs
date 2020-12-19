@@ -34,6 +34,8 @@ public class Ghost : MonoBehaviour
     float savedVolume;
     bool playing = false;
     int frame = 0;
+    float minResetTime = 5.0f;
+    float maxResetTime = 10.0f;
 
     void FixedUpdate()
     {
@@ -177,8 +179,6 @@ public class Ghost : MonoBehaviour
         if (destroyOnFinish) { Destroy(this.gameObject); }
 
         // Otherwise, wait an interval before restarting.
-        float minResetTime = 5.0f;
-        float maxResetTime = 15.0f;
         yield return new WaitForSeconds(Random.Range(minResetTime, maxResetTime));
         RestartSelf();
     }

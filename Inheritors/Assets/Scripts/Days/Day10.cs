@@ -35,6 +35,8 @@ public class Day10 : MonoBehaviour
     public Animation motherLeavingAnimation;
     public Transform playerEndingTranslateTarget;
     public Animator motherNPCAnimator;
+    [Space]
+    public AudioClip endStinger;
 
     TaskType lastRemainingTask;
     /* -------------------------------------- */
@@ -107,8 +109,6 @@ public class Day10 : MonoBehaviour
 
         stateManager.SetState(State.Normal);
         recordManager.PlayRecordings();
-
-        yield return null;
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -321,7 +321,7 @@ public class Day10 : MonoBehaviour
         stateManager.SetState(State.Inert);
         FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
 
-        dialogManager.NewDialog(dialogContent.Get("Mother_Start"));
+        dialogManager.NewDialog(dialogContent.Get("Mother_Start"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         motherLeavingAnimation.Play();
@@ -329,11 +329,23 @@ public class Day10 : MonoBehaviour
         yield return new WaitWhile(() => motherLeavingAnimation.isPlaying);
         motherNPCAnimator.SetBool("Walking", false);
 
+        endingClosedBorders.SetActive(false);
+        triggers["Walk_End"].Enable();
+        float endStingerVolumeScale = .4f;
+        audioManager.PlayOneShot(endStinger, endStingerVolumeScale);
+
+        endingGhostsParent.SetActive(true);
+        float fadeBetweenTime = 1f;
+        foreach (Transform child in endingGhostsParent.transform)
+        {
+            child.GetComponent<GhostFadeIn>().FadeIn();
+            yield return new WaitForSeconds(fadeBetweenTime);
+        }
+
+        yield return new WaitForSeconds(3f);
         taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
 
-        endingClosedBorders.SetActive(false);
-        endingGhostsParent.SetActive(true);
-        triggers["Walk_End"].Enable();
+        stateManager.SetState(State.Normal);
     }
 
     IEnumerator LeaveForest()

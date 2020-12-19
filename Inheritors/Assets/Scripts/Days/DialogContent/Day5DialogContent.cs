@@ -30,10 +30,11 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
     {
         content.Add("Day5Opening_1", new Dialog
         {
-            character = Character.Mother,
+            character = Character.Father,
             lines = new string[] {
                 "Good morning, son... were you sneaking around last night?",
-                "It is important to get your sleep for the day's work!"
+                "It is important to get your sleep for the day's work!",
+                "We are having a feast later, so finish these tasks and come home quickly!"
             }
         });
 
@@ -41,7 +42,9 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "There is much to get done today. Good luck, my son!"
+                "Ghosts, you say? No, I do not see them! \nOh my son, you imagine so much. We are the only people on this land.",
+                "If I did not know better, I would have thought maybe other Kanoe found this place.",
+                "But there are none... oh, that is, none who would come this way."
             }
         });
 
@@ -61,26 +64,22 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Ghosts, you say? No, I do not see them! \nOh my son, you imagine so much. We are the only people on this land.",
-                "If I did not know better, I would have thought maybe other Kanoe found this place.",
-                "But there are none... oh, that is, none who would come this way.",
+                "Tell me, son, what do these ghosts look like?",
+                "Like you? And there are how many? \nI can hardly handle one boy with so much energy already!"
             }
         });
 
         content.Add("Mother_Other", new Dialog
         {
             character = Character.Mother,
-            lines = new string[] {
-                "Tell me, son, what do these ghosts look like?",
-                "Like you? And there are how many? \nI can hardly handle one boy with so much energy already!"
-            }
+            lines = Get("Mother_Start").lines
         });
 
         content.Add("Mother_Active", new Dialog
         {
             character = Character.Mother,
             lines = new string[] {
-                "Logs onto the fire pit, son. Place them carefully."
+                "<UNUSED>"
             }
         });
 
@@ -88,7 +87,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Good work. We had left the fire burning all night to cook the tapir. A feast is coming."
+                "<UNUSED>"
             }
         });
 
@@ -108,26 +107,23 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "The river flows again today in a way I haven't seen for years. It is incredible!",
-                "We will surely catch many fish in this condition, so put your net into the water."
+                "What a catch I had! We are blessed by the ancestors today, my boy. They smile on us.",
+                "You have seen them? Little boys like you? Well, there are many ancestors on this land. We were once thousands...",
+                "I would not be surprised to hear that some of my elders are still with us.",
             }
         });
 
         content.Add("Father_Other", new Dialog
         {
             character = Character.Father,
-            lines = new string[] {
-                "Oh my boy, come back quickly when you are finished your work, I sense a big catch coming today!"
-            }
+            lines = Get("Father_Start").lines
         });
 
         content.Add("Father_HuntEnd", new Dialog
         {
             character = Character.Father,
             lines = new string[] {
-                "What a catch! We are blessed by the ancestors today, my boy. They smile on us.",
-                "You have seen their shadows? Well, there are many on this land. We were once thousands...",
-                "I would not be surprised to hear that some of my elders are still with us."
+                "<UNUSED>"
             }
         });
 
@@ -190,7 +186,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             character = Character.Sister,
             lines = new string[] {
                 "Have you seen the garden? It is growing more full every day. We will have so much for our family.",
-                "Please find <color=blue>3 papayas</color> for me at the trees south of mother's maloca."
+                "Please find <color=blue>three papayas</color> for me at the trees south of mother's maloca, where you found them before."
             }
         });
 
@@ -241,7 +237,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             character = Character.Grandfather,
             lines = new string[] {
                 "Ahh, my sweet grandson. I see it in you, in your aura. You have participated in the <color=red>festival</color>.",
-                "Now now, don't try to hide it. I will not tell your mother. But now you are seeing the ghosts of your past.",
+                "Now now, don't try to hide it. I will not tell your mother. But now you are seeing your own ghosts of the past.",
                 "Be not alarmed. To see the past clearly is important. But still you miss the full picture.",
                 "Play the matété again with me, grandson, and serenade the spirits."
             }

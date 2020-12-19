@@ -30,9 +30,9 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
     {
         content.Add("Day3Opening_1", new Dialog
         {
-            character = Character.Mother,
+            character = Character.Father,
             lines = new string[] {
-                "Father and grandfather worked very hard to put the bridge up over the river.",
+                "Your grandfather and I worked very hard to put the bridge up over the river.",
                 "Your grandparents will want to see you today.",
                 "You have some work on this side of the river to finish, but be sure to visit them."
             }
@@ -56,7 +56,8 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "I cannot imagine how things would be now if your father and I had not come together between tribes."
+                "I cannot imagine how things would be now if your father and I had not come together between tribes.",
+                "How is grandmother doing? She is the keeper of this forest, and has always made her own way. You are headstrong like her."
             }
         });
 
@@ -72,7 +73,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Fresh water, into the grey pot, son."
+                "<UNUSED>"
             }
         });
 
@@ -80,7 +81,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "How is grandmother doing? She is the keeper of this forest, and has always made her own way. You are headstrong like her."
+                "<UNUSED>"
             }
         });
 
@@ -88,8 +89,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Thank you, son. That is all your work for today!",
-                "It is getting late, so come back for sleep as soon as you can."
+                "That is all the work for today, son! \nIt is getting late. Come home to sleep."
             }
         });
 
@@ -101,7 +101,9 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Boy! No time, be quiet - the tapir will flee if startled. Ready your bow."
+                "I killed a tapir for us. I must take a rest for now. My scars will not heal, and are causing me pain again.",
+                "Once I finish cleaning the meat, I will hang it up over the fire overnight to cook through.",
+                "I look forward to you leading the hunt one day, son. I know my mother and father are so happy to see you grow up."
             }
         });
 
@@ -109,7 +111,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "You are not finished your other work yet. Shh! Do not scare the animals."
+                "What are you up to now, boy? Go finish that work before you can come back home."
             }
         });
 
@@ -117,9 +119,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Beautiful, my son. Our hunts have been bountiful and it has been a joy to teach you.",
-                "You will surely lead the hunt one day, but my scars are causing me too much pain to carry the <color=blue>meat</color>.",
-                "I trust you to return it to mother!"
+                "<UNUSED>"
             }
         });
 
@@ -127,7 +127,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Take that tapir home, son."
+                "<UNUSED>"
             }
         });
 
@@ -136,9 +136,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "These scars seem never to heal...",
-                "Never mind that. You are quickly becoming a man of the tribe, son.",
-                "My mother and father - <i>your</i> grandparents - are so happy to see you grow up.",
+                "<UNUSED>"
             }
         });
 
