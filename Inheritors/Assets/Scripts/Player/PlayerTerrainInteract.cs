@@ -32,6 +32,13 @@ public class PlayerTerrainInteract : MonoBehaviour
     int playerSplatmapSize;
     int playerDetailMapSize;
     int trailLayer = (int)TerrainManager.Layers.Trail;
+    int trail2Layer = (int)TerrainManager.Layers.Trail2;
+    int trail3Layer = (int)TerrainManager.Layers.Trail3;
+    int trail4Layer = (int)TerrainManager.Layers.Trail4;
+    int darkDirtLayer = (int)TerrainManager.Layers.DirtDark;
+    int dustLayer = (int)TerrainManager.Layers.Dust;
+    int farmLayer = (int)TerrainManager.Layers.Farm;
+    int cliffLayer = (int)TerrainManager.Layers.Cliffside;
 
     bool[,] walkedToday;
     float[,] pastTrail;
@@ -86,7 +93,7 @@ public class PlayerTerrainInteract : MonoBehaviour
 
     void ChangeTexture(int areaSize)
     {
-        bool changedTex = false;
+        bool changeTex = false;
         alphaMap = t.terrainData.GetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, areaSize, areaSize);
         float[,,] remap = new float[areaSize, areaSize, numLayers];
         for (int i = 0; i < areaSize; i++)
@@ -103,24 +110,47 @@ public class PlayerTerrainInteract : MonoBehaviour
                 int x = texturePosX - playerSplatmapSize + j;
 
                 // Check if we've walked here already today - if not, lay down some trail (limit at 1f).
-                if (!walkedToday[z, x] && alphaMap[i, j, trailLayer] < 1)
+                if (!walkedToday[z, x])
                 {
                     walkedToday[z, x] = true;
-                    changedTex = true;
-                    remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + trailAmount;
 
-                    // if (steppedThisFrame)
-                    // {
-                    //     float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
-                    //     float[,] newHeights = new float[1, 1];
-                    //     newHeights[0, 0] = heights[0, 0] - 0.0002f;
-                    //     t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
-                    //     steppedThisFrame = false;
-                    // }
+                    // Don't draw a trail on dust/gravel or cliffsides.
+                    if (alphaMap[i, j, dustLayer] == 0 && alphaMap[i, j, farmLayer] == 0 && alphaMap[i, j, cliffLayer] == 0)
+                    {
+                        changeTex = true; // Signal that we are actually changing something.
+
+                        // Add
+                        remap[i, j, darkDirtLayer] = alphaMap[i, j, darkDirtLayer] + trailAmount;
+                        if (alphaMap[i, j, trailLayer] == 0f)
+                            remap[i, j, trailLayer] = alphaMap[i, j, trailLayer] + trailAmount;
+                        else if (alphaMap[i, j, trail2Layer] == 0f)
+                            remap[i, j, trail2Layer] = alphaMap[i, j, trail2Layer] + trailAmount;
+                        else if (alphaMap[i, j, trail3Layer] == 0f)
+                            remap[i, j, trail3Layer] = alphaMap[i, j, trail3Layer] + trailAmount;
+                        else if (alphaMap[i, j, trail4Layer] == 0f)
+                            remap[i, j, trail4Layer] = alphaMap[i, j, trail4Layer] + trailAmount;
+
+                        // Subtract
+                        remap[i, j, (int)TerrainManager.Layers.GrassDark] = alphaMap[i, j, (int)TerrainManager.Layers.GrassDark] - trailAmount;
+                        remap[i, j, (int)TerrainManager.Layers.GrassLight] = alphaMap[i, j, (int)TerrainManager.Layers.GrassLight] - trailAmount;
+                        remap[i, j, (int)TerrainManager.Layers.DirtLight] = alphaMap[i, j, (int)TerrainManager.Layers.DirtLight] - trailAmount;
+                        remap[i, j, (int)TerrainManager.Layers.LeavesBrown] = alphaMap[i, j, (int)TerrainManager.Layers.LeavesBrown] - trailAmount;
+                        remap[i, j, (int)TerrainManager.Layers.LeavesGreen] = alphaMap[i, j, (int)TerrainManager.Layers.LeavesGreen] - trailAmount;
+                        remap[i, j, (int)TerrainManager.Layers.LeavesYellow] = alphaMap[i, j, (int)TerrainManager.Layers.LeavesYellow] - trailAmount;
+                    }
                 }
+                // // Height changes on steps
+                // if (steppedThisFrame)
+                // {
+                //     float[,] heights = t.terrainData.GetHeights(heightPosX, heightPosY, 1, 1);
+                //     float[,] newHeights = new float[1, 1];
+                //     newHeights[0, 0] = heights[0, 0] - 0.0002f;
+                //     t.terrainData.SetHeightsDelayLOD(heightPosX, heightPosY, newHeights);
+                //     steppedThisFrame = false;
+                // }
             }
         }
-        if (changedTex) // Performance boost. SetAlphaMaps is the bottleneck, don't call it when on an already-walked position.
+        if (changeTex) // Performance boost. SetAlphaMaps is the bottleneck, don't call it when on an already-walked position.
             t.terrainData.SetAlphamaps(texturePosX - playerSplatmapSize, texturePosZ - playerSplatmapSize, remap);
     }
 

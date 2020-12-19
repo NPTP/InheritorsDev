@@ -23,6 +23,9 @@ public class TerrainManager : MonoBehaviour
         Wood,
         Water,
         Trail,
+        Trail2,
+        Trail3,
+        Trail4
     }
 
     void Start()
