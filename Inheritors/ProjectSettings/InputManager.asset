@@ -300,7 +300,7 @@ InputManager:
     negativeButton: 
     positiveButton: joystick button 7
     altNegativeButton: 
-    altPositiveButton: return
+    altPositiveButton: escape
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -327,10 +327,26 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Submit
-    descriptiveName: 
+    descriptiveName: Controller Submit - Start + A
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 7
+    altNegativeButton: 
+    altPositiveButton: joystick button 0
+    gravity: 1000
+    dead: 0.001
+    sensitivity: 1000
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Submit
+    descriptiveName: Keyboard Submit - E and Return
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: e
     altNegativeButton: 
     altPositiveButton: return
     gravity: 1000

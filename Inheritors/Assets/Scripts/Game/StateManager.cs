@@ -9,7 +9,7 @@ public enum State
     PickingUp,      /* In the process of interacting, disallow certain inputs and events. */
     DroppingOff,    /* In the process of interacting, disallow certain inputs and events. */
     Holding,        /* Has an item in hand. */
-    Inert,          /* Nothing allowed, cutscenes. */
+    Inert,          /* Nothing allowed, cutscenes, pause, etc. */
     Debug
 }
 

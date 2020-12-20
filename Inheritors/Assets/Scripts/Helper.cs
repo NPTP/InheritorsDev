@@ -34,6 +34,11 @@ public class Helper : ScriptableObject
         SceneManager.LoadScene(name);
     }
 
+    public static void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public static void LoadNextSceneInBuildOrder()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
