@@ -8,6 +8,7 @@ public class MenuButtonScripts : MonoBehaviour
     SceneLoader sceneLoader;
     Button continueButton;
     Text continueText;
+    AudioSource audioSource;
 
     bool clickedButton = false;
     float cameraRiseTime = 10f;
@@ -18,6 +19,7 @@ public class MenuButtonScripts : MonoBehaviour
 
     void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         continueButton = GameObject.Find("ContinueButton").GetComponent<Button>();
         continueText = GameObject.Find("ContinueText").GetComponent<Text>();
@@ -66,6 +68,7 @@ public class MenuButtonScripts : MonoBehaviour
     {
         if (!clickedButton)
         {
+            audioSource.Play();
             clickedButton = true;
             sceneLoader.LoadSceneByName("Day0");
         }
@@ -75,6 +78,7 @@ public class MenuButtonScripts : MonoBehaviour
     {
         if (!clickedButton)
         {
+            audioSource.Play();
             clickedButton = true;
 
             PlayerPrefs.SetInt("continuing", 1);

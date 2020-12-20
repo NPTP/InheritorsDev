@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // For debug only.
@@ -16,9 +14,13 @@ public class DebugSceneLoader : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Home))
         {
             Go("MainMenu");
+        }
+        if (Input.GetKeyDown(KeyCode.End))
+        {
+            Go("EndingText");
         }
         else if (Input.GetKeyDown(KeyCode.BackQuote))
         {

@@ -96,6 +96,9 @@ public class Day7 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(2f);
 
+        // Hold the view for a second as music plays.
+        yield return new WaitForSeconds(2f);
+
         // Cue the opening dialog.
         dialogManager.NewDialog(dialogContent.Get("Day7Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);

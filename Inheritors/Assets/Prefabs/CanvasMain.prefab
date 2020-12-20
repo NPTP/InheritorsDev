@@ -851,6 +851,7 @@ MonoBehaviour:
   background: {fileID: 4643121411491668328}
   buttonsCG: {fileID: 8846115705931082601}
   defaultSelectedButton: {fileID: 1980111173090646030}
+  buttonSound: {fileID: 8300000, guid: 5893e5f904e0a2443a3377a6afcf42f1, type: 3}
 --- !u!1 &3150518601576061896
 GameObject:
   m_ObjectHideFlags: 0

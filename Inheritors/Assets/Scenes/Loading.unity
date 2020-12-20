@@ -222,7 +222,7 @@ MonoBehaviour:
   loadingTextFadeUpTime: 1
   minimumHoldTime: 2
   allFadeOutTime: 1
-  confirmSound: {fileID: 8300000, guid: 97a894db6f482f143bb927cf5bf0dc49, type: 3}
+  confirmSound: {fileID: 8300000, guid: 5893e5f904e0a2443a3377a6afcf42f1, type: 3}
 --- !u!4 &200093402
 Transform:
   m_ObjectHideFlags: 0

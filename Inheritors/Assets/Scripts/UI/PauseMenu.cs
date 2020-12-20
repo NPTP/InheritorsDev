@@ -15,7 +15,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject defaultSelectedButton;
     [SerializeField] AudioClip buttonSound;
 
-    float buttonSoundVolumeScale = 1f;
+    float buttonSoundVolumeScale = .3f;
     float fadeTime = .25f;
     float betweenFadesTime = .125f;
     float backgroundAlpha;

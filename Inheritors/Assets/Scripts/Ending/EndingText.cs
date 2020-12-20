@@ -12,6 +12,7 @@ public class EndingText : MonoBehaviour
     TMP_Text text;
     Image prompt;
     SceneLoader sceneLoader;
+    AudioSource audioSource;
 
     string[] endingText;
     bool creditsOver = false;
@@ -29,6 +30,7 @@ public class EndingText : MonoBehaviour
         text = textObject.GetComponent<TMP_Text>();
         prompt = GameObject.Find("Prompt").GetComponent<Image>();
         sceneLoader = FindObjectOfType<SceneLoader>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -75,6 +77,8 @@ public class EndingText : MonoBehaviour
             sequence.Append(prompt.DOFade(0f, 1f));
             sequence.SetLoops(-1, LoopType.Yoyo);
             yield return new WaitUntil(() => buttonDown);
+
+            audioSource.Play();
 
             // Prompt disappears
             sequence.Kill();
