@@ -1,28 +1,46 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class MenuButtonScripts : MonoBehaviour
 {
     SceneLoader sceneLoader;
-
     Button continueButton;
     Text continueText;
+
+    bool clickedButton = false;
+    float cameraRiseTime = 10f;
+
+    public GameObject defaultSelectedButton;
+    public GameObject postGameObjects;
+    public GameObject normalObjects;
 
     void Awake()
     {
         sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
-
         continueButton = GameObject.Find("ContinueButton").GetComponent<Button>();
         continueText = GameObject.Find("ContinueText").GetComponent<Text>();
     }
 
     void Start()
     {
-        Cursor.visible = true;
+        Cursor.visible = false;
+
+        // Set up the scene differently if we've completed the game.
+        if (PlayerPrefs.GetInt("CompletedGame", 0) == 1)
+        {
+            normalObjects.SetActive(false);
+            postGameObjects.SetActive(true);
+        }
+        else
+        {
+            normalObjects.SetActive(true);
+            postGameObjects.SetActive(false);
+        }
+
         GameObject camera = GameObject.FindWithTag("MainCamera");
-        camera.transform.DOMoveY(camera.transform.position.y, 8f).From(0.8f).SetEase(Ease.OutQuad);
+        camera.transform.DOMoveY(camera.transform.position.y, cameraRiseTime).From(0.8f).SetEase(Ease.OutQuad);
 
         // Resets player prefs in a build only.
         if (!Application.isEditor && !PlayerPrefs.HasKey("playedBefore"))
@@ -36,27 +54,49 @@ public class MenuButtonScripts : MonoBehaviour
         SetUpContinueButton();
     }
 
+    void Update()
+    {
+        if (EventSystem.current.currentSelectedGameObject == null)
+        {
+            EventSystem.current.SetSelectedGameObject(defaultSelectedButton);
+        }
+    }
+
     public void BeginGame()
     {
-        sceneLoader.LoadSceneByName("Day0");
+        if (!clickedButton)
+        {
+            clickedButton = true;
+            sceneLoader.LoadSceneByName("Day0");
+        }
     }
 
     public void ContinueGame()
     {
-        PlayerPrefs.SetInt("continuing", 1);
-        PlayerPrefs.Save();
-        int savedDayNumber = PlayerPrefs.GetInt("savedDayNumber");
-        print("savedDayNumber: " + savedDayNumber);
-        string sceneName = "Day" + savedDayNumber.ToString();
-        sceneLoader.LoadSceneByName(sceneName);
+        if (!clickedButton)
+        {
+            clickedButton = true;
+
+            PlayerPrefs.SetInt("continuing", 1);
+            PlayerPrefs.Save();
+            int savedDayNumber = PlayerPrefs.GetInt("savedDayNumber");
+            print("savedDayNumber: " + savedDayNumber);
+            string sceneName = "Day" + savedDayNumber.ToString();
+            sceneLoader.LoadSceneByName(sceneName);
+        }
     }
 
     public void ExitGame()
     {
-        Application.Quit();
+        if (!clickedButton)
+        {
+            clickedButton = true;
+
+            Application.Quit();
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #endif
+        }
     }
 
     void SetUpContinueButton()

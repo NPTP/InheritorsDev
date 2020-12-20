@@ -488,6 +488,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 927d8855c0ecffb44b8eea86855561ac, type: 3}
   - {fileID: 8300000, guid: fedaf16d9f75ae347816b5127ce8c3b8, type: 3}
   - {fileID: 8300000, guid: ef2c369d5b58dd443a96e7d7af7a7900, type: 3}
+  touchSound: {fileID: 8300000, guid: 5812b216e97616a40a21f0f65793e95e, type: 3}
+  effectPrefab: {fileID: 4641198061803858092, guid: 9d3db783c0a72224e919d13099023d45,
+    type: 3}
 --- !u!54 &349868965049711099
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -512,7 +515,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 296293323412328651}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.15
   m_Height: 1

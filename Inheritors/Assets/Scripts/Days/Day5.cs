@@ -68,9 +68,16 @@ public class Day5 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(2f);
 
-        // Cue the opening dialog.
+        // Set up facings.
         PlayerMovement pm = FindObjectOfType<PlayerMovement>();
-        pm.LookAtTarget(GameObject.FindWithTag("FatherNPC").transform);
+        GameObject mother = GameObject.FindWithTag("MotherNPC");
+        GameObject father = GameObject.FindWithTag("FatherNPC");
+        LookAtPlayer motherLook = mother.GetComponent<LookAtPlayer>();
+        LookAtPlayer fatherLook = father.GetComponent<LookAtPlayer>();
+
+        // Cue the opening dialog.
+        pm.LookAtTarget(father.transform);
+        motherLook.ChangeTarget(father.transform);
         dialogManager.NewDialog(dialogContent.Get("Day5Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
@@ -83,9 +90,12 @@ public class Day5 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        pm.LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
+        pm.LookAtTarget(mother.transform);
+        motherLook.ResetTarget();
+        fatherLook.ChangeTarget(mother.transform); 
         dialogManager.NewDialog(dialogContent.Get("Day5Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+        fatherLook.ResetTarget();
         dialogTriggers[Character.Mother].Enable();
 
         recordManager.PlayRecordings();

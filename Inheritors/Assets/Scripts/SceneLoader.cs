@@ -33,7 +33,6 @@ public class SceneLoader : MonoBehaviour
         audioSourceVolumePairs = new List<Tuple<AudioSource, float>>();
         foreach (AudioSource audioSource in audioSources)
         {
-            print(audioSource.gameObject.name);
             audioSourceVolumePairs.Add(new Tuple<AudioSource, float>(audioSource, audioSource.volume));
         }
     }

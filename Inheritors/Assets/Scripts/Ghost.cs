@@ -6,25 +6,36 @@ public class Ghost : MonoBehaviour
 {
     Renderer rend;
     SampleBuffer sampleBuffer;
+
     [Header("Animator controller")]
     [SerializeField] Animator animator;
+
     [Header("Materials")]
     [SerializeField] Material mainMaterial;
     [SerializeField] Material dissolveMaterial;
+
     [Header("Particles")]
     [SerializeField] ParticleSystem enterParticles;
     [SerializeField] ParticleSystem activeParticles;
     [SerializeField] ParticleSystem exitParticles;
     [SerializeField] ParticleSystem poofParticles;
+
     [Header("Light")]
     [SerializeField] Light thisLight;
+
     [Header("Audio")]
     [SerializeField] AudioSource audioSource;
-
-    float volumeScale = 1f;
     [SerializeField] AudioClip enterSound;
     [SerializeField] AudioClip loopSound;
     [SerializeField] AudioClip[] exitSounds;
+    [SerializeField] AudioClip touchSound;
+    float volumeScale = 1f;
+
+    [Header("Player Collision Effect")]
+    [SerializeField] GameObject effectPrefab;
+    float touchVolumeScale = .1f;
+
+    StateManager stateManager;
 
     float fadeInTime = 3f;
     float fadeOutTime = 4f;
@@ -36,6 +47,29 @@ public class Ghost : MonoBehaviour
     int frame = 0;
     float minResetTime = 5.0f;
     float maxResetTime = 10.0f;
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (playing && other.tag == "Player" && stateManager.GetState() == State.Normal)
+        {
+            GameObject effect = GameObject.Instantiate(effectPrefab, transform.position, Quaternion.identity);
+            effect.transform.SetParent(other.transform);
+            effect.transform.localScale = Vector3.one;
+            FindObjectOfType<AudioManager>().PlayOneShot(touchSound, touchVolumeScale);
+            if (PlayerPrefs.GetInt("TouchedGhost", 0) == 0)
+            {
+                PlayerPrefs.SetInt("TouchedGhost", 1);
+                Dialog d = new Dialog{
+                    character = Character.Narrator,
+                    lines = new string[] {
+                        "I feel... \nI feel as though I've been here before...",
+                        "As though I am seeing the past again, with fresh eyes, with the eyes of the present..."
+                    }
+                };
+                FindObjectOfType<DialogManager>().NewDialog(d);
+            }
+        }
+    }
 
     void FixedUpdate()
     {
@@ -73,6 +107,8 @@ public class Ghost : MonoBehaviour
         savedRange = thisLight.range;
         savedIntensity = thisLight.intensity;
         savedVolume = audioSource.volume;
+
+        stateManager = FindObjectOfType<StateManager>();
 
         // Set up first frame
         if (frame < sampleBuffer.Length)

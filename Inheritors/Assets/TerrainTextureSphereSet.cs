@@ -13,6 +13,7 @@ public class TerrainTextureSphereSet : MonoBehaviour
     [Space(10)]
     public bool remapTexture = false;
     public TerrainManager.Layers remapLayer;
+    public int fallOffExponent = 3;
 
     [Header("GRASS DETAILS REMOVAL")]
     [Space(10)]
@@ -40,6 +41,16 @@ public class TerrainTextureSphereSet : MonoBehaviour
         center = transform.position;
         radius = transform.lossyScale.x / 2;
 
+        StartCoroutine(Functionality());
+    }
+
+    IEnumerator Functionality()
+    {
+        // Wait a couple frames for loading to complete, so that we aren't
+        // competing for who gets to set terrain data last.
+        yield return null;
+        yield return null;
+        
         if (remapTexture)
             TextureRemap();
 
@@ -96,18 +107,19 @@ public class TerrainTextureSphereSet : MonoBehaviour
             {
                 // Convert from splatmap to world space
                 Vector3 worldPos = ConvertToWorldSpace(x, z, splatSize);
+                float distance = (worldPos - center).magnitude;
+                float falloff = Mathf.Pow(distance / radius, fallOffExponent);
 
                 for (int l = 0; l < numSplatLayers; l++)
                 {
-                    float distance = (worldPos - center).magnitude;
-                    float falloff = distance / radius;
-                    float cubicFalloff = Mathf.Pow(falloff, 3);
                     if (distance <= radius)
                     {
                         if (l == remapLayerNum)
-                            remap[z, x, l] = 1f - cubicFalloff;
+                            remap[z, x, l] = 1f - falloff;
                         else
-                            remap[z, x, l] = alphaMap[z, x, l] - (1f - cubicFalloff);
+                            remap[z, x, l] = alphaMap[z, x, l] - (1f - falloff);
+
+                        if (remap[z,x,l] < 0) {remap[z,x,l] = 0;}
                     }
                     else
                     {
