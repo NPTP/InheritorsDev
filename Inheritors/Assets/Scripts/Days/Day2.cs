@@ -28,6 +28,10 @@ public class Day2 : MonoBehaviour
     public Transform sisterQuadrantTransform;
     public Transform fatherNPCTransform;
 
+    [Space]
+    Transform fatherLookTarget;
+    
+
     /* -------------------------------------- */
     /* -------------------------------------- */
 
