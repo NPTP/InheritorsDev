@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Cinemachine;
+using UnityEngine.Rendering.PostProcessing;
 
 [RequireComponent(typeof(DialogContent))]
 public class Day10 : MonoBehaviour
@@ -36,9 +38,29 @@ public class Day10 : MonoBehaviour
     public Transform playerEndingTranslateTarget;
     public Animator motherNPCAnimator;
     [Space]
+    public Transform familyGhostsLookTarget;
+    public VolumetricLight volumetricLight;
     public AudioClip endStinger;
+    public AudioClip endingMusic;
+    public CinemachineVirtualCamera endCam;
+    float endCamTransitionTime = 60f;
+
+    public GameObject terrainObject;
+    public GameObject worldObject;
+    public Material whiteTerrainMat;
+    public GameObject endingWhiteTerrain;
 
     TaskType lastRemainingTask;
+
+    public PostProcessVolume day10PPVolume;
+    ColorGrading colorGrading;
+
+    public PostProcessVolume generalPPVolume;
+
+    [Space]
+    public Material ghostActiveMat;
+    public Material ghostDissolveMat;
+
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -58,6 +80,10 @@ public class Day10 : MonoBehaviour
         SubscribeToEvents();
         InitializeDialogs();
         InitializeCharDialogTriggers();
+
+        colorGrading = null;
+        day10PPVolume.profile.TryGetSettings(out colorGrading);
+
         StartCoroutine("Intro");
     }
 
@@ -77,6 +103,8 @@ public class Day10 : MonoBehaviour
         hilltopUnblocked.SetActive(false);
         endingGhostsParent.SetActive(false);
 
+        endingWhiteTerrain.SetActive(false);
+
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
         transitionManager.SetAlpha(1f);
@@ -86,26 +114,26 @@ public class Day10 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
-        dialogManager.NewDialog(dialogContent.Get("Day10Opening_1"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // dialogManager.NewDialog(dialogContent.Get("Day10Opening_1"), State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
-        // Show the tasks, only cam send on the new one.
-        taskManager.AddTask(TaskType.Mother, "Check the water pond.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Father, "Check hunting ground.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Sister, "Check sister's.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandmother, "Check grandmother's.");
-        yield return new WaitForSeconds(1f);
-        taskManager.AddTask(TaskType.Grandfather, "Check grandfather's.");
-        yield return new WaitForSeconds(1f);
+        // // Show the tasks, only cam send on the new one.
+        // taskManager.AddTask(TaskType.Mother, "Check the water pond.");
+        // yield return new WaitForSeconds(1f);
+        // taskManager.AddTask(TaskType.Father, "Check hunting ground.");
+        // yield return new WaitForSeconds(1f);
+        // taskManager.AddTask(TaskType.Sister, "Check sister's.");
+        // yield return new WaitForSeconds(1f);
+        // taskManager.AddTask(TaskType.Grandmother, "Check grandmother's.");
+        // yield return new WaitForSeconds(1f);
+        // taskManager.AddTask(TaskType.Grandfather, "Check grandfather's.");
+        // yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        dialogManager.NewDialog(dialogContent.Get("Day10Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // dialogManager.NewDialog(dialogContent.Get("Day10Opening_2"));
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         stateManager.SetState(State.Normal);
         recordManager.PlayRecordings();
@@ -264,7 +292,6 @@ public class Day10 : MonoBehaviour
 
     void SetUpManofhole()
     {
-
         WalkTrigger[] wt = FindObjectsOfType<WalkTrigger>();
         foreach (WalkTrigger walkTrigger in wt)
         {
@@ -316,36 +343,42 @@ public class Day10 : MonoBehaviour
 
     IEnumerator EndingStart()
     {
-        taskManager.CompleteActiveTask();
-
-        stateManager.SetState(State.Inert);
-        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
-
-        dialogManager.NewDialog(dialogContent.Get("Mother_Start"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        motherLeavingAnimation.Play();
-        motherNPCAnimator.SetBool("Walking", true);
-        yield return new WaitWhile(() => motherLeavingAnimation.isPlaying);
-        motherNPCAnimator.SetBool("Walking", false);
-
+        // TODO: remove this after testing
         endingClosedBorders.SetActive(false);
         triggers["Walk_End"].Enable();
-        float endStingerVolumeScale = .4f;
-        audioManager.PlayOneShot(endStinger, endStingerVolumeScale);
+        yield return null;
 
-        endingGhostsParent.SetActive(true);
-        float fadeBetweenTime = 1f;
-        foreach (Transform child in endingGhostsParent.transform)
-        {
-            child.GetComponent<GhostFadeIn>().FadeIn();
-            yield return new WaitForSeconds(fadeBetweenTime);
-        }
+        // taskManager.CompleteActiveTask();
 
-        yield return new WaitForSeconds(3f);
-        taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
+        // stateManager.SetState(State.Inert);
+        // FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
 
-        stateManager.SetState(State.Normal);
+        // dialogManager.NewDialog(dialogContent.Get("Mother_Start"), State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        // motherLeavingAnimation.Play();
+        // motherNPCAnimator.SetBool("Walking", true);
+        // yield return new WaitWhile(() => motherLeavingAnimation.isPlaying);
+        // motherNPCAnimator.SetBool("Walking", false);
+
+        // endingClosedBorders.SetActive(false);
+        // triggers["Walk_End"].Enable();
+        // float endStingerVolumeScale = .4f;
+        // audioManager.PlayOneShot(endStinger, endStingerVolumeScale);
+
+        // FindObjectOfType<PlayerMovement>().LookAtTarget(familyGhostsLookTarget);
+        // endingGhostsParent.SetActive(true);
+        // float fadeBetweenTime = 1f;
+        // foreach (Transform child in endingGhostsParent.transform)
+        // {
+        //     child.GetComponent<GhostFadeIn>().FadeIn();
+        //     yield return new WaitForSeconds(fadeBetweenTime);
+        // }
+
+        // yield return new WaitForSeconds(3f);
+        // taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
+
+        // stateManager.SetState(State.Normal);
     }
 
     IEnumerator LeaveForest()
@@ -357,13 +390,88 @@ public class Day10 : MonoBehaviour
         motherLeavingAnimation.Play("MotherLeavesWithSon");
         motherNPCAnimator.SetBool("Walking", true);
         yield return new WaitForSeconds(2f);
+        audioManager.FadeOtherSources("Down", 2f);
+
+        AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.clip = endingMusic;
+        yield return new WaitForSeconds(1);
+        audioSource.Play();
+
+        float transitionTime = endingMusic.length - 10f;
+
+        // Begin the journey!
+        endCam.Priority = 100;
+
+        // Volumetric Light tweens
+        DOTween.To(
+            () => volumetricLight.ExtinctionCoef,
+            x => volumetricLight.ExtinctionCoef = x,
+            0,
+            10f
+        ).SetEase(Ease.InCubic);
+        DOTween.To(
+            () => volumetricLight.ScatteringCoef,
+            x => volumetricLight.ScatteringCoef = x,
+            0,
+            10f
+        ).SetEase(Ease.InCubic).OnComplete(() => volumetricLight.enabled = false);
+
+        // PP Tweens
+        DOTween.To(
+            () => colorGrading.saturation.value,
+            x => colorGrading.saturation.value = x,
+            -100f,
+            transitionTime / 2
+        ).SetEase(Ease.InCubic).OnComplete(SetBWGhostMaterials);
+        DOTween.To(
+            () => colorGrading.contrast.value,
+            x => colorGrading.contrast.value = x,
+            100f,
+            transitionTime / 2
+        ).SetEase(Ease.InCubic);
+        DOTween.To(
+            () => generalPPVolume.weight,
+            x => generalPPVolume.weight = x,
+            0f,
+            transitionTime / 2
+        ).SetEase(Ease.OutCubic);
+
+        GameObject.Find("WorldBoundaries").SetActive(false);
+        recordManager.PlayRecordingsSimultaneous();
+
+        terrainObject.transform.DOMoveY(-35f, 3 * transitionTime / 4).SetEase(Ease.InCubic).SetRelative().OnComplete(() => terrainObject.SetActive(false));
+        worldObject.transform.DOMoveY(-35f, 3 * transitionTime / 4).SetEase(Ease.InCubic).SetRelative().OnComplete(() => worldObject.SetActive(false));
+
+        yield return new WaitForSeconds(transitionTime / 4);
+        ParticleSystem[] psArray = FindObjectsOfType<ParticleSystem>();
+        foreach (ParticleSystem ps in psArray)
+        {
+            ps.Stop();
+        }
+
+        endingWhiteTerrain.SetActive(true);
+        whiteTerrainMat.DOFade(1f, 2 * transitionTime / 4).From(0f).SetEase(Ease.InCubic);
+
+        yield return new WaitForSeconds((3 * transitionTime) / 4);
+
+        audioSource.DOFade(0f, 2f).SetEase(Ease.InOutCubic);
         transitionManager.SetColor(Color.white);
-        Tween t = transitionManager.Show(4f);
-        audioManager.FadeOtherSources("Down", 4f);
+        Tween t = transitionManager.Show(2f);
         yield return t.WaitForCompletion();
 
-        // saveManager.SaveGame(dayNumber);
+        // Reset materials on exit - just in case ;)
+        ghostActiveMat.SetColor("_Edgecolor", new Color(0, 1, 1, 170f / 255f));
+        ghostDissolveMat.SetColor("_Edgecolor", new Color(0, 1, 1, 170f / 255f));
+
         Helper.LoadScene("EndingText");
+    }
+
+    void SetBWGhostMaterials()
+    {
+        ghostActiveMat.SetColor("_Edgecolor", new Color(0, 0, 0, 1));
+        ghostDissolveMat.SetColor("_Edgecolor", new Color(0, 0, 0, 1));
     }
 
     // ████████████████████████████████████████████████████████████████████████

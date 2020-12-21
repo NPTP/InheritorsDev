@@ -17,6 +17,9 @@ public class RecordManager : MonoBehaviour
     public GameObject ghostPrefab;
     public bool debugMode = false;
 
+    public Material ghostActiveMat;
+    public Material ghostDissolveMat;
+
     // For use in SAVING only.
     public List<SampleBuffer> GetCombinedRecordings()
     {
@@ -34,6 +37,9 @@ public class RecordManager : MonoBehaviour
     {
         stateManager = FindObjectOfType<StateManager>();
         playerMovement = FindObjectOfType<PlayerMovement>();
+
+        ghostActiveMat.SetColor("_Edgecolor", new Color(0, 1, 1, 170f / 255f));
+        ghostDissolveMat.SetColor("_Edgecolor", new Color(0, 1, 1, 170f / 255f));
     }
 
     public void PlayRecordings()
@@ -101,7 +107,8 @@ public class RecordManager : MonoBehaviour
 
         if (hasRecordings && loadedRecordings.Count > 0)
         {
-            ShuffleLoadedRecordings();
+            if (!simultaneous) ShuffleLoadedRecordings();
+
             foreach (SampleBuffer sb in loadedRecordings)
             {
                 GameObject newGhost = Instantiate(ghostPrefab, sb[0].position, sb[0].rotation);

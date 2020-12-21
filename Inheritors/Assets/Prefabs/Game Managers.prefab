@@ -609,6 +609,8 @@ MonoBehaviour:
   ghostPrefab: {fileID: 296293323412328651, guid: 1f86694a58e25dc4988becc281b02949,
     type: 3}
   debugMode: 0
+  ghostActiveMat: {fileID: 2100000, guid: b97201d0a1d033645840b6eb872da9ba, type: 2}
+  ghostDissolveMat: {fileID: 2100000, guid: cd9ca63404058484092568918c8ecbf9, type: 2}
 --- !u!1 &3872553748632466608
 GameObject:
   m_ObjectHideFlags: 0
