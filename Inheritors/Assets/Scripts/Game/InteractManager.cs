@@ -18,9 +18,10 @@ public class InteractManager : MonoBehaviour
 
     [SerializeField] AudioClip pickupSound;
     [SerializeField] float pickupSoundVolumeScale = 0.2f;
-    // TODO
-    // AudioClip dropoffSound;
-    // AudioClip dialogSound;
+    [SerializeField] AudioClip dropoffSound;
+    [SerializeField] float dropoffSoundVolumeScale = 0.2f;
+    [SerializeField] AudioClip dialogSound;
+    [SerializeField] float dialogSoundVolumeScale = 0.2f;
 
     AreaTrigger areaTrigger = null;
     string areaTag = null;
@@ -275,6 +276,8 @@ public class InteractManager : MonoBehaviour
         playerMovement.Halt();
         playerMovement.LookAtTarget(thisDropoff.target);
 
+        audioManager.PlayOneShot(dropoffSound, dropoffSoundVolumeScale);
+
         Vector3 startPosition = heldItem.transform.position;
         Vector3 endPosition = thisDropoff.target.position;
         float elapsed = 0f;
@@ -336,6 +339,9 @@ public class InteractManager : MonoBehaviour
         dialogTrigger.InteractDisappear();
         dialogInRange = false;
         uiManager.dialogPrompt.Hide();
+
+        audioManager.PlayOneShot(dialogSound, dialogSoundVolumeScale);
+
         if (dialogTrigger.lookAtMyTarget && dialogTrigger.myTarget != null)
         {
             // Halt and face the subject of the dialog!

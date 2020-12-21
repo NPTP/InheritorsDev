@@ -41,6 +41,8 @@ public class Day7 : MonoBehaviour
     public CinemachineVirtualCamera day7StartCam;
     public CinemachineVirtualCamera day7HammockCam;
     public AudioClip hammockStinger;
+    [Space]
+    public Transform fatherLeavesLookTarget;
     // public GameObject bigTree;
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -339,6 +341,7 @@ public class Day7 : MonoBehaviour
         grandfatherChar2.SetActive(true);
         dialogTriggers[Character.Grandfather] = grandfatherDialogTrigger2.GetComponent<DialogTrigger>();
         dialogTriggers[Character.Grandfather].Enable();
+        dialogTriggers[Character.Grandfather].DisableTriggerProjector();
         GameObject.FindWithTag("Player").GetComponent<PlayerMovement>().LookAtTarget(grandfatherChar2.transform);
 
         transitionManager.Hide(2f);
@@ -416,10 +419,14 @@ public class Day7 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         stateManager.SetState(State.Inert);
         pickupManager.LoseTaskTool();
+        FindObjectOfType<PlayerMovement>().LookAtTarget(fatherLeavesLookTarget);
 
         Animation animation = GameObject.Find("FatherLeaves").GetComponent<Animation>();
+        GameObject father = GameObject.FindWithTag("FatherNPC");
+        father.GetComponent<Animator>().SetBool("Walking", true);
         animation.Play();
-        yield return new WaitWhile(() => animation.isPlaying);
+        yield return new WaitForSeconds(animation.clip.length - 1.5f);
+        Destroy(father);
 
         taskManager.CompleteActiveTask();
         stateManager.SetState(State.Normal);

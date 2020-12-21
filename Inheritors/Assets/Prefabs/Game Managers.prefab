@@ -559,6 +559,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupSound: {fileID: 8300000, guid: e369bcde936235847b7f88713451f5b0, type: 3}
   pickupSoundVolumeScale: 0.2
+  dropoffSound: {fileID: 8300000, guid: 51d2c314636a3a44187e554f7c558e7a, type: 3}
+  dropoffSoundVolumeScale: 0.2
+  dialogSound: {fileID: 8300000, guid: 9f25a9055e323cf48aaa0146af7dd7bf, type: 3}
+  dialogSoundVolumeScale: 0.2
 --- !u!1 &3872553748631699576
 GameObject:
   m_ObjectHideFlags: 0

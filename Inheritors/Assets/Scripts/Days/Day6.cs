@@ -29,6 +29,12 @@ public class Day6 : MonoBehaviour
     // public Transform grandfatherQuadrant;
     // public Transform grandmotherQuadrant;
 
+    public AudioClip fireworkSound;
+    public AudioSource ambientSource;
+    public AudioClip postFireworkAmbient;
+    public Animator pigAnimator;
+    public GameObject huntingBlock;
+
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -81,26 +87,26 @@ public class Day6 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(2f);
 
-        // Cue the opening dialog.
-        pm.LookAtTarget(mother.transform);
-        sisterLook.ChangeTarget(mother.transform);
-        dialogManager.NewDialog(dialogContent.Get("Day6Opening_1"), State.Inert);
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // // Cue the opening dialog.
+        // pm.LookAtTarget(mother.transform);
+        // sisterLook.ChangeTarget(mother.transform);
+        // dialogManager.NewDialog(dialogContent.Get("Day6Opening_1"), State.Inert);
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
         // Show the tasks, only cam send on the new one.
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
         taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        pm.LookAtTarget(sister.transform);
-        sisterLook.ResetTarget();
-        motherLook.ChangeTarget(sister.transform);
-        dialogManager.NewDialog(dialogContent.Get("Day6Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        // pm.LookAtTarget(sister.transform);
+        // sisterLook.ResetTarget();
+        // motherLook.ChangeTarget(sister.transform);
+        // dialogManager.NewDialog(dialogContent.Get("Day6Opening_2"));
+        // yield return new WaitUntil(dialogManager.IsDialogFinished);
         dialogTriggers[Character.Mother].Enable();
 
         motherLook.ResetTarget();
@@ -333,7 +339,8 @@ public class Day6 : MonoBehaviour
     IEnumerator HuntBegin()
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        taskManager.SetActiveTask(TaskType.Father);
+        dialogTriggers[Character.Father].Disable();
+        taskManager.SetActiveTask(TaskType.Father, false);
         taskManager.ChangeTask(TaskType.Father, "Kill the pig.");
 
         stateManager.SetState(State.Inert);
@@ -342,14 +349,29 @@ public class Day6 : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         Animation animation = GameObject.Find("HuntFireworks").GetComponent<Animation>();
         animation.Play();
-        yield return new WaitWhile(() => animation.isPlaying);
+        audioManager.PlayOneShot(fireworkSound);
+        ambientSource.Stop();
+        yield return new WaitForSeconds(.75f);
+        pigAnimator.Play("Fireworks-Start");
+        GameObject.FindWithTag("FatherNPC").GetComponent<LookAtPlayer>().ChangeTarget(pigAnimator.transform);
+        FindObjectOfType<PlayerMovement>().LookAtTarget(pigAnimator.transform);
 
-        recordManager.StopRecording();
+        yield return new WaitWhile(() => animation.isPlaying);
+        ambientSource.clip = postFireworkAmbient;
+        ambientSource.Play();
+        float newVolume = .5f;
+        ambientSource.DOFade(newVolume, 4f).From(0f).SetEase(Ease.InQuad);
+
+        yield return new WaitForSeconds(4f);
+
+        GameObject.FindWithTag("FatherNPC").GetComponent<LookAtPlayer>().ResetTarget();
         dialogManager.NewDialog(dialogContent.Get("Father_HuntEnd"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogTriggers[Character.Father].Enable();
 
         pickupManager.LoseTaskTool();
         taskManager.CompleteActiveTask();
+        huntingBlock.SetActive(false);
 
         stateManager.SetState(State.Normal);
     }

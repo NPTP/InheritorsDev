@@ -144,8 +144,9 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
                 "I... I do not know... what that was.",
                 "The shadows threw their fire and smoke and noise toward the pig and... every animal has fled in fear!",
+                "Listen, son... \nthe whole forest has quieted.",
                 "We will not have another chance to kill anything for at least a day.",
-                "Son, we can live without meat for one day. You are quite skilled now, so we will surely catch something tomorrow.",
+                "Alright, with our combined skill and effort, we will surely catch something tomorrow. Come back tomorrow.",
             }
         });
 

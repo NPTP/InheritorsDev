@@ -188,7 +188,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
                 "But know this, grandson. We have been through worse, and we survived.",
                 "Many Akuntsu gave up hope too early - \nand we miss them every day. \nBut our family never gave it up.",
                 "I am the shaman, I am your chief, I will protect this land from outsiders. \nAnd <i>you</i> will inherit it.",
-                "Come, take your matété, let us call the ancestors with a rousing duet, and clear all bad blood from this place."
+                "Come, take your <color=blue>matété</color>, let us call the ancestors with a rousing duet, and clear all bad blood from this place."
             }
         });
 
@@ -204,7 +204,7 @@ public class Day8DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Grandfather,
             lines = new string[] {
-                "Pick up your matété and play with me. The ancestors will hear us!"
+                "Pick up your <color=blue>matété</color> and play with me. The ancestors will hear us!"
             }
         });
 

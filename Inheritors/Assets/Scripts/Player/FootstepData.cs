@@ -19,8 +19,4 @@ public class FootstepData : ScriptableObject
 
     [Header("Test sound")]
     public AudioClip tester;
-    [Space]
-
-    [Header("Particles for different materials")]
-    public ParticleSystem grassParticles;
 }

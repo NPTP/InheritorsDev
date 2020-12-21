@@ -59,6 +59,11 @@ public class DialogTrigger : MonoBehaviour, Trigger
         else Disable();
     }
 
+    public void DisableTriggerProjector()
+    {
+        triggerProjector.Disable();
+    }
+
     public string GetTag()
     {
         return triggerTag;

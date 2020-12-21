@@ -27,6 +27,7 @@ public class Day8 : MonoBehaviour
     public GameObject seedsPickup;
     [Space]
     public AudioClip mateteDuet;
+    public Animator grandfatherAnimator;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -246,6 +247,8 @@ public class Day8 : MonoBehaviour
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
         PlayerMovement pm = FindObjectOfType<PlayerMovement>();
         pm.LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
+        grandfatherAnimator.SetBool("Playing", true);
+        FindObjectOfType<PlayerSpecialAnimations>().PlayFluteAnimation();
         yield return new WaitForSeconds(1f);
         pm.Halt();
 
@@ -253,12 +256,14 @@ public class Day8 : MonoBehaviour
         recordManager.PlayRecordings();
         yield return new WaitForSeconds(mateteDuet.length);
         yield return new WaitForSeconds(1f);
+        grandfatherAnimator.SetBool("Playing", false);
 
         recordManager.StopRecording();
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         pickupManager.LoseItems();
+        FindObjectOfType<PlayerSpecialAnimations>().StopFluteAnimation();
         taskManager.CompleteActiveTask();
     }
 

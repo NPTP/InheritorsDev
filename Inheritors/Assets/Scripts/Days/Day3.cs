@@ -28,6 +28,7 @@ public class Day3 : MonoBehaviour
     public Transform grandmotherQuadrant;
     [Space]
     public AudioClip[] mateteSounds;
+    public Animator grandfatherAnimator;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -278,18 +279,25 @@ public class Day3 : MonoBehaviour
     {
         stateManager.SetState(State.Inert);
         taskManager.ChangeTask(TaskType.Grandfather, "Play with grandfather.");
-        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
+        PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        pm.LookAtTarget(GameObject.FindWithTag("GrandfatherNPC").transform);
+        FindObjectOfType<PlayerSpecialAnimations>().PlayFluteAnimation();
         yield return new WaitForSeconds(.5f);
+        pm.Halt();
 
         float delay = 1f;
 
         dialogManager.NewDialog(dialogContent.Get("Grandfather_StartTask"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        grandfatherAnimator.SetBool("Playing", true);
         yield return new WaitForSeconds(delay);
 
         audioManager.Play(mateteSounds[0]);
         yield return new WaitForSeconds(mateteSounds[0].length);
         yield return new WaitForSeconds(delay);
+
+        grandfatherAnimator.SetBool("Playing", false);
 
         dialogManager.NewDialog(dialogContent.Get("Grandfather_ContinueTask"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -303,9 +311,10 @@ public class Day3 : MonoBehaviour
         dialogManager.NewDialog(dialogContent.Get("Grandfather_FinishTask"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        stateManager.SetState(State.Normal);
         pickupManager.LoseItems();
+        FindObjectOfType<PlayerSpecialAnimations>().StopFluteAnimation();
         taskManager.CompleteActiveTask();
+        stateManager.SetState(State.Normal);
     }
 
     // ████████████████████████████ SISTER ████████████████████████████████████

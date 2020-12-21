@@ -77,8 +77,6 @@ public class Day4 : MonoBehaviour
 
         dialogManager.NewDialog(dialogContent.Get("Day4Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-
-        recordManager.PlayRecordings();
     }
 
     // ████████████████████████████████████████████████████████████████████████

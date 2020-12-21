@@ -31,7 +31,10 @@ public class Day1 : MonoBehaviour
     public Transform wateringHoleQuadrantTransform;
     public Transform fatherQuadrantTransform;
     [Space]
-    public Animation pigAnimation;
+    public GameObject huntingBlock;
+    public GameObject pig;
+    public AudioClip arrowShot;
+    public GameObject arrowPrefab;
     /* -------------------------------------- */
     /* -------------------------------------- */
 
@@ -217,22 +220,37 @@ public class Day1 : MonoBehaviour
 
     IEnumerator HuntBegin()
     {
+        print("Hunt began...");
+
         dialogTriggers[Character.Father].Disable();
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         taskManager.SetActiveTask(TaskType.Father, false);
         taskManager.ChangeTask(TaskType.Father, "Kill pig with the bow.");
 
-        // PIG KILLING MINIGAME GOES ON HERE
-        // stateManager.SetState(State.Hunting); ???
+        // PIG HUNTING ANIMATION!
         stateManager.SetState(State.Inert);
-        yield return new WaitForSeconds(2f);
-        // END PIG KILLING
+        GameObject player = GameObject.FindWithTag("Player");
+        player.GetComponent<PlayerMovement>().LookAtTarget(pig.transform, 90f);
+        player.GetComponent<PlayerSpecialAnimations>().PlayBowAnimation();
+        float volume = .5f;
+        audioManager.PlayOneShot(arrowShot, volume);
+        yield return new WaitForSecondsRealtime(1.6f);
+        GameObject arrow = GameObject.Instantiate(arrowPrefab, player.transform.position + 2 * Vector3.up, player.transform.rotation * Quaternion.Euler(0, -90f, 0));
+        arrow.transform.DOMove(pig.transform.position, .1f);
+        arrow.transform.DOScale(Vector3.zero, .1f);
+        pig.GetComponent<Animator>().Play("Dead");
+        yield return new WaitForSeconds(1f);
+        // DONE
 
-        Destroy(GameObject.Find("Pig").GetComponent<Animator>());
-        pigAnimation.Stop(); // The actual pig movements like walking, eating, etc
+        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("FatherNPC").transform);
+        yield return new WaitForSeconds(2f);
+
+        Destroy(arrow);
+
         dialogManager.NewDialog(dialogContent.Get("Father_AfterKill"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        huntingBlock.SetActive(false);
         pickupManager.LoseTaskTool();
         taskManager.ChangeTask(TaskType.Father, "Collect the meat.");
         triggers["Pickup_Pig"].Enable();

@@ -58,13 +58,21 @@ public class PlayerMovement : MonoBehaviour
         return sample;
     }
 
-    public void LookAtTarget(Transform target)
+    public void LookAtTarget(Transform target, float offset = 0)
     {
-        Vector3 lookRotation = Quaternion.LookRotation(
+        Quaternion rotation = Quaternion.LookRotation(
                 target.position - transform.position,
-                Vector3.up).eulerAngles;
+                Vector3.up);
+
+        if (offset != 0)
+        {
+            rotation *= Quaternion.Euler(0, offset, 0);
+        }
+
+        Vector3 lookRotation = rotation.eulerAngles;
         lookRotation.x = 0f;
         lookRotation.z = 0f;
+
         m_rigidBody.DORotate(lookRotation, rotateFacingTime);
     }
 

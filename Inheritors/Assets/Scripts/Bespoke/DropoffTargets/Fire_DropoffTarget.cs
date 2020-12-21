@@ -13,6 +13,10 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
     ParticleSystem dark;
     LightFlicker lightFlicker;
 
+    [SerializeField] AudioSource fireSource;
+    [SerializeField] AudioClip flareSound;
+    float flareSoundVolume = 0.6f;
+
     public bool DoneReaction()
     {
         return doneReaction;
@@ -20,6 +24,7 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
 
     void Awake()
     {
+        audioManager = FindObjectOfType<AudioManager>();
         fireParent = GameObject.Find("FirePSParent").transform;
         sparks = fireParent.GetChild(0).GetComponent<ParticleSystem>();
         fire = fireParent.GetChild(1).GetComponent<ParticleSystem>();
@@ -46,8 +51,10 @@ public class Fire_DropoffTarget : MonoBehaviour, DropoffTarget
     IEnumerator DropoffAnimation()
     {
         float flareTime = 3f;
+        audioManager.PlayOneShot(flareSound, flareSoundVolume);
         fireParent.DOScale(new Vector3(3f, 3f, 3f), flareTime).SetEase(Ease.OutElastic);
         lightFlicker.light.DOIntensity(2f, flareTime).SetEase(Ease.OutElastic);
+        fireSource.DOFade(1f, flareTime);
         sparks.Play();
         smoke.Play();
         dark.Play();
