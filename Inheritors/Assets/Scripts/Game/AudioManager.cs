@@ -44,12 +44,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // TODO: a universal fade for everything, saving the original volumes plz
-    // public void FadeTo(float volume, float duration, Ease ease = Ease.Linear)
-    // {
-    //     audioSource.DOFade(volume, duration).SetEase(ease);
-    // }
-
     public int NumChannels
     {
         get

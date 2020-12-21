@@ -25,6 +25,13 @@ public class Day4 : MonoBehaviour
     public Transform motherQuadrant;
     public Transform hillPathTransform;
     public GameObject festivalBlock;
+    public GameObject postProcessFX;
+    public ParticleSystem initialParticles;
+    public Transform ancestors;
+    public AudioClip stinger;
+    public AudioClip festivalShockwaveSound;
+    public AudioClip festivalFlashSound;
+    public AudioClip festivalChargeUpSound;
     /* -------------------------------------- */
     /* -------------------------------------f- */
 
@@ -63,20 +70,24 @@ public class Day4 : MonoBehaviour
         transitionManager.Hide(3f);
         yield return new WaitForSeconds(3.5f);
 
+        ancestors.gameObject.SetActive(false);
+
         dialogManager.NewDialog(dialogContent.Get("Day4Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.SendCamTo(hillPathTransform);
-        uiManager.SetUpTasksInventory();
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddAndSetActive(TaskType.Grandmother, "Ascend up the hill.", false);
         yield return new WaitForSeconds(2f);
 
         cameraManager.QuadrantCamActivate(motherQuadrant);
+        uiManager.SetUpTasksInventory();
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         dialogManager.NewDialog(dialogContent.Get("Day4Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        taskManager.AddAndSetActive(TaskType.Grandmother, "Ascend up the hill.", false);
+        stateManager.SetState(State.Normal);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -209,12 +220,18 @@ public class Day4 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         uiManager.TearDownTasksInventory();
-        yield return new WaitForSeconds(1.5f);
+        initialParticles.Play();
+        audioManager.PlayOneShot(festivalChargeUpSound);
+        yield return new WaitForSeconds(2f);
 
         ShockwaveProjector sp = FindObjectOfType<ShockwaveProjector>();
         sp.Shockwave();
+        postProcessFX.SetActive(true);
+        audioManager.PlayOneShot(festivalShockwaveSound);
+        StartCoroutine(AncestorsAppear());
         yield return new WaitUntil(sp.ShockwaveFinished);
 
+        audioManager.PlayOneShot(stinger, 0.6f);
         dialogManager.NewDialog(dialogContent.Get("Grandmother_Festival2"), State.Inert);
         dialogTriggers[Character.Grandmother].Disable();
         yield return new WaitUntil(dialogManager.IsDialogFinished);
@@ -223,9 +240,12 @@ public class Day4 : MonoBehaviour
         float transitionTime = .5f;
         transitionManager.ChangeColor(Color.white, 0f);
         Tween t = transitionManager.Show(transitionTime);
+        audioManager.PlayOneShot(festivalFlashSound, 0.5f); // Hardcoded volume scale
         yield return t.WaitForCompletion();
         recordManager.PlayRecordingsSimultaneous();
         pickupManager.LoseItems();
+        postProcessFX.SetActive(false);
+        ancestors.gameObject.SetActive(false);
         transitionManager.Hide(transitionTime);
         yield return new WaitForSeconds(3f);
 
@@ -241,9 +261,21 @@ public class Day4 : MonoBehaviour
         triggers["Walk_End"].Enable();
         done = true;
 
-        // Extra ghosts just for fun
-        yield return new WaitForSeconds(20f);
-        recordManager.PlayRecordings();
+        // Extra ghosts just for fun -- UPDATE: Removed because it could break
+        // yield return new WaitForSeconds(20f);
+        // recordManager.PlayRecordings();
+    }
+
+    IEnumerator AncestorsAppear()
+    {
+        ancestors.gameObject.SetActive(true);
+
+        float appearDelay = 0.05f;
+        foreach (Transform child in ancestors)
+        {
+            child.gameObject.GetComponent<GhostFadeIn>().FadeIn();
+            yield return new WaitForSeconds(appearDelay);
+        }
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████

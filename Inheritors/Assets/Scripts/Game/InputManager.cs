@@ -4,7 +4,6 @@ using UnityEngine;
 
 // Abstracts inputs and sends events on input. Runs before Default Time in the script execution order.
 // Currently supporting PC keyboard & X360 controller only.
-// TODO: PC bindings must be fixed up via project settings input manager.
 public class InputManager : MonoBehaviour
 {
     StateManager stateManager;

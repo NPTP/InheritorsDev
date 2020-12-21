@@ -23,13 +23,6 @@ public class PlayerSpecialAnimations : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    // TODO: remove this when done testing.
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.B))
-            GetComponent<PlayerSpecialAnimations>().PlayBowAnimation();
-    }
-
     public void PlayBowAnimation()
     {
         animator.Play(bowAnimation);

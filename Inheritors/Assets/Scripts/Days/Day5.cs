@@ -26,6 +26,7 @@ public class Day5 : MonoBehaviour
     public Material redheadMaterial;
     public GameObject manofholeNPC;
     public GameObject papayaTreeFire;
+    public Transform urukuLookTarget;
     [Space]
     public AudioClip[] mateteSounds;
 
@@ -92,7 +93,7 @@ public class Day5 : MonoBehaviour
         // Final dialog of opening.
         pm.LookAtTarget(mother.transform);
         motherLook.ResetTarget();
-        fatherLook.ChangeTarget(mother.transform); 
+        fatherLook.ChangeTarget(mother.transform);
         dialogManager.NewDialog(dialogContent.Get("Day5Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
         fatherLook.ResetTarget();
@@ -400,9 +401,11 @@ public class Day5 : MonoBehaviour
 
     IEnumerator PickupUruku()
     {
-        // TODO: Play animations
-
         stateManager.SetState(State.Inert);
+
+        GameObject player = GameObject.FindWithTag("Player");
+        player.GetComponent<PlayerMovement>().LookAtTarget(urukuLookTarget);
+        player.GetComponent<Animator>().SetTrigger("Pickup");
 
         GameObject.Find("UrukuExplosion").GetComponent<ParticleSystem>().Play();
         yield return new WaitForSeconds(.25f);

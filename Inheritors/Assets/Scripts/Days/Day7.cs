@@ -29,6 +29,7 @@ public class Day7 : MonoBehaviour
     public GameObject seedsPickup;
     public AudioClip urukuSound;
     public AudioSource ambientSound;
+    public Transform urukuLookTarget;
     // public Transform motherQuadrant;
     // public Transform grandfatherQuadrant;
     // public Transform grandmotherQuadrant;
@@ -466,6 +467,10 @@ public class Day7 : MonoBehaviour
     IEnumerator PickupUruku()
     {
         stateManager.SetState(State.Inert);
+
+        GameObject player = GameObject.FindWithTag("Player");
+        player.GetComponent<PlayerMovement>().LookAtTarget(urukuLookTarget);
+        player.GetComponent<Animator>().SetTrigger("Pickup");
 
         audioManager.PlayOneShot(urukuSound);
         GameObject.Find("UrukuExplosion").GetComponent<ParticleSystem>().Play();

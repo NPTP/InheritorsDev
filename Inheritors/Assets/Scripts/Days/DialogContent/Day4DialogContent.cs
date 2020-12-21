@@ -79,8 +79,7 @@ public class Day4DialogContent : MonoBehaviour, DialogContent
             lines = new string[] {
               "Good. Now, hold the reed up to my nose, and slide the ground yopo through it... that's it.",
               "<i>Sniff</i>... <i>Sniff</i>... Aahh...",
-              "Imagine this land when it was more than just our family, grandson.",
-              "Imagine when there were thousands of Akuntsu here.",
+              "Imagine this land when it was more than just our family, grandson. When there were many Akuntsu here.",
               "We clear the bad blood of we who remain... \nThe ancestors speak... \nHear them, see them...",
               "<i>NOW</i>!"
             }
