@@ -358,6 +358,7 @@ public class Day6 : MonoBehaviour
 
         yield return new WaitWhile(() => animation.isPlaying);
         ambientSource.clip = postFireworkAmbient;
+        ambientSource.volume = .8f;
         ambientSource.Play();
         float newVolume = .5f;
         ambientSource.DOFade(newVolume, 4f).From(0f).SetEase(Ease.InQuad);

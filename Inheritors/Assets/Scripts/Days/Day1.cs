@@ -87,7 +87,7 @@ public class Day1 : MonoBehaviour
         // Give us context for hunting task.
         cameraManager.SendCamTo(fatherQuadrantTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        taskManager.AddTask(TaskType.Father, "Meet father in the woods.");
+        taskManager.AddTask(TaskType.Father, "Hunt with father.");
         yield return new WaitForSeconds(1f);
 
         // Return to player to debrief before letting them loose.

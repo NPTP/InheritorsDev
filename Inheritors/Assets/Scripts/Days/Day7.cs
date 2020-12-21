@@ -485,6 +485,7 @@ public class Day7 : MonoBehaviour
         pickupManager.LoseItems();
         recordManager.StopRecording();
 
+        player.GetComponent<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandmotherNPC").transform);
         dialogManager.NewDialog(dialogContent.Get("Grandmother_FinishTask"), State.Normal);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 

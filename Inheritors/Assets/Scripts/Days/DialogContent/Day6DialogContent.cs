@@ -146,7 +146,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
                 "The shadows threw their fire and smoke and noise toward the pig and... every animal has fled in fear!",
                 "Listen, son... \nthe whole forest has quieted.",
                 "We will not have another chance to kill anything for at least a day.",
-                "Alright, with our combined skill and effort, we will surely catch something tomorrow. Come back tomorrow.",
+                "Alright, with our combined skill and effort, we will surely catch something tomorrow.",
             }
         });
 

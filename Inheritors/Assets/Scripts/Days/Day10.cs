@@ -114,26 +114,26 @@ public class Day10 : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Cue the opening dialog.
-        // dialogManager.NewDialog(dialogContent.Get("Day10Opening_1"), State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogManager.NewDialog(dialogContent.Get("Day10Opening_1"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
         uiManager.SetUpTasksInventory();
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
-        // // Show the tasks, only cam send on the new one.
-        // taskManager.AddTask(TaskType.Mother, "Check the water pond.");
-        // yield return new WaitForSeconds(1f);
-        // taskManager.AddTask(TaskType.Father, "Check hunting ground.");
-        // yield return new WaitForSeconds(1f);
-        // taskManager.AddTask(TaskType.Sister, "Check sister's.");
-        // yield return new WaitForSeconds(1f);
-        // taskManager.AddTask(TaskType.Grandmother, "Check grandmother's.");
-        // yield return new WaitForSeconds(1f);
-        // taskManager.AddTask(TaskType.Grandfather, "Check grandfather's.");
-        // yield return new WaitForSeconds(1f);
+        // Show the tasks.
+        taskManager.AddTask(TaskType.Mother, "Check the water pond.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Father, "Check hunting ground.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Sister, "Check sister's.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Grandmother, "Check grandmother's.");
+        yield return new WaitForSeconds(1f);
+        taskManager.AddTask(TaskType.Grandfather, "Check grandfather's.");
+        yield return new WaitForSeconds(1f);
 
         // Final dialog of opening.
-        // dialogManager.NewDialog(dialogContent.Get("Day10Opening_2"));
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogManager.NewDialog(dialogContent.Get("Day10Opening_2"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         stateManager.SetState(State.Normal);
         recordManager.PlayRecordings();
@@ -348,37 +348,37 @@ public class Day10 : MonoBehaviour
         triggers["Walk_End"].Enable();
         yield return null;
 
-        // taskManager.CompleteActiveTask();
+        taskManager.CompleteActiveTask();
 
-        // stateManager.SetState(State.Inert);
-        // FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
+        stateManager.SetState(State.Inert);
+        FindObjectOfType<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("MotherNPC").transform);
 
-        // dialogManager.NewDialog(dialogContent.Get("Mother_Start"), State.Inert);
-        // yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogManager.NewDialog(dialogContent.Get("Mother_Start"), State.Inert);
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        // motherLeavingAnimation.Play();
-        // motherNPCAnimator.SetBool("Walking", true);
-        // yield return new WaitWhile(() => motherLeavingAnimation.isPlaying);
-        // motherNPCAnimator.SetBool("Walking", false);
+        motherLeavingAnimation.Play();
+        motherNPCAnimator.SetBool("Walking", true);
+        yield return new WaitWhile(() => motherLeavingAnimation.isPlaying);
+        motherNPCAnimator.SetBool("Walking", false);
 
-        // endingClosedBorders.SetActive(false);
-        // triggers["Walk_End"].Enable();
-        // float endStingerVolumeScale = .4f;
-        // audioManager.PlayOneShot(endStinger, endStingerVolumeScale);
+        endingClosedBorders.SetActive(false);
+        triggers["Walk_End"].Enable();
+        float endStingerVolumeScale = .4f;
+        audioManager.PlayOneShot(endStinger, endStingerVolumeScale);
 
-        // FindObjectOfType<PlayerMovement>().LookAtTarget(familyGhostsLookTarget);
-        // endingGhostsParent.SetActive(true);
-        // float fadeBetweenTime = 1f;
-        // foreach (Transform child in endingGhostsParent.transform)
-        // {
-        //     child.GetComponent<GhostFadeIn>().FadeIn();
-        //     yield return new WaitForSeconds(fadeBetweenTime);
-        // }
+        FindObjectOfType<PlayerMovement>().LookAtTarget(familyGhostsLookTarget);
+        endingGhostsParent.SetActive(true);
+        float fadeBetweenTime = 1f;
+        foreach (Transform child in endingGhostsParent.transform)
+        {
+            child.GetComponent<GhostFadeIn>().FadeIn();
+            yield return new WaitForSeconds(fadeBetweenTime);
+        }
 
-        // yield return new WaitForSeconds(3f);
-        // taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
+        yield return new WaitForSeconds(3f);
+        taskManager.AddAndSetActive(TaskType.DayEnd, "Follow mother.", false);
 
-        // stateManager.SetState(State.Normal);
+        stateManager.SetState(State.Normal);
     }
 
     IEnumerator LeaveForest()
@@ -455,6 +455,9 @@ public class Day10 : MonoBehaviour
         whiteTerrainMat.DOFade(1f, 2 * transitionTime / 4).From(0f).SetEase(Ease.InCubic);
 
         yield return new WaitForSeconds((3 * transitionTime) / 4);
+
+        // Extra delay to taste
+        yield return new WaitForSeconds(3f);
 
         audioSource.DOFade(0f, 2f).SetEase(Ease.InOutCubic);
         transitionManager.SetColor(Color.white);

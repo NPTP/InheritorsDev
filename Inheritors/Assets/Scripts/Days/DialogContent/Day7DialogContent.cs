@@ -52,7 +52,7 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "You have done well, son! Come home now and rest."
+                "You have done well, son! Come home now."
             }
         });
 

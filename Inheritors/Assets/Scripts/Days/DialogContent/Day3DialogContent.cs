@@ -268,7 +268,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
               "I am the eldest of our tribe, older even than your grandfather. The time has come for me to pass on what I know.",
               "As the youngest, you are the receiver of this wisdom.",
               "I need you to find for me <color=blue>three beans of the yopo tree</color>.",
-              "They are colored red. Check the meadow north of grandfather's maloca. Check just south of here. And check the other side of the bridge.",
+              "Check the meadow north of grandfather, check just south of here, and check the other side of the bridge.",
               "I will tell you soon what they are for. Please, bring them back to me now."
             }
         });

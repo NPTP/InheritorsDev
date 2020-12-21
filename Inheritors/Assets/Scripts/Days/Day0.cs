@@ -55,7 +55,6 @@ public class Day0 : MonoBehaviour
         InitializeTriggers();
         SubscribeToEvents();
         StartCoroutine("Intro");
-        Debug.Log("Press Backspace to kill the intro.");
     }
 
     IEnumerator Intro()
@@ -69,6 +68,8 @@ public class Day0 : MonoBehaviour
         transitionManager.SetColor(Color.black);
         transitionManager.Show();
         Tween transition = transitionManager.Hide(8f);
+        yield return null;
+        stateManager.SetState(State.Inert);
         yield return transition.WaitForCompletion();
 
         // Extra 2 seconds for flavour.

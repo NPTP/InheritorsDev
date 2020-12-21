@@ -181,8 +181,8 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Sister,
             lines = new string[] {
-                "Have you found all the papayas yet? \nWe need <color=blue>three</color>!",
-                "You should be able to find them to the south of mother's maloca."
+                "You should be able to find <color=blue>three papayas</color> to the south of mother's maloca.",
+                "When you have them all, just drop them in the bucket over there!"
             }
         });
 
