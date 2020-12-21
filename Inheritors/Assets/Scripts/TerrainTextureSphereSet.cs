@@ -36,8 +36,6 @@ public class TerrainTextureSphereSet : MonoBehaviour
             return;
         }
 
-        td = terrain.terrainData;
-        numSplatLayers = td.alphamapLayers;
         center = transform.position;
         radius = transform.lossyScale.x / 2;
 
@@ -48,9 +46,15 @@ public class TerrainTextureSphereSet : MonoBehaviour
     {
         // Wait a couple frames for loading to complete, so that we aren't
         // competing for who gets to set terrain data last.
-        yield return null;
-        yield return null;
-        
+        // Player terrain interaction waits 1 full second.
+        yield return new WaitForSeconds(0.5f);
+
+        // Get the terrain here so we have the latest info in memory from the new
+        // terrain data loaded in by save manager.
+        terrain = Terrain.activeTerrain;
+        td = terrain.terrainData;
+        numSplatLayers = td.alphamapLayers;
+
         if (remapTexture)
             TextureRemap();
 
@@ -119,7 +123,7 @@ public class TerrainTextureSphereSet : MonoBehaviour
                         else
                             remap[z, x, l] = alphaMap[z, x, l] - (1f - falloff);
 
-                        if (remap[z,x,l] < 0) {remap[z,x,l] = 0;}
+                        if (remap[z, x, l] < 0) { remap[z, x, l] = 0; }
                     }
                     else
                     {

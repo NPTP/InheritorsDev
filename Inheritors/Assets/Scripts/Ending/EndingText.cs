@@ -37,7 +37,7 @@ public class EndingText : MonoBehaviour
     {
         PlayerPrefs.SetInt("CompletedGame", 1);
 
-        Cursor.visible = true;
+        Cursor.visible = false;
         prompt.color = Helper.ChangedAlpha(prompt.color, 0f);
         InitializeEndingText();
         StartCoroutine("Ending");

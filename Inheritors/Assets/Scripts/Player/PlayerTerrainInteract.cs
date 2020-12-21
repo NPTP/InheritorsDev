@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerFootstepFX))]
@@ -50,6 +51,8 @@ public class PlayerTerrainInteract : MonoBehaviour
     float step = -1;
     bool steppedThisFrame = false;
 
+    bool allowTerrainModification = false;
+
     void Start()
     {
         if (!Application.isEditor)
@@ -74,11 +77,20 @@ public class PlayerTerrainInteract : MonoBehaviour
         debugWalked = new float[width, height, numLayers];
         InitializeWalkedToday();
         // InitializeDebugWalked();
+
+        StartCoroutine(TerrainModificationDelay());
+    }
+
+    IEnumerator TerrainModificationDelay()
+    {
+        // We wait 1, terrain mod spheres will wait 0.5.
+        yield return new WaitForSeconds(1);
+        allowTerrainModification = true;
     }
 
     void Update()
     {
-        if (playerMovement.m_isGrounded)
+        if (playerMovement.m_isGrounded && allowTerrainModification)
         {
             ConvertPosition(playerTransform.position);
             FootstepFX();

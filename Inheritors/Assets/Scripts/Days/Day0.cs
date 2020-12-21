@@ -59,6 +59,7 @@ public class Day0 : MonoBehaviour
 
     IEnumerator Intro()
     {
+        PlayerPrefs.SetInt("CompletedGame", 0);
         firepitAudio.SetActive(false);
 
         stateManager.SetState(State.Inert);

@@ -71,6 +71,8 @@ public class Day10 : MonoBehaviour
             Destroy(this);
         else
             InitializeReferences();
+
+        endingWhiteTerrain.SetActive(false);
     }
 
     void Start()
@@ -102,8 +104,6 @@ public class Day10 : MonoBehaviour
 
         hilltopUnblocked.SetActive(false);
         endingGhostsParent.SetActive(false);
-
-        endingWhiteTerrain.SetActive(false);
 
         // Fade in from BLACK.
         stateManager.SetState(State.Inert);
@@ -458,7 +458,7 @@ public class Day10 : MonoBehaviour
 
         // Extra delay to taste
         yield return new WaitForSeconds(3f);
-
+        
         audioSource.DOFade(0f, 2f).SetEase(Ease.InOutCubic);
         transitionManager.SetColor(Color.white);
         Tween t = transitionManager.Show(2f);
