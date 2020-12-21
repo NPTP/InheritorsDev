@@ -1,0 +1,67 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 19.08.2019 10:36:49
+
+newmtl fishing_net
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\fishing_net.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\fishing_net.png
+	map_d D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\fishing_net_alpha.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\fishing_net_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\fishing_net_NRM.png
+
+newmtl rope_small
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope_small.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope_small.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope_small_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope_small_NRM.png
+
+newmtl plain_wood
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\plain_wood.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\plain_wood.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\plain_wood_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\plain_wood_NRM.png
+
+newmtl plaster
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\poor_plaster_wood_straight.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\poor_plaster_wood_straight.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\poor_plaster_wood_straight_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\poor_plaster_wood_straight_NRM.png

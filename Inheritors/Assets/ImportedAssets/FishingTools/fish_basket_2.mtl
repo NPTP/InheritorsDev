@@ -1,0 +1,50 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 19.08.2019 10:31:55
+
+newmtl rope
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\rope_NRM.png
+
+newmtl wicker_basket
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\wicker_basket.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\wicker_basket.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\wicker_basket_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\wicker_basket_NRM.png
+
+newmtl goat
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\t_01__goat_d01.png
+	map_Kd D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\t_01__goat_d01.png
+	map_bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\t_01__goat_d01_NRM.png
+	bump D:\Business\2019\3D Models\medieval_fishing_nets_and_tools\t_01__goat_d01_NRM.png
