@@ -43,7 +43,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Your father is fishing today - he will be beside the river, waiting for you to come help.",
+                "Your father is fishing today. He will be beside the river, waiting for you to come help.",
                 "And this will be your first time helping your sister - ask her what she needs.",
                 "Off you go now, son!"
             }
@@ -75,7 +75,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Look at you, my boy, running to help everyone. \nI am so proud of you."
+                "Look at you, my boy, running to help everyone. I am so proud of you."
             }
         });
 
@@ -104,7 +104,10 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             character = Character.Father,
             lines = new string[] {
                 "Hello Son! You did well yesterday. Today we are catching fish from the River Omere.",
-                "Extend your net and let them come naturally. Do not force them out of the water."
+                "I will teach you. We extend the net, and let them come naturally.",
+                "You cannot force the fish from the water on its own accord. First, the net must surround it...",
+                "Then it has nowhere to go.",
+                "I will show you - be ready to catch whatever I pull out of the river!"
             }
         });
 
@@ -112,7 +115,23 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Hello, my boy. You are working on something else now, but when you are done, we will go fishing."
+                "Hello, my boy. You are working on something else now, but when you are done, I will show you how to catch fish."
+            }
+        });
+
+        content.Add("Father_HaveFish", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "Good catch, son! Put the fish into the bucket. It is the first of hopefully many to come."
+            }
+        });
+
+        content.Add("Father_Active", new Dialog
+        {
+            character = Character.Father,
+            lines = new string[] {
+                "Drop the fish into the bucket just there, son. You cannot carry it around all day!"
             }
         });
 
@@ -120,10 +139,10 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Well done.",
-                "You need not bring any fish home now. One fish is too few, so I will stay to catch more.",
-                "Your grandfather and I will be placing the bridge over the river right here, tomorrow.",
-                "Once we have done so, your grandfather would like to see you."
+                "Thank you. You need not bring any fish home now. One fish is too few, so I will stay to catch more.",
+                "Your grandfather and I will be placing the bridge over the river - right here - tomorrow.",
+                "Once we have done so, your grandfather would like to see you.",
+                "Bye for now, my boy."
             }
         });
 
@@ -154,7 +173,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Sister,
             lines = new string[] {
-                "Oh, little brother. Finish your work for mother and father first, then come back!"
+                "Oh, little brother. Finish your work for father first, then come back!"
             }
         });
 

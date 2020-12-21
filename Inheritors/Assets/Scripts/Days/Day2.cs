@@ -29,8 +29,18 @@ public class Day2 : MonoBehaviour
     public Transform fatherNPCTransform;
 
     [Space]
-    Transform fatherLookTarget;
-    
+    public Animator fatherAnimator;
+    public Transform fatherLookTarget;
+    public GameObject fishPrefab;
+    public Transform fishPos1;
+    public Transform fishPos2;
+    public GameObject fishPickup;
+    public AudioClip fishingSound;
+    public AudioClip splashSound;
+    public AudioClip pickupSound;
+    public ParticleSystem waterParticles;
+
+    GameObject fish;
 
     /* -------------------------------------- */
     /* -------------------------------------- */
@@ -118,9 +128,9 @@ public class Day2 : MonoBehaviour
         PickupManager.Inventory inventory = args.inventory;
         switch (inventory.itemType)
         {
-            case ItemType.Wood:
-                PickupWood(inventory.itemQuantity);
-                break;
+            // case ItemType.Wood:
+            //     PickupWood(inventory.itemQuantity);
+            //     break;
 
             case ItemType.Papaya:
                 PickupPapaya(inventory.itemQuantity);
@@ -167,8 +177,12 @@ public class Day2 : MonoBehaviour
 
         switch (tag)
         {
-            case "Dropoff_Wood":
-                taskManager.CompleteActiveTask();
+            // case "Dropoff_Wood":
+            //     taskManager.CompleteActiveTask();
+            //     break;
+
+            case "Dropoff_Fish":
+                StartCoroutine(DropoffFish());
                 break;
 
             case "Dropoff_Papaya":
@@ -240,40 +254,83 @@ public class Day2 : MonoBehaviour
     IEnumerator HuntBegin()
     {
         yield return new WaitUntil(dialogManager.IsDialogFinished);
+        dialogTriggers[Character.Father].Disable();
         taskManager.SetActiveTask(TaskType.Father);
-        taskManager.ChangeTask(TaskType.Father, "Catch fish in the net.");
+        taskManager.ChangeTask(TaskType.Father, "Watch father carefully.");
+        stateManager.SetState(State.Inert);
 
-        // PIG KILLING MINIGAME GOES ON HERE
-        // stateManager.SetState(State.Hunting); ???
+        // Fishing animation happens here
+        fatherNPCTransform.gameObject.GetComponent<LookAtPlayer>().ChangeTarget(fatherLookTarget);
         yield return new WaitForSeconds(2f);
-        // END PIG KILLING
+        fatherAnimator.SetTrigger("Fishing");
+        float volumeScale = 0.5f;
+        audioManager.PlayOneShot(fishingSound, volumeScale);
+        yield return new WaitForSeconds(3f);
+        waterParticles.Play();
+        fish = GameObject.Instantiate(fishPrefab, fishPos1.position, Quaternion.identity);
+        audioManager.PlayOneShot(splashSound, volumeScale);
 
-        Destroy(GameObject.Find("Agoutis").GetComponent<Animator>());
+        Transform playerTransform = GameObject.FindWithTag("Player").transform;
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(fish.transform.DOMove(fishPos2.transform.position, .25f).SetEase(Ease.OutCubic))
+                .Append(fish.transform.DOMove(playerTransform.position + 1.5f * Vector3.up, .5f).SetEase(Ease.InCubic))
+                .Append(fish.transform.DOScale(0f, .25f))
+                .OnComplete(CatchFish);
+    }
+
+    void CatchFish()
+    {
+        Destroy(fish);
+        fatherNPCTransform.gameObject.GetComponent<LookAtPlayer>().ResetTarget();
+
+        Transform playerTransform = GameObject.FindWithTag("Player").transform;
+        PickupTrigger fishItem = GameObject.Instantiate(fishPickup,
+                pickupManager.GetItemHoldPosition(),
+                playerTransform.rotation).GetComponent<PickupTrigger>();
+        fishItem.transform.SetParent(playerTransform);
+        fishItem.GetPickedUp();
+        pickupManager.PickUp(fishItem);
+        audioManager.PlayOneShot(pickupSound, .2f);
+
+        StartCoroutine(CatchFishProcess());
+    }
+
+    IEnumerator CatchFishProcess()
+    {
+        dialogManager.NewDialog(dialogContent.Get("Father_HaveFish"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
+
+        taskManager.ChangeTask(TaskType.Father, "Put fish in the bucket.");
+        dialogTriggers[Character.Father].Enable();
+        triggers["Dropoff_Fish"].Enable();
+    }
+
+    IEnumerator DropoffFish()
+    {
         recordManager.StopRecording();
+
         dialogManager.NewDialog(dialogContent.Get("Father_HuntEnd"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
-        pickupManager.LoseTaskTool();
-
         taskManager.CompleteActiveTask();
     }
 
-    void PickupWood(int itemQuantity)
-    {
-        if (itemQuantity == 1)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Collect 2 more logs.");
-            taskManager.SetActiveTask(TaskType.Mother);
-        }
-        else if (itemQuantity == 2)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Collect 1 more log.");
-        }
-        else if (itemQuantity == 3)
-        {
-            taskManager.ChangeTask(TaskType.Mother, "Bring logs to firepit.");
-            triggers["Dropoff_Wood"].Enable();
-        }
-    }
+    // void PickupWood(int itemQuantity)
+    // {
+    //     if (itemQuantity == 1)
+    //     {
+    //         taskManager.ChangeTask(TaskType.Mother, "Collect 2 more logs.");
+    //         taskManager.SetActiveTask(TaskType.Mother);
+    //     }
+    //     else if (itemQuantity == 2)
+    //     {
+    //         taskManager.ChangeTask(TaskType.Mother, "Collect 1 more log.");
+    //     }
+    //     else if (itemQuantity == 3)
+    //     {
+    //         taskManager.ChangeTask(TaskType.Mother, "Bring logs to firepit.");
+    //         triggers["Dropoff_Wood"].Enable();
+    //     }
+    // }
 
     void PickupPapaya(int itemQuantity)
     {
