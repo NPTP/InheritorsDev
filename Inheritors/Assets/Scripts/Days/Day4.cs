@@ -72,19 +72,19 @@ public class Day4 : MonoBehaviour
 
         ancestors.gameObject.SetActive(false);
 
+        // First dialog
         dialogManager.NewDialog(dialogContent.Get("Day4Opening_1"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        // Show us the hill path with cleared rocks, and tell us about it in the 2nd dialog.
         cameraManager.SendCamTo(hillPathTransform);
         yield return new WaitWhile(cameraManager.IsSwitching);
-        yield return new WaitForSeconds(2f);
+        dialogManager.NewDialog(dialogContent.Get("Day4Opening_2"));
+        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         cameraManager.QuadrantCamActivate(motherQuadrant);
         uiManager.SetUpTasksInventory();
         yield return new WaitWhile(cameraManager.IsSwitching);
-
-        dialogManager.NewDialog(dialogContent.Get("Day4Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         taskManager.AddAndSetActive(TaskType.Grandmother, "Ascend up the hill.", false);
         stateManager.SetState(State.Normal);

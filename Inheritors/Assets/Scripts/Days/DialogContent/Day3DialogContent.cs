@@ -102,8 +102,8 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
             character = Character.Father,
             lines = new string[] {
                 "I killed a tapir for us. I must take a rest for now. My scars will not heal, and are causing me pain again.",
-                "Once I finish cleaning the meat, I will hang it up over the fire overnight to cook through.",
-                "I look forward to you leading the hunt one day, son. I know my mother and father are so happy to see you grow up."
+                "After cleaning the meat, I will hang it up over the fire overnight to cook through. One day <i>you</i> will lead the hunt.",
+                "I know my parents - your grandparents - are so happy to see you grow up."
             }
         });
 

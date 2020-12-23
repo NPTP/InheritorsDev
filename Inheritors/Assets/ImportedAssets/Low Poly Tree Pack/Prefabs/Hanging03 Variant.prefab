@@ -1,5 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &3157721381342893178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9091451949429142427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af364fdba3900e7439da4d2db3e16fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gpuiPrefab: {fileID: 0}
+--- !u!114 &7726576262826935551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9091451949429142427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13f42112a552354988a63573e49f5d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPrototype: {fileID: 11400000, guid: 5121e6f4af7250840af632966f3ae7a3, type: 2}
+  gpuInstancerID: 0
+  state: 0
 --- !u!1001 &8280495395789639370
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85,7 +113,13 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: bfec8ef849c13cd43945e593832b1509,
         type: 3}
       propertyPath: m_Name
-      value: Hanging03
+      value: Hanging03 Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bfec8ef849c13cd43945e593832b1509, type: 3}
+--- !u!1 &9091451949429142427 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bfec8ef849c13cd43945e593832b1509,
+    type: 3}
+  m_PrefabInstance: {fileID: 8280495395789639370}
+  m_PrefabAsset: {fileID: 0}

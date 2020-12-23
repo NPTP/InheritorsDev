@@ -90,6 +90,7 @@ public class AsyncLoadingScreen : MonoBehaviour
 
         // Fade out and allow async operation to complete.
         finishedTextCG.DOFade(0f, allFadeOutTime * 0.25f);
+        audioSource.DOFade(0f, allFadeOutTime).SetEase(Ease.InCubic);
         Tween t = textContainerCG.DOFade(0f, allFadeOutTime);
         yield return t.WaitForCompletion();
 
