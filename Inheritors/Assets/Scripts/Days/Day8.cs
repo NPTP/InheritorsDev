@@ -333,7 +333,7 @@ public class Day8 : MonoBehaviour
         EnableAllDialogTriggers();
 
         dialogTriggers[Character.Mother].Remove();
-        Destroy(GameObject.FindWithTag("MotherNPC"));
+        StartCoroutine(FadeOutNPC(GameObject.FindWithTag("MotherNPC")));
 
         taskManager.AddAndSetActive(TaskType.DayEnd, "Return home.", false);
         triggers["Walk_End"].Enable();
@@ -365,6 +365,22 @@ public class Day8 : MonoBehaviour
 
         saveManager.SaveGame(dayNumber);
         Helper.LoadScene("Loading");
+    }
+
+    IEnumerator FadeOutNPC(GameObject npc)
+    {
+        GameObject body = npc.transform.GetChild(0).gameObject;
+        Renderer renderer = body.GetComponent<Renderer>();
+        float fadeTime = 1f;
+        Tween t = null;
+
+        foreach (Material material in renderer.materials)
+        {
+            t = material.DOFade(0f, fadeTime);
+        }
+
+        yield return t.WaitForCompletion();
+        Destroy(npc);
     }
 
     // ████████████████████████████████████████████████████████████████████████

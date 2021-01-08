@@ -485,11 +485,33 @@ public class Day7 : MonoBehaviour
         pickupManager.LoseItems();
         recordManager.StopRecording();
 
-        player.GetComponent<PlayerMovement>().LookAtTarget(GameObject.FindWithTag("GrandmotherNPC").transform);
+        GameObject grandmotherNPC = GameObject.FindWithTag("GrandmotherNPC");
+
+        player.GetComponent<PlayerMovement>().LookAtTarget(grandmotherNPC.transform);
         dialogManager.NewDialog(dialogContent.Get("Grandmother_FinishTask"), State.Normal);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
+        yield return new WaitForSeconds(.25f);
+        StartCoroutine(FadeOutNPC(grandmotherNPC));
+        dialogTriggers[Character.Grandmother].Remove();
+
         taskManager.CompleteActiveTask();
+    }
+
+    IEnumerator FadeOutNPC(GameObject npc)
+    {
+        GameObject body = npc.transform.GetChild(0).gameObject;
+        Renderer renderer = body.GetComponent<Renderer>();
+        float fadeTime = 1f;
+        Tween t = null;
+
+        foreach (Material material in renderer.materials)
+        {
+            t = material.DOFade(0f, fadeTime);
+        }
+
+        yield return t.WaitForCompletion();
+        Destroy(npc);
     }
 
     // ████████████████████████████ GENERAL ███████████████████████████████████
