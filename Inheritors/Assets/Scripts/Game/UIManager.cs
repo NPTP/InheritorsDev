@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     GameObject player;
     Vector3 playerHeight;
 
+    public UI_PauseMenu pauseMenu = new UI_PauseMenu();
     public UI_TasksInventory tasksInventory = new UI_TasksInventory();
     public UI_Prompt pickupPrompt = new UI_Prompt();
     public UI_Prompt dialogPrompt = new UI_Prompt();
@@ -30,6 +31,7 @@ public class UIManager : MonoBehaviour
     void Awake()
     {
         InitializeReferences();
+        InitializePauseMenu();
         InitializeDialogBox();
         InitializeTasksInventory();
         InitializePrompt(pickupPrompt, "PickupPrompt");
@@ -60,6 +62,41 @@ public class UIManager : MonoBehaviour
         Sequence s = DOTween.Sequence();
         s.Append(text.DOColor(flashColor, flashTime))
             .Append(text.DOColor(originalColor, dieOffTime));
+    }
+
+    // ████████████████████████████████████████████████████████████████████████
+    // ███ PAUSE MENU
+    // ████████████████████████████████████████████████████████████████████████
+
+    public Sequence Pause()
+    {
+        pauseMenu.Activate();
+        Sequence pauseSeq = DOTween.Sequence()
+            .Append(pauseMenu.background.DOFade(pauseMenu.backgroundAlpha, pauseMenu.fadeTime))
+            .AppendInterval(pauseMenu.betweenFadesTime)
+            .Append(pauseMenu.buttonsCG.DOFade(1f, pauseMenu.fadeTime));
+        return pauseSeq;
+    }
+
+    public Sequence Unpause()
+    {
+        Sequence unpauseSeq = DOTween.Sequence()
+            .Append(pauseMenu.buttonsCG.DOFade(0f, pauseMenu.fadeTime))
+            .AppendInterval(pauseMenu.betweenFadesTime)
+            .Append(pauseMenu.background.DOFade(0f, pauseMenu.fadeTime))
+            .OnComplete(pauseMenu.Deactivate);
+        return unpauseSeq;
+    }
+
+    public Tween PauseConfirmationUp(string text)
+    {
+        pauseMenu.confirmText.text = text;
+        return pauseMenu.confirmWindowCG.DOFade(1f, pauseMenu.betweenFadesTime);
+    }
+
+    public Tween PauseConfirmationDown()
+    {
+        return pauseMenu.confirmWindowCG.DOFade(0f, pauseMenu.betweenFadesTime);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -310,6 +347,27 @@ public class UIManager : MonoBehaviour
         interactManager = FindObjectOfType<InteractManager>();
         pickupManager = FindObjectOfType<PickupManager>();
         audioManager = FindObjectOfType<AudioManager>();
+    }
+
+    void InitializePauseMenu()
+    {
+        pauseMenu.parent = GameObject.Find("PauseCanvas");
+
+        pauseMenu.background = GameObject.Find("PauseBG").GetComponent<Image>();
+        pauseMenu.backgroundAlpha = pauseMenu.background.color.a;
+        pauseMenu.background.color = Helper.ChangedAlpha(pauseMenu.background.color, 0);
+
+        pauseMenu.buttonsCG = GameObject.Find("PauseMenu").GetComponent<CanvasGroup>();
+        pauseMenu.buttonsCG.alpha = 0;
+
+        pauseMenu.confirmWindowCG = GameObject.Find("ConfirmWindow").GetComponent<CanvasGroup>();
+        pauseMenu.confirmWindowCG.alpha = 0;
+        pauseMenu.confirmText = GameObject.Find("ConfirmText").GetComponent<TMP_Text>();
+
+        pauseMenu.defaultSelectedButton = GameObject.Find("ResumeButton");
+        pauseMenu.restartButton = GameObject.Find("RestartDayButton");
+        pauseMenu.quitButton = GameObject.Find("SaveAndQuitButton");
+        pauseMenu.confirmNoButton = GameObject.Find("ConfirmNoButton");
     }
 
     void InitializeDialogBox()

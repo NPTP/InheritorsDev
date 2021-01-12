@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour
                     break;
                 case State.PickingUp:
                     GetJoystickAxes();
-                    GetMiddleButtons();
+                    // GetMiddleButtons();
                     break;
                 case State.Holding:
                     GetJoystickAxes();
@@ -70,7 +70,7 @@ public class InputManager : MonoBehaviour
                     break;
                 case State.DroppingOff:
                     GetJoystickAxes();
-                    GetMiddleButtons();
+                    // GetMiddleButtons();
                     break;
                 case State.Dialog:
                     GetButtonDown("A", A);

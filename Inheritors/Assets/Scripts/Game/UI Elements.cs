@@ -8,6 +8,39 @@ using TMPro;
 using DG.Tweening;
 
 // ████████████████████████████████████████████████████████████████████████
+// ███ UI_PauseMenu
+// ████████████████████████████████████████████████████████████████████████
+
+public class UI_PauseMenu
+{
+    public GameObject parent;
+
+    public Image background;
+    public float backgroundAlpha;
+    public CanvasGroup buttonsCG;
+    public GameObject defaultSelectedButton;
+    public GameObject restartButton;
+    public GameObject quitButton;
+    public GameObject confirmNoButton;
+
+    public CanvasGroup confirmWindowCG;
+    public TMP_Text confirmText;
+
+    public float fadeTime = .25f;
+    public float betweenFadesTime = .125f;
+
+    public void Activate()
+    {
+        parent.SetActive(true);
+    }
+
+    public void Deactivate()
+    {
+        parent.SetActive(false);
+    }
+}
+
+// ████████████████████████████████████████████████████████████████████████
 // ███ UI_TasksInventory
 // ████████████████████████████████████████████████████████████████████████
 

@@ -8,7 +8,7 @@ public class DebugSceneLoader : MonoBehaviour
 
     void Start()
     {
-        if (!enabled)
+        if (!enabled || !Application.isEditor)
             Destroy(this.gameObject);
     }
 
