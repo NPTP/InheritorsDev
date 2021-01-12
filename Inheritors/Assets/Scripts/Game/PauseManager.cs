@@ -22,6 +22,8 @@ public class PauseManager : MonoBehaviour
     const int RESTART = 0;
     const int QUIT = 1;
 
+    float transitionFadeTime = 0.5f;
+
     State savedState;
 
     [SerializeField] AudioClip buttonSound;
@@ -163,7 +165,8 @@ public class PauseManager : MonoBehaviour
         allButtonsCG.interactable = false;
         // Time.timeScale = 1;
         transitionManager.SetColor(Color.black);
-        Tween t = transitionManager.Show(.5f);
+        audioManager.FadeOtherSources("Down", transitionFadeTime);
+        Tween t = transitionManager.Show(transitionFadeTime);
         yield return t.WaitForCompletion();
         Helper.RestartScene();
     }
@@ -179,7 +182,8 @@ public class PauseManager : MonoBehaviour
         allButtonsCG.interactable = false;
         // Time.timeScale = 1;
         transitionManager.SetColor(Color.black);
-        Tween t = transitionManager.Show(.5f);
+        audioManager.FadeOtherSources("Down", transitionFadeTime);
+        Tween t = transitionManager.Show(transitionFadeTime);
         yield return t.WaitForCompletion();
         Helper.LoadScene("MainMenu");
     }
