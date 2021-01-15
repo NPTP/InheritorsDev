@@ -98,7 +98,7 @@ public class EndingText : MonoBehaviour
     {
         endingText = new string[] {
             "The real-life Akuntsu are the isolated remnants of a tribe living in the Rio Omerê Indigenous Territory of Rondônia, Brazil. \n\n" +
-            "The events of this game are based on research into the Akuntsu and other indigenous groups like the Kanoe, living in the Rio Omerê.",
+            "The events of this game are based on research into the Akuntsu and other indigenous groups like the Kanoê, living in the Rio Omerê.",
 
             "Illegal logging, farming and mining encroached on former Akuntsu territory and their people were killed en masse. The survivors hold tenuously to what remains -  as of 2020, only four remain living. \n\n" +
             "They once numbered in the thousands.",
