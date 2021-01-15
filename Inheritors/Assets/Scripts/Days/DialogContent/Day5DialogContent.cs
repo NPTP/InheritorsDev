@@ -43,7 +43,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Ghosts, you say? No, I do not see them! \nOh my son, you imagine so much. We are the only people on this land.",
-                "If I did not know better, I would have thought maybe other Kanoe found this place.",
+                "If I did not know better, I would have thought maybe other Kanoê found this place.",
                 "But there are none... oh, that is, none who would come this way."
             }
         });
@@ -159,7 +159,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
                 "Akuntsu... talk 'hope.' \nNot real. \nAkuntsu not learn.",
                 "Instead... be fear. Not safe. \nAlways they... hunting us, the outside. \nWant... our forest.",
                 "No believe?",
-                "Ask mother... why Kanoe not enemy Akuntsu, now.",
+                "Ask mother... why Kanoê not enemy Akuntsu, now.",
                 "Ask elder... what happen at crush maloca.",
                 "Ask father, grandfather... how get scars on back. What running from?",
                 "My home, burned. Again... I run. \nFind new place. \nWhile can.",
@@ -171,7 +171,7 @@ public class Day5DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Manofhole,
             lines = new string[] {
-                "Ask mother... why Kanoe close to Akuntsu now.",
+                "Ask mother... why Kanoê close to Akuntsu now.",
                 "Ask elder... what happen at crush maloca.",
                 "Ask father, grandfather... how get scars on back. What running from?",
                 "My home, burned. Again... I run. Find new place. While can.",

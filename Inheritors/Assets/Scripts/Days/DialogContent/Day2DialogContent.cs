@@ -33,7 +33,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "It is so nice to see you running around, making your own path.",
-                "I could not have imagined it. When I was young, the Kanoe and the Akuntsu would never...",
+                "I could not have imagined it. When I was young, the Kanoê and the Akuntsu would never...",
                 "Well, maybe that is a story for when you are older.",
                 "Here is what I need you to do today."
             }
@@ -103,7 +103,7 @@ public class Day2DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Father,
             lines = new string[] {
-                "Hello Son! You did well yesterday. Today we are catching fish from the River Omere.",
+                "Hello Son! You did well yesterday. Today we are catching fish from the River Omerê.",
                 "I will teach you. We extend the net, and let them come naturally.",
                 "You cannot force the fish from the water on its own accord. First, the net must surround it...",
                 "Then it has nowhere to go.",
