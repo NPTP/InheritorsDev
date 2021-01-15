@@ -32,7 +32,7 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "For decades I have watched the sun set over the Omere, over this forest.",
+                "For decades I have watched the sun set over the Omerê, over this forest.",
                 "For decades this beautiful land has been a part of all the families who call it home.",
                 "If we never give up on it, I know that it will never give up on <i>us</i>.",
             }

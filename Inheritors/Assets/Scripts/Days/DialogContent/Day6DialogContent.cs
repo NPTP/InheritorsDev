@@ -41,7 +41,7 @@ public class Day6DialogContent : MonoBehaviour, DialogContent
             character = Character.Mother,
             lines = new string[] {
                 "Son, I have told you already. Your father and I had no choice but to come together.",
-                "The Kanoe and Akuntsu had been opposed, yes, but if not for a common enemy, <i>you</i> would never have known life.",
+                "The Kanoê and Akuntsu had been opposed, yes, but if not for a common enemy, <i>you</i> would never have known life.",
                 "Forget what the strange man said. We are stronger together, all of us, the tribe, the family.",
                 "Now, what do you need to do today?"
             }

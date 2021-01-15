@@ -42,7 +42,7 @@ public class Day3DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Mother,
             lines = new string[] {
-                "Our family is strong, by necessity. Kanoe and Akuntsu, once divided, now united.",
+                "Our family is strong, by necessity. Kanoê and Akuntsu, once divided, now united.",
                 "And the work you are doing is helping us to grow once again, little one.",
                 "There is much to do, so be quick and return before sundown!",
             }
