@@ -268,7 +268,8 @@ public class InteractManager : MonoBehaviour
 
     IEnumerator DropOffItem()
     {
-        PickupTrigger heldItem = pickupManager.GetHeldItem();
+        PickupTrigger heldPickupTrigger = pickupManager.GetHeldItem();
+        Transform heldItemTransform = heldPickupTrigger.itemTransform;
         DropoffTrigger thisDropoff = dropoffTrigger;
         pickupManager.DropOff(thisDropoff.takeFullInventory);
 
@@ -278,21 +279,21 @@ public class InteractManager : MonoBehaviour
 
         audioManager.PlayOneShot(dropoffSound, dropoffSoundVolumeScale);
 
-        Vector3 startPosition = heldItem.transform.position;
+        Vector3 startPosition = heldItemTransform.position;
         Vector3 endPosition = thisDropoff.target.position;
         float elapsed = 0f;
         float time = 0.5f;
         while (elapsed < time)
         {
-            heldItem.transform.position = Vector3.Lerp(
+            heldItemTransform.position = Vector3.Lerp(
                 startPosition, endPosition, Helper.SmoothStep(elapsed / time));
             elapsed += Time.deltaTime;
             yield return null;
         }
-        heldItem.transform.position = endPosition;
+        heldItemTransform.position = endPosition;
         var dropoffTarget = thisDropoff.target.gameObject.GetComponent<DropoffTarget>();
         thisDropoff.Disable();
-        heldItem.Remove();
+        heldPickupTrigger.Remove();
         pickupManager.LoseTaskTool();
 
         if (dropoffTarget != null)

@@ -272,7 +272,7 @@ public class Day7DialogContent : MonoBehaviour, DialogContent
                 "Oh my, don't you look like a real Akuntsu, my grandson!",
                 "I am getting quite old now, so you must carry on this tradition. Can you do that for me?",
                 "Oh, how <i>she</i> would have loved you... Your sister, who passed, she used to dye her hair just like that...",
-                "I must rest to overcome this outside sickness. You give me so much strength, little one.",
+                "I must go inside now and rest to overcome this outside sickness. You give me so much strength, little one.",
                 "Come back to see me tomorrow when I have awoken!"
             }
         });
