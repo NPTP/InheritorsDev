@@ -2,6 +2,7 @@
 using UnityEngine;
 using DG.Tweening;
 
+// Can be used for any dropoff that simply generates child objects
 public class Papaya_DropoffTarget : MonoBehaviour, DropoffTarget
 {
     bool doneReaction = false;

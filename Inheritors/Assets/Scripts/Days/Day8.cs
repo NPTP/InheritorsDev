@@ -90,7 +90,7 @@ public class Day8 : MonoBehaviour
 
         // Final dialog of opening.
         dialogManager.NewDialog(dialogContent.Get("Day8Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitUntil(dialogManager.IsDialogAnimationFinished);
         dialogTriggers[Character.Mother].Enable();
 
         stateManager.SetState(State.Normal);

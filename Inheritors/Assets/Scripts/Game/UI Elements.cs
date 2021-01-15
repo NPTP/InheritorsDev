@@ -137,8 +137,8 @@ public class UI_DialogBox
     public Animator animator;
     float moveUpTime = 0.5f;
     float fadeUpTime = 0.4f;
-    float moveDownTime = 1f;
-    float fadeDownTime = 0.8f;
+    float moveDownTime = 0.5f; // 1f;
+    float fadeDownTime = 0.4f; // 0.8f;
     float yPosUp = 145f;
     float yPosDown = -315.11f;
     Dictionary<Character, Color> nameColors = new Dictionary<Character, Color>();

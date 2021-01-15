@@ -106,7 +106,7 @@ public class Day6 : MonoBehaviour
         sisterLook.ResetTarget();
         motherLook.ChangeTarget(sister.transform);
         dialogManager.NewDialog(dialogContent.Get("Day6Opening_2"));
-        yield return new WaitUntil(dialogManager.IsDialogFinished);
+        yield return new WaitUntil(dialogManager.IsDialogAnimationFinished);
         dialogTriggers[Character.Mother].Enable();
 
         motherLook.ResetTarget();
