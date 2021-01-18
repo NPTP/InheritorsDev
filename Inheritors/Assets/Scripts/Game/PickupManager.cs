@@ -90,29 +90,43 @@ public class PickupManager : MonoBehaviour
     // ███ TASK TOOL
     // ████████████████████████████████████████████████████████████████████████
 
-    // Resources load version (string name)
-    public void GetTaskTool(ItemType itemType)
+    public void GetSkeletonItem(ItemType itemType)
     {
-        GameObject tool = null;
+        GameObject item = null;
         switch (itemType)
         {
             case ItemType.Jug:
-                tool = ResourcesTool("Jug");
+                item = ResourcesTool("Jug");
                 inventory.toolIsAttached = false;
+                inventory.haveTaskTool = true;
+                inventory.taskTool = item;
                 break;
 
             case ItemType.Bow:
-                tool = ActivatePlayerSkeletonItem(itemType);
+                item = ActivatePlayerSkeletonItem(itemType);
                 inventory.toolIsAttached = true;
+                inventory.haveTaskTool = true;
+                inventory.taskTool = item;
+                break;
+
+            case ItemType.Papaya:
+            case ItemType.Corn:
+            case ItemType.Yopo:
+            case ItemType.Herbs:
+            case ItemType.DarkFlute:
+                item = ActivatePlayerSkeletonItem(itemType);
+                inventory.toolIsAttached = true;
+                inventory.haveTaskTool = true;
+                inventory.taskTool = item;
                 break;
 
             default:
                 print("Unknown item type in GetTaskTool, pickup manager.");
                 return;
         }
-        inventory.haveTaskTool = true;
-        tool.transform.DOScale(1f, 0.25f).From(0f);
-        inventory.taskTool = tool;
+
+        float scaleTime = 0.25f;
+        item.transform.DOScale(1f, scaleTime).From(0f);
     }
 
     GameObject ResourcesTool(string resourceName)

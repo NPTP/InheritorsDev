@@ -37,6 +37,7 @@ public class InteractManager : MonoBehaviour
     string pickupTag = null;
     bool pickupInRange = false;
     ItemType itemType;
+    Vector3 pickupItemLocalScale = Vector3.one; // Used for skeleton items
     public event EventHandler<PickupArgs> OnPickup;
     public class PickupArgs : EventArgs
     {
@@ -115,7 +116,7 @@ public class InteractManager : MonoBehaviour
         insideArea = true;
         sender.TurnOnTriggers();
         if (toolType != ItemType.Null)
-            pickupManager.GetTaskTool(toolType);
+            pickupManager.GetSkeletonItem(toolType);
         // OnArea?.Invoke(this, new AreaArgs { tag = areaTag, inside = true });
     }
 
@@ -180,30 +181,44 @@ public class InteractManager : MonoBehaviour
     IEnumerator PickUpItem(PickupTrigger currentPickup)
     {
         bool alreadyHolding = pickupManager.IsHoldingItem();
-        Vector3 startPosition = currentPickup.itemTransform.position;
-        Vector3 startForwardHeading = currentPickup.itemTransform.forward;
-        float elapsed = 0f;
-        float time = 0.25f;
 
         audioManager.PlayOneShot(pickupSound, pickupSoundVolumeScale);
 
-        while (elapsed < time)
+        bool isSkeletonItem = IsSkeletonItem(currentPickup.itemType);
+        if (isSkeletonItem) { pickupItemLocalScale = currentPickup.itemTransform.localScale; }
+        print("Localscale of the the item: " + "(" + pickupItemLocalScale.x + ", " + pickupItemLocalScale.y + ", " + pickupItemLocalScale.z + ")");
+
+        Vector3 startPosition = currentPickup.itemTransform.position;
+        Vector3 startForwardHeading = currentPickup.itemTransform.forward;
+        float acquireTime = 0.25f;
+        float elapsed = 0f;
+
+        while (elapsed < acquireTime)
         {
-            float t = elapsed / time;
+            float t = elapsed / acquireTime;
 
             currentPickup.itemTransform.position = Vector3.Lerp(
                 startPosition, GetItemHoldPosition(), Helper.SmoothStep(t));
             currentPickup.itemTransform.forward = Vector3.Lerp(
                 startForwardHeading, player.transform.forward, t);
 
-            if (alreadyHolding) // Shrink the item (ease in) if we're already holding
-                currentPickup.transform.localScale *= 1 - (t * t);
+            if (alreadyHolding || isSkeletonItem) // Shrink the item (ease in) if we're already holding or is attached to rig
+                currentPickup.itemTransform.localScale *= 1 - (t * t);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
+
         currentPickup.itemTransform.position = GetItemHoldPosition();
         currentPickup.itemTransform.forward = player.transform.forward;
+
+        if (isSkeletonItem)
+        {
+            currentPickup.itemTransform.localScale = Vector3.zero;
+            if (!alreadyHolding)
+                pickupManager.GetSkeletonItem(currentPickup.itemType);
+        }
+
         stateManager.SetState(State.Holding);
 
         // Hand it off here to the PickupManager, updates the inventory.
@@ -221,6 +236,18 @@ public class InteractManager : MonoBehaviour
             currentPickup.transform.SetParent(player.transform);
         else
             Destroy(currentPickup.gameObject);
+    }
+
+    bool IsSkeletonItem(ItemType type)
+    {
+        if (type == ItemType.Papaya ||
+            type == ItemType.Corn ||
+            type == ItemType.Yopo ||
+            type == ItemType.Herbs ||
+            type == ItemType.DarkFlute)
+            return true;
+        else
+            return false;
     }
 
     Vector3 GetItemHoldPosition()
@@ -269,7 +296,6 @@ public class InteractManager : MonoBehaviour
     IEnumerator DropOffItem()
     {
         PickupTrigger heldPickupTrigger = pickupManager.GetHeldItem();
-        Transform heldItemTransform = heldPickupTrigger.itemTransform;
         DropoffTrigger thisDropoff = dropoffTrigger;
         pickupManager.DropOff(thisDropoff.takeFullInventory);
 
@@ -278,23 +304,46 @@ public class InteractManager : MonoBehaviour
         playerMovement.LookAtTarget(thisDropoff.target);
 
         audioManager.PlayOneShot(dropoffSound, dropoffSoundVolumeScale);
+        Animator playerAnimator = player.GetComponent<Animator>();
+        playerAnimator.SetTrigger("Pickup");
 
+        bool isSkeletonItem = IsSkeletonItem(heldPickupTrigger.itemType);
+        if (isSkeletonItem) { pickupManager.LoseTaskTool(); }
+
+        Transform heldItemTransform = heldPickupTrigger.itemTransform;
+        // DEBUG
+        if (isSkeletonItem)
+        {
+            heldItemTransform.localScale = pickupItemLocalScale;
+        }
+        print("Localscale of the the item: " + "(" + heldItemTransform.localScale.x + ", " + heldItemTransform.localScale.y + ", " + heldItemTransform.localScale.z + ")");
+        // DEBUG
         Vector3 startPosition = heldItemTransform.position;
         Vector3 endPosition = thisDropoff.target.position;
         float elapsed = 0f;
-        float time = 0.5f;
-        while (elapsed < time)
+        float dropTime = 0.5f;
+        while (elapsed < dropTime)
         {
+            float timeRatio = elapsed / dropTime;
+
             heldItemTransform.position = Vector3.Lerp(
-                startPosition, endPosition, Helper.SmoothStep(elapsed / time));
+                startPosition, endPosition, Helper.SmoothStep(timeRatio));
+
+            if (isSkeletonItem)
+            {
+                heldItemTransform.localScale = (1 - timeRatio) * pickupItemLocalScale;
+            }
+
             elapsed += Time.deltaTime;
             yield return null;
         }
         heldItemTransform.position = endPosition;
+
         var dropoffTarget = thisDropoff.target.gameObject.GetComponent<DropoffTarget>();
         thisDropoff.Disable();
         heldPickupTrigger.Remove();
         pickupManager.LoseTaskTool();
+        playerAnimator.ResetTrigger("Pickup");
 
         if (dropoffTarget != null)
         {
