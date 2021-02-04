@@ -106,7 +106,7 @@ public class EndingText : MonoBehaviour
             "No others speak their unique language, and they will not marry or integrate with outside tribes. There is no \"somewhere new\" for the Akuntsu, no inheritors to the Akuntsu culture. When the last of them and others in the Rio Omerê are gone, their protected land is likely to be developed.",
 
             "Their language, their customs, and their traditions will all be lost to time. \n\n" +
-            "An entire way of being will go extinct. We will never know their whole story.",
+            "An entire way of being will go extinct. We will never know their story.",
 
             "It is too late to save the Akuntsu. But there are many other tribes like them. Many for whom the struggle to preserve their way of life continues. For these tribes, time may be running out, but it is not too late.",
 

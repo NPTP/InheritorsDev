@@ -455,7 +455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3872553748174378714}
   - component: {fileID: 3872553748174378692}
-  - component: {fileID: 3872553748174378715}
+  - component: {fileID: 5672318612378765340}
   m_Layer: 0
   m_Name: GrassManager
   m_TagString: Untagged
@@ -490,9 +490,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grassMode: 1
-  grassPhysics: {fileID: 3872553748174378715}
+  grassPhysics: {fileID: 5672318612378765340}
   grassMaterial: {fileID: 11400000, guid: f2422cebdbc70fd4d926965ff430cc03, type: 2}
---- !u!114 &3872553748174378715
+--- !u!114 &5672318612378765340
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -512,8 +512,7 @@ MonoBehaviour:
     enabled: 0
     value: 0
   grassActors:
-    elements:
-    - {fileID: 0}
+    elements: []
 --- !u!1 &3872553748345248805
 GameObject:
   m_ObjectHideFlags: 0
