@@ -27,6 +27,8 @@ public class PickupTrigger : MonoBehaviour, Trigger
     bool pickedUp = false;
     bool droppedOff = false;
 
+    public GameObject pickupFX;
+
     public bool StartedEnabled()
     {
         return startEnabled;
@@ -109,6 +111,8 @@ public class PickupTrigger : MonoBehaviour, Trigger
 
     public void GetPickedUp()
     {
+        if (pickupFX != null) { pickupFX.GetComponent<PickupFX>().PlayFX(); }
+
         pickedUp = true;
         itemTransform.DOScale(itemLocalScale, .25f);
         Disable();

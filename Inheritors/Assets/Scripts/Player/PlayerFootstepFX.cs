@@ -13,6 +13,7 @@ public class PlayerFootstepFX : MonoBehaviour
     ParticleSystem gravelParticles;
     ParticleSystem leavesParticles;
     ParticleSystem ashParticles;
+    ParticleSystem waterParticles;
 
     [SerializeField] FootstepData footstepData;
     float[] textures;
@@ -28,6 +29,7 @@ public class PlayerFootstepFX : MonoBehaviour
         gravelParticles = GameObject.Find("FootstepParticles_Gravel").GetComponent<ParticleSystem>();
         leavesParticles = GameObject.Find("FootstepParticles_Leaves").GetComponent<ParticleSystem>();
         ashParticles = GameObject.Find("FootstepParticles_Ash").GetComponent<ParticleSystem>();
+        waterParticles = GameObject.Find("FootstepParticles_Water").GetComponent<ParticleSystem>();
     }
 
     public void PlayFX(float[] textures)
@@ -71,7 +73,6 @@ public class PlayerFootstepFX : MonoBehaviour
 
             case (int)TerrainManager.Layers.DirtLight:
             case (int)TerrainManager.Layers.DirtDark:
-            case (int)TerrainManager.Layers.Water:
             case (int)TerrainManager.Layers.Trail:
                 dirtParticles.Play();
                 break;
@@ -80,6 +81,10 @@ public class PlayerFootstepFX : MonoBehaviour
             case (int)TerrainManager.Layers.LeavesGreen:
             case (int)TerrainManager.Layers.LeavesYellow:
                 leavesParticles.Play();
+                break;
+
+            case (int)TerrainManager.Layers.Water:
+                waterParticles.Play();
                 break;
 
             case (int)TerrainManager.Layers.AshDark:
