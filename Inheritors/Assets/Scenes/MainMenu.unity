@@ -340,6 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuStartAnim: {fileID: 7400000, guid: ad59d5e9815cee34eaee9428d543f3af, type: 2}
+  menuQuickstartAnim: {fileID: 7400000, guid: 4472b6ff6fde68045b116bda019e9ecd, type: 2}
   UIAnimator: {fileID: 1589355965}
   buttonGroup: {fileID: 1709963604}
   defaultSelectedButton: {fileID: 596277845}

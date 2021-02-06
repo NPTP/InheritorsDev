@@ -21,6 +21,7 @@ public class PauseManager : MonoBehaviour
     int confirmAction;
     const int RESTART = 0;
     const int QUIT = 1;
+    const string quitObjectName = "ReturningFromGame";
 
     float transitionFadeTime = 0.5f;
 
@@ -174,6 +175,7 @@ public class PauseManager : MonoBehaviour
     public void Quit()
     {
         PlayButtonSound();
+        GameObject.Instantiate(Resources.Load(quitObjectName));
         StartCoroutine(QuitCoroutine());
     }
 

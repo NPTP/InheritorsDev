@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     bool saveExists = false;
 
     public AnimationClip menuStartAnim;
+    public AnimationClip menuQuickstartAnim;
     public Animator UIAnimator;
     public CanvasGroup buttonGroup;
     public GameObject defaultSelectedButton;
@@ -37,10 +38,20 @@ public class MainMenu : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+
+        ReturningFromGame returningFromGame = FindObjectOfType<ReturningFromGame>();
+        if (returningFromGame)
+        {
+            UIAnimator.SetTrigger("QuickStart");
+            menuStartAnim = menuQuickstartAnim;
+            sceneLoader.inFadeDuration = menuStartAnim.length;
+            Destroy(returningFromGame);
+        }
     }
 
     void Start()
     {
+
         buttonGroup.interactable = false;
         beginSureCG.alpha = 0;
         endSureCG.alpha = 0;

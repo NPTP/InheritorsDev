@@ -7,6 +7,6 @@ Fire - Effects - Swooshes - Bursts, evolving: GregorQuendel (https://creativecom
 Autumn Forest Wind: Akacie (https://creativecommons.org/licenses/by-nc/3.0/)
 Magic Spell: Kostas17 (https://creativecommons.org/licenses/by/3.0/)
 
-Fireworks (sounds mixed together):
+Fireworks (the following 2 sounds mixed together):
 Smoke bomb (small).wav (non-commercial): Nakhas (https://creativecommons.org/licenses/by-nc/3.0/)
 Firework Scream: TimoSchmied (https://creativecommons.org/licenses/by/3.0/)
