@@ -324,6 +324,7 @@ public class Day0 : MonoBehaviour
 
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
+        transitionManager.SetColor(Color.black);
         Tween t = transitionManager.Show(2f);
         audioManager.FadeOtherSources("Down", 2f);
         yield return t.WaitForCompletion();

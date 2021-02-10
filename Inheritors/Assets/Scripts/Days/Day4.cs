@@ -284,7 +284,7 @@ public class Day4 : MonoBehaviour
     {
         stateManager.SetState(State.Inert);
         uiManager.TearDownTasksInventory();
-        transitionManager.ChangeColor(Color.black, 0f);
+        transitionManager.SetColor(Color.black);
         Tween t = transitionManager.Show(4f);
         audioManager.FadeOtherSources("Down", 2f); // audioManager.FadeTo(0f, 2f, Ease.InOutQuad);
         yield return t.WaitForCompletion();
