@@ -49,7 +49,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     float moveSpeed;
     float stepPrev = -1;
     float step = -1;
-    bool steppedThisFrame = false;
+    // bool steppedThisFrame = false;
 
     bool allowTerrainModification = false;
 
@@ -218,7 +218,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     void LandingFX()
     {
         playerFootstepFX.PlayFX(GetTexturesUnderfoot());
-        steppedThisFrame = true;
+        // steppedThisFrame = true;
     }
 
     void FootstepFX()
@@ -230,7 +230,7 @@ public class PlayerTerrainInteract : MonoBehaviour
         if (moveSpeed > 0 && stepPrev < 0 && 0 <= step)
         {
             playerFootstepFX.PlayFX(GetTexturesUnderfoot());
-            steppedThisFrame = true;
+            // steppedThisFrame = true;
         }
     }
 

@@ -48,6 +48,11 @@ public class Ghost : MonoBehaviour
     float minResetTime = 5.0f;
     float maxResetTime = 10.0f;
 
+    void LandingFX()
+    {
+        // Do nothing: for animator parity with player only
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (playing && other.tag == "Player" && stateManager.GetState() == State.Normal)
