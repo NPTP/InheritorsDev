@@ -86,15 +86,15 @@ public class Day2 : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // Show the tasks.
-        cameraManager.SendCamTo(fatherNPCTransform);
+        cameraManager.SendCamTo(fatherNPCTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Father, "Fishing with father.");
         yield return new WaitForSeconds(1f);
-        cameraManager.SendCamTo(sisterQuadrantTransform);
+        cameraManager.SendCamTo(sisterQuadrantTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Sister, "Talk to sister.");
         yield return new WaitForSeconds(1f);
-        cameraManager.QuadrantCamActivate(motherQuadrantTransform);
+        cameraManager.QuadrantCamActivate(motherQuadrantTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         // Final dialog of opening.

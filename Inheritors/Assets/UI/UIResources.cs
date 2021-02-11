@@ -35,6 +35,7 @@ public class UIResources : ScriptableObject
 
     [Header("Sounds")]
     public AudioClip sound_taskUpdate;
+    public AudioClip[] tasksInventorySwishes;
 
     public Sprite GetItemIcon(ItemType type)
     {

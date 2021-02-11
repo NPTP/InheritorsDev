@@ -77,12 +77,12 @@ public class Day4 : MonoBehaviour
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
         // Show us the hill path with cleared rocks, and tell us about it in the 2nd dialog.
-        cameraManager.SendCamTo(hillPathTransform);
+        cameraManager.SendCamTo(hillPathTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         dialogManager.NewDialog(dialogContent.Get("Day4Opening_2"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        cameraManager.QuadrantCamActivate(motherQuadrant);
+        cameraManager.QuadrantCamActivate(motherQuadrant, true);
         uiManager.SetUpTasksInventory();
         yield return new WaitWhile(cameraManager.IsSwitching);
 

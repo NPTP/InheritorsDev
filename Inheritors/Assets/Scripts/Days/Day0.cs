@@ -89,7 +89,7 @@ public class Day0 : MonoBehaviour
 
         /* 04. Change view from fire to player. */
         fireAudio2D.DOFade(0f, 2f);
-        cameraManager.SwitchToCam("Player");
+        cameraManager.SwitchToCam("Player", true);
         cameraManager.ResetZoom(2f);
         yield return new WaitWhile(cameraManager.IsSwitching);
 
@@ -276,7 +276,7 @@ public class Day0 : MonoBehaviour
         dialogManager.NewDialog(dialogContent.Get("Firepit"), State.Inert);
         yield return new WaitUntil(dialogManager.IsDialogFinished);
 
-        cameraManager.SendCamTo(firewoodTransform);
+        cameraManager.SendCamTo(firewoodTransform, true);
         // yield return new WaitForSeconds(1f);
         yield return new WaitWhile(cameraManager.IsSwitching);
 

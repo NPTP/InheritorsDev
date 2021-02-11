@@ -115,12 +115,12 @@ public class Day7 : MonoBehaviour
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
         yield return new WaitForSeconds(1f);
 
-        cameraManager.SendCamTo(GameObject.FindWithTag("SisterNPC").transform);
+        cameraManager.SendCamTo(GameObject.FindWithTag("SisterNPC").transform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Sister, "Help sister.");
         yield return new WaitForSeconds(1f);
 
-        cameraManager.QuadrantCamActivate(motherQuadrant);
+        cameraManager.QuadrantCamActivate(motherQuadrant, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandmother, "See grandmother.");
         yield return new WaitForSeconds(1f);

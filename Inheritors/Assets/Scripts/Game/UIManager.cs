@@ -110,11 +110,16 @@ public class UIManager : MonoBehaviour
 
     IEnumerator SetUpAnimation()
     {
+        float volumeScale = 0.25f;
+        
         tasksInventory.TweenInventory("In", .6f, Ease.OutBack);
+        audioManager.PlayOneShot(uiResources.tasksInventorySwishes[0], volumeScale);
         yield return new WaitForSeconds(.3f);
         tasksInventory.TweenActiveBar("In", .6f, Ease.OutBack);
+        audioManager.PlayOneShot(uiResources.tasksInventorySwishes[1], volumeScale);
         yield return new WaitForSeconds(.2f);
         tasksInventory.TweenTaskList("In", .6f, Ease.OutQuad);
+        audioManager.PlayOneShot(uiResources.tasksInventorySwishes[2], volumeScale);
         yield return new WaitForSeconds(.5f);
         tasksInventory.finishedAnimating = true;
     }

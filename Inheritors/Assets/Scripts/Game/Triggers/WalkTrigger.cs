@@ -7,6 +7,9 @@ using DG.Tweening;
 public class WalkTrigger : MonoBehaviour, Trigger
 {
     InteractManager interactManager;
+    AudioManager audioManager;
+    string activateSoundName = "walktrigger-activate";
+    float activateSoundVolumeScale = 0.25f;
 
     public bool startEnabled = true;
     public string triggerTag;
@@ -36,6 +39,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
     void Awake()
     {
         interactManager = FindObjectOfType<InteractManager>();
+        audioManager = FindObjectOfType<AudioManager>();
         playerTransform = GameObject.Find("Player").transform;
         triggerCollider = GetComponent<Collider>();
         itemTransform = transform.GetChild(0);
@@ -116,6 +120,7 @@ public class WalkTrigger : MonoBehaviour, Trigger
             triggerCollider.enabled = false;
             ps.Stop();
             triggerProjector.Disable();
+            audioManager.PlayOneShot(Resources.Load(activateSoundName) as AudioClip, activateSoundVolumeScale);
             activateParticles.Play();
             Tween t = l.DOIntensity(3 * originalIntensity, .25f).SetEase(Ease.OutQuad);
             yield return t.WaitForCompletion();

@@ -79,19 +79,19 @@ public class Day1 : MonoBehaviour
         yield return new WaitForSeconds(.5f);
 
         // Give us context for watering hole task.
-        cameraManager.SendCamTo(wateringHoleQuadrantTransform);
+        cameraManager.SendCamTo(wateringHoleQuadrantTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Mother, "Fetch water for mother.");
         yield return new WaitForSeconds(1f);
 
         // Give us context for hunting task.
-        cameraManager.SendCamTo(fatherQuadrantTransform);
+        cameraManager.SendCamTo(fatherQuadrantTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Father, "Hunt with father.");
         yield return new WaitForSeconds(1f);
 
         // Return to player to debrief before letting them loose.
-        cameraManager.QuadrantCamActivate(motherQuadrantTransform);
+        cameraManager.QuadrantCamActivate(motherQuadrantTransform, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         dialogManager.NewDialog(dialogContent.Get("Dialog_TaskExplanation"));
         yield return new WaitUntil(dialogManager.IsDialogFinished);

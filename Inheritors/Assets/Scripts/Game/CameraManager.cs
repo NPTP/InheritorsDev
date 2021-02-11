@@ -33,6 +33,10 @@ public class CameraManager : MonoBehaviour
     float defaultBlendSpeed;
     bool isBlending = false;
 
+    AudioManager audioManager;
+    [SerializeField] AudioClip cameraWhoosh;
+    float cameraWhooshVolumeScale = 0.25f;
+
     void Awake()
     {
         cmBrain = FindObjectOfType<CinemachineBrain>();
@@ -48,6 +52,8 @@ public class CameraManager : MonoBehaviour
         postProcessVolume.profile.TryGetSettings(out postProcessDOF);
         dofDefaultAperture = postProcessDOF.aperture.value;
         dofDefaultFocalLength = postProcessDOF.focalLength.value;
+
+        audioManager = FindObjectOfType<AudioManager>();
 
         // postProcessDOF.active = false;
         // postProcessDOF.focusDistance.value = .1f;
@@ -78,8 +84,10 @@ public class CameraManager : MonoBehaviour
     /// if camName is the name of a gameObject containing a virtual camera
     /// that is not in the prefabs, switch to that.
     /// </summary>
-    public void SwitchToCam(string camName)
+    public void SwitchToCam(string camName, bool playSound = false)
     {
+        if (playSound) { audioManager.PlayOneShot(cameraWhoosh, cameraWhooshVolumeScale); }
+
         lastCam = presentCam;
         SetAllCamsZeroPriority();
         CinemachineVirtualCamera switchedtoCam = GetCameraByName(camName);
@@ -145,24 +153,24 @@ public class CameraManager : MonoBehaviour
         cam.LookAt = transform;
     }
 
-    public void SendCamTo(Transform transform)
+    public void SendCamTo(Transform transform, bool playSound = false)
     {
         if (presentCam != cmOtherCam1)
         {
             FocusCamOn("Other1", transform);
-            SwitchToCam("Other1");
+            SwitchToCam("Other1", playSound);
         }
         else
         {
             FocusCamOn("Other2", transform);
-            SwitchToCam("Other2");
+            SwitchToCam("Other2", playSound);
         }
     }
 
-    public void QuadrantCamActivate(Transform transform)
+    public void QuadrantCamActivate(Transform transform, bool playSound = false)
     {
         FocusCamOn("Quadrant", transform);
-        SwitchToCam("Quadrant");
+        SwitchToCam("Quadrant", playSound);
     }
 
 

@@ -78,17 +78,17 @@ public class Day3 : MonoBehaviour
         taskManager.AddTask(TaskType.Sister, "Talk to sister.");
         yield return new WaitForSeconds(1f);
 
-        cameraManager.SendCamTo(grandmotherQuadrant);
+        cameraManager.SendCamTo(grandmotherQuadrant, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandmother, "Visit grandmother.");
         yield return new WaitForSeconds(2f);
 
-        cameraManager.SendCamTo(grandfatherQuadrant);
+        cameraManager.SendCamTo(grandfatherQuadrant, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
         taskManager.AddTask(TaskType.Grandfather, "Visit grandfather.");
         yield return new WaitForSeconds(2f);
 
-        cameraManager.QuadrantCamActivate(motherQuadrant);
+        cameraManager.QuadrantCamActivate(motherQuadrant, true);
         yield return new WaitWhile(cameraManager.IsSwitching);
 
         // Final dialog of opening.

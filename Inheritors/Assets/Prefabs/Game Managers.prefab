@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb0347d7431dff4c916ba48ab09dbb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraWhoosh: {fileID: 8300000, guid: 990bdd8959557594db0c6a4a3501d4ee, type: 3}
 --- !u!1 &3872553747487743820
 GameObject:
   m_ObjectHideFlags: 0
