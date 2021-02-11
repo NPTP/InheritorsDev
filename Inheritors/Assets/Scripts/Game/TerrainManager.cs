@@ -25,7 +25,8 @@ public class TerrainManager : MonoBehaviour
         Trail,
         Trail2,
         Trail3,
-        Trail4
+        Trail4,
+        SecretPath
     }
 
     void Start()

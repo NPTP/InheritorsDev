@@ -42,6 +42,7 @@ public class PlayerTerrainInteract : MonoBehaviour
     int cliffLayer = (int)TerrainManager.Layers.Cliffside;
     int ashLayer = (int)TerrainManager.Layers.AshDark;
     int woodLayer = (int)TerrainManager.Layers.Wood;
+    int secretLayer = (int)TerrainManager.Layers.SecretPath;
 
     bool[,] walkedToday;
     float[,] pastTrail;
@@ -128,6 +129,7 @@ public class PlayerTerrainInteract : MonoBehaviour
                 {
                     walkedToday[z, x] = true;
                     changeTex = true; // Signal that we are actually changing something.
+                    remap[i,j, secretLayer] = 0.01f; // Record the secret layer for the final setpiece.
 
                     // Add
                     float addAmount = trailAmount - GetUnchangingTextureAmount(alphaMap, i, j);
