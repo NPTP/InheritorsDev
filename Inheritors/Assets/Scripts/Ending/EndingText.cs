@@ -100,7 +100,9 @@ public class EndingText : MonoBehaviour
             "The real-life Akuntsu are the isolated remnants of a tribe living in the Rio Omerê Indigenous Territory of Rondônia, Brazil. \n\n" +
             "The events of this game are based on research into the Akuntsu and other indigenous groups like the Kanoê, living in the Rio Omerê.",
 
-            "Illegal logging, farming and mining encroached on former Akuntsu territory and their people were killed en masse. The survivors hold tenuously to what remains -  as of 2020, only four remain living. \n\n" +
+            "Bringing outside illness, burning and razing forest, putting up fences and railroads, scaring game with fireworks, and hiring contract killers (who take an ear as proof of fulfillment) are all real-world tactics that have been used against tribes like the Akuntsu in the Brazilian Amazon.", 
+
+            "Illegal logging, cattle ranching and mining encroached on former Akuntsu territory and their people were killed en masse. The survivors hold tenuously to what remains -  as of 2020, only four remain living. \n\n" +
             "They once numbered in the thousands.",
 
             "No others speak their unique language, and they will not marry or integrate with outside tribes. There is no \"somewhere new\" for the Akuntsu, no inheritors to the Akuntsu culture. When the last of them and others in the Rio Omerê are gone, their protected land is likely to be developed.",
