@@ -311,7 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e14b141381977c4c8ac4a1986360774, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogNextSound: {fileID: 8300000, guid: 6985b9eebc0030d4988d3e7a186e61bb, type: 3}
+  dialogNextSound: {fileID: 8300000, guid: a777b8e71f6470c4f92b64abcfedb3fa, type: 3}
   dialogNextVolumeScale: 0.3
 --- !u!1 &3872553747925638481
 GameObject:

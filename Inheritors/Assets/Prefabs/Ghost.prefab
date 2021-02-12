@@ -482,7 +482,7 @@ MonoBehaviour:
   thisLight: {fileID: 5001391062843885227}
   audioSource: {fileID: 1261746700762201542}
   enterSound: {fileID: 8300000, guid: 85ce3a8ccf2a7fe4ea506360fa260734, type: 3}
-  loopSound: {fileID: 8300000, guid: 59edce91fd2600541bb042c42fcf03c5, type: 3}
+  loopSound: {fileID: 8300000, guid: 8de8b6bb4333c27408a3d57a25c6a46a, type: 3}
   exitSounds:
   - {fileID: 8300000, guid: 0a2bd211b6d3e37479854fa1d8c1e8fe, type: 3}
   - {fileID: 8300000, guid: 927d8855c0ecffb44b8eea86855561ac, type: 3}
