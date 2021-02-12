@@ -29,6 +29,17 @@ public class Helper : ScriptableObject
         return t * t * (3f - 2f * t);
     }
 
+    /// <summary>
+    /// Takes a positive integer "odds" and returns a 1-in-"odds" random gamble
+    /// </summary>
+    public static bool Chance(int odds)
+    {
+        if (Random.Range(0, odds) == odds - 1)
+            return true;
+        else
+            return false;
+    }
+
     public static void LoadScene(string name)
     {
         SceneManager.LoadScene(name);

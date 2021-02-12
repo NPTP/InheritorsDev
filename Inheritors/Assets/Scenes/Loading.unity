@@ -223,6 +223,8 @@ MonoBehaviour:
   minimumHoldTime: 2
   allFadeOutTime: 1
   confirmSound: {fileID: 8300000, guid: 5893e5f904e0a2443a3377a6afcf42f1, type: 3}
+  controllerConfirm: {fileID: 21300000, guid: b01f18b6e119c4c4f99ad0ad6f434ae2, type: 3}
+  keyboardConfirm: {fileID: 21300000, guid: ec1f40bf1bfd1fb45ad2bb59c69aa906, type: 3}
 --- !u!4 &200093402
 Transform:
   m_ObjectHideFlags: 0
@@ -603,7 +605,7 @@ GameObject:
   - component: {fileID: 1174051940}
   - component: {fileID: 1174051939}
   m_Layer: 5
-  m_Name: Image
+  m_Name: FinishedPrompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

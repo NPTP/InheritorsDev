@@ -51,7 +51,6 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-
         buttonGroup.interactable = false;
         beginSureCG.alpha = 0;
         endSureCG.alpha = 0;
@@ -76,7 +75,7 @@ public class MainMenu : MonoBehaviour
 
         StartCoroutine(WaitForStartAnimation());
     }
-
+    
     IEnumerator WaitForStartAnimation()
     {
         float threeQuarters = 0.75f;

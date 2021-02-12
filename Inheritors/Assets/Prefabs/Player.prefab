@@ -1058,6 +1058,11 @@ MonoBehaviour:
   trailAmount: 0.25
   grassCutSize: 3
   stepDeformDepth: 0.0002
+  creatureArray:
+  - {fileID: 3432143747985300867, guid: e169a1773fcf87646ac2495ea1270e6b, type: 3}
+  - {fileID: 3432143747985300867, guid: e628c1f0098ea0543b1d673bdb0fd269, type: 3}
+  - {fileID: 3432143747985300867, guid: 5c1ad1dad58ffc74a81db1b56370fc9a, type: 3}
+  - {fileID: 1457361957514249065, guid: a135a9e8dfb65b946be9264f3053914a, type: 3}
 --- !u!114 &1241075166956796793
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,6 +27,12 @@ public class AsyncLoadingScreen : MonoBehaviour
     [Header("Audio")]
     public AudioClip confirmSound;
 
+    [Space]
+
+    [Header("Sprites")]
+    public Sprite controllerConfirm;
+    public Sprite keyboardConfirm;
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -44,6 +50,12 @@ public class AsyncLoadingScreen : MonoBehaviour
         GameObject ft = GameObject.Find("FinishedText");
         finishedTextCG = ft.GetComponent<CanvasGroup>();
         finishedText = ft.GetComponent<Text>();
+
+        Image finishedTextPrompt = GameObject.Find("FinishedPrompt").GetComponent<Image>();
+        if (Input.GetJoystickNames().Length > 0)
+            finishedTextPrompt.sprite = controllerConfirm;
+        else
+            finishedTextPrompt.sprite = keyboardConfirm;
 
         StartCoroutine(LoadingProcess());
     }

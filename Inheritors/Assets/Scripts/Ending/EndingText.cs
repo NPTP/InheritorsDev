@@ -20,6 +20,10 @@ public class EndingText : MonoBehaviour
     public float textHoldTime = 4f;
     public float textFadeTime = 1f;
     public float waitBetweenTextTime = 0.25f;
+    [Space]
+    [Header("Sprites")]
+    public Sprite controllerConfirm;
+    public Sprite keyboardConfirm;
 
     bool buttonDown = false;
 
@@ -28,9 +32,14 @@ public class EndingText : MonoBehaviour
         GameObject textObject = GameObject.Find("Text");
         textCanvasGroup = textObject.GetComponent<CanvasGroup>();
         text = textObject.GetComponent<TMP_Text>();
-        prompt = GameObject.Find("Prompt").GetComponent<Image>();
         sceneLoader = FindObjectOfType<SceneLoader>();
         audioSource = GetComponent<AudioSource>();
+        
+        prompt = GameObject.Find("Prompt").GetComponent<Image>();
+        if (Input.GetJoystickNames().Length > 0)
+            prompt.sprite = controllerConfirm;
+        else
+            prompt.sprite = keyboardConfirm;
     }
 
     void Start()

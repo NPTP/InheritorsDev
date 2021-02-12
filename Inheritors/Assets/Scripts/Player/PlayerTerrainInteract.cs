@@ -17,6 +17,8 @@ public class PlayerTerrainInteract : MonoBehaviour
     public float trailAmount = .25f;
     public int grassCutSize = 3;
     public float stepDeformDepth = 0.0002f;
+    public GameObject[] creatureArray;
+    int creatureOdds = 2000;
 
     Transform playerTransform;
 
@@ -190,7 +192,8 @@ public class PlayerTerrainInteract : MonoBehaviour
                 {
                     details[i, j] = 0;
                     deletedDetails = true;
-                    SpawnCreature(1, 2001);
+                    if (Helper.Chance(creatureOdds))
+                        StartCoroutine(SpawnCreature());
                 }
             }
         }
@@ -202,19 +205,13 @@ public class PlayerTerrainInteract : MonoBehaviour
         }
     }
 
-    void SpawnCreature(int lower, int upper)
+    IEnumerator SpawnCreature()
     {
-        int chance = Random.Range(lower, upper);
-        if (chance == upper - 1)
-        {
-            string butterflyParticle = "ButterflyParticle";
-            GameObject creature = (GameObject)GameObject.Instantiate(Resources.Load(butterflyParticle), playerTransform.position + Vector3.up, Quaternion.identity);
-            StartCoroutine(CreatureTimer(creature));
-        }
-    }
-
-    IEnumerator CreatureTimer(GameObject creature)
-    {
+        GameObject creature = (GameObject)GameObject.Instantiate(
+            creatureArray[Random.Range(0, creatureArray.Length)],
+            playerTransform.position + Vector3.up,
+            Quaternion.identity
+        );
         float time = creature.GetComponent<ParticleSystem>().main.duration;
         yield return new WaitForSeconds(time);
         Destroy(creature);

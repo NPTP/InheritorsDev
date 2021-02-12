@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     GameObject player;
     Vector3 playerHeight;
 
+    bool controllerPlugged = false;
+
     public UI_PauseMenu pauseMenu = new UI_PauseMenu();
     public UI_TasksInventory tasksInventory = new UI_TasksInventory();
     public UI_Prompt pickupPrompt = new UI_Prompt();
@@ -30,6 +32,11 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
+        if (Input.GetJoystickNames().Length > 0)
+            controllerPlugged = true;
+
+        print("Controller plugged? " + controllerPlugged);
+
         InitializeReferences();
         InitializePauseMenu();
         InitializeDialogBox();
@@ -201,7 +208,6 @@ public class UIManager : MonoBehaviour
     // ███ INVENTORY
     // ████████████████████████████████████████████████████████████████████████
 
-    // TODO: Animations
     public void UpdateInventory(PickupManager.Inventory inventory)
     {
         float itemFadeTime = 0.25f;
@@ -249,14 +255,14 @@ public class UIManager : MonoBehaviour
         {
             p = pickupPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.A_Button_Inworld;
+            p.image.sprite = controllerPlugged ? uiResources.A_Button_Inworld : uiResources.E_Key_Inworld;
             p.text.enabled = false;
         }
         else if (triggerType == "Dropoff")
         {
             p = pickupPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.A_Button_Inworld;
+            p.image.sprite = controllerPlugged ? uiResources.A_Button_Inworld : uiResources.E_Key_Inworld;
             p.text.enabled = true;
             p.text.text = prompText;
         }
@@ -264,7 +270,7 @@ public class UIManager : MonoBehaviour
         {
             p = dialogPrompt;
             p.image.enabled = true;
-            p.image.sprite = uiResources.Y_Button_Inworld;
+            p.image.sprite = controllerPlugged ? uiResources.Y_Button_Inworld : uiResources.Q_Key_Inworld;
             p.text.enabled = false;
         }
 
@@ -390,6 +396,9 @@ public class UIManager : MonoBehaviour
         dialogBox.tmpText = GameObject.Find("DialogBoxText").GetComponent<TMP_Text>();
         GameObject dbp = GameObject.Find("DialogBoxPrompt");
         dialogBox.prompt = dbp.GetComponent<Image>();
+
+        dialogBox.prompt.sprite = controllerPlugged ? uiResources.A_Button : uiResources.E_Key;
+        
         dialogBox.animator = dbp.GetComponent<Animator>();
     }
 
@@ -435,6 +444,9 @@ public class UIManager : MonoBehaviour
     {
         controls.canvasGroup = GameObject.Find("Controls").GetComponent<CanvasGroup>();
         controls.image = GameObject.Find("ControlsImage").GetComponent<Image>();
+
+        controls.image.sprite = controllerPlugged ? uiResources.joystick : uiResources.WASD;
+
         controls.text = GameObject.Find("ControlsText").GetComponent<TMP_Text>();
         controls.Hide(0f);
     }

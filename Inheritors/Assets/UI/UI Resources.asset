@@ -12,14 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc3b8c36396317438e0019b9d098efa, type: 3}
   m_Name: UI Resources
   m_EditorClassIdentifier: 
+  joystick: {fileID: 21300000, guid: 36b3bfbfec1a40a4399fceb826c5cf4f, type: 3}
+  WASD: {fileID: 0}
   Back_Button: {fileID: 0}
   Start_Button: {fileID: 0}
-  A_Button: {fileID: 21300000, guid: d8ed661935030554bba043ce3597651e, type: 3}
+  A_Button: {fileID: 21300000, guid: 867a699698cd97a4d8524b3a0f8f1c87, type: 3}
   X_Button: {fileID: 21300000, guid: 87ff84036bd7219448b840fdd544d455, type: 3}
   Y_Button: {fileID: 21300000, guid: 8ba1b73e257f0f442bc2ab6691d466a8, type: 3}
   B_Button: {fileID: 21300000, guid: 00172190581457046ab2078d64366eaf, type: 3}
+  E_Key: {fileID: 21300000, guid: 89d8553c07ffbdc43acdad073a5454f1, type: 3}
   A_Button_Inworld: {fileID: 21300000, guid: 1856dfafe4d6bff49a1a7a3ed4735c79, type: 3}
   Y_Button_Inworld: {fileID: 21300000, guid: 4fbc1e86bd5a27c41b2c75d24957e6b1, type: 3}
+  E_Key_Inworld: {fileID: 21300000, guid: 3b0645d7433b7ec469c0945db8f4121a, type: 3}
+  Q_Key_Inworld: {fileID: 21300000, guid: 7e61db56243cdab459aa987d3da47255, type: 3}
   WOOD: {fileID: 21300000, guid: 2feb0f9522e60054b8bdd38bee469e50, type: 3}
   WATER: {fileID: 21300000, guid: 51e574bf908cd8c4bb15172dfdd30ab2, type: 3}
   PIG: {fileID: 21300000, guid: a33557ad5a3c6904db607c86a177cb67, type: 3}

@@ -4,6 +4,10 @@ using UnityEngine.UI;
 [CreateAssetMenu]
 public class UIResources : ScriptableObject
 {
+    [Header("Axis Controls")]
+    public Sprite joystick;
+    public Sprite WASD;
+
     [Header("Center Buttons")]
     public Sprite Back_Button;
     public Sprite Start_Button;
@@ -13,10 +17,13 @@ public class UIResources : ScriptableObject
     public Sprite X_Button;
     public Sprite Y_Button;
     public Sprite B_Button;
+    public Sprite E_Key;
 
     [Header("In-world prompts")]
     public Sprite A_Button_Inworld;
     public Sprite Y_Button_Inworld;
+    public Sprite E_Key_Inworld;
+    public Sprite Q_Key_Inworld;
 
     [Header("Items")]
     public Sprite WOOD;

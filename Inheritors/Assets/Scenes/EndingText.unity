@@ -835,6 +835,8 @@ MonoBehaviour:
   textHoldTime: 2
   textFadeTime: 2
   waitBetweenTextTime: 0.5
+  controllerConfirm: {fileID: 21300000, guid: 867a699698cd97a4d8524b3a0f8f1c87, type: 3}
+  keyboardConfirm: {fileID: 21300000, guid: 89d8553c07ffbdc43acdad073a5454f1, type: 3}
 --- !u!4 &1514354501
 Transform:
   m_ObjectHideFlags: 0
