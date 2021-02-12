@@ -178,13 +178,46 @@ public class PlayerTerrainInteract : MonoBehaviour
 
     void RemoveDetails(int areaSize)
     {
+        int[,] detailDensity = t.terrainData.GetDetailLayer(detailPosX - playerDetailMapSize, detailPosZ - playerDetailMapSize, areaSize, areaSize, 0);
         int[,] details = new int[areaSize, areaSize];
-        for (int i = 0; i < areaSize; i++)
-            for (int j = 0; j < areaSize; j++)
-                details[i, j] = 0;
+        bool deletedDetails = false;
 
-        for (int k = 0; k < t.terrainData.detailPrototypes.Length; k++)
-            t.terrainData.SetDetailLayer(detailPosX - playerDetailMapSize, detailPosZ - playerDetailMapSize, k, details);
+        for (int i = 0; i < areaSize; i++)
+        {
+            for (int j = 0; j < areaSize; j++)
+            {
+                if (detailDensity[i,j] > 0)
+                {
+                    details[i, j] = 0;
+                    deletedDetails = true;
+                    SpawnCreature(1, 2001);
+                }
+            }
+        }
+
+        if (deletedDetails)
+        {
+            for (int k = 0; k < t.terrainData.detailPrototypes.Length; k++)
+                t.terrainData.SetDetailLayer(detailPosX - playerDetailMapSize, detailPosZ - playerDetailMapSize, k, details);
+        }
+    }
+
+    void SpawnCreature(int lower, int upper)
+    {
+        int chance = Random.Range(lower, upper);
+        if (chance == upper - 1)
+        {
+            string butterflyParticle = "ButterflyParticle";
+            GameObject creature = (GameObject)GameObject.Instantiate(Resources.Load(butterflyParticle), playerTransform.position + Vector3.up, Quaternion.identity);
+            StartCoroutine(CreatureTimer(creature));
+        }
+    }
+
+    IEnumerator CreatureTimer(GameObject creature)
+    {
+        float time = creature.GetComponent<ParticleSystem>().main.duration;
+        yield return new WaitForSeconds(time);
+        Destroy(creature);
     }
 
     void ConvertPosition(Vector3 playerPosition)
