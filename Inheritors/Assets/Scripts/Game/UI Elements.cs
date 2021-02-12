@@ -91,6 +91,11 @@ public class UI_TasksInventory
         inventoryTxt.enabled = false;
     }
 
+    public void ResetActiveBarTextColor()
+    {
+        activeBarTxt.color = Color.black;
+    }
+
     public void TweenInventory(string inOut, float duration, Ease easing)
     {
         Vector3 endPos;

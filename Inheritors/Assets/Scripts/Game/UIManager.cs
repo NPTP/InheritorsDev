@@ -145,17 +145,22 @@ public class UIManager : MonoBehaviour
     // ███ TASKS
     // ████████████████████████████████████████████████████████████████████████
 
-    public void UpdateTasks(Task activeTask, Dictionary<TaskType, Task> taskList)
+    public void UpdateTasks(Task activeTask, Dictionary<TaskType, Task> taskList, bool completingTask = false)
     {
         if (activeTask.status == TaskStatus.Active)
         {
+            tasksInventory.ResetActiveBarTextColor();
             tasksInventory.activeBarTxt.text = activeTask.text;
             tasksInventory.activeBarArrow.DOColor(Color.green, 0.25f);
             UIPop(ref tasksInventory.activeBarRT);
         }
+        else if (completingTask)
+        {
+            // Strikethrough for a completed task
+            StartCoroutine(CompleteTaskAnimation());
+        }
         else
         {
-            // TODO: this is where the completed task strikethru anim can go
             tasksInventory.activeBarTxt.text = "";
             tasksInventory.activeBarArrow.DOColor(Color.white, 0.25f);
         }
@@ -167,30 +172,29 @@ public class UIManager : MonoBehaviour
                 listBuilder += task.text + "\n\n";
         }
         if (listBuilder.Length > tasksInventory.taskListTxt.text.Length)
+        {
+            Color taskListTxtColor = tasksInventory.taskListTxt.color;
+            tasksInventory.taskListTxt.DOColor(taskListTxtColor, 0.4f).From(Color.black).SetEase(Ease.InQuad);
             UIPop(ref tasksInventory.taskListRT);
+        }
         tasksInventory.taskListTxt.text = listBuilder;
     }
 
-    void StrikethruReset()
+    IEnumerator CompleteTaskAnimation()
     {
-        tasksInventory.strikethruRT.localScale =
-        new Vector3(
-            0f,
-            tasksInventory.strikethruRT.localScale.y,
-            tasksInventory.strikethruRT.localScale.z
-        );
-    }
+        float scaleTime = 1f;
+        float volumeScale = 0.75f;
+        tasksInventory.strikethruImg.color = Color.black;
+        Tween t = tasksInventory.strikethruRT.DOScaleX(1f, scaleTime).SetEase(Ease.InCubic);
+        yield return t.WaitForCompletion();
 
-    void StrikethruActiveTask(float duration)
-    {
-        DOTween.To(
-            () => tasksInventory.strikethruRT.localScale,
-            x => tasksInventory.strikethruRT.localScale = x,
-            new Vector3(1f,
-                tasksInventory.strikethruRT.localScale.y,
-                tasksInventory.strikethruRT.localScale.z),
-            duration
-        );
+        yield return new WaitForSeconds(0.25f);
+
+        audioManager.PlayOneShot(uiResources.sound_taskCompleted, volumeScale);
+        float taskFadeoutTime = 0.5f;
+        tasksInventory.activeBarTxt.DOFade(0f, taskFadeoutTime).OnComplete(()=>tasksInventory.activeBarTxt.text = "");
+        tasksInventory.strikethruImg.DOFade(0f, taskFadeoutTime).OnComplete(()=>tasksInventory.strikethruRT.DOScaleX(0,0));
+        tasksInventory.activeBarArrow.DOColor(Color.white, taskFadeoutTime);
     }
 
     // ████████████████████████████████████████████████████████████████████████
@@ -209,6 +213,7 @@ public class UIManager : MonoBehaviour
             tasksInventory.inventoryItemImg.enabled = true;
             tasksInventory.inventoryItemImg.sprite = uiResources.GetItemIcon(inventory.itemType);
             tasksInventory.inventoryTxt.text = "×" + inventory.itemQuantity.ToString();
+            tasksInventory.inventoryTxt.DOColor(tasksInventory.inventoryTxt.color, 0.25f).From(Color.cyan);
         }
         else if (inventory.itemQuantity == 1)
         {

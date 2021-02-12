@@ -199,7 +199,7 @@ public class TaskManager : MonoBehaviour
         CheckAllTasksCompleted();
 
         activeTask = new Task(); // Null TaskType.
-        UpdateTasks();
+        UpdateTasks(true, true);
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ public class TaskManager : MonoBehaviour
         OnAllTasks?.Invoke(this, EventArgs.Empty);
     }
 
-    void UpdateTasks(bool sendEvent = true)
+    void UpdateTasks(bool sendEvent = true, bool completingTask = false)
     {
         if (sendEvent)
         {
@@ -241,7 +241,7 @@ public class TaskManager : MonoBehaviour
                 taskList = this.taskList
             });
         }
-        uiManager.UpdateTasks(activeTask, taskList);
+        uiManager.UpdateTasks(activeTask, taskList, completingTask);
     }
 }
 

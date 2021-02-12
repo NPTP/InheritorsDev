@@ -34,6 +34,7 @@ MonoBehaviour:
   SEEDS: {fileID: 21300000, guid: 645ab14c6999ecc4bb9cca2e4868de69, type: 3}
   DARKFLUTE: {fileID: 21300000, guid: ff6105a1a7848d54da9b62710ef98037, type: 3}
   sound_taskUpdate: {fileID: 8300000, guid: 97a894db6f482f143bb927cf5bf0dc49, type: 3}
+  sound_taskCompleted: {fileID: 8300000, guid: 3ae074ab09931d545ae93179df0fd8b3, type: 3}
   tasksInventorySwishes:
   - {fileID: 8300000, guid: f367c64d1318ff44a92ea6dd0597f250, type: 3}
   - {fileID: 8300000, guid: d27129481b326af40bdf8746d0378eed, type: 3}
