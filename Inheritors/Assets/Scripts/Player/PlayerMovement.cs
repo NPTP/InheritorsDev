@@ -46,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
         stateManager = GameObject.FindObjectOfType<StateManager>();
 
         direction = Vector3.zero;
+
+        Physics.gravity *= 3;
     }
 
     public Sample GetSample()

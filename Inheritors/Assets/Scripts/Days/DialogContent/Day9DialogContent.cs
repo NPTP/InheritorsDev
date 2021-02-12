@@ -118,8 +118,8 @@ public class Day9DialogContent : MonoBehaviour, DialogContent
         {
             character = Character.Narrator,
             lines = new string[] {
-                "These logs have all been cut from our forest.",
-                "I cannot reach father.",
+                "These logs have all been cut from our forest. They must want our Cumaru, our Massaranduba, our Ipê.",
+                "I cannot reach father from here.",
                 "It has been two days since he left the forest.",
                 "I do not think he is ever coming back."
             }
