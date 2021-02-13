@@ -24,18 +24,17 @@ public class UIManager : MonoBehaviour
     public UI_Prompt pickupPrompt = new UI_Prompt();
     public UI_Prompt dialogPrompt = new UI_Prompt();
     public UI_DialogBox dialogBox = new UI_DialogBox();
-    public UI_Controls controls = new UI_Controls();
+    public UI_Controls controls = null;
 
     public UIResources uiResources;
 
     float promptFadeTime = .25f;
+    Tween strikethruTween;
 
     void Awake()
     {
         if (Input.GetJoystickNames().Length > 0)
             controllerPlugged = true;
-
-        print("Controller plugged? " + controllerPlugged);
 
         InitializeReferences();
         InitializePauseMenu();
@@ -43,11 +42,12 @@ public class UIManager : MonoBehaviour
         InitializeTasksInventory();
         InitializePrompt(pickupPrompt, "PickupPrompt");
         InitializePrompt(dialogPrompt, "DialogPrompt");
-        InitializeControls();
     }
 
     void Start()
     {
+        if (controls == null) { Destroy(GameObject.Find("Controls")); }
+
         player = GameObject.FindWithTag("Player");
         playerHeight = new Vector3(0f, player.GetComponent<CapsuleCollider>().height, 0f);
         Cursor.visible = false;
@@ -156,7 +156,10 @@ public class UIManager : MonoBehaviour
     {
         if (activeTask.status == TaskStatus.Active)
         {
+            StopCoroutine("CompleteTaskAnimation");
+            strikethruTween.Kill();
             tasksInventory.ResetActiveBarTextColor();
+            tasksInventory.strikethruRT.DOScaleX(0,0);
             tasksInventory.activeBarTxt.text = activeTask.text;
             tasksInventory.activeBarArrow.DOColor(Color.green, 0.25f);
             UIPop(ref tasksInventory.activeBarRT);
@@ -164,10 +167,11 @@ public class UIManager : MonoBehaviour
         else if (completingTask)
         {
             // Strikethrough for a completed task
-            StartCoroutine(CompleteTaskAnimation());
+            StartCoroutine("CompleteTaskAnimation");
         }
         else
         {
+            StopCoroutine("CompleteTaskAnimation");
             tasksInventory.activeBarTxt.text = "";
             tasksInventory.activeBarArrow.DOColor(Color.white, 0.25f);
         }
@@ -192,8 +196,8 @@ public class UIManager : MonoBehaviour
         float scaleTime = 1f;
         float volumeScale = 0.75f;
         tasksInventory.strikethruImg.color = Color.black;
-        Tween t = tasksInventory.strikethruRT.DOScaleX(1f, scaleTime).SetEase(Ease.InCubic);
-        yield return t.WaitForCompletion();
+        strikethruTween = tasksInventory.strikethruRT.DOScaleX(1f, scaleTime).SetEase(Ease.InCubic);
+        yield return strikethruTween.WaitForCompletion();
 
         yield return new WaitForSeconds(0.25f);
 
@@ -440,14 +444,25 @@ public class UIManager : MonoBehaviour
         prompt.text.enabled = false;
     }
 
-    void InitializeControls()
+    public void InitializeControls()
     {
+        controls = new UI_Controls();
+
         controls.canvasGroup = GameObject.Find("Controls").GetComponent<CanvasGroup>();
         controls.image = GameObject.Find("ControlsImage").GetComponent<Image>();
-
-        controls.image.sprite = controllerPlugged ? uiResources.joystick : uiResources.WASD;
-
+        controls.keyboardImage = GameObject.Find("ControlsKbd").GetComponent<Image>();
         controls.text = GameObject.Find("ControlsText").GetComponent<TMP_Text>();
+
+        if (controllerPlugged)
+        {
+            controls.keyboardImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            controls.text.gameObject.SetActive(false);
+            controls.image.gameObject.SetActive(false);
+        }
+
         controls.Hide(0f);
     }
 }

@@ -48,6 +48,7 @@ public class Day0 : MonoBehaviour
         if (!enableDayScripts && Application.isEditor)
             Destroy(this);
         InitializeReferences();
+        uiManager.InitializeControls();
     }
 
     void Start()

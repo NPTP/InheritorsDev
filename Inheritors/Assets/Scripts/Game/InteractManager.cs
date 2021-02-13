@@ -186,7 +186,6 @@ public class InteractManager : MonoBehaviour
 
         bool isSkeletonItem = IsSkeletonItem(currentPickup.itemType);
         if (isSkeletonItem) { pickupItemLocalScale = currentPickup.itemTransform.localScale; }
-        print("Localscale of the the item: " + "(" + pickupItemLocalScale.x + ", " + pickupItemLocalScale.y + ", " + pickupItemLocalScale.z + ")");
 
         Vector3 startPosition = currentPickup.itemTransform.position;
         Vector3 startForwardHeading = currentPickup.itemTransform.forward;
@@ -316,7 +315,6 @@ public class InteractManager : MonoBehaviour
         {
             heldItemTransform.localScale = pickupItemLocalScale;
         }
-        print("Localscale of the the item: " + "(" + heldItemTransform.localScale.x + ", " + heldItemTransform.localScale.y + ", " + heldItemTransform.localScale.z + ")");
         // DEBUG
         Vector3 startPosition = heldItemTransform.position;
         Vector3 endPosition = thisDropoff.target.position;

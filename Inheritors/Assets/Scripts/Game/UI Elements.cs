@@ -288,6 +288,7 @@ public class UI_Controls
     public CanvasGroup canvasGroup;
     public Image image;
     public TMP_Text text;
+    public Image keyboardImage;
 
     public void Show(float duration = 1f)
     {
