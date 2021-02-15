@@ -14,20 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabList: []
   prefabData:
-  - prefab: {fileID: 1046453777464574, guid: 1aad01ae01d836647b215e40f1f4c1a7, type: 3}
+  - prefab: {fileID: 6687842579231636372, guid: 1f903d17eb9375642a7cc3956988afa1,
+      type: 3}
     selected: 1
-  - prefab: {fileID: 1269754475505960, guid: 186ecc7a1f977cc4fab5658c00fa3c4d, type: 3}
+  - prefab: {fileID: 2664755760362394048, guid: a6d6081e17017ff47834691b4bc4e519,
+      type: 3}
     selected: 1
-  - prefab: {fileID: 1143931805411576, guid: f71e980e020ab924ebed9a227a648ec8, type: 3}
+  - prefab: {fileID: 9091451949429142427, guid: 7b25edb26a4968a4fae4524c3a7b15e4,
+      type: 3}
+    selected: 1
+  - prefab: {fileID: 2366892868543940585, guid: 55c63b3d203567942a354f83423c3ea2,
+      type: 3}
+    selected: 1
+  - prefab: {fileID: 1612273161005096, guid: ae9772ea62bbc724eb9b8ef81109f733, type: 3}
+    selected: 1
+  - prefab: {fileID: 1458573784885960, guid: 6910e2407cd484a42a0c2598114751a0, type: 3}
     selected: 1
   paintType: 0
-  brushSize: 3
+  brushSize: 10
   minBrushSize: 0.1
   maxBrushSize: 20
-  paintDeltaDistance: 0.73
+  paintDeltaDistance: 3
   maxPaintDeltaDistance: 3
   minPaintDeltaDistance: 0.1
-  prefabsPerStroke: 3
+  prefabsPerStroke: 1
   maxprefabsPerStroke: 20
   minprefabsPerStroke: 1
   spawnHeight: 10
@@ -69,7 +79,7 @@ MonoBehaviour:
   minZScale: 0.1
   maxZScale: 1
   parentList: []
-  eraseBrushSize: 6.6
+  eraseBrushSize: 15.59
   minEraseBrushSize: 0.1
   maxEraseBrushSize: 20
   eraseType: 0
